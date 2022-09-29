@@ -3,6 +3,7 @@ import PartnersList from './components/PartnersList'
 import { VerifiedPartner } from './interfaces/VerifiedPartner'
 import styles from '../styles/Home.module.css'
 import Partners from './clients/Partners'
+import Services from './components/Services/Services'
 
 export async function getStaticProps() {
   const partners = await Partners.get()
@@ -23,8 +24,8 @@ function Home({ partners }: { partners: VerifiedPartner[] }) {
       </Head>
 
       <main className={styles.main}>
-        <h1 className={styles.title}>Verified Partners</h1>
-        <PartnersList partners={partners} />
+        <Services />
+        {/* <PartnersList partners={partners} /> */}
       </main>
     </div>
   )

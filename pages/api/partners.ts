@@ -1,7 +1,7 @@
 import { VerifiedPartner } from '../interfaces/VerifiedPartner'
 import type { NextApiRequest, NextApiResponse } from 'next'
 
-const VERIFIED_PARTNERS_URL = 'https://admin.dclstudios.org/items/profile'
+const VERIFIED_PARTNERS_URL = `${process.env.NEXT_PUBLIC_PARTNERS_DATA_URL}/items/profile`
 
 export default async function handler(
   req: NextApiRequest,

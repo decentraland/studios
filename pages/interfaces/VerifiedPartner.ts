@@ -4,8 +4,8 @@ export interface VerifiedPartnerResponse {
 
 export interface VerifiedPartner {
   id: number
-  date_created: Date
-  date_updated: Date
+  date_created: string
+  date_updated: string
   name: string
   description: string
   logo: string

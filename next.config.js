@@ -2,18 +2,9 @@
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
-  async headers() {
-    return [
-      {
-        source: '/',
-        headers: [
-          {
-            key: 'Access-Control-Allow-Origin',
-            value: '*',
-          },
-        ],
-      },
-    ]
+  i18n: {
+    locales: ['en-US'],
+    defaultLocale: 'en-US',
   },
 }
 

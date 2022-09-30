@@ -1,0 +1,102 @@
+.PartnerCard {
+  border: 1px solid #cccccd;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  min-height: 12rem;
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+}
+
+.Image {
+  width: 10rem;
+  height: 10rem;
+  float: left;
+  margin-right: 1rem;
+  border-radius: 1rem;
+  background-size: contain !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+}
+
+.Services {
+  margin: 0.4rem 0.4rem 0 0;
+}
+
+.Container {
+  flex: 1;
+}
+
+.Meta {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  margin-bottom: 0.5em;
+}
+
+.Details {
+  display: none;
+  margin-bottom: 1em;
+  font-size: 0.9em;
+  font-weight: 400;
+  color: #736E7D;
+}
+
+.Details tr td {
+  padding: 0.6em 0.5em 0.6em 0;
+}
+
+.Details tr td:first-child {
+  width: 33%;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+.Pills {
+  margin-right: 1rem;
+  margin-bottom: 0.2rem;
+}
+
+.ReadMoreState {
+  display: none;
+}
+
+.ReadMoreState:checked ~ .Details {
+  display: table;
+}
+
+.ReadMoreState:checked ~ .Description {
+  text-overflow: normal;
+  display: block;
+}
+
+.Description {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  display: -webkit-box;
+  display: -moz-box;
+  display: box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  -moz-box-orient: vertical;
+  box-orient: vertical;
+  white-space: normal;
+  margin-bottom: 0.5em;
+}
+
+.ReadMoreState ~ .ReadMoreTrigger:before {
+  content: "Show more";
+}
+
+.ReadMoreState:checked ~ .ReadMoreTrigger:before {
+  content: "Show less";
+}
+
+.ReadMoreTrigger {
+  cursor: pointer;
+  display: inline-block;
+  color: #FF2D55;
+  font-size: 1em;
+  font-weight: 500;
+}

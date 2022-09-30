@@ -2,10 +2,11 @@ import React from 'react'
 import { FormattedMessage } from 'react-intl'
 import { Service } from '../../interfaces/VerifiedPartner'
 import CategoryPill from '../CategoryPill/CategoryPill'
+import { toSnakeCase } from '../utils'
 
 import styles from './Services.module.css'
 
-const SERVICE_KEYS = Object.keys(Service).filter((key) => isNaN(Number(key))) as Array<keyof typeof Service>
+const SERVICES = Object.values(Service)
 
 function Services() {
   return (
@@ -15,13 +16,13 @@ function Services() {
       </h3>
       <table className={styles.Table}>
         <tbody>
-          {SERVICE_KEYS.map((key) => (
+          {SERVICES.map((key) => (
             <tr key={key}>
               <td className={styles.Service}>
                 <CategoryPill type={key} />
               </td>
               <td className={styles.Description}>
-                <FormattedMessage id={`service.${key}.description`} />
+                <FormattedMessage id={`service.${toSnakeCase(key)}.description`} />
               </td>
             </tr>
           ))}

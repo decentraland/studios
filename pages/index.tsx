@@ -25,7 +25,7 @@ function Home({ partners }: { partners: VerifiedPartner[] }) {
 
       <main className={styles.main}>
         <Services />
-        {/* <PartnersList partners={partners} /> */}
+        <PartnersList partners={partners} />
       </main>
     </div>
   )

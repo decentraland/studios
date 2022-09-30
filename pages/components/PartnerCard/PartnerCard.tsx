@@ -1,5 +1,5 @@
 import React from 'react'
-import { Service, VerifiedPartner } from '../../interfaces/VerifiedPartner'
+import { VerifiedPartner } from '../../interfaces/VerifiedPartner'
 import CategoryPill from '../CategoryPill/CategoryPill'
 import Discord from '../Icons/Discord'
 import Email from '../Icons/Email'

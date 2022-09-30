@@ -10,8 +10,9 @@ interface Props {
 function PartnersList({ partners }: Props) {
   
   return <>
+    <h3><FormattedMessage id='verified_partners' /></h3>
     {
-      partners.map((partner, i) => <PartnerCard key={partner.id} partner={partner} />)
+      partners.map((partner) => <PartnerCard key={partner.id} partner={partner} />)
     }
   </>
 }

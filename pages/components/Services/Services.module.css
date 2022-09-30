@@ -9,4 +9,5 @@
 .Table {
   border-collapse: separate;
   border-spacing: 0.5em;
+  margin-bottom: 20px;
 }

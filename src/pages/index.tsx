@@ -1,11 +1,13 @@
 import Head from 'next/head'
-import PartnersList from './components/PartnersList'
-import { VerifiedPartner } from './interfaces/VerifiedPartner'
+import PartnersList from '../components/PartnersList'
+import { VerifiedPartner } from '../interfaces/VerifiedPartner'
 import styles from '../styles/Home.module.css'
-import Partners from './clients/Partners'
-import Services from './components/Services/Services'
+import Partners from '../clients/Partners'
+import Services from '../components/Services/Services'
 
-export async function getStaticProps() {
+import React from 'react'
+
+export async function getServerSideProps() {
   const partners = await Partners.get()
   return {
     props: {

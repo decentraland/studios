@@ -1,4 +1,4 @@
-import { VerifiedPartner } from "../interfaces/VerifiedPartner"
+import { VerifiedPartner } from '../interfaces/VerifiedPartner'
 
 export default class Partners {
   static Url = process.env.NEXT_PUBLIC_BASE_URL || ''

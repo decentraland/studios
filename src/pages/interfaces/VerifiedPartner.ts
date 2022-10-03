@@ -31,36 +31,36 @@ export interface VerifiedPartner {
 }
 
 export enum PaymentMethod {
-  CreditCard = "Credit Card",
-  Crypto = "Crypto",
-  PayPal = "PayPal",
-  WireTransfer = "Wire Transfer",
+  CreditCard = 'Credit Card',
+  Crypto = 'Crypto',
+  PayPal = 'PayPal',
+  WireTransfer = 'Wire Transfer',
 }
 
 export enum Region {
-  Asia = "Asia",
-  CentralAmerica = "Central America",
-  Europe = "Europe",
-  LatinAmerica = "Latin America",
-  NorthAmerica = "North America",
-  Oceania = "Oceania",
+  Asia = 'Asia',
+  CentralAmerica = 'Central America',
+  Europe = 'Europe',
+  LatinAmerica = 'Latin America',
+  NorthAmerica = 'North America',
+  Oceania = 'Oceania',
 }
 
 export enum Service {
-  Architecture = "Architecture",
-  Consulting = "Consulting",
-  EventProduction = "Event Production",
-  LandRental = "Land Rental",
-  WearableDesign = "Wearable Design",
+  Architecture = 'Architecture',
+  Consulting = 'Consulting',
+  EventProduction = 'Event Production',
+  LandRental = 'Land Rental',
+  WearableDesign = 'Wearable Design',
 }
 
 export enum Status {
-  Published = "published",
+  Published = 'published',
 }
 
 export enum TeamSize {
-  Individual = "Individual",
-  LargeStudio = "Large Studio",
-  MediumStudio = "Medium Studio",
-  SmallStudio = "Small Studio",
+  Individual = 'Individual',
+  LargeStudio = 'Large Studio',
+  MediumStudio = 'Medium Studio',
+  SmallStudio = 'Small Studio',
 }

@@ -5,6 +5,8 @@ import styles from '../styles/Home.module.css'
 import Partners from './clients/Partners'
 import Services from './components/Services/Services'
 
+import React from 'react'
+
 export async function getStaticProps() {
   const partners = await Partners.get()
   return {

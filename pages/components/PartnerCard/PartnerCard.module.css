@@ -1,0 +1,99 @@
+.container {
+  border: 1px solid #cccccd;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  min-height: 12rem;
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+}
+
+.name {
+  margin: 0; 
+  margin-bottom: 0.2rem;
+}
+
+.image {
+  width: 10rem;
+  height: 10rem;
+  float: left;
+  margin-right: 1rem;
+  border-radius: 1rem;
+  background-size: contain !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+}
+
+.services {
+  margin: 0.4rem 0.4rem 0 0;
+}
+
+.info_container {
+  flex: 1;
+}
+
+.meta {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  margin-bottom: 0.5em;
+}
+
+.details {
+  display: none;
+  margin-bottom: 1em;
+  font-size: 0.9em;
+  font-weight: 400;
+  color: #736e7d;
+}
+
+.details tr td {
+  padding: 0.6em 0.5em 0.6em 0;
+}
+
+.details tr td:first-child {
+  width: 33%;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+.pills {
+  margin-right: 1rem;
+  margin-bottom: 0.2rem;
+}
+
+.read_more_state {
+  display: none;
+}
+
+.read_more_state:checked ~ .details {
+  display: table;
+}
+
+.read_more_state:checked ~ .description {
+  text-overflow: normal;
+  display: block;
+}
+
+.description {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  display: -webkit-box;
+  display: -moz-box;
+  display: box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  -moz-box-orient: vertical;
+  box-orient: vertical;
+  white-space: normal;
+  margin-bottom: 0.5em;
+}
+
+.read_more_trigger {
+  cursor: pointer;
+  display: inline-block;
+  color: #ff2d55;
+  font-size: 1em;
+  font-weight: 500;
+}

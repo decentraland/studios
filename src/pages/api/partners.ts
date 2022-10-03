@@ -1,4 +1,4 @@
-import { VerifiedPartner } from '../interfaces/VerifiedPartner'
+import { VerifiedPartner } from '../../interfaces/VerifiedPartner'
 import type { NextApiRequest, NextApiResponse } from 'next'
 
 const VERIFIED_PARTNERS_URL = `${process.env.NEXT_PUBLIC_PARTNERS_DATA_URL}/items/profile`

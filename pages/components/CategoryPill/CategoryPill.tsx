@@ -11,9 +11,9 @@ interface Props {
 
 function CategoryPill({ type }: Props) {
   const service = toSnakeCase(type)
-  const typeCalss = `CategoryPill--${service}`
+  const typeClass = `container--${service}`
   return (
-    <span className={`${styles.CategoryPill} ${styles[typeCalss]}`}>
+    <span className={`${styles.container} ${styles[typeClass]}`}>
       <FormattedMessage id={`service.${service}`} />
     </span>
   )

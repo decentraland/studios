@@ -14,14 +14,14 @@ function Services() {
       <h3>
         <FormattedMessage id="service.title" />
       </h3>
-      <table className={styles.Table}>
+      <table className={styles.table}>
         <tbody>
           {SERVICES.map((key) => (
             <tr key={key}>
-              <td className={styles.Service}>
+              <td className={styles.service}>
                 <CategoryPill type={key} />
               </td>
-              <td className={styles.Description}>
+              <td className={styles.description}>
                 <FormattedMessage id={`service.${toSnakeCase(key)}.description`} />
               </td>
             </tr>

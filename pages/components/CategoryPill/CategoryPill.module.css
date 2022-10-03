@@ -1,4 +1,4 @@
-.CategoryPill {
+.container {
   background-color: #cccccd;
   color: #736e7d;
   border-radius: 1rem;
@@ -8,27 +8,27 @@
   display: inline-block;
 }
 
-.CategoryPill--event_production {
+.container--event_production {
   background-color: #FEEFD2;
   color: #FF7439;
 }
 
-.CategoryPill--wearable_design {
+.container--wearable_design {
   background-color: #E1F3D6;
   color: #44B600;
 }
 
-.CategoryPill--architecture {
+.container--architecture {
   background-color: #FFE4FF;
   color: #FF5AFE;
 }
 
-.CategoryPill--consulting {
+.container--consulting {
   background-color: #F3B3BE;
   color: #D80027;
 }
 
-.CategoryPill--land_rental {
+.container--land_rental {
   background-color: #E2ECFC;
   color: #4888EE;
 }

@@ -1,12 +1,12 @@
-.Service {
+.service {
   min-width: 8rem;
 }
 
-.Description {
+.description {
   padding-left: 30px;
 }
 
-.Table {
+.table {
   border-collapse: separate;
   border-spacing: 0.5em;
   margin-bottom: 20px;

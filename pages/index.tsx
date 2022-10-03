@@ -10,7 +10,7 @@ export async function getStaticProps() {
   return {
     props: {
       partners: partners,
-    }, // will be passed to the page component as props
+    },
   }
 }
 

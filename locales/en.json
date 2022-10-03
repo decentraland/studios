@@ -18,5 +18,7 @@
   "region": "Region",
   "team_size": "Team Size",
   "languages": "Languages",
-  "payment_methods": "Payment Methods"
+  "payment_methods": "Payment Methods",
+  "show_more": "Show more",
+  "show_less": "Show less"
 }

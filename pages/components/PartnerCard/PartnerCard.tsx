@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { VerifiedPartner } from '../../interfaces/VerifiedPartner'
 import CategoryPill from '../CategoryPill/CategoryPill'
 import Discord from '../Icons/Discord'
@@ -24,27 +24,28 @@ const DATA_URL = process.env.NEXT_PUBLIC_PARTNERS_DATA_URL
 
 function PartnerCard({ partner }: Props) {
   const WEBSITE = partner.website || ''
+  const [showMore, setShowMore] = useState(false)
 
   return (
-    <div className={styles.PartnerCard}>
+    <div className={styles.container}>
       <div
-        className={styles.Image}
+        className={styles.image}
         style={{
           background: `url(${DATA_URL}/assets/${partner.logo})`,
         }}
       >
         <a href={WEBSITE} target="_blank" rel="noreferrer"></a>
       </div>
-      <div className={styles.Container}>
-        <h3 style={{ margin: '0', marginBottom: '0.2rem' }}>
+      <div className={styles.info_container}>
+        <h3 className={styles.name}>
           <a href={WEBSITE} target="_blank" rel="noreferrer">
             {partner.name}
           </a>
         </h3>
-        <div className={styles.Meta}>
-          <div className={styles.Pills}>
+        <div className={styles.meta}>
+          <div className={styles.pills}>
             {partner.services.map((service, i) => (
-              <span key={`${service}-${i}`} className={styles.Services}>
+              <span key={`${service}-${i}`} className={styles.services}>
                 <CategoryPill type={service} />
               </span>
             ))}
@@ -61,9 +62,14 @@ function PartnerCard({ partner }: Props) {
             {partner.youtube && <Icon url={partner.youtube} icon={<Youtube />} />}
           </div>
         </div>
-        <input type="checkbox" id={`partner-${partner.id}`} className={styles.ReadMoreState} />
-        <p className={styles.Description}>{partner.description}</p>
-        <table className={styles.Details}>
+        <input
+          type="checkbox"
+          id={`partner-${partner.id}`}
+          className={styles.read_more_state}
+          onClick={() => setShowMore((prev) => !prev)}
+        />
+        <p className={styles.description}>{partner.description}</p>
+        <table className={styles.details}>
           <tbody>
             <tr className="region" data-continent={partner.region}>
               <td>
@@ -91,7 +97,9 @@ function PartnerCard({ partner }: Props) {
             </tr>
           </tbody>
         </table>
-        <label className={styles.ReadMoreTrigger} htmlFor={`partner-${partner.id}`}></label>
+        <label className={styles.read_more_trigger} htmlFor={`partner-${partner.id}`}>
+          {showMore ? <FormattedMessage id="show_less" /> : <FormattedMessage id="show_more" />}
+        </label>
       </div>
     </div>
   )

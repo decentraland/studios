@@ -4,6 +4,7 @@ import { VerifiedPartner } from '../interfaces/VerifiedPartner'
 import styles from '../styles/Home.module.css'
 import Partners from '../clients/Partners'
 import Services from '../components/Services/Services'
+import 'semantic-ui-css/semantic.min.css'
 
 import React from 'react'
 
@@ -23,6 +24,7 @@ function Home({ partners }: { partners: VerifiedPartner[] }) {
         <title>Verified Partners</title>
         <meta name="description" content="Verified Partners" />
         <link rel="icon" href="/favicon.ico" />
+        {/* <link href="https://ui.decentraland.org/styles.css" rel="stylesheet" /> */}
       </Head>
 
       <main className={styles.main}>

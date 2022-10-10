@@ -1,5 +1,5 @@
 import Head from 'next/head'
-import PartnersList from '../components/PartnersList'
+import PartnersList from '../components/PartnersList/PartnersList'
 import { VerifiedPartner } from '../interfaces/VerifiedPartner'
 import styles from '../styles/Home.module.css'
 import Partners from '../clients/Partners'

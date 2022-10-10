@@ -21,5 +21,7 @@
   "languages": "Languages",
   "payment_methods": "Payment Methods",
   "show_more": "Show more",
-  "show_less": "Show less"
+  "show_less": "Show less",
+  "clear": "Clear",
+  "apply": "Apply"
 }

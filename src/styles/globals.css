@@ -5,6 +5,12 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans,
     Helvetica Neue, sans-serif;
   line-height: 1.4285em;
+
+  /* Colors */
+  --primary: #ff2d55;
+
+  --black-300: #dddce0;
+  --black-400: #b9b7be;
 }
 
 a {
@@ -14,6 +20,68 @@ a {
 
 * {
   box-sizing: border-box;
+}
+
+.ui.dropdown {
+  color: var(--primary);
+}
+
+.ui.dropdown .text {
+  text-transform: uppercase;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 13px;
+  line-height: 18px;
+  text-align: right;
+}
+
+.ui.dropdown .ui.basic.button,
+.ui.dropdown .ui.basic.button:hover {
+  box-shadow: none !important;
+  margin: 0;
+  padding: 0;
+  font-size: 13px;
+  line-height: 18px;
+}
+
+.ui.dropdown .ui.basic.primary.button {
+  color: var(--primary) !important;
+}
+
+.ui.dropdown .ui.basic.secondary.button {
+  color: var(--black-400) !important;
+}
+
+.ui.accordion > .item > .title {
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: space-between;
+}
+
+.ui.accordion > .item:not(:first-child) > .title {
+  border-top: 1px solid var(--black-300);
+}
+
+.ui.accordion > .item > .title .dropdown.icon::before {
+  content: '\002B' !important;
+}
+
+.ui.accordion > .item > .active.title .dropdown.icon::before {
+  content: '\2212' !important;
+}
+
+.ui.accordion > .item > .active.title .dropdown.icon {
+  transform: none;
+}
+
+.ui.dropdown .menu.visible {
+  padding: 10px;
+  padding-top: 3px;
+}
+
+.ui.basic.button {
+  text-transform: uppercase !important;
+  font-weight: 600 !important;
 }
 
 @media (prefers-color-scheme: light) {

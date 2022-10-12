@@ -1,8 +1,10 @@
 import React, { useState, useEffect, useMemo } from 'react'
-import { FormattedMessage } from 'react-intl'
+import { FormattedMessage, useIntl } from 'react-intl'
 import { PaymentMethod, Region, Service, TeamSize, VerifiedPartner } from '../../interfaces/VerifiedPartner'
 import PartnerCard from '../PartnerCard/PartnerCard'
 import { Dropdown, AccordionTitleProps, Accordion, Form, Menu, CheckboxProps, Button } from 'semantic-ui-react'
+
+import styles from './PartnersList.module.css'
 interface Props {
   partners: VerifiedPartner[]
 }
@@ -45,6 +47,9 @@ function PartnersList({ partners }: Props) {
   const [currentIdx, setCurrentIdx] = useState(0)
   const [filters, setFilters] = useState<Filters>(EMPTY_FILTER)
   const [filteredPartners, setFilteredPartners] = useState(partners)
+  const [checkBoxState, setCheckBoxState] = useState<Record<string, boolean>>({})
+  const intl = useIntl()
+  const filterText = intl.formatMessage({ id: 'filter' })
 
   const handleTitleClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>, titleProps: AccordionTitleProps) => {
     e.stopPropagation()
@@ -61,6 +66,8 @@ function PartnersList({ partners }: Props) {
     event.stopPropagation()
     const { checked, name, value } = itemData
     const filterType = name as FilterType
+
+    setCheckBoxState((prevState) => ({ ...prevState, [`${name}#${value}`]: !!checked }))
 
     if (checked) {
       setFilters((prev) => ({ ...prev, [filterType]: [...(prev[filterType] || []), value] }))
@@ -102,87 +109,104 @@ function PartnersList({ partners }: Props) {
   const clearFilters = () => {
     setFilters(EMPTY_FILTER)
     setFilteredPartners(partners)
+    for (const key of Object.keys(checkBoxState)) {
+      setCheckBoxState((prevState) => ({ ...prevState, [key]: false }))
+    }
   }
 
   useEffect(() => {
-    console.log(filters)
-  }, [filters])
+    for (const category of dropdownContent) {
+      for (const item of Object.values(category.options)) {
+        setCheckBoxState((prev) => ({ ...prev, [`${category.key}#${item}`]: false }))
+      }
+    }
+
+    for (const language of languages) {
+      setCheckBoxState((prev) => ({ ...prev, [`${FilterType.Language}#${language}`]: false }))
+    }
+  }, [languages])
 
   return (
     <>
-      <h3>
-        <FormattedMessage id="verified_partners" />
-      </h3>
-      <Dropdown text="Filter" closeOnBlur={false}>
-        <Dropdown.Menu>
-          <Accordion>
-            {dropdownContent.map((item, index) => {
-              return (
-                <Menu.Item key={item.key}>
-                  <Accordion.Title
-                    active={currentIdx === index}
-                    content={item.title}
-                    index={index}
-                    onClick={handleTitleClick}
-                  />
-                  <Accordion.Content
-                    active={currentIdx === index}
-                    content={
-                      <Form>
-                        <Form.Group grouped>
-                          {Object.entries(item.options).map(([key, value]) => (
-                            <Form.Checkbox
-                              label={value}
-                              name={item.key}
-                              value={value}
-                              key={key}
-                              onClick={handleItemClick}
-                            />
-                          ))}
-                        </Form.Group>
-                      </Form>
-                    }
-                  />
-                </Menu.Item>
-              )
-            })}
-            <Menu.Item>
-              <Accordion.Title
-                active={currentIdx === dropdownContent.length + 1}
-                content={<FormattedMessage id="languages" />}
-                index={dropdownContent.length + 1}
-                onClick={handleTitleClick}
-              />
-              <Accordion.Content
-                active={currentIdx === dropdownContent.length + 1}
-                content={
-                  <Form>
-                    <Form.Group grouped>
-                      {languages.map((language) => (
-                        <Form.Checkbox
-                          label={language}
-                          name={FilterType.Language}
-                          value={language}
-                          key={language}
-                          onClick={handleItemClick}
-                        />
-                      ))}
-                    </Form.Group>
-                  </Form>
-                }
-              />
-            </Menu.Item>
-          </Accordion>
-          <div>
-            <Button onClick={clearFilters}>
-              <FormattedMessage id="clear" />
-            </Button>
-            <Button onClick={applyFilters}>
-              <FormattedMessage id="apply" />
-            </Button>
-          </div>
-        </Dropdown.Menu>
-      </Dropdown>
+      <div className={styles.container}>
+        <h3>
+          <FormattedMessage id="verified_partners" />
+        </h3>
+        <Dropdown text={filterText} closeOnBlur={false}>
+          <Dropdown.Menu>
+            <Accordion>
+              {dropdownContent.map((item, index) => {
+                return (
+                  <Menu.Item key={item.key}>
+                    <Accordion.Title
+                      active={currentIdx === index}
+                      content={item.title}
+                      index={index}
+                      onClick={handleTitleClick}
+                    />
+                    <Accordion.Content
+                      active={currentIdx === index}
+                      content={
+                        <Form>
+                          <Form.Group grouped>
+                            {Object.entries(item.options).map(([key, value]) => (
+                              <Form.Checkbox
+                                label={value}
+                                name={item.key}
+                                value={value}
+                                key={key}
+                                onClick={handleItemClick}
+                                checked={checkBoxState[`${item.key}#${value}`]}
+                                className={styles.checkbox}
+                              />
+                            ))}
+                          </Form.Group>
+                        </Form>
+                      }
+                    />
+                  </Menu.Item>
+                )
+              })}
+              <Menu.Item>
+                <Accordion.Title
+                  active={currentIdx === dropdownContent.length + 1}
+                  content={<FormattedMessage id="languages" />}
+                  index={dropdownContent.length + 1}
+                  onClick={handleTitleClick}
+                />
+                <Accordion.Content
+                  active={currentIdx === dropdownContent.length + 1}
+                  content={
+                    <Form>
+                      <Form.Group grouped>
+                        {languages.map((language) => (
+                          <Form.Checkbox
+                            label={language}
+                            name={FilterType.Language}
+                            value={language}
+                            key={language}
+                            onClick={handleItemClick}
+                            checked={checkBoxState[`${FilterType.Language}#${language}`]}
+                            className={styles.checkbox}
+                          />
+                        ))}
+                      </Form.Group>
+                    </Form>
+                  }
+                />
+              </Menu.Item>
+            </Accordion>
+            <div className={styles.buttons_container}>
+              <Button onClick={clearFilters} basic secondary>
+                <FormattedMessage id="clear" />
+              </Button>
+              <Button onClick={applyFilters} basic primary>
+                <FormattedMessage id="apply" />
+              </Button>
+            </div>
+          </Dropdown.Menu>
+        </Dropdown>
+      </div>
       {filteredPartners.map((partner) => (
         <PartnerCard key={partner.id} partner={partner} />
       ))}

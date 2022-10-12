@@ -6,6 +6,7 @@ import Partners from '../clients/Partners'
 import Services from '../components/Services/Services'
 
 import React from 'react'
+import { Container } from 'decentraland-ui/dist/components/Container/Container'
 
 export async function getServerSideProps() {
   const partners = await Partners.get()
@@ -18,7 +19,7 @@ export async function getServerSideProps() {
 
 function Home({ partners }: { partners: VerifiedPartner[] }) {
   return (
-    <div className={styles.container}>
+    <Container>
       <Head>
         <title>Verified Partners</title>
         <meta name="description" content="Verified Partners" />
@@ -29,7 +30,7 @@ function Home({ partners }: { partners: VerifiedPartner[] }) {
         <Services />
         <PartnersList partners={partners} />
       </main>
-    </div>
+    </Container>
   )
 }
 

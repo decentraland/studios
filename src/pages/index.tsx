@@ -6,6 +6,8 @@ import Partners from '../clients/Partners'
 import Services from '../components/Services/Services'
 
 import React from 'react'
+import { Container } from 'decentraland-ui/dist/components/Container/Container'
+import { useIntl } from 'react-intl'
 
 export async function getServerSideProps() {
   const partners = await Partners.get()
@@ -17,10 +19,12 @@ export async function getServerSideProps() {
 }
 
 function Home({ partners }: { partners: VerifiedPartner[] }) {
+  const intl = useIntl()
+  const title = intl.formatMessage({ id: 'title' })
   return (
-    <div className={styles.container}>
+    <Container>
       <Head>
-        <title>Verified Partners</title>
+        <title>{title}</title>
         <meta name="description" content="Verified Partners" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
@@ -29,7 +33,7 @@ function Home({ partners }: { partners: VerifiedPartner[] }) {
         <Services />
         <PartnersList partners={partners} />
       </main>
-    </div>
+    </Container>
   )
 }
 

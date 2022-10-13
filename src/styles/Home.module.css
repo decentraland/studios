@@ -1,10 +1,17 @@
 .container {
-  padding: 0 20rem;
+  padding: 0 1rem;
+  margin: 0 auto;
+}
+
+@media (min-width: 768px) {
+  .container {
+    max-width: 996px;
+    padding: 0 1rem;
+  }
 }
 
 .main {
   min-height: 100vh;
-  padding: 2rem 0;
   flex: 1;
   display: flex;
   flex-direction: column;

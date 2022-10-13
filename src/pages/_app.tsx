@@ -5,8 +5,15 @@ import { useMemo } from 'react'
 import English from '../locales/en.json'
 import { IntlProvider } from 'react-intl'
 import React from 'react'
+import Head from 'next/head'
+import { Footer } from 'decentraland-ui/dist/components/Footer/Footer'
+import dynamic from 'next/dynamic'
 
-function MyApp({ Component, pageProps }: AppProps) {
+const Navbar = dynamic(() => import('decentraland-ui/dist/components/Navbar/Navbar').then((module) => module.Navbar), {
+  ssr: false,
+})
+
+function App({ Component, pageProps }: AppProps) {
   const { locale } = useRouter()
   const [shortLocale] = locale ? locale.split('-') : ['en']
   const messages = useMemo(() => {
@@ -17,11 +24,19 @@ function MyApp({ Component, pageProps }: AppProps) {
         return English
     }
   }, [shortLocale])
+
   return (
-    <IntlProvider locale={shortLocale} messages={messages}>
-      <Component {...pageProps} />
-    </IntlProvider>
+    <>
+      <Head>
+        <link href="https://ui.decentraland.org/styles.css" rel="stylesheet" />
+      </Head>
+      <IntlProvider locale={shortLocale} messages={messages}>
+        <Navbar />
+        <Component {...pageProps} />
+        <Footer />
+      </IntlProvider>
+    </>
   )
 }
 
-export default MyApp
+export default App

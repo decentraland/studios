@@ -1,9 +1,10 @@
 import Head from 'next/head'
-import PartnersList from '../components/PartnersList'
+import PartnersList from '../components/PartnersList/PartnersList'
 import { VerifiedPartner } from '../interfaces/VerifiedPartner'
 import styles from '../styles/Home.module.css'
 import Partners from '../clients/Partners'
 import Services from '../components/Services/Services'
+import 'semantic-ui-css/semantic.min.css'
 
 import React from 'react'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
@@ -22,7 +23,7 @@ function Home({ partners }: { partners: VerifiedPartner[] }) {
   const intl = useIntl()
   const title = intl.formatMessage({ id: 'title' })
   return (
-    <Container>
+    <Container className={styles.container}>
       <Head>
         <title>{title}</title>
         <meta name="description" content="Verified Partners" />

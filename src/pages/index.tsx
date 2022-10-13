@@ -23,7 +23,7 @@ function Home({ partners }: { partners: VerifiedPartner[] }) {
   const intl = useIntl()
   const title = intl.formatMessage({ id: 'title' })
   return (
-    <Container>
+    <Container className={styles.container}>
       <Head>
         <title>{title}</title>
         <meta name="description" content="Verified Partners" />

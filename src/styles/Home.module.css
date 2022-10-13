@@ -1,12 +1,10 @@
 .container {
-  padding: 0 1rem;
   margin: 0 auto;
 }
 
 @media (min-width: 768px) {
   .container {
-    max-width: 996px;
-    padding: 0 1rem;
+    padding: 0 8rem;
   }
 }
 

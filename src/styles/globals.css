@@ -84,6 +84,11 @@ a {
   font-weight: 600 !important;
 }
 
+.ui.container.dcl.footer {
+  display: flex;
+  flex-direction: row;
+}
+
 @media (prefers-color-scheme: light) {
   html {
     color-scheme: light;

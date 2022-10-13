@@ -1,17 +1,12 @@
-.checkbox input[type='checkbox'],
-.checkbox label:before {
-  top: 0.25rem;
-  border-radius: unset;
-}
-
 .checkbox input[type='checkbox']:checked + label::after {
   --size: 1.2rem;
   content: '';
   position: absolute;
-  width: var(--size);
-  height: calc(var(--size) / 2);
+  width: var(--size) !important;
+  height: calc(var(--size) / 2) !important;
   background: rgba(0, 0, 0, 0);
-  top: 0.2rem;
+  top: 0.2rem !important;
+  left: 0.03rem !important;
   border: 2px solid #44b600;
   border-top: none;
   border-right: none;

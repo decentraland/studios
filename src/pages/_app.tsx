@@ -6,8 +6,12 @@ import English from '../locales/en.json'
 import { IntlProvider } from 'react-intl'
 import React from 'react'
 import Head from 'next/head'
-import { Navbar } from 'decentraland-ui/dist/components/Navbar/Navbar'
 import { Footer } from 'decentraland-ui/dist/components/Footer/Footer'
+import dynamic from 'next/dynamic'
+
+const Navbar = dynamic(() => import('decentraland-ui/dist/components/Navbar/Navbar').then((module) => module.Navbar), {
+  ssr: false,
+})
 
 function App({ Component, pageProps }: AppProps) {
   const { locale } = useRouter()

@@ -26,10 +26,10 @@ a {
   color: var(--primary);
 }
 
-.ui.dropdown .text {
+.ui.dropdown > .text {
   text-transform: uppercase;
   font-style: normal;
-  font-weight: 600;
+  font-weight: 600 !important;
   font-size: 13px;
   line-height: 18px;
   text-align: right;

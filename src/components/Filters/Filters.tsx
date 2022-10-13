@@ -51,7 +51,7 @@ const dropdownContent = [
 ]
 
 function Filters({ partners, setFilteredPartners }: Props) {
-  const [currentIdx, setCurrentIdx] = useState(0)
+  const [currentFilterCategory, setCurrentFilterCategory] = useState(0)
   const [filters, setFilters] = useState<Filters>(EMPTY_FILTER)
   const [checkBoxState, setCheckBoxState] = useState<Record<string, boolean>>({})
   const intl = useIntl()
@@ -75,18 +75,21 @@ function Filters({ partners, setFilteredPartners }: Props) {
     }
   }, [languages])
 
-  const handleTitleClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>, titleProps: AccordionTitleProps) => {
+  const handleAccordionTitleClick = (
+    e: React.MouseEvent<HTMLDivElement, MouseEvent>,
+    titleProps: AccordionTitleProps
+  ) => {
     e.stopPropagation()
     const { index } = titleProps
     const idxNumber = Number(index)
-    if (currentIdx === idxNumber) {
-      setCurrentIdx(-1)
+    if (currentFilterCategory === idxNumber) {
+      setCurrentFilterCategory(-1)
     } else {
-      setCurrentIdx(idxNumber)
+      setCurrentFilterCategory(idxNumber)
     }
   }
 
-  const handleItemClick = (event: React.MouseEvent<HTMLInputElement, MouseEvent>, itemData: CheckboxProps) => {
+  const handleAccordionItemClick = (event: React.MouseEvent<HTMLInputElement, MouseEvent>, itemData: CheckboxProps) => {
     event.stopPropagation()
     const { checked, name, value } = itemData
     const filterType = name as FilterType
@@ -109,7 +112,7 @@ function Filters({ partners, setFilteredPartners }: Props) {
     }
   }
 
-  const applyFilters = () => {
+  const handleApplyFilters = () => {
     const selectedPartners = partners.filter((partner) =>
       Object.entries(filters).every(([type, filters]) => {
         const filterKey = type as `${FilterType}`
@@ -124,7 +127,7 @@ function Filters({ partners, setFilteredPartners }: Props) {
     }
   }
 
-  const clearFilters = () => {
+  const handleClearFilters = () => {
     setFilters(EMPTY_FILTER)
     setFilteredPartners(partners)
     for (const key of Object.keys(checkBoxState)) {
@@ -140,13 +143,13 @@ function Filters({ partners, setFilteredPartners }: Props) {
             return (
               <Menu.Item key={item.key}>
                 <Accordion.Title
-                  active={currentIdx === index}
+                  active={currentFilterCategory === index}
                   content={item.title}
                   index={index}
-                  onClick={handleTitleClick}
+                  onClick={handleAccordionTitleClick}
                 />
                 <Accordion.Content
-                  active={currentIdx === index}
+                  active={currentFilterCategory === index}
                   content={
                     <Form>
                       <Form.Group grouped>
@@ -156,7 +159,7 @@ function Filters({ partners, setFilteredPartners }: Props) {
                             name={item.key}
                             value={value}
                             key={key}
-                            onClick={handleItemClick}
+                            onClick={handleAccordionItemClick}
                             checked={checkBoxState[`${item.key}#${value}`]}
                             className={styles.checkbox}
                           />
@@ -170,13 +173,13 @@ function Filters({ partners, setFilteredPartners }: Props) {
           })}
           <Menu.Item>
             <Accordion.Title
-              active={currentIdx === dropdownContent.length + 1}
+              active={currentFilterCategory === dropdownContent.length + 1}
               content={<FormattedMessage id="languages" />}
               index={dropdownContent.length + 1}
-              onClick={handleTitleClick}
+              onClick={handleAccordionTitleClick}
             />
             <Accordion.Content
-              active={currentIdx === dropdownContent.length + 1}
+              active={currentFilterCategory === dropdownContent.length + 1}
               content={
                 <Form>
                   <Form.Group grouped>
@@ -186,7 +189,7 @@ function Filters({ partners, setFilteredPartners }: Props) {
                         name={FilterType.Language}
                         value={language}
                         key={language}
-                        onClick={handleItemClick}
+                        onClick={handleAccordionItemClick}
                         checked={checkBoxState[`${FilterType.Language}#${language}`]}
                         className={styles.checkbox}
                       />
@@ -198,10 +201,10 @@ function Filters({ partners, setFilteredPartners }: Props) {
           </Menu.Item>
         </Accordion>
         <div className={styles.buttons_container}>
-          <Button onClick={clearFilters} basic secondary>
+          <Button onClick={handleClearFilters} basic secondary>
             <FormattedMessage id="clear" />
           </Button>
-          <Button onClick={applyFilters} basic primary>
+          <Button onClick={handleApplyFilters} basic primary>
             <FormattedMessage id="apply" />
           </Button>
         </div>

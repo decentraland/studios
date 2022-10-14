@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react'
+import { useRouter } from 'next/router'
 import { FormattedMessage, useIntl } from 'react-intl'
 import Form from 'semantic-ui-react/dist/commonjs/collections/Form'
 import Menu from 'semantic-ui-react/dist/commonjs/collections/Menu'
@@ -50,10 +51,16 @@ const dropdownContent = [
   },
 ]
 
+function getCheckboxKey(filter: FilterType, value: string): string {
+  return `${filter}#${value}`
+}
+
 function Filters({ partners, setFilteredPartners }: Props) {
   const [currentFilterCategory, setCurrentFilterCategory] = useState(0)
+  const [areUrlFiltersApplied, setAreUrlFiltersApplied] = useState(false)
   const [filters, setFilters] = useState<Filters>(EMPTY_FILTER)
   const [checkBoxState, setCheckBoxState] = useState<Record<string, boolean>>({})
+  const router = useRouter()
   const intl = useIntl()
   const filterText = intl.formatMessage({ id: 'filter' })
 
@@ -66,12 +73,12 @@ function Filters({ partners, setFilteredPartners }: Props) {
   useEffect(() => {
     for (const category of dropdownContent) {
       for (const item of Object.values(category.options)) {
-        setCheckBoxState((prev) => ({ ...prev, [`${category.key}#${item}`]: false }))
+        setCheckBoxState((prev) => ({ ...prev, [getCheckboxKey(category.key, item)]: false }))
       }
     }
 
     for (const language of languages) {
-      setCheckBoxState((prev) => ({ ...prev, [`${FilterType.Language}#${language}`]: false }))
+      setCheckBoxState((prev) => ({ ...prev, [getCheckboxKey(FilterType.Language, language)]: false }))
     }
   }, [languages])
 
@@ -94,7 +101,7 @@ function Filters({ partners, setFilteredPartners }: Props) {
     const { checked, name, value } = itemData
     const filterType = name as FilterType
 
-    setCheckBoxState((prevState) => ({ ...prevState, [`${name}#${value}`]: !!checked }))
+    setCheckBoxState((prevState) => ({ ...prevState, [getCheckboxKey(filterType, `${value}`)]: !!checked }))
 
     if (checked) {
       setFilters((prev) => ({ ...prev, [filterType]: [...(prev[filterType] || []), value] }))
@@ -112,6 +119,37 @@ function Filters({ partners, setFilteredPartners }: Props) {
     }
   }
 
+  const setUrlFilters = (filters: Filters) => {
+    router.replace(
+      {
+        query: { ...filters },
+      },
+      undefined,
+      { shallow: true }
+    )
+  }
+
+  const applyUrlFilters = () => {
+    const newFilters = { ...EMPTY_FILTER }
+    const { query } = router
+    for (const key of Object.keys(query)) {
+      if (Object.keys(Filters).includes(key)) {
+        const filterKey = key as keyof Filters
+        const value = query[key]
+        newFilters[filterKey] = typeof value === 'string' ? [value] : [...(value || [])]
+      }
+    }
+    setFilters(newFilters)
+    for (const [key, values] of Object.entries(newFilters)) {
+      for (const value of values) {
+        const checkboxKey = getCheckboxKey(key as FilterType, value)
+        if (checkboxKey in checkBoxState) {
+          setCheckBoxState((prev) => ({ ...prev, [checkboxKey]: true }))
+        }
+      }
+    }
+  }
+
   const handleApplyFilters = () => {
     const selectedPartners = partners.filter((partner) =>
       Object.entries(filters).every(([type, filters]) => {
@@ -122,18 +160,25 @@ function Filters({ partners, setFilteredPartners }: Props) {
 
     if (Object.keys(selectedPartners).length === 0 && Object.keys(filters).length === 0) {
       setFilteredPartners(partners)
+      setUrlFilters(EMPTY_FILTER)
     } else {
       setFilteredPartners(selectedPartners)
+      setUrlFilters(filters)
     }
   }
 
   const handleClearFilters = () => {
     setFilters(EMPTY_FILTER)
+    setUrlFilters(EMPTY_FILTER)
     setFilteredPartners(partners)
     for (const key of Object.keys(checkBoxState)) {
       setCheckBoxState((prevState) => ({ ...prevState, [key]: false }))
     }
   }
+
+  useEffect(() => {
+    applyUrlFilters()
+  }, [])
 
   return (
     <Dropdown text={filterText} closeOnBlur={false}>
@@ -160,7 +205,7 @@ function Filters({ partners, setFilteredPartners }: Props) {
                             value={value}
                             key={key}
                             onClick={handleAccordionItemClick}
-                            checked={checkBoxState[`${item.key}#${value}`]}
+                            checked={checkBoxState[getCheckboxKey(item.key, value)]}
                             className={styles.checkbox}
                           />
                         ))}
@@ -190,7 +235,7 @@ function Filters({ partners, setFilteredPartners }: Props) {
                         value={language}
                         key={language}
                         onClick={handleAccordionItemClick}
-                        checked={checkBoxState[`${FilterType.Language}#${language}`]}
+                        checked={checkBoxState[getCheckboxKey(FilterType.Language, language)]}
                         className={styles.checkbox}
                       />
                     ))}

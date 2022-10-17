@@ -18,8 +18,8 @@ export default async function handler(
         isFinished = true
       } else {
         offset += data.length
-        partners.push(...data)
       }
+      partners.push(...data)
     } catch (error) {
       return res.status(500).json({ error })
     }

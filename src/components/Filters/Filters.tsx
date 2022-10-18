@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState, useCallback } from 'react'
 import { useRouter } from 'next/router'
 import { FormattedMessage, useIntl } from 'react-intl'
 import Form from 'semantic-ui-react/dist/commonjs/collections/Form'
@@ -70,7 +70,7 @@ function Filters({ partners, setFilteredPartners }: Props) {
     return Array.from(uniqueLanguages).sort((a, b) => a.localeCompare(b))
   }, [partners])
 
-  const getUrlFilters = () => {
+  const getUrlFilters = useCallback(() => {
     const filters = { ...EMPTY_FILTER }
     const { query } = router
     for (const key of Object.keys(query)) {
@@ -82,18 +82,18 @@ function Filters({ partners, setFilteredPartners }: Props) {
     }
 
     return filters
-  }
+  }, [router])
 
   useEffect(() => {
-    const checkBoxStates: CheckBoxStates = {}
+    const initialCheckBoxState: CheckBoxStates = {}
     for (const category of dropdownContent) {
       for (const item of Object.values(category.options)) {
-        checkBoxStates[getCheckboxKey(category.key, item)] = false
+        initialCheckBoxState[getCheckboxKey(category.key, item)] = false
       }
     }
 
     for (const language of languages) {
-      checkBoxStates[getCheckboxKey(FilterType.Language, language)] = false
+      initialCheckBoxState[getCheckboxKey(FilterType.Language, language)] = false
     }
 
     const urlFilters = getUrlFilters()
@@ -102,14 +102,14 @@ function Filters({ partners, setFilteredPartners }: Props) {
       for (const [key, values] of Object.entries(urlFilters)) {
         for (const value of values) {
           const checkboxKey = getCheckboxKey(key as FilterType, value)
-          if (checkboxKey in checkBoxStates) {
-            checkBoxStates[checkboxKey] = true
+          if (checkboxKey in initialCheckBoxState) {
+            initialCheckBoxState[checkboxKey] = true
           }
         }
       }
     }
 
-    setCheckBoxState(checkBoxStates)
+    setCheckBoxState(initialCheckBoxState)
     handleApplyFilters(urlFilters)
   }, [languages])
 

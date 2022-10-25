@@ -38,8 +38,8 @@ export enum PaymentMethod {
 }
 
 export enum Region {
+  Africa = 'Africa',
   Asia = 'Asia',
-  CentralAmerica = 'Central America',
   Europe = 'Europe',
   LatinAmerica = 'Latin America',
   NorthAmerica = 'North America',

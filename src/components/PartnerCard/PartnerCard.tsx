@@ -53,7 +53,7 @@ function PartnerCard({ partner }: Props) {
           <div>
             {partner.website && <Icon url={partner.website} icon={<Website />} />}
             {partner.marketplace && <Icon url={partner.marketplace} icon={<Marketplace />} />}
-            {partner.email && <Icon url={partner.email} icon={<Email />} />}
+            {partner.email && <Icon url={`mailto:${partner.email}`} icon={<Email />} />}
             {partner.discord && <Icon url={partner.discord} icon={<Discord />} />}
             {partner.opensea && <Icon url={partner.opensea} icon={<Opensea />} />}
             {partner.twitter && <Icon url={partner.twitter} icon={<Twitter />} />}

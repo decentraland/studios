@@ -189,7 +189,7 @@ function Filters({ partners, setFilteredPartners }: Props) {
   }
 
   return (
-    <Dropdown text={filterText} closeOnBlur={false}>
+    <Dropdown text={filterText} closeOnBlur={false} upward={false}>
       <Dropdown.Menu>
         <Accordion>
           {dropdownContent.map((item, index) => {

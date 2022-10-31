@@ -48,7 +48,7 @@ export enum Region {
 
 export enum Service {
   '3DModeling' = '3D Modeling',
-  Advertising = 'Advertising',
+  Advertisement = 'Advertisement',
   EmoteDesign = 'Emote Design',
   LandRental = 'Land Rental',
   Programming = 'Programming',

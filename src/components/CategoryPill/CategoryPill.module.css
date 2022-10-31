@@ -8,9 +8,14 @@
   display: inline-block;
 }
 
-.container--event_production {
+.container--venue_rental {
   background-color: #feefd2;
   color: #ff7439;
+}
+
+.container--advertising {
+  background-color: #fef7d2;
+  color: #ffb03f;
 }
 
 .container--wearable_design {
@@ -18,12 +23,12 @@
   color: #44b600;
 }
 
-.container--architecture {
+.container--3d_modeling {
   background-color: #ffe4ff;
   color: #ff5afe;
 }
 
-.container--consulting {
+.container--emote_design {
   background-color: #f3b3be;
   color: #d80027;
 }
@@ -31,4 +36,9 @@
 .container--land_rental {
   background-color: #e2ecfc;
   color: #4888ee;
+}
+
+.container--programming {
+  background-color: #cccccd;
+  color: #736e7d;
 }

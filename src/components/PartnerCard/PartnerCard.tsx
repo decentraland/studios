@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { VerifiedPartner } from '../../interfaces/VerifiedPartner'
+import { VerifiedPartner, Service } from '../../interfaces/VerifiedPartner'
 import CategoryPill from '../CategoryPill/CategoryPill'
 import Discord from '../Icons/Discord'
 import Email from '../Icons/Email'
@@ -22,8 +22,11 @@ interface Props {
 
 const DATA_URL = process.env.NEXT_PUBLIC_PARTNERS_DATA_URL
 
+const SERVICES = Object.values(Service)
+
 function PartnerCard({ partner }: Props) {
   const WEBSITE = partner.website || ''
+  const displayServices = partner.services.filter((service) => SERVICES.includes(service))
   const [showMore, setShowMore] = useState(false)
 
   return (
@@ -44,7 +47,7 @@ function PartnerCard({ partner }: Props) {
         </h3>
         <div className={styles.meta}>
           <div className={styles.pills}>
-            {partner.services.map((service, i) => (
+            {displayServices.map((service, i) => (
               <span key={`${service}-${i}`} className={styles.services}>
                 <CategoryPill type={service} />
               </span>

@@ -47,10 +47,12 @@ export enum Region {
 }
 
 export enum Service {
-  Architecture = 'Architecture',
-  Consulting = 'Consulting',
-  EventProduction = 'Event Production',
+  '3DModeling' = '3D Modeling',
+  Advertising = 'Advertising',
+  EmoteDesign = 'Emote Design',
   LandRental = 'Land Rental',
+  Programming = 'Programming',
+  VenueRental = 'Venue Rental',
   WearableDesign = 'Wearable Design',
 }
 

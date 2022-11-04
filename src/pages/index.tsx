@@ -10,11 +10,11 @@ import React from 'react'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
 import { useIntl } from 'react-intl'
 
-export async function getServerSideProps() {
+export async function getStaticProps() {
   const partners = await Partners.get()
   return {
     props: {
-      partners: partners,
+      partners,
     },
   }
 }

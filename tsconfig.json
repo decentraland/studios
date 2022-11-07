@@ -24,6 +24,6 @@
     "moduleResolution": "node",
     "isolatedModules": true
   },
-  "include": ["src/pages", "styles", "src/interfaces", "src/components", "src/clients", "src/locales"],
+  "include": ["next-env.d.ts", "src/pages", "styles", "src/interfaces", "src/components", "src/clients", "src/locales"],
   "exclude": ["node_modules", "**/node_modules/*"]
 }

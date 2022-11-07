@@ -1,6 +1,5 @@
 import '../styles/globals.css'
 import type { AppProps } from 'next/app'
-import { useRouter } from 'next/router'
 import { useMemo } from 'react'
 import English from '../locales/en.json'
 import { IntlProvider } from 'react-intl'
@@ -14,8 +13,7 @@ const Navbar = dynamic(() => import('decentraland-ui/dist/components/Navbar/Navb
 })
 
 function App({ Component, pageProps }: AppProps) {
-  const { locale } = useRouter()
-  const [shortLocale] = locale ? locale.split('-') : ['en']
+  const [shortLocale] = ['en']
   const messages = useMemo(() => {
     switch (shortLocale) {
       case 'en':

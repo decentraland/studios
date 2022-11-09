@@ -8,7 +8,7 @@ interface Props {
 
 function Icon({ url, icon }: Props) {
   return (
-    <a href={url} className={styles.icon}>
+    <a href={url} className={styles.icon} target="_blank" rel="noreferrer">
       {icon}
     </a>
   )

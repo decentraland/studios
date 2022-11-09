@@ -5,6 +5,7 @@ import PartnerCard from '../PartnerCard/PartnerCard'
 
 import styles from './PartnersList.module.css'
 import Filters from '../Filters/Filters'
+import Empty from '../Icons/Empty'
 interface Props {
   partners: VerifiedPartner[]
 }
@@ -20,9 +21,15 @@ function PartnersList({ partners }: Props) {
         </h3>
         <Filters partners={partners} setFilteredPartners={setFilteredPartners} />
       </div>
-      {filteredPartners.map((partner) => (
-        <PartnerCard key={partner.id} partner={partner} />
-      ))}
+      {filteredPartners.length ? (
+        filteredPartners.map((partner) => <PartnerCard key={partner.id} partner={partner} />)
+      ) : (
+        <div className={styles.empty}>
+          <Empty />
+          <br />
+          None of the studios match the selected filters
+        </div>
+      )}
     </>
   )
 }

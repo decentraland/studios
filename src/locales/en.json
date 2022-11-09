@@ -24,6 +24,7 @@
 
   "services": "Services",
   "region": "Region",
+  "country": "Country",
   "team_size": "Team Size",
   "languages": "Languages",
   "payment_methods": "Payment Methods",

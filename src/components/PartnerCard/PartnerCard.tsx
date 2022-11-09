@@ -80,6 +80,12 @@ function PartnerCard({ partner }: Props) {
               </td>
               <td>{partner.region}</td>
             </tr>
+            <tr className="country" data-country={partner.country}>
+              <td>
+                <FormattedMessage id="country" />
+              </td>
+              <td>{partner.country}</td>
+            </tr>
             <tr>
               <td>
                 <FormattedMessage id="team_size" />

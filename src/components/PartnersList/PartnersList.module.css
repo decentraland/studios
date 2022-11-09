@@ -10,3 +10,12 @@
 .container > h3 {
   margin: 0;
 }
+
+.empty {
+  margin: auto;
+  padding: 10px;
+  height: 50%;
+  width: 50%;
+  text-align: center;
+  color: #37333d;
+}

@@ -27,7 +27,7 @@ function PartnersList({ partners }: Props) {
         <div className={styles.empty}>
           <Empty />
           <br />
-          None of the studios match the selected filters
+          <FormattedMessage id="filter.noResults" />
         </div>
       )}
     </>

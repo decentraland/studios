@@ -21,6 +21,7 @@
 
   "verified_partners": "Verified Partners",
   "filter": "Filter",
+  "filter.noResults": "None of the studios match the selected filters",
 
   "services": "Services",
   "region": "Region",

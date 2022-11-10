@@ -30,6 +30,29 @@ function PartnersList({ partners }: Props) {
           <FormattedMessage id="filter.noResults" />
         </div>
       )}
+      <div className={styles.footer_text_container}>
+        <FormattedMessage
+          id="footer_message"
+          values={{
+            i: (chunks) => <i>{chunks}</i>,
+            a1: (chunks) => (
+              <a className={styles.link} href="https://governance.decentraland.org/" target={'_blank'} rel="noreferrer">
+                {chunks}
+              </a>
+            ),
+            a2: (chunks) => (
+              <a
+                className={styles.link}
+                href="https://dclstudios.typeform.com/to/L49y84qX"
+                target={'_blank'}
+                rel="noreferrer"
+              >
+                {chunks}
+              </a>
+            ),
+          }}
+        />
+      </div>
     </>
   )
 }

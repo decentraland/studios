@@ -36,15 +36,15 @@ function PartnersList({ partners }: Props) {
           values={{
             i: (chunks) => <i>{chunks}</i>,
             a1: (chunks) => (
-              <a className={styles.link} href="https://governance.decentraland.org/" target={'_blank'} rel="noreferrer">
+              <a className={styles.link} target={'_blank'} href="https://governance.decentraland.org/" rel="noreferrer">
                 {chunks}
               </a>
             ),
             a2: (chunks) => (
               <a
                 className={styles.link}
-                href="https://dclstudios.typeform.com/to/L49y84qX"
                 target={'_blank'}
+                href="https://dclstudios.typeform.com/to/L49y84qX"
                 rel="noreferrer"
               >
                 {chunks}

@@ -19,3 +19,13 @@
   text-align: center;
   color: #37333d;
 }
+
+.link {
+  color: #ff2d55;
+}
+
+.footer_text_container {
+  width: 50%;
+  text-align: center;
+  margin: auto;
+}

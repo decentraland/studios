@@ -32,5 +32,6 @@
   "show_more": "Show more",
   "show_less": "Show less",
   "clear": "Clear",
-  "apply": "Apply"
+  "apply": "Apply",
+  "footer_message": "<i>This registry is lead by an independant team supported by <a1>Decentraland's DAO</a1>. If your organization is not on this list and you have experience building content for Decentraland, please <a2>fill out this form</a2>.</i>"
 }

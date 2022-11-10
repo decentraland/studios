@@ -12,9 +12,9 @@ import Website from '../Icons/Website'
 import styles from './PartnerCard.module.css'
 import Marketplace from '../Icons/Marketplace'
 import Opensea from '../Icons/Opensea'
-import Icon from './Icon'
+import Icon from '../Icon/Icon'
 import { FormattedMessage } from 'react-intl'
-import DetailsList from './DetailsList'
+import DetailsList from '../DetailsList/DetailsList'
 
 interface Props {
   partner: VerifiedPartner

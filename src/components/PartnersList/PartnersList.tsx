@@ -13,6 +13,12 @@ interface Props {
 function PartnersList({ partners }: Props) {
   const [filteredPartners, setFilteredPartners] = useState(partners)
 
+  const sortedPartners = [...filteredPartners].sort((p1: VerifiedPartner, p2: VerifiedPartner) =>
+    p1.slug.localeCompare(p2.slug)
+  )
+
+  sortedPartners.sort((p1: VerifiedPartner, p2: VerifiedPartner) => p2.services.length - p1.services.length)
+
   return (
     <>
       <div className={styles.container}>
@@ -21,8 +27,8 @@ function PartnersList({ partners }: Props) {
         </h3>
         <Filters partners={partners} setFilteredPartners={setFilteredPartners} />
       </div>
-      {filteredPartners.length ? (
-        filteredPartners.map((partner) => <PartnerCard key={partner.id} partner={partner} />)
+      {sortedPartners.length ? (
+        sortedPartners.map((partner) => <PartnerCard key={partner.id} partner={partner} />)
       ) : (
         <div className={styles.empty}>
           <Empty />

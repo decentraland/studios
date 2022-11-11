@@ -72,7 +72,12 @@ function Filters({ partners, setFilteredPartners }: Props) {
 
   const getUrlFilters = useCallback(() => {
     const filters = { ...EMPTY_FILTER }
-    const { query } = router
+
+    // const { query } = router
+    // Reading query from router.asPath because router.query was slower getting populated
+    const urlSearchParams = new URLSearchParams(router.asPath.slice(1))
+    const query = Object.fromEntries(urlSearchParams.entries())
+
     for (const key of Object.keys(query)) {
       const filterKey = key as keyof Filters
       if (Object.values(FilterType).includes(filterKey)) {

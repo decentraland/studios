@@ -28,6 +28,7 @@ export interface VerifiedPartner {
   marketplace: null | string
   status: Status
   user: string
+  slug: string
 }
 
 export enum PaymentMethod {

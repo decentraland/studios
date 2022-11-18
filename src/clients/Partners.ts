@@ -1,6 +1,7 @@
 import { VerifiedPartner } from '../interfaces/VerifiedPartner'
 
 const VERIFIED_PARTNERS_URL = `${process.env.NEXT_PUBLIC_PARTNERS_DATA_URL}/items/profile`
+// const PROJECTS_URL = `${process.env.NEXT_PUBLIC_PARTNERS_DATA_URL}/items/projects`
 
 export default class Partners {
   static Url = process.env.NEXT_PUBLIC_PARTNERS_DATA_URL || ''
@@ -29,15 +30,15 @@ export default class Partners {
     return partners
   }
 
-  static async getPartnerData(slug: string) {
+  static async getPartnerData(searchParams: string) {
     let partners: VerifiedPartner[] = []
 
     try {
-      const response = await fetch(`${VERIFIED_PARTNERS_URL}?filter[slug]=${slug}`)
+      const response = await fetch(`${VERIFIED_PARTNERS_URL}${searchParams}`)
 
       partners = (await response.json()).data as VerifiedPartner[]
     } catch (error) {
-      console.log('error', error)
+      console.log('error getting partners', error)
     }
 
     return partners[0]

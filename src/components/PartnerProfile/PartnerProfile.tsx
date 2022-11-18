@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { VerifiedPartner, Service } from '../../interfaces/VerifiedPartner'
 import CategoryPill from '../CategoryPill/CategoryPill'
 import Discord from '../Icons/Discord'
@@ -15,24 +15,26 @@ import Opensea from '../Icons/Opensea'
 import Icon from '../Icon/Icon'
 import { FormattedMessage } from 'react-intl'
 import DetailsList from '../DetailsList/DetailsList'
+import { PartnerProject } from '../../interfaces/PartnerProject'
+import ProjectCard from '../ProjectCard/ProjectCard'
 
 interface Props {
   partner: VerifiedPartner
+  projects: PartnerProject[]
 }
 
 const DATA_URL = process.env.NEXT_PUBLIC_PARTNERS_DATA_URL
 
 const SERVICES = Object.values(Service)
 
-function PartnerProfile({ partner }: Props) {
+function PartnerProfile({ partner, projects }: Props) {
   const WEBSITE = partner.website || ''
   const displayServices = partner.services.filter((service) => SERVICES.includes(service))
-  const [showMore, setShowMore] = useState(false)
 
   return (
-    <div className={styles.container}>
-      <div>
-        <div className={styles.header}>
+    <div>
+      <div className={styles.info_panel}>
+        <div className={styles.info_id}>
           <a href={WEBSITE} target="_blank" rel="noreferrer">
             <div
               className={styles.image}
@@ -48,13 +50,6 @@ function PartnerProfile({ partner }: Props) {
               </a>
             </div>
             <div className={styles.meta}>
-              <div className={styles.pills}>
-                {displayServices.map((service, i) => (
-                  <span key={`${service}-${i}`} className={styles.services}>
-                    <CategoryPill type={service} />
-                  </span>
-                ))}
-              </div>
               <div>
                 {partner.website && <Icon url={partner.website} icon={<Website />} />}
                 {partner.marketplace && <Icon url={partner.marketplace} icon={<Marketplace />} />}
@@ -66,61 +61,76 @@ function PartnerProfile({ partner }: Props) {
                 {partner.linkedin && <Icon url={partner.linkedin} icon={<Linkedin />} />}
                 {partner.youtube && <Icon url={partner.youtube} icon={<Youtube />} />}
               </div>
+              <div className={styles.pills}>
+                {displayServices.map((service, i) => (
+                  <span key={`${service}-${i}`} className={styles.services}>
+                    <CategoryPill type={service} />
+                  </span>
+                ))}
+              </div>
             </div>
           </div>
         </div>
+        {/* contact button goes here */}
+      </div>
 
-        <div className={styles.info_container}>
-          <div className={styles.about}>
+      <div className={styles.info_panel}>
+        <div className={styles.info_about}>
+          <div className={styles.info_title}>
             <FormattedMessage id="about" />
           </div>
-          <input
-            type="checkbox"
-            id={`partner-${partner.id}`}
-            className={styles.read_more_state}
-            onClick={() => setShowMore((prev) => !prev)}
-          />
           <p className={styles.description}>{partner.description}</p>
-          <label className={styles.read_more_trigger} htmlFor={`partner-${partner.id}`}>
-            {showMore ? <FormattedMessage id="show_less" /> : <FormattedMessage id="show_more" />}
-          </label>
+        </div>
+        <div>
+          <div className={styles.info_details}>
+            <div>
+              <div>
+                <FormattedMessage id="region" />
+              </div>
+              <div>{partner.region}</div>
+            </div>
+            <div>
+              <div>
+                <FormattedMessage id="country" />
+              </div>
+              <div>{partner.country}</div>
+            </div>
+          </div>
+          <div className={`${styles.info_details} ${styles['info_details--border']}`}>
+            <div>
+              <div>
+                <FormattedMessage id="team_size" />
+              </div>
+              <div>{partner.team_size}</div>
+            </div>
+            <div>
+              <div>
+                <FormattedMessage id="languages" />
+              </div>
+              <div>{!!partner.languages && <DetailsList list={partner.languages} />}</div>
+            </div>
+          </div>
+          <div className={`${styles.info_details} ${styles['info_details--border']}`}>
+            <div>
+              <div>
+                <FormattedMessage id="payment_methods" />
+              </div>
+              <div>{!!partner.payment_methods && <DetailsList list={partner.payment_methods} />}</div>
+            </div>
+          </div>
         </div>
       </div>
 
-      <table className={styles.details}>
-        <tbody>
-          <tr className="region" data-continent={partner.region}>
-            <td>
-              <FormattedMessage id="region" />
-            </td>
-            <td>{partner.region}</td>
-          </tr>
-          <tr className="country" data-country={partner.country}>
-            <td>
-              <FormattedMessage id="country" />
-            </td>
-            <td>{partner.country}</td>
-          </tr>
-          <tr>
-            <td>
-              <FormattedMessage id="team_size" />
-            </td>
-            <td>{partner.team_size}</td>
-          </tr>
-          <tr>
-            <td>
-              <FormattedMessage id="languages" />
-            </td>
-            <td>{!!partner.languages && <DetailsList list={partner.languages} />}</td>
-          </tr>
-          <tr>
-            <td>
-              <FormattedMessage id="payment_methods" />
-            </td>
-            <td>{!!partner.payment_methods && <DetailsList list={partner.payment_methods} />}</td>
-          </tr>
-        </tbody>
-      </table>
+      <div>
+        <div className={styles.info_title}>
+          <FormattedMessage id="projects" />
+        </div>
+        <div className={styles.info_panel}>
+          {projects.map((project) => (
+            <ProjectCard key={project.id} project={project} />
+          ))}
+        </div>
+      </div>
     </div>
   )
 }

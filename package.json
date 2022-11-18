@@ -17,6 +17,7 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-intl": "^6.1.2",
+    "react-responsive-carousel": "^3.2.23",
     "semantic-ui-css": "^2.4.1",
     "semantic-ui-react": "^2.1.3"
   },

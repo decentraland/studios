@@ -6,14 +6,24 @@ import { VerifiedPartner } from '../../interfaces/VerifiedPartner'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
 import React from 'react'
 import PartnerProfile from '../../components/PartnerProfile/PartnerProfile'
+import { PartnerProject } from '../../interfaces/PartnerProject'
+import Projects from '../../clients/Projects'
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
-  const partner = await Partners.getPartnerData(params?.slug as string)
+  if (params && params.slug) {
+    const partner = await Partners.getPartnerData(`?filter[slug]=${params.slug}`)
+    const projects = await Projects.getProject(`?filter[profile]=${partner.id}`)
+
+    return {
+      props: {
+        partner,
+        projects,
+      },
+    }
+  }
 
   return {
-    props: {
-      partner,
-    },
+    props: { error: true },
   }
 }
 
@@ -26,7 +36,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
   }
 }
 
-function Partner({ partner }: { partner: VerifiedPartner }) {
+function Partner({ partner, projects }: { partner: VerifiedPartner; projects: PartnerProject[] }) {
   const intl = useIntl()
   const title = intl.formatMessage({ id: 'title' })
 
@@ -39,7 +49,7 @@ function Partner({ partner }: { partner: VerifiedPartner }) {
       </Head>
 
       <main>
-        <PartnerProfile partner={partner} />
+        <PartnerProfile partner={partner} projects={projects} />
       </main>
     </Container>
   )

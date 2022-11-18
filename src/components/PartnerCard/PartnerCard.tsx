@@ -25,25 +25,24 @@ const DATA_URL = process.env.NEXT_PUBLIC_PARTNERS_DATA_URL
 const SERVICES = Object.values(Service)
 
 function PartnerCard({ partner }: Props) {
-  const WEBSITE = partner.website || ''
-  const displayServices = partner.services.filter((service) => SERVICES.includes(service))
+  const WEBSITE = `/partner/${partner.slug}`
+
+  const displayServices = (partner.services || []).filter((service) => SERVICES.includes(service))
   const [showMore, setShowMore] = useState(false)
 
   return (
     <div className={styles.container}>
-      <div
-        className={styles.image}
-        style={{
-          background: `url(${DATA_URL}/assets/${partner.logo})`,
-        }}
-      >
-        <a href={WEBSITE} target="_blank" rel="noreferrer"></a>
-      </div>
+      <a href={WEBSITE}>
+        <div
+          className={styles.image}
+          style={{
+            background: `url(${DATA_URL}/assets/${partner.logo})`,
+          }}
+        ></div>
+      </a>
       <div className={styles.info_container}>
         <h3 className={styles.name}>
-          <a href={WEBSITE} target="_blank" rel="noreferrer">
-            {partner.name}
-          </a>
+          <a href={WEBSITE}>{partner.name}</a>
         </h3>
         <div className={styles.meta}>
           <div className={styles.pills}>
@@ -74,13 +73,13 @@ function PartnerCard({ partner }: Props) {
         <p className={styles.description}>{partner.description}</p>
         <table className={styles.details}>
           <tbody>
-            <tr className="region" data-continent={partner.region}>
+            <tr>
               <td>
                 <FormattedMessage id="region" />
               </td>
               <td>{partner.region}</td>
             </tr>
-            <tr className="country" data-country={partner.country}>
+            <tr>
               <td>
                 <FormattedMessage id="country" />
               </td>

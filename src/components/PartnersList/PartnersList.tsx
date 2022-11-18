@@ -17,7 +17,9 @@ function PartnersList({ partners }: Props) {
     p1.slug.localeCompare(p2.slug)
   )
 
-  sortedPartners.sort((p1: VerifiedPartner, p2: VerifiedPartner) => p2.services.length - p1.services.length)
+  sortedPartners.sort(
+    (p1: VerifiedPartner, p2: VerifiedPartner) => (p2.services || []).length - (p1.services || []).length
+  )
 
   return (
     <>

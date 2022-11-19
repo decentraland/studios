@@ -29,7 +29,7 @@ const SERVICES = Object.values(Service)
 
 function PartnerProfile({ partner, projects }: Props) {
   const WEBSITE = partner.website || ''
-  const displayServices = partner.services.filter((service) => SERVICES.includes(service))
+  const displayServices = partner.services || [].filter((service) => SERVICES.includes(service))
 
   return (
     <div>
@@ -121,16 +121,18 @@ function PartnerProfile({ partner, projects }: Props) {
         </div>
       </div>
 
-      <div>
-        <div className={styles.info_title}>
-          <FormattedMessage id="projects" />
+      {projects.length ? (
+        <div>
+          <div className={styles.info_title}>
+            <FormattedMessage id="projects" />
+          </div>
+          <div className={styles.info_panel}>
+            {projects.map((project) => (
+              <ProjectCard key={project.id} project={project} />
+            ))}
+          </div>
         </div>
-        <div className={styles.info_panel}>
-          {projects.map((project) => (
-            <ProjectCard key={project.id} project={project} />
-          ))}
-        </div>
-      </div>
+      ) : null}
     </div>
   )
 }

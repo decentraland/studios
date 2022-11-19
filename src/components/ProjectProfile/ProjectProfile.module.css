@@ -17,10 +17,19 @@
 .image_container {
   flex: 1;
   margin-right: 15px;
+  min-width: 300px;
 }
 
 .image {
-  max-width: 50vw;
+  /* max-width: 50hw; */
+  /* width: 200vw; */
+  /* max-height: 50%; */
+  /* width: auto; */
+  height: 450px;
+
+  background-size: contain !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
 }
 
 .partner_logo {

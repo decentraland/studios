@@ -25,9 +25,16 @@ function ProjectProfile({ project, partner }: Props) {
       <div className={styles.name}>{project.title}</div>
       <div className={styles.info_panel}>
         <div className={styles.image_container}>
-          <Carousel autoPlay infiniteLoop>
+          <Carousel autoPlay infiniteLoop showThumbs={false}>
             {images.map((image) => (
-              <img key={image} className={styles.image} src={`${DATA_URL}/assets/${image}`} />
+              // <img key={image} className={styles.image} src={`${DATA_URL}/assets/${image}`} />
+              <div
+                key={image}
+                className={styles.image}
+                style={{
+                  background: `url(${DATA_URL}/assets/${image})`,
+                }}
+              />
             ))}
           </Carousel>
         </div>

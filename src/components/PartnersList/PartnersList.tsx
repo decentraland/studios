@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { FormattedMessage } from 'react-intl'
 import { VerifiedPartner } from '../../interfaces/VerifiedPartner'
 import PartnerCard from '../PartnerCard/PartnerCard'
@@ -13,13 +13,24 @@ interface Props {
 function PartnersList({ partners }: Props) {
   const [filteredPartners, setFilteredPartners] = useState(partners)
 
-  const sortedPartners = [...filteredPartners].sort((p1: VerifiedPartner, p2: VerifiedPartner) =>
-    p1.slug.localeCompare(p2.slug)
-  )
+  const sortAlphabeticPartners = (filteredPartners: VerifiedPartner[]) =>
+    [...filteredPartners].sort((p1: VerifiedPartner, p2: VerifiedPartner) => p1.slug.localeCompare(p2.slug))
 
-  sortedPartners.sort(
-    (p1: VerifiedPartner, p2: VerifiedPartner) => (p2.services || []).length - (p1.services || []).length
-  )
+  const randomizePartners = (filteredPartners: VerifiedPartner[]) =>
+    [...filteredPartners]
+      .map((value) => ({ value, sort: Math.random() }))
+      .sort((a, b) => a.sort - b.sort)
+      .map(({ value }) => value)
+
+  const sortByServicesCount = (partners: VerifiedPartner[]) =>
+    partners.sort((p1: VerifiedPartner, p2: VerifiedPartner) => (p2.services || []).length - (p1.services || []).length)
+
+  const initPartnerList = sortByServicesCount(sortAlphabeticPartners(filteredPartners))
+  const [partnersList, setPartnersList] = useState(initPartnerList)
+
+  useEffect(() => {
+    setPartnersList(() => sortByServicesCount(randomizePartners(filteredPartners)))
+  }, [filteredPartners])
 
   return (
     <>
@@ -29,8 +40,8 @@ function PartnersList({ partners }: Props) {
         </h3>
         <Filters partners={partners} setFilteredPartners={setFilteredPartners} />
       </div>
-      {sortedPartners.length ? (
-        sortedPartners.map((partner) => <PartnerCard key={partner.id} partner={partner} />)
+      {partnersList.length ? (
+        partnersList.map((partner) => <PartnerCard key={partner.id} partner={partner} />)
       ) : (
         <div className={styles.empty}>
           <Empty />

@@ -1,0 +1,128 @@
+.container {
+  padding: 1rem;
+  margin-bottom: 1rem;
+  min-height: 12rem;
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+}
+
+.image {
+  /* width: auto; */
+  height: 10rem;
+  /* float: left; */
+  /* margin-right: 24px; */
+  /* border-radius: 1rem; */
+  background-size: cover !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+}
+
+.services {
+  margin: 0.4rem 0.4rem 0 0;
+}
+
+.info_container {
+  flex: 2;
+  margin-right: 10px;
+}
+
+.header {
+  display: flex;
+  /* margin-bottom: 40px; */
+  margin: 5px 10px 10px 0px;
+  flex-direction: column;
+  width: 250px;
+  border: 1px solid rgba(115, 110, 125, 0.24);
+  border-radius: 8px;
+}
+
+.header_info {
+  margin: auto 5px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header_arrow {
+  /* width: 24px; */
+  min-width: 24px;
+  height: 24px;
+  border: 1px solid #d2d0d5;
+  border-radius: 50%;
+  margin: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.arrow_right {
+  border: solid #736e7d;
+  border-width: 0 2px 2px 0;
+  padding: 2px;
+  transform: rotate(-45deg);
+  -webkit-transform: rotate(-45deg);
+  position: relative;
+  left: -1px;
+}
+
+.meta {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  margin-bottom: 0.5em;
+}
+
+.details {
+  display: table;
+  margin-bottom: 1em;
+  font-size: 0.9em;
+  font-weight: 400;
+  color: #736e7d;
+  width: inherit;
+  flex: 1;
+}
+
+.details tr td {
+  padding: 0.6em 0.5em 0.6em 0;
+}
+
+.details tr td:first-child {
+  width: 33%;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+.about {
+  width: 33%;
+  font-weight: 500;
+  text-transform: uppercase;
+  font-size: 0.9em;
+  color: #736e7d;
+}
+
+.pills {
+  margin-right: 1rem;
+  margin-bottom: 0.2rem;
+}
+
+.read_more_state {
+  display: none;
+}
+
+.read_more_state:checked ~ .description {
+  text-overflow: normal;
+  display: block;
+}
+
+.description {
+  margin-bottom: 0.5em;
+}
+
+.read_more_trigger {
+  cursor: pointer;
+  display: inline-block;
+  color: #ff2d55;
+  font-size: 1em;
+  font-weight: 500;
+}

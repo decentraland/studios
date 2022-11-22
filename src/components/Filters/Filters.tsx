@@ -171,7 +171,10 @@ function Filters({ partners, setFilteredPartners }: Props) {
     const selectedPartners = partners.filter((partner) =>
       Object.entries(appliedFilters).every(([type, filters]) => {
         const filterKey = type as `${FilterType}`
-        return filters.some((filter) => partner[filterKey] === filter || partner[filterKey].includes(filter as never))
+        return filters.some(
+          (filter) =>
+            partner[filterKey] === filter || (partner[filterKey] && partner[filterKey].includes(filter as never))
+        )
       })
     )
 

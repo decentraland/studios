@@ -52,7 +52,7 @@ function PartnersList({ partners }: Props) {
               <a
                 className={styles.link}
                 target={'_blank'}
-                href="https://dclstudios.typeform.com/to/L49y84qX"
+                href="https://dclstudios.typeform.com/to/NfzmbzXi"
                 rel="noreferrer"
               >
                 {chunks}

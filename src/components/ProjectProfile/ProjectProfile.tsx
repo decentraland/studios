@@ -16,25 +16,32 @@ const DATA_URL = process.env.NEXT_PUBLIC_PARTNERS_DATA_URL
 
 function ProjectProfile({ project, partner }: Props) {
   const WEBSITE = project.link || ''
-  const PARTNERT_WEBSITE = `/profile/${partner.slug}`
+  const PARTNER_WEBSITE = `/profile/${partner.slug}`
 
   const images = [project.image_1, project.image_2, project.image_3, project.image_4].filter((img) => img)
 
   return (
     <div>
-      <div className={styles.name}>{project.title}</div>
+      <div className={styles.info_panel}>
+        <div onClick={() => window.history.back()}>
+          <div className={styles.header_arrow}>
+            <i className={styles.arrow_left}></i>
+          </div>
+        </div>
+        <div className={styles.name}>{project.title}</div>
+      </div>
       <div className={styles.info_panel}>
         <div className={styles.image_container}>
-          <Carousel autoPlay infiniteLoop showThumbs={false}>
+          <Carousel autoPlay infiniteLoop showThumbs={true} showStatus={false}>
             {images.map((image) => (
-              // <img key={image} className={styles.image} src={`${DATA_URL}/assets/${image}`} />
-              <div
-                key={image}
-                className={styles.image}
-                style={{
-                  background: `url(${DATA_URL}/assets/${image})`,
-                }}
-              />
+              <img key={image} className={styles.image_img} src={`${DATA_URL}/assets/${image}`} />
+              // <div
+              //   key={image}
+              //   className={styles.image}
+              //   style={{
+              //     background: `url(${DATA_URL}/assets/${image})`,
+              //   }}
+              // />
             ))}
           </Carousel>
         </div>
@@ -52,7 +59,7 @@ function ProjectProfile({ project, partner }: Props) {
             <FormattedMessage id={'author'} />
           </div>
           <div className={styles.partner_info}>
-            <a href={PARTNERT_WEBSITE}>
+            <a href={PARTNER_WEBSITE}>
               <div
                 className={styles.partner_logo}
                 style={{
@@ -62,20 +69,20 @@ function ProjectProfile({ project, partner }: Props) {
             </a>
 
             <div className={styles.partner_name}>
-              <a href={PARTNERT_WEBSITE}>{partner.name}</a>
+              <a href={PARTNER_WEBSITE}>{partner.name}</a>
             </div>
-            <a href={PARTNERT_WEBSITE}>
+            <a href={PARTNER_WEBSITE}>
               <div className={styles.header_arrow}>
                 <i className={styles.arrow_right}></i>
               </div>
             </a>
           </div>
 
-          <a href={PARTNERT_WEBSITE}>
+          {/* <a href={PARTNERT_WEBSITE}>
             <div className={styles.contact}>
               <FormattedMessage id={'contact_author'} />
             </div>
-          </a>
+          </a> */}
         </div>
       </div>
     </div>

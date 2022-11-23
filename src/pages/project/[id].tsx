@@ -48,9 +48,7 @@ function Project({ project, partner }: { project: PartnerProject; partner: Verif
       </Head>
 
       <main>
-        {/* {JSON.stringify(project)} */}
         <ProjectProfile project={project} partner={partner} />
-        {/* <PartnerProfile partner={partner} projects={projects}/> */}
       </main>
     </Container>
   )

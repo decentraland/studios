@@ -16,7 +16,7 @@ const DATA_URL = process.env.NEXT_PUBLIC_PARTNERS_DATA_URL
 
 function ProjectProfile({ project, partner }: Props) {
   const WEBSITE = project.link || ''
-  const PARTNERT_WEBSITE = `/partner/${partner.slug}`
+  const PARTNERT_WEBSITE = `/profile/${partner.slug}`
 
   const images = [project.image_1, project.image_2, project.image_3, project.image_4].filter((img) => img)
 

@@ -25,7 +25,7 @@ const DATA_URL = process.env.NEXT_PUBLIC_PARTNERS_DATA_URL
 const SERVICES = Object.values(Service)
 
 function PartnerCard({ partner }: Props) {
-  const WEBSITE = `/partner/${partner.slug}`
+  const WEBSITE = `/profile/${partner.slug}`
 
   const displayServices = (partner.services || []).filter((service) => SERVICES.includes(service))
   const [showMore, setShowMore] = useState(false)

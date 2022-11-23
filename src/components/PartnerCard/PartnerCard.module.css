@@ -66,6 +66,8 @@
 .pills {
   margin-right: 1rem;
   margin-bottom: 0.2rem;
+  display: flex;
+  flex-wrap: wrap;
 }
 
 .read_more_state {

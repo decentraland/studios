@@ -17,6 +17,7 @@ import { FormattedMessage } from 'react-intl'
 import DetailsList from '../DetailsList/DetailsList'
 import { PartnerProject } from '../../interfaces/PartnerProject'
 import ProjectCard from '../ProjectCard/ProjectCard'
+import Empty from '../Icons/Empty'
 
 interface Props {
   partner: VerifiedPartner
@@ -61,6 +62,8 @@ function PartnerProfile({ partner, projects }: Props) {
                 {partner.linkedin && <Icon url={partner.linkedin} icon={<Linkedin />} />}
                 {partner.youtube && <Icon url={partner.youtube} icon={<Youtube />} />}
               </div>
+            </div>
+            <div className={styles.meta}>
               <div className={styles.pills}>
                 {displayServices.map((service, i) => (
                   <span key={`${service}-${i}`} className={styles.services}>
@@ -121,18 +124,23 @@ function PartnerProfile({ partner, projects }: Props) {
         </div>
       </div>
 
-      {projects.length ? (
-        <div>
-          <div className={styles.info_title}>
-            <FormattedMessage id="projects" />
-          </div>
+      <div>
+        <div className={styles.info_title}>
+          <FormattedMessage id="projects" />
+        </div>
+        {projects.length ? (
           <div className={styles.info_panel}>
             {projects.map((project) => (
               <ProjectCard key={project.id} project={project} />
             ))}
           </div>
-        </div>
-      ) : null}
+        ) : (
+          <div className={styles.empty}>
+            <Empty />
+            <FormattedMessage id="noProjects" />
+          </div>
+        )}
+      </div>
     </div>
   )
 }

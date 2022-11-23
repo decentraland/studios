@@ -44,7 +44,10 @@
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  margin-bottom: 0.5em;
+  margin-bottom: 1em;
+}
+.meta div a {
+  margin-left: 0.1rem;
 }
 
 .info_details {
@@ -95,4 +98,21 @@
   flex-direction: row;
   flex-wrap: wrap;
   margin-bottom: 20px;
+}
+
+.empty {
+  margin: auto;
+  padding: 10px;
+  /* height: 50%; */
+  /* width: 50%; */
+  /* text-align: center; */
+  font-size: medium;
+  color: #37333d;
+  opacity: 32%;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 8rem;
+  justify-content: space-between;
 }

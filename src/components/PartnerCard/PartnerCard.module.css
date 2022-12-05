@@ -1,8 +1,8 @@
 .container {
-  border: 1px solid #cccccd;
+  border: 1px solid #EFEFEF;
   border-radius: 8px;
   padding: 1rem;
-  margin-bottom: 1rem;
+  margin-bottom: 2rem;
   min-height: 12rem;
   display: flex;
   flex-direction: row;

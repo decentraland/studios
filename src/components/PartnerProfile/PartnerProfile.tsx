@@ -45,11 +45,7 @@ function PartnerProfile({ partner, projects }: Props) {
             />
           </a>
           <div className={styles.header_info}>
-            <div className={styles.name}>
-              <a href={WEBSITE} target="_blank" rel="noreferrer">
-                {partner.name}
-              </a>
-            </div>
+            <div className={styles.name}>{partner.name}</div>
             <div className={styles.meta}>
               <div>
                 {partner.website && <Icon url={partner.website} icon={<Website />} />}

@@ -141,6 +141,9 @@ function PartnerProfile({ partner, projects }: Props) {
           </div>
         )}
       </div>
+      <a href="#" target="_blank" rel="noreferrer">
+        Report this studio
+      </a>
     </div>
   )
 }

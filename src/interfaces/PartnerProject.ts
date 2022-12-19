@@ -6,11 +6,11 @@ export interface PartnerProject {
   id: number
   user_created: string
   date_created: Date
-  user_updated: null | string
+  user_updated: string | null
   date_updated: Date | null
   title: string
-  description: null | string
-  link: null | string
+  description: string
+  link: string | null
   profile: number
   image_1: string
   image_2: null | string

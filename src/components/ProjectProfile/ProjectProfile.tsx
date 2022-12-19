@@ -6,6 +6,7 @@ import 'react-responsive-carousel/lib/styles/carousel.min.css'
 import { Carousel } from 'react-responsive-carousel'
 import { VerifiedPartner } from '../../interfaces/VerifiedPartner'
 import { PartnerProject } from '../../interfaces/PartnerProject'
+import ReactMarkdown from 'react-markdown'
 
 interface Props {
   project: PartnerProject
@@ -39,7 +40,7 @@ function ProjectProfile({ project, partner }: Props) {
           </Carousel>
         </div>
         <div className={styles.info_about}>
-          <div className={styles.description}>{project.description}</div>
+          <ReactMarkdown className={styles.description}>{project.description}</ReactMarkdown>
           {project.link && (
             <div className={styles.info_details}>
               <a href={WEBSITE} target="_blank" rel="noreferrer">

@@ -18,6 +18,7 @@ import DetailsList from '../DetailsList/DetailsList'
 import { PartnerProject } from '../../interfaces/PartnerProject'
 import ProjectCard from '../ProjectCard/ProjectCard'
 import Empty from '../Icons/Empty'
+import ReactMarkdown from 'react-markdown'
 
 interface Props {
   partner: VerifiedPartner
@@ -70,7 +71,6 @@ function PartnerProfile({ partner, projects }: Props) {
             </div>
           </div>
         </div>
-        {/* contact button goes here */}
       </div>
 
       <div className={styles.info_panel}>
@@ -78,7 +78,7 @@ function PartnerProfile({ partner, projects }: Props) {
           <div className={styles.info_title}>
             <FormattedMessage id="about" />
           </div>
-          <p className={styles.description}>{partner.description}</p>
+          <ReactMarkdown className={styles.description}>{partner.description}</ReactMarkdown>
         </div>
         <div>
           <div className={styles.info_details}>

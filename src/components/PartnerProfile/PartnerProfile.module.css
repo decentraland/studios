@@ -122,3 +122,10 @@
   height: 8rem;
   justify-content: space-between;
 }
+
+.projects_grid {
+  grid-template-columns: repeat(3, 1fr);
+  display: grid;
+  grid-template-rows: 25%;
+  grid-gap: 2rem;
+}

@@ -125,7 +125,7 @@ function PartnerProfile({ partner, projects }: Props) {
           <FormattedMessage id="projects" />
         </div>
         {projects.length ? (
-          <div className={styles.info_panel}>
+          <div className={styles.projects_grid}>
             {projects.map((project) => (
               <ProjectCard key={project.id} project={project} />
             ))}

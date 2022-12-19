@@ -86,13 +86,17 @@ function PartnerProfile({ partner, projects }: Props) {
               <div>
                 <FormattedMessage id="region" />
               </div>
-              <div>{partner.region}</div>
+              <div>
+                <p>{partner.region}</p>
+              </div>
             </div>
             <div>
               <div>
                 <FormattedMessage id="country" />
               </div>
-              <div>{partner.country}</div>
+              <div>
+                <p>{partner.country}</p>
+              </div>
             </div>
           </div>
           <div className={`${styles.info_details} ${styles['info_details--border']}`}>
@@ -100,13 +104,17 @@ function PartnerProfile({ partner, projects }: Props) {
               <div>
                 <FormattedMessage id="team_size" />
               </div>
-              <div>{partner.team_size}</div>
+              <div>
+                <p>{partner.team_size}</p>
+              </div>
             </div>
             <div>
               <div>
                 <FormattedMessage id="languages" />
               </div>
-              <div>{!!partner.languages && <DetailsList list={partner.languages} />}</div>
+              <div>
+                <p>{!!partner.languages && <DetailsList list={partner.languages} />}</p>
+              </div>
             </div>
           </div>
           <div className={`${styles.info_details} ${styles['info_details--border']}`}>
@@ -114,7 +122,9 @@ function PartnerProfile({ partner, projects }: Props) {
               <div>
                 <FormattedMessage id="payment_methods" />
               </div>
-              <div>{!!partner.payment_methods && <DetailsList list={partner.payment_methods} />}</div>
+              <div>
+                <p>{!!partner.payment_methods && <DetailsList list={partner.payment_methods} />}</p>
+              </div>
             </div>
           </div>
         </div>

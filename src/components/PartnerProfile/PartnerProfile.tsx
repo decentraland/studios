@@ -80,7 +80,7 @@ function PartnerProfile({ partner, projects }: Props) {
           </div>
           <ReactMarkdown className={styles.description}>{partner.description}</ReactMarkdown>
         </div>
-        <div>
+        <div className={styles.table_container}>
           <div className={styles.info_details}>
             <div>
               <div>

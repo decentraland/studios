@@ -35,7 +35,7 @@ function ProjectCard({ project }: Props) {
       </a>
       <a href={WEBSITE}>
         <div className={styles.header_info}>
-          {project.title}
+          <div className={styles.project_title}>{project.title}</div>
           <div className={styles.header_arrow}>
             <i className={styles.arrow_right}></i>
           </div>

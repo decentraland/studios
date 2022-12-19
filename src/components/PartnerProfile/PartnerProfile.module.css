@@ -24,9 +24,8 @@
 }
 
 .info_about {
-  flex: 1;
+  flex: 2;
   margin-right: 30px;
-  min-width: 400px;
   font-size: 12px;
 }
 
@@ -52,7 +51,7 @@
 
 .info_details {
   margin-bottom: 1em;
-  font-size: 19px;
+  font-size: 16px;
   flex: 1;
   /* border-collapse: collapse; */
   display: flex;
@@ -61,27 +60,31 @@
 
 .info_details--border {
   border-top: 0.5px solid rgba(0, 0, 0, 0.1);
-  padding-top: 5px;
+  padding-top: 15px;
 }
 
-.info_details div {
-  margin-right: 10px;
+.table_container {
   flex: 1;
 }
+
+.info_details > div {
+  margin-right: 10px;
+  width: 50%;
+}
+
 .info_details div div:first-of-type {
-  /* width: 33%; */
   font-weight: 500;
   text-transform: uppercase;
-  color: #736e7d;
   font-size: 12px;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
+  color: #736e7d;
 }
 
 .info_title {
-  width: 33%;
   font-weight: 500;
   text-transform: uppercase;
   font-size: 12px;
+  margin-bottom: 8px;
   color: #736e7d;
 }
 
@@ -92,7 +95,7 @@
 
 .description {
   margin-bottom: 40px;
-  font-size: 19px;
+  font-size: 16px;
 }
 
 .info_panel {
@@ -118,4 +121,11 @@
   align-items: center;
   height: 8rem;
   justify-content: space-between;
+}
+
+.projects_grid {
+  grid-template-columns: repeat(3, 1fr);
+  display: grid;
+  grid-template-rows: 25%;
+  grid-gap: 2rem;
 }

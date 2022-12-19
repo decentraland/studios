@@ -15,6 +15,7 @@
   background-position: center !important;
   background-repeat: no-repeat !important; */
   object-fit: cover !important;
+  border-radius: 8px 8px 0 0;
 }
 
 .services {
@@ -29,15 +30,28 @@
 .header {
   display: flex;
   /* margin-bottom: 40px; */
-  margin: 5px 10px 10px 0px;
+  /* margin: 5px 10px 10px 0px; */
   flex-direction: column;
-  width: 25%;
-  border: 1px solid rgba(115, 110, 125, 0.24);
+  /* width: 25%;*/
   border-radius: 8px;
+  box-shadow: 0 1px 8px hsla(260, 6%, 46%, 0.16);
+  transition: transform 0.2s ease-in-out, background-color 0.2s ease-in-out;
+}
+
+.header:hover {
+  transform: translateY(-2px);
+}
+
+.header:hover a {
+  color: var(--primary);
+}
+
+.header:hover .header_arrow {
+  transform: translateX(2px);
 }
 
 .header_info {
-  margin: auto 2px auto 5px;
+  margin: 8px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -53,6 +67,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: transform 0.2s ease-in-out, background-color 0.2s ease-in-out;
 }
 
 .arrow_right {
@@ -124,4 +139,9 @@
   color: #ff2d55;
   font-size: 1em;
   font-weight: 500;
+}
+
+.project_title {
+  overflow: hidden;
+  text-overflow: ellipsis;
 }

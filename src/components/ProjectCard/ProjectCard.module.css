@@ -8,12 +8,8 @@
 }
 
 .image {
-  /* width: auto; */
   height: 10rem;
   width: 100%;
-  /* background-size: cover !important;
-  background-position: center !important;
-  background-repeat: no-repeat !important; */
   object-fit: cover !important;
   border-radius: 8px 8px 0 0;
 }
@@ -33,6 +29,7 @@
   /* margin: 5px 10px 10px 0px; */
   flex-direction: column;
   /* width: 25%;*/
+  height: fit-content;
   border-radius: 8px;
   box-shadow: 0 1px 8px hsla(260, 6%, 46%, 0.16);
   transition: transform 0.2s ease-in-out, background-color 0.2s ease-in-out;

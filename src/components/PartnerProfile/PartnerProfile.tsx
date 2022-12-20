@@ -147,9 +147,11 @@ function PartnerProfile({ partner, projects }: Props) {
           </div>
         )}
       </div>
-      <a href="https://dclstudios.typeform.com/to/HQpD0z5S" target="_blank" rel="noreferrer">
-        Report this studio
-      </a>
+      <div className={styles.report_link}>
+        <a href="https://dclstudios.typeform.com/to/HQpD0z5S" target="_blank" rel="noreferrer">
+          Report this studio
+        </a>
+      </div>
     </div>
   )
 }

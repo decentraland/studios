@@ -19,7 +19,9 @@ function ProjectProfile({ project, partner }: Props) {
   const WEBSITE = project.link || ''
   const PARTNER_WEBSITE = `/profile/${partner.slug}`
 
-  const images = [project.image_1, project.image_2, project.image_3, project.image_4].filter((img) => img)
+  const images = [project.image_1, project.image_2, project.image_3, project.image_4, project.image_5].filter(
+    (img) => img
+  )
 
   return (
     <div>

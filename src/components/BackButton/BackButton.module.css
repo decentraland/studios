@@ -9,3 +9,7 @@
 .arrowright:hover rect {
   stroke: #16141a;
 }
+
+.arrowright svg {
+  margin-top: 4px;
+}

@@ -4,12 +4,11 @@ import ArrowRight from '../Icons/ArrowRight'
 
 interface Props {
   url: string
-  icon: React.ReactNode
 }
 
-function BackButton() {
+function BackButton({ url }: Props) {
   return (
-    <a href="../" className={styles.arrowright} rel="noreferrer">
+    <a href={url} className={styles.arrowright} rel="noreferrer">
       <ArrowRight />
     </a>
   )

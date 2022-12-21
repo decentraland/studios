@@ -18,20 +18,8 @@ function ProjectCard({ project }: Props) {
 
   return (
     <div className={styles.header}>
-      {/* <Carousel autoPlay infiniteLoop showThumbs={false}>
-        {images.map((image) => (
-          <a href={WEBSITE} key={image}>
-            <div
-              className={styles.image}
-              style={{
-                background: `url(${DATA_URL}/assets/${image})`,
-              }}
-            />
-          </a>
-        ))}
-      </Carousel> */}
       <a href={WEBSITE}>
-        <img className={styles.image} src={`${DATA_URL}/assets/${project.image_1}`} />
+        <img className={styles.image} src={`${DATA_URL}/assets/${project.image_1}?key=thumb`} />
       </a>
       <a href={WEBSITE}>
         <div className={styles.header_info}>

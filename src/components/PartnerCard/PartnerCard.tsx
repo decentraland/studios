@@ -27,7 +27,7 @@ function PartnerCard({ partner }: Props) {
           <div
             className={styles.image}
             style={{
-              background: `url(${DATA_URL}/assets/${partner.logo})`,
+              background: `url(${DATA_URL}/assets/${partner.logo}?key=logo)`,
             }}
           ></div>
         </a>

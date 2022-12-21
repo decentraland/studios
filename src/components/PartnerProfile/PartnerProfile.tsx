@@ -20,6 +20,8 @@ import ProjectCard from '../ProjectCard/ProjectCard'
 import Empty from '../Icons/Empty'
 import ReactMarkdown from 'react-markdown'
 
+import 'decentraland-ui/lib/styles.css'
+
 interface Props {
   partner: VerifiedPartner
   projects: PartnerProject[]
@@ -41,7 +43,7 @@ function PartnerProfile({ partner, projects }: Props) {
             <div
               className={styles.image}
               style={{
-                background: `url(${DATA_URL}/assets/${partner.logo})`,
+                background: `url(${DATA_URL}/assets/${partner.logo}?key=logo)`,
               }}
             />
           </a>

@@ -7,10 +7,13 @@ import React from 'react'
 import Head from 'next/head'
 import { Footer } from 'decentraland-ui/dist/components/Footer/Footer'
 import dynamic from 'next/dynamic'
+import { loadIntercom } from 'next-intercom'
 
 const Navbar = dynamic(() => import('decentraland-ui/dist/components/Navbar/Navbar').then((module) => module.Navbar), {
   ssr: false,
 })
+
+const INTERCOM_APP_ID = process.env.NEXT_PUBLIC_INTERCOM_APP_ID
 
 function App({ Component, pageProps }: AppProps) {
   const [shortLocale] = ['en']
@@ -25,6 +28,9 @@ function App({ Component, pageProps }: AppProps) {
 
   return (
     <>
+      {loadIntercom({
+        appId: INTERCOM_APP_ID,
+      })}
       <Head>
         <link href="https://ui.decentraland.org/styles.css" rel="stylesheet" />
       </Head>

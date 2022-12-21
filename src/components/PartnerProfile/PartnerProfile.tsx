@@ -8,7 +8,7 @@ import Linkedin from '../Icons/Linkedin'
 import Twitter from '../Icons/Twitter'
 import Youtube from '../Icons/Youtube'
 import Website from '../Icons/Website'
-import ArrowRight from '../Icons/ArrowRight'
+import BackButton from '../BackButton/BackButton'
 
 import styles from './PartnerProfile.module.css'
 import Marketplace from '../Icons/Marketplace'
@@ -38,7 +38,9 @@ function PartnerProfile({ partner, projects }: Props) {
 
   return (
     <div className={styles.container}>
-      <div className={styles.container__backButton}></div>
+      <div className={styles.container__backButton}>
+        <BackButton />
+      </div>
       <div className={styles.container__content}>
         <div className={styles.info_panel}>
           <div className={styles.info_id}>

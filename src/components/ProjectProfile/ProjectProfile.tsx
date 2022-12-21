@@ -26,9 +26,7 @@ function ProjectProfile({ project, partner }: Props) {
 
   return (
     <div className={styles.container}>
-      <div className={styles.container__backButton}>
-        <BackButton url={PARTNER_WEBSITE} />
-      </div>
+      <BackButton url={PARTNER_WEBSITE} />
       <div className={styles.container__content}>
         <div className={styles.info_panel}>
           <div className={styles.name}>{project.title}</div>

@@ -8,9 +8,15 @@ body {
 
   /* Colors */
   --primary: #ff2d55;
-
   --black-300: #dddce0;
   --black-400: #b9b7be;
+
+  /* Shadows */
+  --card_shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+  --card_border: 1px solid hsla(260, 6%, 46%, 0.05);
+
+  /* Animations */
+  --card_animation: translateY(-2px);
 }
 
 a {
@@ -20,6 +26,7 @@ a {
 
 * {
   box-sizing: border-box;
+  transition: transform 0.2s ease-in-out, background-color 0.2s ease-in-out;
 }
 
 .ui.dropdown {

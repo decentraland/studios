@@ -1,0 +1,15 @@
+.icon {
+  display: inline-block;
+  line-height: 16px;
+  margin-right: 4px;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.arrowright:hover rect {
+  stroke: #16141a;
+}
+
+.arrowright svg {
+  margin-top: 4px;
+}

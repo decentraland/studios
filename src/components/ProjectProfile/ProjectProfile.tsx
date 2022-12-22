@@ -7,6 +7,7 @@ import { Carousel } from 'react-responsive-carousel'
 import { VerifiedPartner } from '../../interfaces/VerifiedPartner'
 import { PartnerProject } from '../../interfaces/PartnerProject'
 import ReactMarkdown from 'react-markdown'
+import BackButton from '../BackButton/BackButton'
 
 interface Props {
   project: PartnerProject
@@ -24,61 +25,59 @@ function ProjectProfile({ project, partner }: Props) {
   )
 
   return (
-    <div>
-      <div className={styles.info_panel}>
-        <div onClick={() => window.history.back()}>
-          <div className={styles.header_arrow}>
-            <i className={styles.arrow_left}></i>
+    <div className={styles.container}>
+      <BackButton url={PARTNER_WEBSITE} />
+      <div className={styles.container__content}>
+        <div className={styles.info_panel}>
+          <div className={styles.name}>{project.title}</div>
+        </div>
+        <div className={styles.info_panel}>
+          <div className={styles.image_container}>
+            <Carousel autoPlay infiniteLoop showThumbs={true} showStatus={false} showIndicators={false}>
+              {images.map((image) => (
+                <img key={image} className={styles.image_img} src={`${DATA_URL}/assets/${image}?key=project-img`} />
+              ))}
+            </Carousel>
           </div>
-        </div>
-        <div className={styles.name}>{project.title}</div>
-      </div>
-      <div className={styles.info_panel}>
-        <div className={styles.image_container}>
-          <Carousel autoPlay infiniteLoop showThumbs={true} showStatus={false} showIndicators={false}>
-            {images.map((image) => (
-              <img key={image} className={styles.image_img} src={`${DATA_URL}/assets/${image}?key=project-img`} />
-            ))}
-          </Carousel>
-        </div>
-        <div className={styles.info_about}>
-          <ReactMarkdown className={styles.description}>{project.description}</ReactMarkdown>
-          {project.link && (
-            <div className={styles.info_details}>
-              <a href={WEBSITE} target="_blank" rel="noreferrer">
-                <FormattedMessage id={'external_link'} />
-                &nbsp; &gt;
+          <div className={styles.info_about}>
+            <ReactMarkdown className={styles.description}>{project.description}</ReactMarkdown>
+            {project.link && (
+              <div className={styles.info_details}>
+                <a href={WEBSITE} target="_blank" rel="noreferrer">
+                  <FormattedMessage id={'external_link'} />
+                  &nbsp; &gt;
+                </a>
+              </div>
+            )}
+            <div className={styles.info_title}>
+              <FormattedMessage id={'author'} />
+            </div>
+            <div className={styles.partner_info}>
+              <a href={PARTNER_WEBSITE}>
+                <div
+                  className={styles.partner_logo}
+                  style={{
+                    background: `url(${DATA_URL}/assets/${partner.logo}?key=logo)`,
+                  }}
+                ></div>
+              </a>
+
+              <div className={styles.partner_name}>
+                <a href={PARTNER_WEBSITE}>{partner.name}</a>
+              </div>
+              <a href={PARTNER_WEBSITE}>
+                <div className={styles.header_arrow}>
+                  <i className={styles.arrow_right}></i>
+                </div>
               </a>
             </div>
-          )}
-          <div className={styles.info_title}>
-            <FormattedMessage id={'author'} />
-          </div>
-          <div className={styles.partner_info}>
-            <a href={PARTNER_WEBSITE}>
-              <div
-                className={styles.partner_logo}
-                style={{
-                  background: `url(${DATA_URL}/assets/${partner.logo}?key=logo)`,
-                }}
-              ></div>
-            </a>
 
-            <div className={styles.partner_name}>
-              <a href={PARTNER_WEBSITE}>{partner.name}</a>
-            </div>
-            <a href={PARTNER_WEBSITE}>
-              <div className={styles.header_arrow}>
-                <i className={styles.arrow_right}></i>
+            {/* <a href={PARTNERT_WEBSITE}>
+              <div className={styles.contact}>
+                <FormattedMessage id={'contact_author'} />
               </div>
-            </a>
+            </a> */}
           </div>
-
-          {/* <a href={PARTNERT_WEBSITE}>
-            <div className={styles.contact}>
-              <FormattedMessage id={'contact_author'} />
-            </div>
-          </a> */}
         </div>
       </div>
     </div>

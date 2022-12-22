@@ -8,10 +8,8 @@
 }
 
 .name {
-  margin-bottom: 90px;
   font-size: xx-large;
-  /* line-height: 1; */
-  /* text-align: center; */
+  line-height: normal;
 }
 
 .image_container {
@@ -160,4 +158,12 @@
   font-size: 13px;
   /* cursor: pointer; */
   margin-top: 20px;
+}
+
+.container {
+  display: flex;
+}
+
+.container__content {
+  margin: 0 24px;
 }

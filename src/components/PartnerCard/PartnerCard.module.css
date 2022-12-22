@@ -1,6 +1,7 @@
 .container {
-  border: 1px solid #efefef;
+  border: var(--card_border);
   border-radius: 8px;
+  box-shadow: var(--card_shadow);
   padding: 1rem;
   margin-bottom: 2rem;
   min-height: 12rem;
@@ -8,6 +9,10 @@
   flex-direction: row;
   width: 100%;
   cursor: pointer;
+}
+
+.container:hover {
+  transform: var(--card_animation);
 }
 
 .name {

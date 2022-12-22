@@ -4,7 +4,6 @@ import { VerifiedPartner } from '../interfaces/VerifiedPartner'
 import styles from '../styles/Home.module.css'
 import Partners from '../clients/Partners'
 import Services from '../components/Services/Services'
-//import 'semantic-ui-css/semantic.min.css'
 
 import React from 'react'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'

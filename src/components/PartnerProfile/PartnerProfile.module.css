@@ -132,12 +132,16 @@
 
 .report_link {
   margin-top: 56px;
-  color: #726d7c;
   font-size: 14px;
 }
 
 .report_link a {
   font-weight: normal !important;
+  color: #726d7c;
+}
+
+.report_link a:hover {
+  color: #ff2d55;
 }
 
 .container {

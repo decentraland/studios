@@ -141,4 +141,9 @@
 .project_title {
   overflow: hidden;
   text-overflow: ellipsis;
+  color: #726d7c !important;
+}
+
+.project_title:hover {
+  color: var(--primary) !important;
 }

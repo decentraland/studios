@@ -1,16 +1,11 @@
 import React, { useEffect, useMemo, useState, useCallback } from 'react'
 import { useRouter } from 'next/router'
 import { FormattedMessage, useIntl } from 'react-intl'
-import Form from 'semantic-ui-react/dist/commonjs/collections/Form'
-import Menu from 'semantic-ui-react/dist/commonjs/collections/Menu'
-import Button from 'semantic-ui-react/dist/commonjs/elements/Button'
-import Accordion from 'semantic-ui-react/dist/commonjs/modules/Accordion/Accordion'
-import { AccordionTitleProps } from 'semantic-ui-react/dist/commonjs/modules/Accordion/AccordionTitle'
 import { CheckboxProps } from 'semantic-ui-react/dist/commonjs/modules/Checkbox'
-import Dropdown from 'semantic-ui-react/dist/commonjs/modules/Dropdown'
 import { PaymentMethod, Region, Service, TeamSize, VerifiedPartner } from '../../interfaces/VerifiedPartner'
 
 import styles from './Filters.module.css'
+import { toSnakeCase } from '../utils'
 
 interface Props {
   partners: VerifiedPartner[]
@@ -115,31 +110,21 @@ function Filters({ partners, setFilteredPartners }: Props) {
     }
 
     setCheckBoxState(initialCheckBoxState)
-    handleApplyFilters(urlFilters)
   }, [languages])
 
-  const handleAccordionTitleClick = (
-    e: React.MouseEvent<HTMLDivElement, MouseEvent>,
-    titleProps: AccordionTitleProps
-  ) => {
-    e.stopPropagation()
-    const { index } = titleProps
-    const idxNumber = Number(index)
-    if (currentFilterCategory === idxNumber) {
-      setCurrentFilterCategory(-1)
-    } else {
-      setCurrentFilterCategory(idxNumber)
-    }
-  }
+  useEffect(() => {
+    handleApplyFilters()
+  }, [checkBoxState])
 
-  const handleAccordionItemClick = (event: React.MouseEvent<HTMLInputElement, MouseEvent>, itemData: CheckboxProps) => {
+  const handleItemClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>, itemData: CheckboxProps) => {
     event.stopPropagation()
+
     const { checked, name, value } = itemData
     const filterType = name as FilterType
 
-    setCheckBoxState((prevState) => ({ ...prevState, [getCheckboxKey(filterType, `${value}`)]: !!checked }))
+    setCheckBoxState((prevState) => ({ ...prevState, [getCheckboxKey(filterType, `${value}`)]: !checked }))
 
-    if (checked) {
+    if (!checked) {
       setFilters((prev) => ({ ...prev, [filterType]: [...(prev[filterType] || []), value] }))
     } else {
       const newFilters = filters[filterType].filter((item) => item !== value)
@@ -187,90 +172,52 @@ function Filters({ partners, setFilteredPartners }: Props) {
     }
   }
 
-  const handleClearFilters = () => {
-    setFilters(EMPTY_FILTER)
-    setUrlFilters(EMPTY_FILTER)
-    setFilteredPartners(partners)
-    for (const key of Object.keys(checkBoxState)) {
-      setCheckBoxState((prevState) => ({ ...prevState, [key]: false }))
-    }
-  }
-
   return (
-    <Dropdown text={filterText} closeOnBlur={false} upward={false}>
-      <Dropdown.Menu>
-        <Accordion>
-          {dropdownContent.map((item, index) => {
-            return (
-              <Menu.Item key={item.key}>
-                <Accordion.Title
-                  active={currentFilterCategory === index}
-                  content={item.title}
-                  index={index}
-                  onClick={handleAccordionTitleClick}
-                />
-                <Accordion.Content
-                  active={currentFilterCategory === index}
-                  content={
-                    <Form>
-                      <Form.Group grouped>
-                        {Object.entries(item.options).map(([key, value]) => (
-                          <Form.Checkbox
-                            label={value}
-                            name={item.key}
-                            value={value}
-                            key={key}
-                            onClick={handleAccordionItemClick}
-                            checked={checkBoxState[getCheckboxKey(item.key, value)]}
-                            className={styles.checkbox}
-                          />
-                        ))}
-                      </Form.Group>
-                    </Form>
-                  }
-                />
-              </Menu.Item>
-            )
-          })}
-          <Menu.Item>
-            <Accordion.Title
-              active={currentFilterCategory === dropdownContent.length + 1}
-              content={<FormattedMessage id="languages" />}
-              index={dropdownContent.length + 1}
-              onClick={handleAccordionTitleClick}
-            />
-            <Accordion.Content
-              active={currentFilterCategory === dropdownContent.length + 1}
-              content={
-                <Form>
-                  <Form.Group grouped>
-                    {languages.map((language) => (
-                      <Form.Checkbox
-                        label={language}
-                        name={FilterType.Language}
-                        value={language}
-                        key={language}
-                        onClick={handleAccordionItemClick}
-                        checked={checkBoxState[getCheckboxKey(FilterType.Language, language)]}
-                        className={styles.checkbox}
-                      />
-                    ))}
-                  </Form.Group>
-                </Form>
-              }
-            />
-          </Menu.Item>
-        </Accordion>
-        <div className={styles.buttons_container}>
-          <Button onClick={handleClearFilters} basic secondary>
-            <FormattedMessage id="clear" />
-          </Button>
-          <Button onClick={() => handleApplyFilters()} basic primary>
-            <FormattedMessage id="apply" />
-          </Button>
-        </div>
-      </Dropdown.Menu>
-    </Dropdown>
+    <div className={styles.hidden_mobile}>
+      {dropdownContent.map((item, index) => {
+        return (
+          <div key={item.key} className={styles.filter_container}>
+            <div className={styles.filter_name}>{item.title}</div>
+            <div>
+              {Object.entries(item.options).map(([key, value]) => {
+                const itemData: CheckboxProps = {
+                  checked: checkBoxState[getCheckboxKey(item.key, value)],
+                  value: value,
+                  name: item.key,
+                }
+
+                let circleDiv = null
+                let serviceTooltipDiv = null
+                let circleExtraClass = ''
+                if (itemData.name === 'services') {
+                  circleExtraClass = styles[`serv_${toSnakeCase(value)}${itemData.checked ? '--check' : ''}`]
+                  circleDiv = <div className={`${styles.circle} ${circleExtraClass}`} />
+                  serviceTooltipDiv = (
+                    <div className={styles.tooltip_container}>
+                      <div className={styles.tooltip}>
+                        {intl.formatMessage({ id: `service.${toSnakeCase(value)}.description` })}
+                      </div>
+                    </div>
+                  )
+                }
+
+                return (
+                  <div
+                    key={key}
+                    onClick={(e) => handleItemClick(e, itemData)}
+                    className={`${styles.tag_container} ${itemData.checked ? styles.check : ''}`}
+                  >
+                    {circleDiv}
+                    {value}
+                    {serviceTooltipDiv}
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+        )
+      })}
+    </div>
   )
 }
 

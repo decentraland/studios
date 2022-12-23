@@ -30,7 +30,7 @@ function Home({ partners }: { partners: VerifiedPartner[] }) {
       </Head>
 
       <main className={styles.main}>
-        <Services />
+        {/* <Services /> */}
         <PartnersList partners={partners} />
       </main>
     </Container>

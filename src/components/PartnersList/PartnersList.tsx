@@ -35,20 +35,33 @@ function PartnersList({ partners }: Props) {
   return (
     <>
       <div className={styles.container}>
-        <h3>
-          <FormattedMessage id="verified_partners" />
-        </h3>
         <Filters partners={partners} setFilteredPartners={setFilteredPartners} />
-      </div>
-      {partnersList.length ? (
-        partnersList.map((partner) => <PartnerCard key={partner.id} partner={partner} />)
-      ) : (
-        <div className={styles.empty}>
-          <Empty />
-          <br />
-          <FormattedMessage id="filter.noResults" />
+        <div>
+          <div className={styles.title_container}>
+            <h3>
+              <FormattedMessage id="title" />
+            </h3>
+            <a
+              className={styles.link}
+              target={'_blank'}
+              href="https://dclstudios.typeform.com/to/NfzmbzXi"
+              rel="noreferrer"
+            >
+              <FormattedMessage id="join_registry" />
+            </a>
+          </div>
+          {partnersList.length ? (
+            partnersList.map((partner) => <PartnerCard key={partner.id} partner={partner} />)
+          ) : (
+            <div className={styles.empty}>
+              <Empty />
+              <br />
+              <FormattedMessage id="filter.noResults" />
+            </div>
+          )}
         </div>
-      )}
+      </div>
+
       <div className={styles.footer_text_container}>
         <FormattedMessage
           id="footer_message"

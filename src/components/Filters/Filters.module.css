@@ -1,28 +1,133 @@
-.checkbox input[type='checkbox']:checked + label::after {
-  --size: 1.2rem;
-  content: '';
-  position: absolute;
-  width: var(--size) !important;
-  height: calc(var(--size) / 2) !important;
-  background: rgba(0, 0, 0, 0);
-  top: 0.2rem !important;
-  left: 0.03rem !important;
-  border: 2px solid #44b600;
-  border-top: none;
-  border-right: none;
-  -webkit-transform: rotate(-45deg);
-  -moz-transform: rotate(-45deg);
-  -o-transform: rotate(-45deg);
-  -ms-transform: rotate(-45deg);
-  transform: rotate(-45deg);
-  color: rgba(0, 0, 0, 0) !important;
+@media (max-width: 700px) {
+  .hidden_mobile {
+    display: none;
+  }
 }
 
-.buttons_container {
+.filter_container {
+  width: 250px;
+}
+
+.filter_name {
+  text-transform: uppercase;
+  margin-bottom: 20px;
+  font-weight: 600;
+  font-size: 13px;
+  color: #736e7d;
+}
+
+.tag_container {
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: space-between;
-  padding-top: 10px;
-  border-top: 1px solid var(--black-300);
+  margin-bottom: 20px;
+  color: #242129;
+  cursor: pointer;
+  border-radius: 2rem;
+  padding: 0.5rem 1rem;
+  margin-left: -1rem;
+  margin-right: 4rem;
+}
+
+.tag_container:last-of-type {
+  margin-bottom: 50px;
+}
+.check,
+.tag_container:hover {
+  font-weight: 600;
+  color: #16141a;
+  background-color: #726d7c25;
+}
+
+.circle {
+  width: 1em;
+  height: 1em;
+  border-radius: 50%;
+  margin-right: 15px;
+  flex-shrink: 0;
+}
+
+.tooltip_container {
+  display: block;
+  position: absolute;
+}
+
+.tag_container:hover .tooltip_container .tooltip {
+  display: block;
+}
+
+.tooltip {
+  position: absolute;
+  display: none;
+  background: white;
+  border-radius: 5px;
+  padding: 10px;
+  width: 230px;
+  left: 150px;
+  top: -4rem;
+  box-shadow: 0 2px 4px #726d7c;
+  font-weight: 400;
+}
+
+.serv_3d_modeling {
+  background-color: #fbe5fd;
+}
+
+.tag_container:hover .serv_3d_modeling,
+.serv_3d_modeling--check {
+  background-color: #ee74f7;
+}
+
+.serv_advertisement {
+  background-color: #fdf7d6;
+}
+
+.tag_container:hover .serv_advertisement,
+.serv_advertisement--check {
+  background-color: #f4b356;
+}
+
+.serv_emote_design {
+  background-color: #eab6be;
+}
+
+.tag_container:hover .serv_emote_design,
+.serv_emote_design--check {
+  background-color: #c72b32;
+}
+
+.serv_land_rental {
+  background-color: #e3ecfa;
+}
+
+.tag_container:hover .serv_land_rental,
+.serv_land_rental--check {
+  background-color: #5688e7;
+}
+
+.serv_programming {
+  background-color: #dfdcf1;
+}
+
+.tag_container:hover .serv_programming,
+.serv_programming--check {
+  background-color: #382aac;
+}
+
+.serv_venue_rental {
+  background-color: #fcefd5;
+}
+
+.tag_container:hover .serv_venue_rental,
+.serv_venue_rental--check {
+  background-color: #f0804f;
+}
+
+.serv_wearable_design {
+  background-color: #e4f2d8;
+}
+
+.tag_container:hover .serv_wearable_design,
+.serv_wearable_design--check {
+  background-color: #63b334;
 }

@@ -69,65 +69,79 @@
   font-weight: 400;
 }
 
-.serv_3d_modeling {
+.tag_container:hover.serv_3d_modeling,
+.serv_3d_modeling--check,
+.serv_3d_modeling > .circle {
   background-color: #fbe5fd;
 }
 
-.tag_container:hover .serv_3d_modeling,
-.serv_3d_modeling--check {
+.tag_container:hover.serv_3d_modeling > .circle,
+.serv_3d_modeling--check > .circle {
   background-color: #ee74f7;
 }
 
-.serv_advertisement {
+.tag_container:hover.serv_advertisement,
+.serv_advertisement--check,
+.serv_advertisement > .circle {
   background-color: #fdf7d6;
 }
 
-.tag_container:hover .serv_advertisement,
-.serv_advertisement--check {
+.tag_container:hover.serv_advertisement > .circle,
+.serv_advertisement--check > .circle {
   background-color: #f4b356;
 }
 
-.serv_emote_design {
+.tag_container:hover.serv_emote_design,
+.serv_emote_design--check,
+.serv_emote_design > .circle {
   background-color: #eab6be;
 }
 
-.tag_container:hover .serv_emote_design,
-.serv_emote_design--check {
+.tag_container:hover.serv_emote_design > .circle,
+.serv_emote_design--check > .circle {
   background-color: #c72b32;
 }
 
-.serv_land_rental {
+.tag_container:hover.serv_land_rental,
+.serv_land_rental--check,
+.serv_land_rental > .circle {
   background-color: #e3ecfa;
 }
 
-.tag_container:hover .serv_land_rental,
-.serv_land_rental--check {
+.tag_container:hover.serv_land_rental > .circle,
+.serv_land_rental--check > .circle {
   background-color: #5688e7;
 }
 
-.serv_programming {
+.tag_container:hover.serv_programming,
+.serv_programming--check,
+.serv_programming > .circle {
   background-color: #dfdcf1;
 }
 
-.tag_container:hover .serv_programming,
-.serv_programming--check {
+.tag_container:hover.serv_programming > .circle,
+.serv_programming--check > .circle {
   background-color: #382aac;
 }
 
-.serv_venue_rental {
+.tag_container:hover.serv_venue_rental,
+.serv_venue_rental--check,
+.serv_venue_rental > .circle {
   background-color: #fcefd5;
 }
 
-.tag_container:hover .serv_venue_rental,
-.serv_venue_rental--check {
+.tag_container:hover.serv_venue_rental > .circle,
+.serv_venue_rental--check > .circle {
   background-color: #f0804f;
 }
 
-.serv_wearable_design {
+.tag_container:hover.serv_wearable_design,
+.serv_wearable_design--check,
+.serv_wearable_design > .circle {
   background-color: #e4f2d8;
 }
 
-.tag_container:hover .serv_wearable_design,
-.serv_wearable_design--check {
+.tag_container:hover.serv_wearable_design > .circle,
+.serv_wearable_design--check > .circle {
   background-color: #63b334;
 }

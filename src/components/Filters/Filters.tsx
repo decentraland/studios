@@ -188,10 +188,8 @@ function Filters({ partners, setFilteredPartners }: Props) {
 
                 let circleDiv = null
                 let serviceTooltipDiv = null
-                let circleExtraClass = ''
                 if (itemData.name === 'services') {
-                  circleExtraClass = styles[`serv_${toSnakeCase(value)}${itemData.checked ? '--check' : ''}`]
-                  circleDiv = <div className={`${styles.circle} ${circleExtraClass}`} />
+                  circleDiv = <div className={styles.circle} />
                   serviceTooltipDiv = (
                     <div className={styles.tooltip_container}>
                       <div className={styles.tooltip}>
@@ -205,7 +203,9 @@ function Filters({ partners, setFilteredPartners }: Props) {
                   <div
                     key={key}
                     onClick={(e) => handleItemClick(e, itemData)}
-                    className={`${styles.tag_container} ${itemData.checked ? styles.check : ''}`}
+                    className={`${styles.tag_container} ${
+                      styles[`serv_${toSnakeCase(value)}${itemData.checked ? '--check' : ''}`]
+                    } ${itemData.checked ? styles.check : ''}`}
                   >
                     {circleDiv}
                     {value}

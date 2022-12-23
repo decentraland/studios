@@ -32,19 +32,19 @@ export interface VerifiedPartner {
 }
 
 export enum PaymentMethod {
+  WireTransfer = 'Wire Transfer',
   CreditCard = 'Credit Card',
   Crypto = 'Crypto',
-  PayPal = 'PayPal',
-  WireTransfer = 'Wire Transfer',
+  // PayPal = 'PayPal',
 }
 
 export enum Region {
-  Africa = 'Africa',
-  Asia = 'Asia',
+  NorthAmerica = 'North America',
   Europe = 'Europe',
   LatinAmerica = 'Latin America',
-  NorthAmerica = 'North America',
+  Asia = 'Asia',
   Oceania = 'Oceania',
+  Africa = 'Africa',
 }
 
 export enum Service {
@@ -63,7 +63,7 @@ export enum Status {
 
 export enum TeamSize {
   Individual = 'Individual',
-  LargeStudio = 'Large Studio',
-  MediumStudio = 'Medium Studio',
   SmallStudio = 'Small Studio',
+  MediumStudio = 'Medium Studio',
+  LargeStudio = 'Large Studio',
 }

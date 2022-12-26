@@ -8,6 +8,7 @@ import { VerifiedPartner } from '../../interfaces/VerifiedPartner'
 import { PartnerProject } from '../../interfaces/PartnerProject'
 import ReactMarkdown from 'react-markdown'
 import BackButton from '../BackButton/BackButton'
+import { trackLink } from '../utils'
 
 interface Props {
   project: PartnerProject
@@ -17,17 +18,27 @@ interface Props {
 const DATA_URL = process.env.NEXT_PUBLIC_PARTNERS_DATA_URL
 
 function ProjectProfile({ project, partner }: Props) {
-  const WEBSITE = project.link || ''
-  const PARTNER_WEBSITE = `/profile/${partner.slug}`
+  const PROJECT_WEBSITE = project.link || ''
+  const PARTNER_PROFILE_URL = `/profile/${partner.slug}`
 
   const images = [project.image_1, project.image_2, project.image_3, project.image_4, project.image_5].filter(
     (img) => img
   )
 
+  const customComponents: object = {
+    a({ href, children }: { href: string; children: string }) {
+      return (
+        <a href={href} target="_blank" onClick={() => trackLink('External Link Description', href)} rel="noreferrer">
+          {children}
+        </a>
+      )
+    },
+  }
+
   return (
     <div className={styles.container}>
       <div>
-        <BackButton url={PARTNER_WEBSITE} />
+        <BackButton url={PARTNER_PROFILE_URL} />
       </div>
       <div className={styles.container__content}>
         <div className={styles.info_panel}>
@@ -53,10 +64,17 @@ function ProjectProfile({ project, partner }: Props) {
               <div className={styles.info_title}>
                 <FormattedMessage id="about this project" />
               </div>
-              <ReactMarkdown className={styles.description}>{project.description}</ReactMarkdown>
+              <ReactMarkdown className={styles.description} components={customComponents}>
+                {project.description}
+              </ReactMarkdown>
               {project.link && (
                 <div className={styles.info_external_link}>
-                  <a href={WEBSITE} target="_blank" rel="noreferrer">
+                  <a
+                    href={PROJECT_WEBSITE}
+                    target="_blank"
+                    rel="noreferrer"
+                    onClick={() => trackLink('External Link Project', PROJECT_WEBSITE)}
+                  >
                     <FormattedMessage id={'external_link'} />
                     &nbsp; &gt;
                   </a>
@@ -68,7 +86,7 @@ function ProjectProfile({ project, partner }: Props) {
                 <FormattedMessage id={'author'} />
               </div>
               <div className={styles.partner_info}>
-                <a href={PARTNER_WEBSITE}>
+                <a href={PARTNER_PROFILE_URL}>
                   <div
                     className={styles.partner_logo}
                     style={{
@@ -78,15 +96,9 @@ function ProjectProfile({ project, partner }: Props) {
                 </a>
 
                 <div className={styles.partner_name}>
-                  <a href={PARTNER_WEBSITE}>{partner.name}</a>
+                  <a href={PARTNER_PROFILE_URL}>{partner.name}</a>
                 </div>
               </div>
-
-              {/* <a href={PARTNERT_WEBSITE}>
-                <div className={styles.contact}>
-                  <FormattedMessage id={'contact_author'} />
-                </div>
-              </a> */}
             </div>
           </div>
         </div>

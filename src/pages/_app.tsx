@@ -10,6 +10,12 @@ import dynamic from 'next/dynamic'
 import { loadIntercom } from 'next-intercom'
 import Script from 'next/script'
 
+declare global {
+  interface Window {
+    analytics: any
+  }
+}
+
 const Navbar = dynamic(() => import('decentraland-ui/dist/components/Navbar/Navbar').then((module) => module.Navbar), {
   ssr: false,
 })

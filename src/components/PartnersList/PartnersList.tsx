@@ -6,11 +6,14 @@ import PartnerCard from '../PartnerCard/PartnerCard'
 import styles from './PartnersList.module.css'
 import Filters from '../Filters/Filters'
 import Empty from '../Icons/Empty'
+import { trackLink } from '../utils'
 interface Props {
   partners: VerifiedPartner[]
 }
 
 function PartnersList({ partners }: Props) {
+  const JOIN_REGISTRY_URL = 'https://dclstudios.typeform.com/to/NfzmbzXi'
+
   const [filteredPartners, setFilteredPartners] = useState(partners)
 
   const sortAlphabeticPartners = (filteredPartners: VerifiedPartner[]) =>
@@ -44,8 +47,9 @@ function PartnersList({ partners }: Props) {
             <a
               className={styles.link}
               target={'_blank'}
-              href="https://dclstudios.typeform.com/to/NfzmbzXi"
+              href={JOIN_REGISTRY_URL}
               rel="noreferrer"
+              onClick={() => trackLink('Click Join Registry', JOIN_REGISTRY_URL)}
             >
               <FormattedMessage id="join_registry" />
             </a>
@@ -68,7 +72,13 @@ function PartnersList({ partners }: Props) {
           values={{
             i: (chunks) => <i>{chunks}</i>,
             a1: (chunks) => (
-              <a className={styles.link} target={'_blank'} href="https://governance.decentraland.org/" rel="noreferrer">
+              <a
+                className={styles.link}
+                target={'_blank'}
+                href="https://governance.decentraland.org/"
+                rel="noreferrer"
+                onClick={() => trackLink('Click Governance Footer', 'https://governance.decentraland.org/')}
+              >
                 {chunks}
               </a>
             ),
@@ -76,8 +86,9 @@ function PartnersList({ partners }: Props) {
               <a
                 className={styles.link}
                 target={'_blank'}
-                href="https://dclstudios.typeform.com/to/NfzmbzXi"
+                href={JOIN_REGISTRY_URL}
                 rel="noreferrer"
+                onClick={() => trackLink('Click Join Registry', JOIN_REGISTRY_URL)}
               >
                 {chunks}
               </a>

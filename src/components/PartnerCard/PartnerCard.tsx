@@ -6,6 +6,7 @@ import { VerifiedPartner, Service } from '../../interfaces/VerifiedPartner'
 import CategoryPill from '../CategoryPill/CategoryPill'
 import styles from './PartnerCard.module.css'
 import { FormattedMessage } from 'react-intl'
+import { trackLink } from '../utils'
 
 interface Props {
   partner: VerifiedPartner
@@ -19,6 +20,16 @@ function PartnerCard({ partner }: Props) {
   const PROFILE_WEBSITE = `/profile/${partner.slug}`
 
   const displayServices = (partner.services || []).filter((service) => SERVICES.includes(service))
+
+  const customComponents: object = {
+    a({ href, children }: { href: string; children: string }) {
+      return (
+        <a href={href} target="_blank" onClick={() => trackLink('External Link Description', href)} rel="noreferrer">
+          {children}
+        </a>
+      )
+    },
+  }
 
   return (
     <Link href={PROFILE_WEBSITE}>
@@ -44,7 +55,9 @@ function PartnerCard({ partner }: Props) {
               ))}
             </div>
           </div>
-          <ReactMarkdown className={styles.description}>{partner.description}</ReactMarkdown>
+          <ReactMarkdown className={styles.description} components={customComponents}>
+            {partner.description}
+          </ReactMarkdown>
           <div className={styles.read_more_trigger}>
             <FormattedMessage id="show_more" />
           </div>

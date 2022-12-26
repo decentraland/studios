@@ -122,13 +122,3 @@ a {
   align-items: center;
   padding: 0 16px;
 }
-
-@media (max-width: 768px) {
-  .container {
-    flex-direction: column;
-  }
-
-  .container__content {
-    margin: 16px 0;
-  }
-}

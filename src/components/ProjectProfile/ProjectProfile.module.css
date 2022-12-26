@@ -1,5 +1,4 @@
 .container {
-  padding: 1rem;
   margin-bottom: 1rem;
   min-height: 12rem;
   display: flex;
@@ -62,7 +61,7 @@
   min-width: 200px;
   /* font-size: 12px; */
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
 }
 
 .info_id {
@@ -78,22 +77,18 @@
   margin-bottom: 0.5em;
 }
 
-.info_details {
-  /* width: 33%; */
-  font-weight: 500;
-  text-transform: uppercase;
-  color: #736e7d;
-  font-size: 12px;
-  margin-top: 20px;
+.info_author {
+  width: 30%;
+  padding: 0 24px;
 }
 
 .info_title {
-  width: 33%;
+  /*width: 33%;*/
   font-weight: 500;
   text-transform: uppercase;
   font-size: 12px;
   color: #736e7d;
-  margin-top: 20px;
+  margin-bottom: 8px;
 }
 
 .pills {
@@ -103,12 +98,11 @@
 
 .description {
   font-size: 19px;
-  min-height: 20vw;
 }
 
 .info_panel {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   flex-wrap: wrap;
   margin-bottom: 20px;
 }
@@ -166,4 +160,42 @@
 
 .container__content {
   margin: 0 24px;
+}
+
+.project_description {
+  width: 70%;
+}
+
+.info_external_link {
+  color: var(--primary);
+  text-transform: uppercase;
+  margin-top: 16px;
+}
+
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column;
+  }
+
+  .container__content {
+    margin: 16px 0;
+  }
+
+  .info_about {
+    flex-direction: column;
+  }
+
+  .info_author,
+  .project_description {
+    width: 100%;
+  }
+
+  .info_author {
+    padding: 0;
+    margin-top: 24px;
+  }
+
+  .image_container {
+    width: 100%;
+  }
 }

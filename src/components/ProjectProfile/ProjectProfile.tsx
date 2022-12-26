@@ -26,57 +26,68 @@ function ProjectProfile({ project, partner }: Props) {
 
   return (
     <div className={styles.container}>
-      <BackButton url={PARTNER_WEBSITE} />
+      <div>
+        <BackButton url={PARTNER_WEBSITE} />
+      </div>
       <div className={styles.container__content}>
         <div className={styles.info_panel}>
           <div className={styles.name}>{project.title}</div>
         </div>
         <div className={styles.info_panel}>
           <div className={styles.image_container}>
-            <Carousel autoPlay infiniteLoop showThumbs={true} showStatus={false} showIndicators={false}>
+            <Carousel
+              autoPlay
+              infiniteLoop
+              showArrows={true}
+              showThumbs={true}
+              showStatus={false}
+              showIndicators={false}
+            >
               {images.map((image) => (
                 <img key={image} className={styles.image_img} src={`${DATA_URL}/assets/${image}?key=project-img`} />
               ))}
             </Carousel>
           </div>
           <div className={styles.info_about}>
-            <ReactMarkdown className={styles.description}>{project.description}</ReactMarkdown>
-            {project.link && (
-              <div className={styles.info_details}>
-                <a href={WEBSITE} target="_blank" rel="noreferrer">
-                  <FormattedMessage id={'external_link'} />
-                  &nbsp; &gt;
-                </a>
+            <div className={styles.project_description}>
+              <div className={styles.info_title}>
+                <FormattedMessage id="about this project" />
               </div>
-            )}
-            <div className={styles.info_title}>
-              <FormattedMessage id={'author'} />
-            </div>
-            <div className={styles.partner_info}>
-              <a href={PARTNER_WEBSITE}>
-                <div
-                  className={styles.partner_logo}
-                  style={{
-                    background: `url(${DATA_URL}/assets/${partner.logo}?key=logo)`,
-                  }}
-                ></div>
-              </a>
-
-              <div className={styles.partner_name}>
-                <a href={PARTNER_WEBSITE}>{partner.name}</a>
-              </div>
-              <a href={PARTNER_WEBSITE}>
-                <div className={styles.header_arrow}>
-                  <i className={styles.arrow_right}></i>
+              <ReactMarkdown className={styles.description}>{project.description}</ReactMarkdown>
+              {project.link && (
+                <div className={styles.info_external_link}>
+                  <a href={WEBSITE} target="_blank" rel="noreferrer">
+                    <FormattedMessage id={'external_link'} />
+                    &nbsp; &gt;
+                  </a>
                 </div>
-              </a>
+              )}
             </div>
-
-            {/* <a href={PARTNERT_WEBSITE}>
-              <div className={styles.contact}>
-                <FormattedMessage id={'contact_author'} />
+            <div className={styles.info_author}>
+              <div className={styles.info_title}>
+                <FormattedMessage id={'author'} />
               </div>
-            </a> */}
+              <div className={styles.partner_info}>
+                <a href={PARTNER_WEBSITE}>
+                  <div
+                    className={styles.partner_logo}
+                    style={{
+                      background: `url(${DATA_URL}/assets/${partner.logo}?key=logo)`,
+                    }}
+                  ></div>
+                </a>
+
+                <div className={styles.partner_name}>
+                  <a href={PARTNER_WEBSITE}>{partner.name}</a>
+                </div>
+              </div>
+
+              {/* <a href={PARTNERT_WEBSITE}>
+                <div className={styles.contact}>
+                  <FormattedMessage id={'contact_author'} />
+                </div>
+              </a> */}
+            </div>
           </div>
         </div>
       </div>

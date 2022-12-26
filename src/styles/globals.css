@@ -105,3 +105,30 @@ a {
     background: white;
   }
 }
+
+/* carousel styles */
+
+.carousel-root .carousel {
+  display: flex;
+  justify-content: center;
+}
+
+.carousel.carousel-slider .control-arrow {
+  background: rgba(0, 0, 0, 0.2) !important;
+}
+
+.thumbs {
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+}
+
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column;
+  }
+
+  .container__content {
+    margin: 16px 0;
+  }
+}

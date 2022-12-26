@@ -22,6 +22,7 @@
 
 .services {
   margin: 0.4rem 0.4rem 0 0;
+  display: inline-block;
 }
 
 .info_about {
@@ -151,4 +152,30 @@
 .container__content {
   margin: 0 24px;
   width: 100%;
+}
+
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column;
+  }
+
+  .container__content {
+    margin: 16px 0;
+  }
+
+  .info_about {
+    margin-right: 0;
+  }
+
+  .info_panel {
+    flex-direction: column;
+  }
+
+  .name {
+    margin: 0.5rem 0;
+  }
+
+  .projects_grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }

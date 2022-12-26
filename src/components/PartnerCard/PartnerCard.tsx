@@ -29,6 +29,7 @@ function PartnerCard({ partner }: Props) {
         </a>
       )
     },
+    p: 'span',
   }
 
   return (

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { VerifiedPartner, Service } from '../../interfaces/VerifiedPartner'
 import CategoryPill from '../CategoryPill/CategoryPill'
 import Discord from '../Icons/Discord'
@@ -22,6 +22,7 @@ import Empty from '../Icons/Empty'
 import ReactMarkdown from 'react-markdown'
 
 import 'decentraland-ui/lib/styles.css'
+import { trackLink } from '../utils'
 
 interface Props {
   partner: VerifiedPartner
@@ -29,12 +30,23 @@ interface Props {
 }
 
 const DATA_URL = process.env.NEXT_PUBLIC_PARTNERS_DATA_URL
-
 const SERVICES = Object.values(Service)
 
 function PartnerProfile({ partner, projects }: Props) {
   const WEBSITE = partner.website || ''
+  const REPORT_URL = 'https://dclstudios.typeform.com/to/HQpD0z5S'
+
   const displayServices = partner.services || [].filter((service) => SERVICES.includes(service))
+
+  const customComponents: object = {
+    a({ href, children }: { href: string; children: string }) {
+      return (
+        <a href={href} target="_blank" onClick={() => trackLink('External Link Description', href)} rel="noreferrer">
+          {children}
+        </a>
+      )
+    },
+  }
 
   return (
     <div className={styles.container}>
@@ -44,7 +56,7 @@ function PartnerProfile({ partner, projects }: Props) {
       <div className={styles.container__content}>
         <div className={styles.info_panel}>
           <div className={styles.info_id}>
-            <a href={WEBSITE} target="_blank" rel="noreferrer">
+            <a href={WEBSITE} target="_blank" rel="noreferrer" onClick={() => trackLink('External Link', WEBSITE)}>
               <div
                 className={styles.image}
                 style={{
@@ -56,15 +68,69 @@ function PartnerProfile({ partner, projects }: Props) {
               <div className={styles.name}>{partner.name}</div>
               <div className={styles.meta}>
                 <div>
-                  {partner.website && <Icon url={partner.website} icon={<Website />} />}
-                  {partner.marketplace && <Icon url={partner.marketplace} icon={<Marketplace />} />}
-                  {partner.email && <Icon url={`mailto:${partner.email}`} icon={<Email />} />}
-                  {partner.discord && <Icon url={partner.discord} icon={<Discord />} />}
-                  {partner.opensea && <Icon url={partner.opensea} icon={<Opensea />} />}
-                  {partner.twitter && <Icon url={partner.twitter} icon={<Twitter />} />}
-                  {partner.instagram && <Icon url={partner.instagram} icon={<Instagram />} />}
-                  {partner.linkedin && <Icon url={partner.linkedin} icon={<Linkedin />} />}
-                  {partner.youtube && <Icon url={partner.youtube} icon={<Youtube />} />}
+                  {partner.website && (
+                    <Icon
+                      url={partner.website}
+                      icon={<Website />}
+                      onClick={() => trackLink('Click Website', partner.website as string)}
+                    />
+                  )}
+                  {partner.marketplace && (
+                    <Icon
+                      url={partner.marketplace}
+                      icon={<Marketplace />}
+                      onClick={() => trackLink('Click Marketplace', partner.marketplace as string)}
+                    />
+                  )}
+                  {partner.email && (
+                    <Icon
+                      url={`mailto:${partner.email}`}
+                      icon={<Email />}
+                      onClick={() => trackLink('Click Email', partner.email as string)}
+                    />
+                  )}
+                  {partner.discord && (
+                    <Icon
+                      url={partner.discord}
+                      icon={<Discord />}
+                      onClick={() => trackLink('Click Discord', partner.discord as string)}
+                    />
+                  )}
+                  {partner.opensea && (
+                    <Icon
+                      url={partner.opensea}
+                      icon={<Opensea />}
+                      onClick={() => trackLink('Click Opensea', partner.opensea as string)}
+                    />
+                  )}
+                  {partner.twitter && (
+                    <Icon
+                      url={partner.twitter}
+                      icon={<Twitter />}
+                      onClick={() => trackLink('Click Twitter', partner.twitter as string)}
+                    />
+                  )}
+                  {partner.instagram && (
+                    <Icon
+                      url={partner.instagram}
+                      icon={<Instagram />}
+                      onClick={() => trackLink('Click Instagram', partner.instagram as string)}
+                    />
+                  )}
+                  {partner.linkedin && (
+                    <Icon
+                      url={partner.linkedin}
+                      icon={<Linkedin />}
+                      onClick={() => trackLink('Click Linkedin', partner.linkedin as string)}
+                    />
+                  )}
+                  {partner.youtube && (
+                    <Icon
+                      url={partner.youtube}
+                      icon={<Youtube />}
+                      onClick={() => trackLink('Click Youtube', partner.youtube as string)}
+                    />
+                  )}
                 </div>
               </div>
               <div className={styles.meta}>
@@ -85,7 +151,9 @@ function PartnerProfile({ partner, projects }: Props) {
             <div className={styles.info_title}>
               <FormattedMessage id="about" />
             </div>
-            <ReactMarkdown className={styles.description}>{partner.description}</ReactMarkdown>
+            <ReactMarkdown className={styles.description} components={customComponents}>
+              {partner.description}
+            </ReactMarkdown>
           </div>
           <div className={styles.table_container}>
             <div className={styles.info_details}>
@@ -155,7 +223,7 @@ function PartnerProfile({ partner, projects }: Props) {
           )}
         </div>
         <div className={styles.report_link}>
-          <a href="https://dclstudios.typeform.com/to/HQpD0z5S" target="_blank" rel="noreferrer">
+          <a href={REPORT_URL} target="_blank" rel="noreferrer" onClick={() => trackLink('Click Report', REPORT_URL)}>
             Report this studio
           </a>
         </div>

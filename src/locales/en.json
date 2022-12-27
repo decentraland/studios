@@ -19,6 +19,7 @@
   "service.wearable_design": "Wearable Design",
   "service.wearable_design.description": "3D Modeling skills to produce a wearable under the acceptance criteria of Decentraland's DAO Curators Committee. Such us hats, t-shirts and full-body skins.",
 
+  "project.about": "about this project",
   "filter": "Filter",
   "filter.noResults": "None of the studios match the selected filters",
   "noProjects": "No projects yet",

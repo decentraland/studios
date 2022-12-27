@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { ReactElement } from 'react'
 
 import styles from './ProjectProfile.module.css'
 import { FormattedMessage } from 'react-intl'
@@ -9,6 +9,7 @@ import { PartnerProject } from '../../interfaces/PartnerProject'
 import ReactMarkdown from 'react-markdown'
 import BackButton from '../BackButton/BackButton'
 import { trackLink } from '../utils'
+import Youtube from '../Icons/Youtube'
 
 interface Props {
   project: PartnerProject
@@ -21,9 +22,56 @@ function ProjectProfile({ project, partner }: Props) {
   const PROJECT_WEBSITE = project.link || ''
   const PARTNER_PROFILE_URL = `/profile/${partner.slug}`
 
-  const images = [project.image_1, project.image_2, project.image_3, project.image_4, project.image_5].filter(
-    (img) => img
-  )
+  const images = [project.image_1, project.image_2, project.image_3, project.image_4, project.image_5]
+    .filter((img) => img)
+    .map((image) => (
+      <img key={image} className={styles.image_img} src={`${DATA_URL}/assets/${image}?key=project-img`} />
+    ))
+
+  const videos = [project.video_1, project.video_2]
+    .filter((vid) => vid)
+    .map((video_url) => {
+      const videoId = (video_url || '').match(/v=([\w-]*)/)
+      const listId = (video_url || '').match(/list=([\w-]*)/)
+
+      if (videoId) {
+        return (
+          <iframe
+            key={`${videoId}`}
+            height="450"
+            src={`https://www.youtube.com/embed/${videoId[1]}`}
+            title="YouTube video player"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          ></iframe>
+        )
+      } else if (listId) {
+        return (
+          <iframe
+            key={`${listId}`}
+            height="450"
+            src={`https://www.youtube.com/embed/videoseries?list=${listId[1]}`}
+            title="YouTube video player"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          ></iframe>
+        )
+      } else {
+        return
+      }
+    })
+
+  const carouselItems = [...images, ...videos] as ReactElement[]
+
+  const renderThumbs = (elements: any) => {
+    const thumbs = []
+    for (const item of elements) {
+      if (item.type === 'img') {
+        thumbs.push(item)
+      } else if (item.type === 'iframe') {
+        thumbs.push(<Youtube key={item.key} />)
+      }
+    }
+    return thumbs
+  }
 
   const customComponents: object = {
     a({ href, children }: { href: string; children: string }) {
@@ -52,22 +100,20 @@ function ProjectProfile({ project, partner }: Props) {
         <div className={styles.info_panel}>
           <div className={styles.image_container}>
             <Carousel
-              autoPlay
               infiniteLoop
               showArrows={true}
               showThumbs={true}
               showStatus={false}
               showIndicators={false}
+              renderThumbs={renderThumbs}
             >
-              {images.map((image) => (
-                <img key={image} className={styles.image_img} src={`${DATA_URL}/assets/${image}?key=project-img`} />
-              ))}
+              {carouselItems}
             </Carousel>
           </div>
           <div className={styles.info_about}>
             <div className={styles.project_description}>
               <div className={styles.info_title}>
-                <FormattedMessage id="about this project" />
+                <FormattedMessage id="project.about" />
               </div>
               <ReactMarkdown className={styles.description} components={customComponents}>
                 {project.description}

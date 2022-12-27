@@ -42,13 +42,14 @@ export default class Projects {
     return projects
   }
 
-  static async getAllIds() {
-    const projects = await this.get(true)
+  static async getIdsAndProfiles() {
+    const projects = await this.get()
 
     return projects.map((project) => {
       return {
         params: {
           id: project.id.toString(),
+          profile: project.profile.toString(),
         },
       }
     })

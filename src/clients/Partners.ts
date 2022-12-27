@@ -55,4 +55,16 @@ export default class Partners {
       }
     })
   }
+
+  static async getAllIds() {
+    const partners = await this.get()
+
+    return partners.map((partner) => {
+      return {
+        params: {
+          id: partner.id,
+        },
+      }
+    })
+  }
 }

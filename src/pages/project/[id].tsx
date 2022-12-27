@@ -28,7 +28,17 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const paths = await Projects.getAllIds()
+  const projects = await Projects.getIdsAndProfiles()
+  const paths = []
+
+  const partnerIds = (await Partners.getAllIds()).map((partner) => partner.params.id)
+
+  for (const project of projects) {
+    if (partnerIds.includes(parseInt(project.params.profile))) {
+      paths.push(project)
+    }
+  }
+
   return {
     paths,
     fallback: false,

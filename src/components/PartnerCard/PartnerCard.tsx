@@ -30,6 +30,12 @@ function PartnerCard({ partner }: Props) {
       )
     },
     p: 'span',
+    ol({ children }: { children: string }) {
+      return <ol style={{ display: 'inline-block' }}>{children}</ol>
+    },
+    ul({ children }: { children: string }) {
+      return <ul style={{ display: 'inline-block' }}>{children}</ul>
+    },
   }
 
   return (

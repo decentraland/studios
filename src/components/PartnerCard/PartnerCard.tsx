@@ -24,7 +24,12 @@ function PartnerCard({ partner }: Props) {
   const customComponents: object = {
     a({ href, children }: { href: string; children: string }) {
       return (
-        <a href={href} target="_blank" onClick={() => trackLink('External Link Description', href)} rel="noreferrer">
+        <a
+          href={href}
+          target="_blank"
+          onClick={() => trackLink('Open External Link', 'Description Link', href)}
+          rel="noreferrer"
+        >
           {children}
         </a>
       )

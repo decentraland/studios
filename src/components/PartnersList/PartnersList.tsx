@@ -49,7 +49,7 @@ function PartnersList({ partners }: Props) {
               target={'_blank'}
               href={JOIN_REGISTRY_URL}
               rel="noreferrer"
-              onClick={() => trackLink('Click Join Registry', JOIN_REGISTRY_URL)}
+              onClick={() => trackLink('Open External Link', 'Join Registry', JOIN_REGISTRY_URL)}
             >
               <FormattedMessage id="join_registry" />
             </a>
@@ -77,7 +77,9 @@ function PartnersList({ partners }: Props) {
                 target={'_blank'}
                 href="https://governance.decentraland.org/"
                 rel="noreferrer"
-                onClick={() => trackLink('Click Governance Footer', 'https://governance.decentraland.org/')}
+                onClick={() =>
+                  trackLink('Open External Link', 'Governance Footer', 'https://governance.decentraland.org/')
+                }
               >
                 {chunks}
               </a>
@@ -88,7 +90,7 @@ function PartnersList({ partners }: Props) {
                 target={'_blank'}
                 href={JOIN_REGISTRY_URL}
                 rel="noreferrer"
-                onClick={() => trackLink('Click Join Registry', JOIN_REGISTRY_URL)}
+                onClick={() => trackLink('Open External Link', 'Join Registry', JOIN_REGISTRY_URL)}
               >
                 {chunks}
               </a>

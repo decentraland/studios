@@ -28,7 +28,12 @@ function ProjectProfile({ project, partner }: Props) {
   const customComponents: object = {
     a({ href, children }: { href: string; children: string }) {
       return (
-        <a href={href} target="_blank" onClick={() => trackLink('External Link Description', href)} rel="noreferrer">
+        <a
+          href={href}
+          target="_blank"
+          onClick={() => trackLink('Open External Link', 'Description Link', href)}
+          rel="noreferrer"
+        >
           {children}
         </a>
       )
@@ -73,7 +78,7 @@ function ProjectProfile({ project, partner }: Props) {
                     href={PROJECT_WEBSITE}
                     target="_blank"
                     rel="noreferrer"
-                    onClick={() => trackLink('External Link Project', PROJECT_WEBSITE)}
+                    onClick={() => trackLink('Open External Link', 'Project Link', PROJECT_WEBSITE)}
                   >
                     <FormattedMessage id={'external_link'} />
                     &nbsp; &gt;

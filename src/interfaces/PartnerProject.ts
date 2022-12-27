@@ -12,9 +12,11 @@ export interface PartnerProject {
   description: string
   link: string | null
   profile: number
-  image_1: string
-  image_2: null | string
-  image_3: null | string
-  image_4: null | string
-  image_5: null | string
+  image_1: string | null
+  image_2: string | null
+  image_3: string | null
+  image_4: string | null
+  image_5: string | null
+  video_1: string | null
+  video_2: string | null
 }

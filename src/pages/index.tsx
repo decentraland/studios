@@ -8,6 +8,7 @@ import Services from '../components/Services/Services'
 import React from 'react'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
 import { useIntl } from 'react-intl'
+import BannerHeader from '../components/BannerHeader/BannerHeader'
 
 export async function getStaticProps() {
   const partners = await Partners.get()
@@ -31,6 +32,7 @@ function Home({ partners }: { partners: VerifiedPartner[] }) {
 
       <main className={styles.main}>
         {/* <Services /> */}
+        <BannerHeader />
         <PartnersList partners={partners} />
       </main>
     </Container>

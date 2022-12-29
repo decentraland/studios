@@ -4,7 +4,6 @@ import { useMemo } from 'react'
 import English from '../locales/en.json'
 import { IntlProvider } from 'react-intl'
 import React from 'react'
-import Head from 'next/head'
 import { Footer } from 'decentraland-ui/dist/components/Footer/Footer'
 import dynamic from 'next/dynamic'
 import Script from 'next/script'
@@ -45,9 +44,6 @@ function App({ Component, pageProps }: AppProps) {
           analytics.page();
           }}();`}
       </Script>
-      <Head>
-        <link href="https://ui.decentraland.org/styles.css" rel="stylesheet" />
-      </Head>
       <IntlProvider locale={shortLocale} messages={messages}>
         <Navbar />
         <Component {...pageProps} />

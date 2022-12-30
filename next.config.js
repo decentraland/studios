@@ -1,10 +1,8 @@
 /** @type {import('next').NextConfig} */
-
-const withTranspiledModules = require('next-transpile-modules')(['decentraland-ui'])
-
 const nextConfig = {
+  transpilePackages: ['decentraland-ui'],
+  
   reactStrictMode: true,
-  swcMinify: true,
 }
 
-module.exports = withTranspiledModules(nextConfig)
+module.exports = nextConfig

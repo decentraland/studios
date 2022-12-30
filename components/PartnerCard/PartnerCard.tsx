@@ -44,7 +44,7 @@ function PartnerCard({ partner }: Props) {
   }
 
   return (
-    <Link href={PROFILE_WEBSITE}>
+    <Link href={PROFILE_WEBSITE} passHref legacyBehavior>
       <div className={styles.container}>
         <a href={PROFILE_WEBSITE}>
           <div

@@ -1,6 +1,7 @@
 import React from 'react'
 import styles from './BackButton.module.css'
 import ArrowRight from '../Icons/ArrowRight'
+import Link from 'next/link'
 
 interface Props {
   url: string
@@ -8,9 +9,9 @@ interface Props {
 
 function BackButton({ url }: Props) {
   return (
-    <a href={url} className={styles.arrowright} rel="noreferrer">
+    <Link href={url} className={styles.arrowright} rel="noreferrer">
       <ArrowRight />
-    </a>
+    </Link>
   )
 }
 

@@ -1,48 +1,31 @@
 {
-  "name": "partners",
+  "name": "my-app",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "rm -rf build && next build && next export && mv out build",
+    "build": "next build",
     "start": "next start",
-    "lint": "next lint --fix",
-    "prepare": "husky install"
+    "lint": "next lint"
   },
   "dependencies": {
-    "decentraland-ui": "^3.53.2",
-    "isomorphic-fetch": "^3.0.0",
-    "next": "^12.3.1",
+    "@next/font": "13.1.1",
+    "@types/node": "18.11.18",
+    "@types/react": "18.0.26",
+    "@types/react-dom": "18.0.10",
+    "decentraland-ui": "^3.71.0",
+    "eslint": "8.30.0",
+    "eslint-config-next": "13.1.1",
+    "next": "13.1.1",
     "next-intercom": "^0.1.4",
-    "next-transpile-modules": "^9.1.0",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-intl": "^6.1.2",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "react-intl": "^6.2.5",
     "react-markdown": "^8.0.4",
     "react-responsive-carousel": "^3.2.23",
-    "semantic-ui-css": "^2.4.1",
-    "semantic-ui-react": "^2.1.3"
+    "typescript": "4.9.4"
   },
   "devDependencies": {
-    "@formatjs/cli": "^5.1.1",
-    "@types/node": "18.7.23",
-    "@types/react": "18.0.21",
-    "@types/react-dom": "18.0.6",
-    "@types/uuid": "^9.0.0",
-    "@typescript-eslint/eslint-plugin": "^5.38.1",
-    "@typescript-eslint/parser": "^5.38.1",
-    "babel-plugin-formatjs": "^10.3.29",
-    "eslint": "8.24.0",
-    "eslint-config-next": "12.3.1",
-    "eslint-config-prettier": "^8.5.0",
-    "eslint-plugin-prettier": "^4.2.1",
-    "eslint-plugin-react": "^7.31.8",
-    "husky": "^8.0.0",
-    "react-hooks": "^1.0.1",
-    "typescript": "4.8.4"
-  },
-  "lint-staged": {
-    "*.{js,jsx,ts,tsx}": "eslint --cache --fix",
-    "*.{js,jsx,ts,tsx,css}": "prettier --write"
+    "@types/uuid": "^9.0.0"
   }
 }

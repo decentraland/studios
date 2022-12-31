@@ -25,7 +25,7 @@
   color: black;
 }
 
-.image {
+.image_container {
   width: 10rem;
   height: 10rem;
   float: left;
@@ -34,6 +34,13 @@
   background-size: contain !important;
   background-position: center !important;
   background-repeat: no-repeat !important;
+  position: relative;
+  display: block;
+  overflow: hidden;
+}
+
+.image{
+  object-fit: contain;
 }
 
 .services {

@@ -3,6 +3,7 @@ import 'react-responsive-carousel/lib/styles/carousel.min.css'
 
 import styles from './ProjectCard.module.css'
 import { PartnerProject } from '../../interfaces/PartnerProject'
+import Link from 'next/link'
 
 interface Props {
   project: PartnerProject
@@ -17,17 +18,15 @@ function ProjectCard({ project }: Props) {
 
   return (
     <div className={styles.header}>
-      <a href={WEBSITE}>
+      <Link href={WEBSITE}>
         <img className={styles.image} src={`${DATA_URL}/assets/${project.image_1}?key=thumb`} />
-      </a>
-      <a href={WEBSITE}>
         <div className={styles.header_info}>
           <div className={styles.project_title}>{project.title}</div>
           <div className={styles.header_arrow}>
             <i className={styles.arrow_right}></i>
           </div>
         </div>
-      </a>
+      </Link>
     </div>
   )
 }

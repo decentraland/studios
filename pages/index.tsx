@@ -25,9 +25,8 @@ function Home({ partners }: { partners: VerifiedPartner[] }) {
   return (
     <Container className={styles.container}>
       <Head>
-        <title>{title}</title>
-        <meta name="description" content="Verified Partners" />
-        <link rel="icon" href="/favicon.ico" />
+        <title>Metaverse Studios</title>
+        {/* <meta name="description" content="Verified Partners" /> */}
       </Head>
 
       <main className={styles.main}>

@@ -52,9 +52,9 @@ function Project({ project, partner }: { project: PartnerProject; partner: Verif
   return (
     <Container>
       <Head>
-        <title>{title}</title>
-        <meta name="description" content="Verified Partners" />
-        <link rel="icon" href="/favicon.ico" />
+        <title>Metaverse Studios</title>
+        {/* <meta name="description" content="Verified Partners" />
+        <link rel="icon" href="/favicon.ico" /> */}
       </Head>
 
       <main>

@@ -5,7 +5,8 @@
 }
 
 .name a,
-.name a:hover {
+.name a:hover,
+.description a:hover {
   color: black;
 }
 

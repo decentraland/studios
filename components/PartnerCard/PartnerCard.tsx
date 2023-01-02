@@ -1,12 +1,11 @@
 import React from 'react'
 import Link from 'next/link'
-import ReactMarkdown from 'react-markdown'
 
 import { VerifiedPartner, Service } from '../../interfaces/VerifiedPartner'
 import CategoryPill from '../CategoryPill/CategoryPill'
 import styles from './PartnerCard.module.css'
 import { FormattedMessage } from 'react-intl'
-import { trackLink } from '../utils'
+import MarkdownDescription from '../MarkdownDescription/MarkdownDescription'
 
 interface Props {
   partner: VerifiedPartner
@@ -20,28 +19,6 @@ function PartnerCard({ partner }: Props) {
   const PROFILE_WEBSITE = `/profile/${partner.slug}`
 
   const displayServices = (partner.services || []).filter((service) => SERVICES.includes(service))
-
-  const customComponents: object = {
-    a({ href, children }: { href: string; children: string }) {
-      return (
-        <a
-          href={href}
-          target="_blank"
-          onClick={() => trackLink('Open External Link', 'Description Link', href)}
-          rel="noreferrer"
-        >
-          {children}
-        </a>
-      )
-    },
-    p: 'span',
-    ol({ children }: { children: string }) {
-      return <ol style={{ display: 'inline-block' }}>{children}</ol>
-    },
-    ul({ children }: { children: string }) {
-      return <ul style={{ display: 'inline-block' }}>{children}</ul>
-    },
-  }
 
   return (
     <Link href={PROFILE_WEBSITE} passHref legacyBehavior>
@@ -67,9 +44,7 @@ function PartnerCard({ partner }: Props) {
               ))}
             </div>
           </div>
-          <ReactMarkdown className={styles.description} components={customComponents}>
-            {partner.description}
-          </ReactMarkdown>
+          <MarkdownDescription className={styles.description} description={partner.description} />
           <div className={styles.read_more_trigger}>
             <FormattedMessage id="show_more" />
           </div>

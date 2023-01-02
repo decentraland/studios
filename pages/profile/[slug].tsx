@@ -44,8 +44,6 @@ function Partner({ partner, projects }: { partner: VerifiedPartner; projects: Pa
     <Container>
       <Head>
         <title>Metaverse Studios</title>
-        {/* <meta name="description" content="Verified Partners" />
-        <link rel="icon" href="/favicon.ico" /> */}
       </Head>
 
       <main>

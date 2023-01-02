@@ -1,15 +1,15 @@
 import React, { ReactElement } from 'react'
 
+import 'react-responsive-carousel/lib/styles/carousel.min.css'
 import styles from './ProjectProfile.module.css'
 import { FormattedMessage } from 'react-intl'
-import 'react-responsive-carousel/lib/styles/carousel.min.css'
 import { Carousel } from 'react-responsive-carousel'
 import { VerifiedPartner } from '../../interfaces/VerifiedPartner'
 import { PartnerProject } from '../../interfaces/PartnerProject'
-import ReactMarkdown from 'react-markdown'
 import BackButton from '../BackButton/BackButton'
 import { trackLink } from '../utils'
 import Youtube from '../Icons/Youtube'
+import MarkdownDescription from '../MarkdownDescription/MarkdownDescription'
 
 interface Props {
   project: PartnerProject
@@ -73,21 +73,6 @@ function ProjectProfile({ project, partner }: Props) {
     return thumbs
   }
 
-  const customComponents: object = {
-    a({ href, children }: { href: string; children: string }) {
-      return (
-        <a
-          href={href}
-          target="_blank"
-          onClick={() => trackLink('Open External Link', 'Description Link', href)}
-          rel="noreferrer"
-        >
-          {children}
-        </a>
-      )
-    },
-  }
-
   return (
     <div className={styles.container}>
       <div>
@@ -115,9 +100,7 @@ function ProjectProfile({ project, partner }: Props) {
               <div className={styles.info_title}>
                 <FormattedMessage id="project.about" />
               </div>
-              <ReactMarkdown className={styles.description} components={customComponents}>
-                {project.description}
-              </ReactMarkdown>
+              <MarkdownDescription className={styles.description} description={project.description} />
               {project.link && (
                 <div className={styles.info_external_link}>
                   <a

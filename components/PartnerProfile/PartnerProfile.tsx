@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { VerifiedPartner, Service } from '../../interfaces/VerifiedPartner'
 import CategoryPill from '../CategoryPill/CategoryPill'
 import Discord from '../Icons/Discord'
@@ -10,6 +10,7 @@ import Youtube from '../Icons/Youtube'
 import Website from '../Icons/Website'
 import BackButton from '../BackButton/BackButton'
 
+import 'decentraland-ui/lib/styles.css'
 import styles from './PartnerProfile.module.css'
 import Marketplace from '../Icons/Marketplace'
 import Opensea from '../Icons/Opensea'
@@ -19,10 +20,9 @@ import DetailsList from '../DetailsList/DetailsList'
 import { PartnerProject } from '../../interfaces/PartnerProject'
 import ProjectCard from '../ProjectCard/ProjectCard'
 import Empty from '../Icons/Empty'
-import ReactMarkdown from 'react-markdown'
 
-import 'decentraland-ui/lib/styles.css'
 import { trackLink } from '../utils'
+import MarkdownDescription from '../MarkdownDescription/MarkdownDescription'
 
 interface Props {
   partner: VerifiedPartner
@@ -37,21 +37,6 @@ function PartnerProfile({ partner, projects }: Props) {
   const REPORT_URL = 'https://dclstudios.typeform.com/to/HQpD0z5S'
 
   const displayServices = partner.services || [].filter((service) => SERVICES.includes(service))
-
-  const customComponents: object = {
-    a({ href, children }: { href: string; children: string }) {
-      return (
-        <a
-          href={href}
-          target="_blank"
-          onClick={() => trackLink('Open External Link', 'Description Link', href)}
-          rel="noreferrer"
-        >
-          {children}
-        </a>
-      )
-    },
-  }
 
   return (
     <div className={styles.container}>
@@ -163,9 +148,7 @@ function PartnerProfile({ partner, projects }: Props) {
             <div className={styles.info_title}>
               <FormattedMessage id="about" />
             </div>
-            <ReactMarkdown className={styles.description} components={customComponents}>
-              {partner.description}
-            </ReactMarkdown>
+            <MarkdownDescription className={styles.description} description={partner.description} />
           </div>
           <div className={styles.table_container}>
             <div className={styles.info_details}>

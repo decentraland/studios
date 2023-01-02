@@ -8,6 +8,7 @@ import { Footer } from 'decentraland-ui/dist/components/Footer/Footer'
 import dynamic from 'next/dynamic'
 import Script from 'next/script'
 import { loadIntercom } from 'next-intercom'
+import Head from 'next/head'
 
 declare global {
   interface Window {
@@ -35,6 +36,14 @@ function App({ Component, pageProps }: AppProps) {
 
   return (
     <>
+      <Head>
+        <meta name="og:site_name" content="Decentraland" />
+        <meta name="description" content="Let’s build the metaverse together. Find the Right Team for Your Project" />
+        <meta name="og:type" content="website" />
+        <meta name="twitter:card" content="summary" />
+        <meta name="og:image" content="/images/decentraland.png" />
+        <link rel="icon" href="/favicon.ico" />
+      </Head>      
       {loadIntercom({
         appId: INTERCOM_APP_ID,
       })}

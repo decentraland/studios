@@ -1,6 +1,5 @@
 import { GetStaticPaths, GetStaticProps } from 'next'
 import Head from 'next/head'
-import { useIntl } from 'react-intl'
 import Partners from '../../clients/Partners'
 import { VerifiedPartner } from '../../interfaces/VerifiedPartner'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
@@ -8,6 +7,7 @@ import React from 'react'
 import PartnerProfile from '../../components/PartnerProfile/PartnerProfile'
 import { PartnerProject } from '../../interfaces/PartnerProject'
 import Projects from '../../clients/Projects'
+import { useIntl } from 'react-intl'
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   if (params && params.slug) {
@@ -43,9 +43,9 @@ function Partner({ partner, projects }: { partner: VerifiedPartner; projects: Pa
   return (
     <Container>
       <Head>
-        <title>{title}</title>
-        <meta name="description" content="Verified Partners" />
-        <link rel="icon" href="/favicon.ico" />
+        <title>Metaverse Studios</title>
+        {/* <meta name="description" content="Verified Partners" />
+        <link rel="icon" href="/favicon.ico" /> */}
       </Head>
 
       <main>

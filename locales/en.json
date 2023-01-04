@@ -20,6 +20,14 @@
   "service.wearable_design.description": "3D Modeling skills to produce a wearable under the acceptance criteria of Decentraland's DAO Curators Committee. Such us hats, t-shirts and full-body skins.",
 
   "project.about": "about this project",
+
+  "review.submit.form_title": "Write a review for ",
+  "review.submit.form_header": "It will be displayed on <a1><name></name></a1> profile on studios.decentraland.org.",
+  "review.submit.confirm_title": "Confirm your review",
+  "review.submit.confirm_text": "Thank you for leaving a review! Please confirm your review by clicking on a link we sent you via email to ",
+  "review.verify.title": "Your review has been published",
+  "review.verify.subtitle": "Thank you for leaving a review! You can check your comment on <a1> profile.</a1>",
+
   "filter": "Filter",
   "filter.noResults": "None of the studios match the selected filters",
   "noProjects": "No projects yet",

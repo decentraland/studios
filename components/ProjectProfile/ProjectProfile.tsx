@@ -67,7 +67,13 @@ function ProjectProfile({ project, partner }: Props) {
       if (item.type === 'img') {
         thumbs.push(item)
       } else if (item.type === 'iframe') {
-        thumbs.push(<Youtube key={item.key} />)
+        const vidId= item.key.split(',')[1]
+        
+        thumbs.push(
+          <div key={item.key} className={styles.youtubeThumb_container}>
+            <img alt='Youtube video' src={`https://img.youtube.com/vi/${vidId}/0.jpg`} />
+            <div className={styles.youtubeThumb_play}><Youtube color={'red'} /></div>
+          </div>)
       }
     }
     return thumbs

@@ -11,6 +11,8 @@ interface Props {
   partners: VerifiedPartner[]
 }
 
+const isDevelopment = process.env.NODE_ENV === 'development'
+
 function PartnersList({ partners }: Props) {
   const JOIN_REGISTRY_URL = 'https://dclstudios.typeform.com/to/NfzmbzXi'
 
@@ -31,9 +33,16 @@ function PartnersList({ partners }: Props) {
   const initPartnerList = sortByServicesCount(sortAlphabeticPartners(filteredPartners))
   const [partnersList, setPartnersList] = useState(initPartnerList)
 
+  //Partner order randomization stoped for improving page loading speed
   // useEffect(() => {
   //   setPartnersList(() => sortByServicesCount(randomizePartners(filteredPartners)))
   // }, [filteredPartners])
+
+  let renderList = partnersList
+
+  if (!isDevelopment){
+    renderList = renderList.filter(partner => partner.id !== 353)
+  }
 
   return (
     <>
@@ -54,8 +63,8 @@ function PartnersList({ partners }: Props) {
               <FormattedMessage id="join_registry" />
             </a>
           </div>
-          {partnersList.length ? (
-            partnersList.map((partner) => <PartnerCard key={partner.id} partner={partner} />)
+          {renderList.length ? (
+            renderList.map((partner) => <PartnerCard key={partner.id} partner={partner} />)
           ) : (
             <div className={styles.empty}>
               <Empty />

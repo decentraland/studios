@@ -56,9 +56,7 @@
   margin-bottom: 1em;
   font-size: 16px;
   flex: 1;
-  /* border-collapse: collapse; */
   display: flex;
-  /* max-width: 400px; */
 }
 
 .info_details--border {
@@ -89,6 +87,7 @@
   font-size: 12px;
   margin-bottom: 8px;
   color: #736e7d;
+  margin-top: 20px;
 }
 
 .pills {
@@ -105,16 +104,11 @@
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  margin-bottom: 20px;
-  /* justify-content: space-around; */
 }
 
 .empty {
   margin: auto;
   padding: 10px;
-  /* height: 50%; */
-  /* width: 50%; */
-  /* text-align: center; */
   font-size: medium;
   color: #37333d;
   opacity: 32%;
@@ -127,6 +121,12 @@
 }
 
 .projects_grid {
+  grid-template-columns: repeat(3, 1fr);
+  display: grid;
+  grid-gap: 2rem;
+}
+
+.reviews_grid {
   grid-template-columns: repeat(3, 1fr);
   display: grid;
   grid-gap: 2rem;
@@ -178,5 +178,9 @@
 
   .projects_grid {
     grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .reviews_grid {
+    grid-template-columns: repeat(1, 1fr);
   }
 }

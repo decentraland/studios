@@ -23,16 +23,19 @@ import Empty from '../Icons/Empty'
 
 import { trackLink } from '../utils'
 import MarkdownDescription from '../MarkdownDescription/MarkdownDescription'
+import { PartnerReview } from '../../interfaces/PartnerReview'
+import ReviewCard from '../ReviewCard/ReviewCard'
 
 interface Props {
   partner: VerifiedPartner
   projects: PartnerProject[]
+  reviews: PartnerReview[]
 }
 
 const DATA_URL = process.env.NEXT_PUBLIC_PARTNERS_DATA_URL
 const SERVICES = Object.values(Service)
 
-function PartnerProfile({ partner, projects }: Props) {
+function PartnerProfile({ partner, projects, reviews }: Props) {
   const WEBSITE = partner.website || ''
   const REPORT_URL = 'https://dclstudios.typeform.com/to/HQpD0z5S'
 
@@ -220,6 +223,23 @@ function PartnerProfile({ partner, projects }: Props) {
             <div className={styles.empty}>
               <Empty />
               <FormattedMessage id="noProjects" />
+            </div>
+          )}
+        </div>
+        <div>
+          <div className={styles.info_title}>
+            <FormattedMessage id="reviews" />
+          </div>
+          {reviews.length ? (
+            <div className={styles.reviews_grid}>
+              {reviews.map((review) => (
+                <ReviewCard key={review.id} review={review} />
+              ))}
+            </div>
+          ) : (
+            <div className={styles.empty}>
+              <Empty />
+              <FormattedMessage id="noReviews" />
             </div>
           )}
         </div>

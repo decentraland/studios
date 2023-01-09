@@ -6,6 +6,7 @@ import { FormattedMessage } from 'react-intl'
 import { useRouter } from 'next/router'
 import { PartnerReview } from '../../interfaces/PartnerReview'
 import Link from 'next/link'
+import ReviewCard from '../ReviewCard/ReviewCard'
 
 function ReviewVerify() {
   const [data, setData] = useState(null)
@@ -41,11 +42,7 @@ function ReviewVerify() {
   const partner = data['partner'] as VerifiedPartner
 
   return <div className={styles.container}>
-    <div className={styles.reviewCard}>
-      <div className={styles.review_name}>{review.name}</div>
-      <div>{review.company}</div>
-      <div className={styles.review_reviewText}>{review.review}</div>
-    </div>
+    <ReviewCard review={review} />
       <div className={styles.title}>
         <FormattedMessage id="review.verify.title" />
       </div>
@@ -63,6 +60,8 @@ function ReviewVerify() {
         />
       </div>
     </div>
+
+  
 }
 
 export default ReviewVerify

@@ -1,24 +1,29 @@
-import { GetStaticPaths, GetStaticProps } from 'next'
+import { GetServerSideProps, GetStaticPaths, GetStaticProps } from 'next'
 import Head from 'next/head'
 import Partners from '../../clients/Partners'
 import { VerifiedPartner } from '../../interfaces/VerifiedPartner'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import PartnerProfile from '../../components/PartnerProfile/PartnerProfile'
 import { PartnerProject } from '../../interfaces/PartnerProject'
 import Projects from '../../clients/Projects'
 import { useIntl } from 'react-intl'
+import { PartnerReview } from '../../interfaces/PartnerReview'
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   if (params && params.slug) {
     const partner = await Partners.getPartnerData(`?filter[slug]=${params.slug}`)
     const projects = await Projects.getProject(`?filter[profile]=${partner.id}`)
+    const reviews = await Partners.getReviews(partner.id)
+    
+    
 
     return {
       props: {
         partner,
         projects,
-      },
+        reviews,
+      }
     }
   }
 
@@ -36,10 +41,32 @@ export const getStaticPaths: GetStaticPaths = async () => {
   }
 }
 
-function Partner({ partner, projects }: { partner: VerifiedPartner; projects: PartnerProject[] }) {
+interface Props {
+  partner: VerifiedPartner
+  projects: PartnerProject[]
+  reviews: PartnerReview[]
+}
+
+function Partner({ partner, projects, reviews }: Props) {
   const intl = useIntl()
   const title = intl.formatMessage({ id: 'title' })
 
+  const [updatedReviews, setUpdatedReviews] = useState(reviews)
+
+  useEffect(() => {
+    if (partner.id){
+
+      fetch(`/api/reviews/get`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ partnerId: partner.id })
+      }).then((response) => response.json()).then((data) => setUpdatedReviews(data))
+    }
+
+  },[partner.id])
+  
   return (
     <Container>
       <Head>
@@ -47,7 +74,7 @@ function Partner({ partner, projects }: { partner: VerifiedPartner; projects: Pa
       </Head>
 
       <main>
-        <PartnerProfile partner={partner} projects={projects} />
+        <PartnerProfile partner={partner} projects={projects} reviews={updatedReviews}/>
       </main>
     </Container>
   )

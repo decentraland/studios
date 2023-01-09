@@ -31,6 +31,7 @@
   "filter": "Filter",
   "filter.noResults": "None of the studios match the selected filters",
   "noProjects": "No projects yet",
+  "noReviews": "No reviews yet",
 
   "services": "Services",
   "region": "Region",
@@ -46,6 +47,7 @@
   "join_registry": "JOIN THIS REGISTRY",
   "about": "About",
   "projects": "Projects",
+  "reviews": "Reviews",
   "external_link": "visit external link",
   "author": "Author",
   "contact_author": "Contact Author"

@@ -1,0 +1,16 @@
+.reviewCard{
+    padding: 24px;
+    box-shadow: 0px 2px 4px rgba(22, 20, 26, 0.08), 0px 0px 4px rgba(22, 20, 26, 0.12);
+    border-radius: 2px 24px 24px 24px;
+  }
+  
+  .review_name{
+    font-weight: 700;
+    font-size: 20px;
+    color: #242129;
+    margin-bottom: 10px;
+  }
+  
+  .review_reviewText{
+    margin-top: 25px;
+  }

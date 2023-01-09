@@ -7,6 +7,17 @@ const nextConfig = {
   transpilePackages: ['decentraland-ui'],
   
   reactStrictMode: true,
+
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'admin.dclstudios.org',
+        port: '',
+        pathname: '/assets/**',
+      },
+    ],
+  },
   
   webpack(config) {
     config.plugins.push(new EnvironmentPlugin(['API_SUBMIT', 'API_VERIFY', 'API_ACCESS_TOKEN']))

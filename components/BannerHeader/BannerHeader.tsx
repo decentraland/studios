@@ -17,7 +17,7 @@ function BackButton() {
           </div>
         </div>
       </div>
-      <img className={styles.image} src="/images/computer.png"></img>
+      <img alt='Let’s get you a team to build with' className={styles.image} src="/images/computer.webp"></img>
     </div>
   )
 }

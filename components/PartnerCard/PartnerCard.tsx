@@ -6,6 +6,7 @@ import CategoryPill from '../CategoryPill/CategoryPill'
 import styles from './PartnerCard.module.css'
 import { FormattedMessage } from 'react-intl'
 import MarkdownDescription from '../MarkdownDescription/MarkdownDescription'
+import Image from 'next/image'
 
 interface Props {
   partner: VerifiedPartner
@@ -24,12 +25,13 @@ function PartnerCard({ partner }: Props) {
     <Link href={PROFILE_WEBSITE} passHref legacyBehavior>
       <div className={styles.container}>
         <a href={PROFILE_WEBSITE}>
-          <div
+          {/* <div
             className={styles.image}
             style={{
               background: `url(${DATA_URL}/assets/${partner.logo}?key=logo)`,
             }}
-          ></div>
+          ></div> */}
+          <div className={styles.image}><Image alt='' src={`${DATA_URL}/assets/${partner.logo}?key=logo`} fill unoptimized/></div>
         </a>
         <div className={styles.info_container}>
           <h3 className={styles.name}>

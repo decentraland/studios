@@ -31,9 +31,9 @@ function PartnersList({ partners }: Props) {
   const initPartnerList = sortByServicesCount(sortAlphabeticPartners(filteredPartners))
   const [partnersList, setPartnersList] = useState(initPartnerList)
 
-  useEffect(() => {
-    setPartnersList(() => sortByServicesCount(randomizePartners(filteredPartners)))
-  }, [filteredPartners])
+  // useEffect(() => {
+  //   setPartnersList(() => sortByServicesCount(randomizePartners(filteredPartners)))
+  // }, [filteredPartners])
 
   return (
     <>

@@ -67,6 +67,7 @@
   top: -4rem;
   box-shadow: 0 2px 4px #726d7c;
   font-weight: 400;
+  z-index: 10;
 }
 
 .tag_container:hover.serv_3d_modeling,

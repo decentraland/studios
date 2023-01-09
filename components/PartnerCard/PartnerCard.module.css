@@ -31,9 +31,14 @@
   float: left;
   margin-right: 1rem;
   border-radius: 1rem;
-  background-size: contain !important;
-  background-position: center !important;
-  background-repeat: no-repeat !important;
+  /* background-size: contain !important; */
+  /* background-position: center !important; */
+  /* background-repeat: no-repeat !important; */
+
+  object-fit: contain;
+  overflow: hidden;
+  position: relative;
+  display: block;
 }
 
 .services {

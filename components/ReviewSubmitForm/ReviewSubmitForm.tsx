@@ -100,9 +100,9 @@ function ReviewSubmitForm({ partner }: Props) {
       />
     </div>
     <form onSubmit={handleSubmit}>
-      <label className={styles.label}>Name</label>
+      <label className={styles.label}>Your name</label>
       <input className={styles.input} type="text" required name="name" value={formData.name} onChange={handleInput} />
-      <label className={styles.label}>Company</label>
+      <label className={styles.label}>Your company</label>
       <input
         className={styles.input}
         type="text"
@@ -111,7 +111,7 @@ function ReviewSubmitForm({ partner }: Props) {
         value={formData.company}
         onChange={handleInput}
       />
-      <label className={styles.label}>Email</label>
+      <label className={styles.label}>Your email</label>
       <input
         className={styles.input}
         type="email"

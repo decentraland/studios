@@ -2,11 +2,11 @@
   margin: 0 auto;
 }
 
-@media (min-width: 768px) {
+/* @media (min-width: 768px) {
   .container {
     padding: 0 8rem;
   }
-}
+} */
 
 .main {
   min-height: 100vh;

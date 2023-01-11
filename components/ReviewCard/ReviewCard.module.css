@@ -13,4 +13,5 @@
   
   .review_reviewText{
     margin-top: 25px;
+    white-space: pre-line;
   }

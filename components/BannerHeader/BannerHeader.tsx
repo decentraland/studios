@@ -9,7 +9,7 @@ function BackButton() {
         <div className={styles.factsContainer}>
           <div className={styles.factContainer}>
             <div className={styles.bigText}>180+</div>
-            <div className={styles.smallText}>VERFIED STUDIOS</div>
+            <div className={styles.smallText}>VERIFIED STUDIOS</div>
           </div>
           <div className={styles.factContainer}>
             <div className={styles.bigText}>200+</div>

@@ -1,4 +1,5 @@
 import '../styles/globals.css'
+import 'decentraland-ui/lib/styles.css'
 import type { AppProps } from 'next/app'
 import { useMemo } from 'react'
 import English from '../locales/en.json'

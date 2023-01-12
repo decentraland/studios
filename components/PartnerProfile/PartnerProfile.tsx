@@ -10,7 +10,7 @@ import Youtube from '../Icons/Youtube'
 import Website from '../Icons/Website'
 import BackButton from '../BackButton/BackButton'
 
-import 'decentraland-ui/lib/styles.css'
+// import 'decentraland-ui/lib/styles.css'
 import styles from './PartnerProfile.module.css'
 import Marketplace from '../Icons/Marketplace'
 import Opensea from '../Icons/Opensea'

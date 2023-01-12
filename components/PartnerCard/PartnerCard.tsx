@@ -25,12 +25,6 @@ function PartnerCard({ partner }: Props) {
     <Link href={PROFILE_WEBSITE} passHref legacyBehavior>
       <div className={styles.container}>
         <a href={PROFILE_WEBSITE}>
-          {/* <div
-            className={styles.image}
-            style={{
-              background: `url(${DATA_URL}/assets/${partner.logo}?key=logo)`,
-            }}
-          ></div> */}
           <div className={styles.image}><Image alt='' src={`${DATA_URL}/assets/${partner.logo}?key=logo`} fill unoptimized/></div>
         </a>
         <div className={styles.info_container}>
@@ -46,7 +40,7 @@ function PartnerCard({ partner }: Props) {
               ))}
             </div>
           </div>
-          <MarkdownDescription className={styles.description} description={partner.description} />
+          <MarkdownDescription className={styles.description} description={partner.description} inPartnersList />
           <div className={styles.read_more_trigger}>
             <FormattedMessage id="show_more" />
           </div>

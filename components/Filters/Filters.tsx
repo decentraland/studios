@@ -57,7 +57,6 @@ function Filters({ partners, setFilteredPartners }: Props) {
   const [checkBoxState, setCheckBoxState] = useState<CheckBoxStates>({})
   const router = useRouter()
   const intl = useIntl()
-  const filterText = intl.formatMessage({ id: 'filter' })
 
   const languages = useMemo(() => {
     let uniqueLanguages = new Set<string>()
@@ -156,7 +155,7 @@ function Filters({ partners, setFilteredPartners }: Props) {
     const selectedPartners = partners.filter((partner) =>
       Object.entries(appliedFilters).every(([type, filters]) => {
         const filterKey = type as `${FilterType}`
-        return filters.some(
+        return filters.every(
           (filter) =>
             partner[filterKey] === filter || (partner[filterKey] && partner[filterKey].includes(filter as never))
         )

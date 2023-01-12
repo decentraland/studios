@@ -7,6 +7,7 @@ import styles from './PartnersList.module.css'
 import Filters from '../Filters/Filters'
 import Empty from '../Icons/Empty'
 import { trackLink } from '../utils'
+
 interface Props {
   partners: VerifiedPartner[]
 }
@@ -35,7 +36,7 @@ function PartnersList({ partners }: Props) {
 
   useEffect(() => {
     setPartnersList(() => sortByServicesCount(randomizePartners(filteredPartners)))
-  }, [filteredPartners])
+  }, [filteredPartners.length])
 
   let renderList = partnersList
 

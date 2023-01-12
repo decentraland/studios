@@ -1,17 +1,14 @@
 import React from 'react'
 import styles from './BackButton.module.css'
 import ArrowRight from '../Icons/ArrowRight'
-import Link from 'next/link'
+import { useRouter } from 'next/router'
 
-interface Props {
-  url: string
-}
-
-function BackButton({ url }: Props) {
+function BackButton() {
+  const router = useRouter()
   return (
-    <Link href={url} className={styles.arrowright} rel="noreferrer">
+    <div onClick={() => router.back()} className={styles.arrowright}>
       <ArrowRight />
-    </Link>
+    </div>
   )
 }
 

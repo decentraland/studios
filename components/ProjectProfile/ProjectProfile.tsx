@@ -82,7 +82,7 @@ function ProjectProfile({ project, partner }: Props) {
   return (
     <div className={styles.container}>
       <div>
-        <BackButton url={PARTNER_PROFILE_URL} />
+        <BackButton />
       </div>
       <div className={styles.container__content}>
         <div className={styles.info_panel}>

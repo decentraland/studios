@@ -44,7 +44,7 @@ function PartnerProfile({ partner, projects, reviews }: Props) {
   return (
     <div className={styles.container}>
       <div className={styles.container__backButton}>
-        <BackButton url={'../'} />
+        <BackButton />
       </div>
       <div className={styles.container__content}>
         <div className={styles.info_panel}>

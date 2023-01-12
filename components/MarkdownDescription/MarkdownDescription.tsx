@@ -15,7 +15,6 @@ const customComponents: object = {
         </a>
       )
     },
-    p: 'span',
     ol({ children }: { children: string }) {
       return <ol style={{ display: 'inline-block' }}>{children}</ol>
     },
@@ -25,15 +24,23 @@ const customComponents: object = {
   }
 
   interface Props extends React.HTMLAttributes<HTMLDivElement> {
-    description: string
+    description: string,
+    inPartnersList?: boolean
   }
 
-function MarkdownDescription ({description, ...otherProps}: Props){
-    return (
-    <ReactMarkdown components={customComponents}  {...otherProps} >
-            {description}
-    </ReactMarkdown>
-    )
+function MarkdownDescription ({description, inPartnersList, ...otherProps}: Props){
+  
+  let renderCustomComponents: any = {...customComponents}
+  
+  if (inPartnersList){
+    renderCustomComponents.p = 'span'
+  }
+
+  return (
+  <ReactMarkdown components={renderCustomComponents}  {...otherProps} >
+          {description}
+  </ReactMarkdown>
+  )
 }
 
 export default MarkdownDescription

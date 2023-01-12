@@ -50,9 +50,12 @@ function PartnersList({ partners }: Props) {
         <Filters partners={partners} setFilteredPartners={setFilteredPartners} />
         <div>
           <div className={styles.title_container}>
-            <h3>
-              <FormattedMessage id="title" />
-            </h3>
+            <div className={styles.title_subcontainer}>
+              <h3>
+                <FormattedMessage id="title" />
+              </h3>
+              <span className={styles.results_count}>{renderList.length} RESULTS</span>
+            </div>
             <a
               className={styles.link}
               target={'_blank'}

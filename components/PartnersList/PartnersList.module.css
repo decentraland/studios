@@ -16,6 +16,20 @@
   font-size: 13px;
 }
 
+.title_subcontainer{
+  display: flex;
+}
+
+.results_count{
+  margin-left: 24px;
+}
+
+@media (max-width: 700px) {
+  .results_count {
+    display: none;
+  }
+}
+
 .empty {
   margin: auto;
   padding: 10px;

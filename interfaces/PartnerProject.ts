@@ -20,3 +20,9 @@ export interface PartnerProject {
   video_1: string | null
   video_2: string | null
 }
+
+export interface PartnerProjectExtended extends PartnerProject{
+  partner_slug?: string
+  partner_name?: string
+  partner_logo?: string
+}

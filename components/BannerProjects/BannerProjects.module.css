@@ -4,7 +4,7 @@
   margin-bottom: 40px;
   position: relative;
 
-  background: linear-gradient(180deg, #ff2d55 0%, #ff7439 100%);
+  background: linear-gradient(180deg, #DA58D8 0%, #9CA0D9 100%);
   color: #ffffff;
   border-radius: 8px;
 
@@ -17,14 +17,14 @@
 
 
 .leftPanel {
-  max-width: 550px;
+  max-width: 585px;
 }
 
 .image {
-  height: 210px;
+  height: 240px;
   position: absolute;
   right: 10px;
-  bottom: -30px;
+  bottom: -55px;
   z-index: 0;
 }
 
@@ -48,33 +48,31 @@
   letter-spacing: -1px;
 }
 
-.bigText {
-  font-size: 24px;
-  font-weight: 600;
-}
 .smallText {
-  margin-top: 4px;
-  font-size: 12px;
+  margin-top: 16px;
+  font-size: 16px;
   letter-spacing: 0.5px;
-  white-space: nowrap;
+  font-weight: 400;
+
 }
 
 @media (max-width: 990px){
   .leftPanel{
-    max-width: 80%;
+    max-width: 70%;
   }
+  /* .image{
+    opacity: 0.2;
+  } */
 }
 
 @media (max-width: 767px){
   .leftPanel{
     max-width: 100%;
   }
+
   .mainText{
     font-size: 22px;
     line-height: 28px;
-  }
-  .bigText{
-    font-size: 18px;
   }
   .image{
     display: none;

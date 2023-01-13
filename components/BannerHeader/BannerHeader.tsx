@@ -1,7 +1,7 @@
 import React from 'react'
 import styles from './BannerHeader.module.css'
 
-function BackButton() {
+function BannerHeader() {
   return (
     <div className={styles.container}>
       <div className={styles.leftPanel}>
@@ -22,4 +22,4 @@ function BackButton() {
   )
 }
 
-export default BackButton
+export default BannerHeader

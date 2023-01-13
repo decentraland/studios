@@ -128,3 +128,12 @@ a {
   display: flex;
   justify-content: center;
 }
+
+.allocateNav{
+  min-height: 64px;
+}
+@media (max-width: 767px){
+  .allocateNav{
+    min-height: 56px;
+  }
+}

@@ -19,7 +19,7 @@ declare global {
 }
 
 const Navbar = dynamic(() => import('decentraland-ui/dist/components/Navbar/Navbar').then((module) => module.Navbar), {
-  ssr: false,
+  ssr: true,
 })
 
 const METABASE_KEY = process.env.NEXT_PUBLIC_METABASE_KEY
@@ -50,6 +50,8 @@ function App({ Component, pageProps }: AppProps) {
     }
   }, [])
 
+  const isFullscreen= router.asPath === '/' || router.asPath === '/projects'
+
   return (
     <>
       <Head>
@@ -74,7 +76,9 @@ function App({ Component, pageProps }: AppProps) {
         src="https://plausible.io/js/script.outbound-links.js">
       </Script>
       <IntlProvider locale={shortLocale} messages={messages}>
-        <Navbar />
+        <div className='allocateNav'>
+          <Navbar isFullscreen={isFullscreen}/>
+        </div>
         <Component {...pageProps} />
         <Footer />
       </IntlProvider>

@@ -5,15 +5,15 @@ const PROJECTS_URL = `${process.env.NEXT_PUBLIC_PARTNERS_DATA_URL}/items/project
 export default class Projects {
   static Url = process.env.NEXT_PUBLIC_PARTNERS_DATA_URL || ''
 
-  static async get(ids = false) {
+  static async get({basicData}: {basicData?: boolean}) {
     let isFinished = false
     let offset = 0
-    const queryIds = ids ? '&fields=id' : ''
+    const queryFields = basicData ? '&sort[]=-date_created&fields=image_1,id,title,profile' : ''
 
     const projects: PartnerProject[] = []
     while (!isFinished) {
       try {
-        const response = await fetch(`${PROJECTS_URL}?offset=${offset}${queryIds}`)
+        const response = await fetch(`${PROJECTS_URL}?offset=${offset}${queryFields}`)
         const data = (await response.json()).data as PartnerProject[]
         if (data.length === 0) {
           isFinished = true
@@ -43,7 +43,7 @@ export default class Projects {
   }
 
   static async getIdsAndProfiles() {
-    const projects = await this.get()
+    const projects = await this.get({})
 
     return projects.map((project) => {
       return {

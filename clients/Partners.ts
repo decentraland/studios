@@ -7,15 +7,17 @@ const REVIEWS_URL = `${process.env.NEXT_PUBLIC_PARTNERS_DATA_URL}/items/reviews`
 export default class Partners {
   static Url = process.env.NEXT_PUBLIC_PARTNERS_DATA_URL || ''
 
-  static async get(slugs = false) {
+
+  static async get({slugs, basicData}: {slugs?: boolean, basicData?: boolean}) {
     let isFinished = false
     let offset = 0
     const querySlugs = slugs ? '&fields=slug' : ''
+    const queryBasicData = basicData ? '&fields=name,services,region,slug,country,languages,logo,id,description,team_size,payment_methods' : ''
 
     const partners: VerifiedPartner[] = []
     while (!isFinished) {
       try {
-        const response = await fetch(`${VERIFIED_PARTNERS_URL}?offset=${offset}${querySlugs}`)
+        const response = await fetch(`${VERIFIED_PARTNERS_URL}?offset=${offset}${querySlugs}${queryBasicData}`)
         const data = (await response.json()).data as VerifiedPartner[]
         if (data.length === 0) {
           isFinished = true
@@ -27,8 +29,13 @@ export default class Partners {
         console.log('error', error)
       }
     }
-
-    return partners
+    
+    let responsePartnerts = partners
+    if (basicData){
+      responsePartnerts = partners.map(partner => ({... partner, description: partner.description.substring(0,300)}))
+    }
+    
+    return responsePartnerts
   }
 
   static async getPartnerData(searchParams: string) {
@@ -46,7 +53,7 @@ export default class Partners {
   }
 
   static async getAllSlugs() {
-    const partners = await this.get(true)
+    const partners = await this.get({slugs: true})
 
     return partners.map((partner) => {
       return {
@@ -58,7 +65,7 @@ export default class Partners {
   }
 
   static async getAllIds() {
-    const partners = await this.get()
+    const partners = await this.get({})
 
     return partners.map((partner) => {
       return {

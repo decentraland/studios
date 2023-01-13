@@ -48,7 +48,7 @@ function PartnersList({ partners }: Props) {
     <>
       <div className={styles.container}>
         <Filters partners={partners} setFilteredPartners={setFilteredPartners} />
-        <div>
+        <div className={styles.list_container}>
           <div className={styles.title_container}>
             <div className={styles.title_subcontainer}>
               <h3>

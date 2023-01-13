@@ -26,20 +26,23 @@
   <!-- Add your site or application content here -->
   <div class="container">
     <div class="section section--hero">
-      <div class="hero__logo"></div>
-      <h1>Unleash the Power of the Metaverse for Your Brand</h1>
-      <p class="base-text hero__base-text">Read our Metaverse guide to learn how to leverage the immersive and interactive nature of the Metaverse to create marketing campaigns that drive results.</p>
-      <a href="#section--cta" class="cta hero__cta">get the guide</a>
+      <div class="section--hero__container">
+        <div class="hero__container__logo"></div>
+        <h1>Unleash the Power of the Metaverse for Your Brand</h1>
+        <p class="base-text hero__container__base-text">Read our Metaverse guide to learn how to leverage the immersive and interactive nature of the Metaverse to create marketing campaigns that drive results.</p>
+        <a href="#section--cta" class="cta hero__container__cta">get the guide</a>
+        <img class="hero__container__pdf-cover" src="metaverse-guide/img/pdf-cover.png" alt="">
+      </div>
     </div>
     <div class="section section--cta" id="section--cta">
       <div class="section--cta__container">
-        <img class="cta__image" src="" alt="">
+        <img class="cta__image" src="metaverse-guide/img/plan-illustration.png" alt="">
         <div class="cta__form">
           <h3>Get our Metaverse guide for free</h3>
           <p class="base-text cta__base-text">Write down your email and we’ll send you the document right away.</p>
           <form action="">
-            <input type="text" name="name" id="name" placeholder="Email" required/>
-            <input type="text" name="name" id="name" placeholder="Email" required/>
+            <input type="text" name="name" id="name" placeholder="Your name" required/>
+            <input type="text" name="email" id="email" placeholder="Your email" required/>
             <button class="cta" type="submit" href="/">Submit</button>
           </form>
         </div>  
@@ -53,7 +56,7 @@
       <div class="section--aboutdcl__cards">
         <div class="card section--aboutdcl__cards__card">
             <p class="section--aboutdcl__cards__card__title">Decentralized platform, built on Ethereum</p>
-            <p class="section--aboutdcl__cards__card__description">Governed and owned by its users</p>
+            <p class="section--aboutdcl__cards__card__description base-text">Governed and owned by its users</p>
         </div>
         <div class="card section--aboutdcl__cards__card">
           <p class="section--aboutdcl__cards__card__title">Over 8 million visitors</p>
@@ -64,33 +67,33 @@
           <p class="section--aboutdcl__cards__card__description">No headset or knowledge of crypto required</p>
         </div>
       </div>
-      <img class="section--aboutdcl__image" src="" alt="">
+      <img class="section--aboutdcl__image" src="metaverse-guide/img/about-dcl.png" alt="">
     </div>
     <div class="section section--whatsinside">
       <div class="section--whatsinside__description">
         <h2>What’s inside the guide</h2>
         <p class="section--whatsinside__description__text">
-          We built this guide for brand owners, marketing agencies and small businesses who want to advance their presence online, while learning about the metaverse. We cover the following aspects of developing a brand in Decentraland:
+          We built this guide for <strong>brand owners, marketing agencies and small businesses</strong> who want to advance their presence online, while learning about the metaverse. We cover the following aspects of developing a brand in Decentraland:
         </p>
       </div>
       <div class="section--whatsinside__cards">
         <div class="card section--whatsinside__cards__card">
-          <img class="section--whatsinside__cards__card__icon" src="" alt="">
+          <img class="section--whatsinside__cards__card__icon" src="metaverse-guide/img/icon_visibility.png" alt="">
           <p class="section--whatsinside__cards__card__title">Brand Visibility</p>
           <p class="base-text section--whatsinside__cards__card__text">Host Product launches, conferences, or concerts that can be attended by users from all over the world.</p>
         </div>
         <div class="card section--whatsinside__cards__card">
-          <img class="section--whatsinside__cards__card__icon" src="" alt="">
+          <img class="section--whatsinside__cards__card__icon" src="metaverse-guide/img/icon_engagement.png" alt="">
           <p class="section--whatsinside__cards__card__title">Customer Engagement</p>
           <p class="base-text section--whatsinside__cards__card__text">Create a virtual escape room that promotes your products, or a game that incorporates your brand into the gameplay.</p>
         </div>
         <div class="card section--whatsinside__cards__card">
-          <img class="section--whatsinside__cards__card__icon" src="" alt="">
+          <img class="section--whatsinside__cards__card__icon" src="metaverse-guide/img/icon_opportunities.png" alt="">
           <p class="section--whatsinside__cards__card__title">Marketing Opportunities</p>
           <p class="base-text section--whatsinside__cards__card__text">Allow users to purchase your products directly in the virtual world.</p>
         </div>
       </div>
-      <button class="cta" type="submit" href="/">Get the guide</button>
+      <a href="#section--cta" class="cta section--whatsinside__cta">get the guide</a>
     </div>
     <div class="section section--journey">
       <div class="section--journey__container">
@@ -116,11 +119,12 @@
             <p class="section--journey__container__cards__card__title">Engage users</p>
             <p class="base-text section--journey__container__cards__card__description">Design wearables for your brand, give away them, make a show room.</p>
           </div>
-          <div class="section--journey__container__cta">
-            <p class="base-text section--journey__container__cta__text">Read about these in detail and follow the next steps in our guide.</p>
-            <div class="section--journey__container__cta__cta">get the guide</div>
-          </div>
         </div>
+        <div class="section--journey__container__cta">
+          <p class="base-text section--journey__container__cta__text">Read about these in detail and follow the next steps in our guide.</p>
+          <a href="#cta-section" class="cta">get the guide</a>
+        </div>
+
       </div>
     </div>
     <div class="section section--faq">
@@ -233,7 +237,6 @@
       <a href="" class="base-text">Contact us</a>
     </div>
   </div>
-  <p>Hello world! This is HTML5 Boilerplate.</p>
   <script src="js/vendor/modernizr-3.11.2.min.js"></script>
   <script src="js/plugins.js"></script>
   <script src="js/main.js"></script>

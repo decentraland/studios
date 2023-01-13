@@ -517,7 +517,8 @@ button{
 
 .section--journey{
   width: 100%;
-  background: linear-gradient(90deg, rgba(32,29,36,1) 0%, rgba(22,20,25,1) 100%); 
+  background: url('../img/journey-background.png'); 
+  background-size: cover;
   display: flex;
   justify-content: center;
 }
@@ -536,6 +537,7 @@ button{
 
 .section--journey__container__cards{
   display: flex;
+  margin: 24px 0;
 }
 
 .section--journey__container__cards__card{
@@ -556,12 +558,21 @@ button{
   margin-top: 0;
 }
 
+.section--journey__cards__card__description{
+  margin-bottom: 0;
+}
+
 .section--journey__container__cta{
   color: white;
   display: flex;
+  margin-left: 12px;
 }
 
-.section--journey__cards__card__description{
-  margin-bottom: 0;
+.section--journey__container__cta .base-text{
+  margin-right: 16px;
+}
+
+.section--journey__container h2{
+  margin-left: 12px;
 }
 

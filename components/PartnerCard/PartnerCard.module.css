@@ -5,9 +5,6 @@
   padding: 1rem;
   margin-bottom: 2rem;
   min-height: 12rem;
-  display: flex;
-  flex-direction: row;
-  width: 100%;
   cursor: pointer;
 }
 
@@ -31,9 +28,6 @@
   float: left;
   margin-right: 1rem;
   border-radius: 1rem;
-  /* background-size: contain !important; */
-  /* background-position: center !important; */
-  /* background-repeat: no-repeat !important; */
 
   object-fit: contain;
   overflow: hidden;
@@ -63,6 +57,11 @@
   flex-wrap: wrap;
 }
 
+.description_container{
+  display: flex;
+  flex-direction: column;
+}
+
 .description {
   overflow: hidden;
   text-overflow: ellipsis;
@@ -78,8 +77,6 @@
 }
 
 .read_more_trigger {
-  cursor: pointer;
-  display: inline-block;
   color: #ff2d55;
   font-size: 1em;
   font-weight: 500;

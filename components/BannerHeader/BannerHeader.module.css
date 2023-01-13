@@ -1,6 +1,5 @@
 .container {
   width: 100%;
-  /* height: 214px; */
   min-height: 214px;
   margin-bottom: 40px;
   position: relative;
@@ -8,15 +7,10 @@
   background: linear-gradient(180deg, #ff2d55 0%, #ff7439 100%);
   color: #ffffff;
   border-radius: 8px;
-  overflow: hidden;
+  /* overflow: hidden; */
 }
 
-.mainText {
-  font-weight: 600;
-  font-size: 28px;
-  line-height: 33px;
-  letter-spacing: -1px;
-}
+
 
 .leftPanel {
   padding-top: 40px;
@@ -29,11 +23,11 @@
 }
 
 .image {
-  width: 15vw;
-  height: 15vw;
+  /* width: 200px; */
+  height: 210px;
   position: absolute;
   right: 10px;
-  bottom: -2vw;
+  bottom: -30px;
   z-index: 0;
 }
 
@@ -49,6 +43,14 @@
   width: 50%;
   margin-right: 5px;
 }
+
+.mainText {
+  font-weight: 600;
+  font-size: 28px;
+  line-height: 33px;
+  letter-spacing: -1px;
+}
+
 .bigText {
   font-size: 24px;
   font-weight: 600;
@@ -58,4 +60,25 @@
   font-size: 12px;
   letter-spacing: 0.5px;
   white-space: nowrap;
+}
+
+@media (max-width: 767px){
+  .mainText{
+    font-size: 22px;
+    line-height: 28px;
+  }
+  .bigText{
+    font-size: 18px;
+  }
+  .image{
+    /* opacity: 0.5; */
+    display: none;
+  }
+  
+}
+
+@media (max-width: 530px){
+  .leftPanel{
+    padding-top: 26px;
+  }
 }

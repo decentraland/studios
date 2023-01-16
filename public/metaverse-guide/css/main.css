@@ -266,6 +266,11 @@ textarea {
 
 /* GENERAL STYLES */
 
+@font-face {
+  font-family: 'SF-pro-medium';
+  src: url('fonts/sf-pro.tf') format("truetype");
+}
+
 body{
   --dclmain: #FF2D55;
   --dclmainhover: #FF6482;
@@ -295,6 +300,11 @@ h3{
 h4{
   font-size: 24px;
   line-height: 24px;
+}
+
+.inline-link{
+  color: var(--dclmain);
+  text-decoration: none;
 }
 
 .base-text{
@@ -377,7 +387,7 @@ button{
   display: flex;
   justify-content: center;
   padding: 140px 56px;
-  margin-top: 80px;
+  margin-top: 40px;
   background: var(--whitesand);
 }
 
@@ -576,3 +586,218 @@ button{
   margin-left: 12px;
 }
 
+/* FAQ SECTION */
+
+.section--faq{
+  background: white;
+}
+
+.section--faq__container{
+  width: 1064px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 140px 56px;
+  margin-top: 80px;
+  margin: auto;
+  position: relative;
+}
+
+.section--faq__container__description{
+  margin: 16px 40px 16px 0;
+  flex: 1;
+}
+
+.section--faq__container__faqlist{
+  flex: 2;
+}
+
+.section--faq__container__faqlist__faq{
+  border: 1px solid var(--whitesand);
+  border-radius: 8px;
+  padding: 16px;
+  margin: 16px 0;
+  cursor: pointer;
+}
+
+.section--faq__container__faqlist__faq__title{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.section--faq__container__faqlist__faq__title__number{
+  font-weight: bold;
+  color: var(--dclmain);
+  width: 32px;
+  margin: 8px 0;
+}
+
+.section--faq__container__faqlist__faq__title__question_title{
+  font-weight: bold;
+  color: black;
+  margin: 8px 0;
+  flex: 1;
+}
+
+.section--faq__container__faqlist__faq__title__chevron{
+  width: 24px;
+  height: 24px;
+  transition: .25s;
+}
+
+.section--faq__container__faqlist__faq__answer{
+  opacity: 1;
+  height: fit-content;
+  transition: .2s;
+  margin: 8px 0 0 0;
+}
+
+.faq--collapsed .section--faq__container__faqlist__faq__answer{
+  /* display: none; */
+  opacity: 0;
+  height: 0px;
+  margin: 0;
+}
+
+.faq--collapsed .section--faq__container__faqlist__faq__title__chevron{
+  transform: rotate(180deg);
+}
+
+
+/* DEEPDIVE SECTION */
+
+.section--deepdive{
+  background-color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 96px 0;
+}
+
+.section--deepdive__container{
+  max-width: 946px;
+  background-color: #121E2E;
+  color: white;
+  border-radius: 40px;
+  padding: 32px 40px 48px 40px;
+  position: relative;
+  overflow: hidden;
+}
+
+.section--deepdive__container h2{
+  width: 70%;
+  margin-bottom: 56px;
+}
+
+.section--deepdive__container__img{
+  width: 600px;
+  position: absolute;
+  right: -220px;
+  bottom: -130px;
+}
+
+
+/* REVIEWS SECTION */
+
+.section--reviews{
+  background: white;
+  padding: 128px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.section--reviews h3{
+  text-align: center;
+  margin-bottom: 48px;
+}
+
+.section--reviews__container__review{
+  width: 40vw;
+  background: var(--whitesand);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 40px;
+  border-radius: 24px;
+}
+
+.section--reviews__container__review__text{
+  font-size: 20px;
+  line-height: 28px;
+  margin: 0 0 16px 0;
+}
+
+.section--reviews__container__review__author{
+  display: flex;
+  align-items: center;
+  margin-top: 16px;
+}
+
+.section--reviews__container__review__author__image{
+  border-radius: 100px;
+  margin-right: 24px;
+}
+
+.section--reviews__container__review__author__authorname{
+  display: flex;
+  flex-direction: column;
+}
+
+.section--reviews__container__review__author__name{
+  font-weight: bold;
+}
+
+.section--reviews__container__review__author__authorname p{
+  margin: 4px 0;
+}
+
+
+/* CONTACT SECTION */
+
+.section--contact{
+  background: white;
+  display: flex;
+  justify-content: center;
+  padding: 140px 0;
+}
+
+.section--contact__container{
+  max-width: 1064px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.section--contact_envelope{
+  width: 250px;
+}
+
+
+/* FOOTER */
+
+.footer{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: white;
+}
+
+.footer__container{
+  width: 1064px;
+  padding: 24px 140px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.footer img{
+  width: 200px;
+}
+
+a.base-text{
+  text-decoration: none;
+  color: var(--stone);
+}

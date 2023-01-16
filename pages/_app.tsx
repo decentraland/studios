@@ -69,6 +69,10 @@ function App({ Component, pageProps }: AppProps) {
           analytics.page();
           }}();`}
       </Script>
+      <Script id="plausible"
+        data-domain="studios.decentraland.org" 
+        src="https://plausible.io/js/script.outbound-links.js">
+      </Script>
       <IntlProvider locale={shortLocale} messages={messages}>
         <Navbar />
         <Component {...pageProps} />

@@ -1,7 +1,7 @@
 import '../styles/globals.css'
 import 'decentraland-ui/lib/styles.css'
 import type { AppProps } from 'next/app'
-import { useMemo } from 'react'
+import { useEffect, useMemo } from 'react'
 import English from '../locales/en.json'
 import { IntlProvider } from 'react-intl'
 import React from 'react'
@@ -10,6 +10,7 @@ import dynamic from 'next/dynamic'
 import Script from 'next/script'
 import { loadIntercom } from 'next-intercom'
 import Head from 'next/head'
+import { useRouter } from 'next/router'
 
 declare global {
   interface Window {
@@ -25,6 +26,7 @@ const METABASE_KEY = process.env.NEXT_PUBLIC_METABASE_KEY
 const INTERCOM_APP_ID = process.env.NEXT_PUBLIC_INTERCOM_APP_ID
 
 function App({ Component, pageProps }: AppProps) {
+  const router = useRouter()
   const [shortLocale] = ['en']
   const messages = useMemo(() => {
     switch (shortLocale) {
@@ -34,6 +36,19 @@ function App({ Component, pageProps }: AppProps) {
         return English
     }
   }, [shortLocale])
+
+  //store a flag for BackButton behaviour
+  useEffect(() => {
+    const handleRouteChange = (url: string) => {
+      globalThis?.sessionStorage.setItem('prevInStudios', url)
+    }
+
+    router.events.on('routeChangeComplete', handleRouteChange)
+
+    return () => {
+      router.events.off('routeChangeComplete', handleRouteChange)
+    }
+  }, [])
 
   return (
     <>

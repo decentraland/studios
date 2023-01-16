@@ -5,8 +5,17 @@ import { useRouter } from 'next/router'
 
 function BackButton() {
   const router = useRouter()
+
+  const onClickHandler = () => {
+    if(globalThis?.sessionStorage.prevInStudios){ 
+      router.back()
+    } else {
+      router.push('/')
+    }
+  }
+  
   return (
-    <div onClick={() => router.back()} className={styles.arrowright}>
+    <div onClick={onClickHandler} className={styles.arrowright}>
       <ArrowRight />
     </div>
   )

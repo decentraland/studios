@@ -13,9 +13,10 @@
 
 html {
   color: #222;
+  scroll-behavior: smooth;
   font-size: 1em;
   line-height: 1.4;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-family: SFProDisplay, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
 
 /*
@@ -323,6 +324,7 @@ h4{
   text-decoration: none;
   border-radius: 8px;
   transition: ease-in-out .2s;
+  height: fit-content;
 }
 
 .cta:hover{
@@ -357,7 +359,7 @@ button{
 }
 
 .section--hero__container{
-  width: 1064px;
+  max-width: 1064px;
   display: flex;
   padding: 120px 140px;
   flex-direction: column;
@@ -380,6 +382,28 @@ button{
   margin-top: 16px;
 }
 
+@media (max-width: 1064px) {
+  .section--hero__container{
+    width: 100%;
+    padding: 80px 32px 8px 32px;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .hero__container__pdf-cover{
+    bottom: -10%;
+    right: initial;
+    position: relative;
+  }
+
+  .section--hero__container p, .section--hero__container h1{
+    width: 90%;
+  }
+  
+}
+
+
 
 /* CTA SECTION */
 
@@ -392,6 +416,7 @@ button{
 }
 
 .section--cta__container{
+  max-width: 1064px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -400,6 +425,31 @@ button{
   box-shadow: 0px 2px 2px 0px rgba(8, 43, 41, 0.04);
   padding: 56px 64px 48px 64px;
   border-radius: 32px;
+}
+
+.cta--highlight{
+  animation-name: pink-highlight;
+  animation-duration: 2s;
+  box-shadow: var(--dclmain) 0px 0px 0px;
+  animation-delay: .3s;
+}
+
+@keyframes pink-highlight {
+  0% {
+    box-shadow: var(--dclmain) 0px 0px 0px;
+  }
+
+  25%{
+    box-shadow: var(--dclmain) 1px 1px 32px;
+  }
+
+  75%{
+    box-shadow: var(--dclmain) 1px 1px 32px;
+  }
+
+  100% {
+    box-shadow: var(--dclmain) 0px 0px 0px;
+  }
 }
 
 .cta__image{
@@ -421,6 +471,26 @@ button{
   border-radius: 8px;
   border: 1px solid lightgray;
   padding: 4px 12px;
+  width: 200px;
+}
+
+@media (max-width: 1064px) {
+  .section--cta__container{
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    width: 80%;
+  }
+
+  .cta__form form{
+    flex-direction: column;
+  }
+
+  .cta__form form *{
+    margin: 8px;
+    width: 100%;
+  }
+
 }
 
 /* ABOUT DCL SECTION */
@@ -475,11 +545,41 @@ button{
   width: 1300px;
 }
 
+@media (max-width: 1064px) {
+  .section--aboutdcl{
+    width: 100%;
+    flex-direction: column;  
+    padding: 80px 0;
+    align-items: center;
+  }
+
+  .section--aboutdcl__description{
+    width: 90%;
+    text-align: center;
+  }
+
+  .section--aboutdcl__cards{
+    width: 90%;
+    align-items: center;
+    margin: 32px 0;
+  }
+
+  .section--aboutdcl__cards__card{
+    width: inherit;
+    text-align: center;
+  }
+
+  .section--aboutdcl__image{
+    display: none;
+  }
+  
+}
+
 
 /* WHATS INSIDE SECTION */
 
 .section--whatsinside{
-  width: 1064px;
+  max-width: 1064px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -521,6 +621,22 @@ button{
 
 .section--whatsinside__cta{
   margin-top: 24px;
+}
+
+@media (max-width: 1064px) {
+  .section--whatsinside{
+    max-width: 80%;
+    padding: 80px 0;
+  }
+
+  .section--whatsinside__description{
+    width: 100%;
+  }
+
+  .section--whatsinside__cards{
+    flex-direction: column;
+  }
+
 }
 
 /* GUIDED JOURNEY SECTION */
@@ -576,6 +692,8 @@ button{
   color: white;
   display: flex;
   margin-left: 12px;
+  display: flex;
+  align-items: center;
 }
 
 .section--journey__container__cta .base-text{
@@ -584,6 +702,43 @@ button{
 
 .section--journey__container h2{
   margin-left: 12px;
+}
+
+@media (max-width: 1064px) {
+  .section--journey__container{
+    width: 80%;
+  }
+
+  .section--journey__container h2{
+    margin-left: 0;
+    text-align: center;
+  }
+
+  .section--journey__container__cards{
+    flex-direction: column;
+  }
+
+  .section--journey__container__cards__card{
+    align-items: center;
+    text-align: center;
+  }
+
+  .section--journey__container__cta{
+    flex-direction: column;
+    text-align: center;
+    margin-left: 0;
+  }
+
+  .section--journey__container__cta__text{
+    margin-right: 0;
+    margin: 16px 0;
+  }
+
+  .section--journey__container__cta .base-text{
+    margin-right: 0;
+  }
+
+
 }
 
 /* FAQ SECTION */
@@ -623,7 +778,7 @@ button{
 .section--faq__container__faqlist__faq__title{
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
 }
 
 .section--faq__container__faqlist__faq__title__number{
@@ -644,6 +799,7 @@ button{
   width: 24px;
   height: 24px;
   transition: .25s;
+  margin: 8px 0;
 }
 
 .section--faq__container__faqlist__faq__answer{
@@ -658,10 +814,31 @@ button{
   opacity: 0;
   height: 0px;
   margin: 0;
+  top: -100%;
 }
 
 .faq--collapsed .section--faq__container__faqlist__faq__title__chevron{
   transform: rotate(180deg);
+}
+
+@media (max-width: 1064px) {
+  .section--faq__container{
+    width: 80%;
+    flex-direction: column;
+    align-items: center;
+    padding: 140px 0;
+    margin-top: 40px;
+    text-align: center;
+  }
+
+  .section--faq__container__description{
+    margin: 40px 0;
+  }
+
+  .section--faq__container__faqlist__faq{
+    text-align: left;
+  }
+  
 }
 
 
@@ -801,3 +978,178 @@ a.base-text{
   text-decoration: none;
   color: var(--stone);
 }
+
+
+
+/* FONT DECLARATIONS */
+
+@font-face {
+  font-family: 'SFProDisplay';
+  src: local('SFProDisplay Black'), local('SFProDisplay-Black'),
+      url('metaverse-guide/css/fonts/SFProDisplay-Black.woff2') format('woff2'),
+      url('metaverse-guide/css/fonts/SFProDisplay-Black.woff') format('woff');
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'SFProDisplay';
+  src: local('SFProDisplay Black Italic'), local('SFProDisplay-BlackItalic'),
+      url('metaverse-guide/css/fonts/SFProDisplay-BlackItalic.woff2') format('woff2'),
+      url('metaverse-guide/css/fonts/SFProDisplay-BlackItalic.woff') format('woff');
+  font-weight: 900;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'SFProDisplay';
+  src: local('SFProDisplay Bold'), local('SFProDisplay-Bold'),
+      url('metaverse-guide/css/fonts/SFProDisplay-Bold.woff2') format('woff2'),
+      url('metaverse-guide/css/fonts/SFProDisplay-Bold.woff') format('woff');
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'SFProDisplay';
+  src: local('SFProDisplay Heavy'), local('SFProDisplay-Heavy'),
+      url('metaverse-guide/css/fonts/SFProDisplay-Heavy.woff2') format('woff2'),
+      url('metaverse-guide/css/fonts/SFProDisplay-Heavy.woff') format('woff');
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'SFProDisplay';
+  src: local('SFProDisplay Bold Italic'), local('SFProDisplay-BoldItalic'),
+      url('metaverse-guide/css/fonts/SFProDisplay-BoldItalic.woff2') format('woff2'),
+      url('metaverse-guide/css/fonts/SFProDisplay-BoldItalic.woff') format('woff');
+  font-weight: bold;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'SFProDisplay';
+  src: local('SFProDisplay Heavy Italic'), local('SFProDisplay-HeavyItalic'),
+      url('metaverse-guide/css/fonts/SFProDisplay-HeavyItalic.woff2') format('woff2'),
+      url('metaverse-guide/css/fonts/SFProDisplay-HeavyItalic.woff') format('woff');
+  font-weight: 900;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'SFProDisplay';
+  src: local('SFProDisplay Light Italic'), local('SFProDisplay-LightItalic'),
+      url('metaverse-guide/css/fonts/SFProDisplay-LightItalic.woff2') format('woff2'),
+      url('metaverse-guide/css/fonts/SFProDisplay-LightItalic.woff') format('woff');
+  font-weight: 300;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'SFProDisplay';
+  src: local('SFProDisplay Medium'), local('SFProDisplay-Medium'),
+      url('metaverse-guide/css/fonts/SFProDisplay-Medium.woff2') format('woff2'),
+      url('metaverse-guide/css/fonts/SFProDisplay-Medium.woff') format('woff');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'SFProDisplay';
+  src: local('SFProDisplay Medium Italic'), local('SFProDisplay-MediumItalic'),
+      url('metaverse-guide/css/fonts/SFProDisplay-MediumItalic.woff2') format('woff2'),
+      url('metaverse-guide/css/fonts/SFProDisplay-MediumItalic.woff') format('woff');
+  font-weight: 500;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'SFProDisplay';
+  src: local('SFProDisplay Regular'), local('SFProDisplay-Regular'),
+      url('metaverse-guide/css/fonts/SFProDisplay-Regular.woff2') format('woff2'),
+      url('metaverse-guide/css/fonts/SFProDisplay-Regular.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'SFProDisplay';
+  src: local('SFProDisplay Regular Italic'), local('SFProDisplay-RegularItalic'),
+      url('metaverse-guide/css/fonts/SFProDisplay-RegularItalic.woff2') format('woff2'),
+      url('metaverse-guide/css/fonts/SFProDisplay-RegularItalic.woff') format('woff');
+  font-weight: normal;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'SFProDisplay';
+  src: local('SFProDisplay Semibold'), local('SFProDisplay-Semibold'),
+      url('metaverse-guide/css/fonts/SFProDisplay-Semibold.woff2') format('woff2'),
+      url('metaverse-guide/css/fonts/SFProDisplay-Semibold.woff') format('woff');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'SFProDisplay';
+  src: local('SFProDisplay Semibold Italic'), local('SFProDisplay-SemiboldItalic'),
+      url('metaverse-guide/css/fonts/SFProDisplay-SemiboldItalic.woff2') format('woff2'),
+      url('metaverse-guide/css/fonts/SFProDisplay-SemiboldItalic.woff') format('woff');
+  font-weight: 600;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'SFProDisplay';
+  src: local('SFProDisplay Thin'), local('SFProDisplay-Thin'),
+      url('metaverse-guide/css/fonts/SFProDisplay-Thin.woff2') format('woff2'),
+      url('metaverse-guide/css/fonts/SFProDisplay-Thin.woff') format('woff');
+  font-weight: 100;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'SFProDisplay';
+  src: local('SFProDisplay Thin Italic'), local('SFProDisplay-ThinItalic'),
+      url('metaverse-guide/css/fonts/SFProDisplay-ThinItalic.woff2') format('woff2'),
+      url('metaverse-guide/css/fonts/SFProDisplay-ThinItalic.woff') format('woff');
+  font-weight: 100;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'SFProDisplay';
+  src: local('SFProDisplay Ultralight'), local('SFProDisplay-Ultralight'),
+      url('metaverse-guide/css/fonts/SFProDisplay-Ultralight.woff2') format('woff2'),
+      url('metaverse-guide/css/fonts/SFProDisplay-Ultralight.woff') format('woff');
+  font-weight: 100;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'SFProDisplay';
+  src: local('SFProDisplay Ultralight Italic'), local('SFProDisplay-UltralightItalic'),
+      url('metaverse-guide/css/fonts/SFProDisplay-UltralightItalic.woff2') format('woff2'),
+      url('metaverse-guide/css/fonts/SFProDisplay-UltralightItalic.woff') format('woff');
+  font-weight: 100;
+  font-style: italic;
+  font-display: swap;
+}
+

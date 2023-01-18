@@ -41,7 +41,9 @@ function PartnersList({ partners }: Props) {
   let renderList = partnersList
 
   if (!isDevelopment){
-    renderList = renderList.filter(partner => partner.id !== 353)
+    //prevent dev studios from showing in production
+    const restrictedIds = [353, 358]
+    renderList = renderList.filter(partner => !restrictedIds.includes(partner.id))
   }
 
   return (

@@ -35,7 +35,7 @@
 .info_id {
   display: flex;
   margin-bottom: 40px;
-  min-width: 400px;
+  /* min-width: 400px; */
 }
 
 .header_info {
@@ -72,6 +72,11 @@
   margin-right: 10px;
   width: 50%;
 }
+
+.info_details:last-of-type > div {
+  width: 100%;
+}
+
 
 .info_details div div:first-of-type {
   font-weight: 500;
@@ -127,7 +132,7 @@
 }
 
 .reviews_grid {
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   display: grid;
   grid-gap: 2rem;
 }

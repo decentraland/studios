@@ -59,7 +59,7 @@ function PartnersList({ partners }: Props) {
               <span className={styles.results_count}>{renderList.length} RESULTS</span>
             </div>
             <a
-              className={styles.link}
+              className={styles.link_join}
               target={'_blank'}
               href={JOIN_REGISTRY_URL}
               rel="noreferrer"

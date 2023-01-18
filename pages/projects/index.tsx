@@ -6,12 +6,9 @@ import React from 'react'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
 import BannerProjects from '../../components/BannerProjects/BannerProjects'
 
-import { Tabs } from 'decentraland-ui/dist/components/Tabs/Tabs'
 import ProjectsList from '../../components/ProjectsList/ProjectsList'
 import { PartnerProjectExtended } from '../../interfaces/PartnerProject'
 import Projects from '../../clients/Projects'
-import { useRouter } from 'next/router'
-import Link from 'next/link'
 
 export async function getStaticProps() {
   
@@ -38,21 +35,12 @@ interface Props {
 }
 
 function ProjectsPage({ projects }: Props) {
-  const router = useRouter()
   return (
       
     <Container className={styles.container}>
       <Head>
         <title>Metaverse Studios</title>
       </Head>
-      <Tabs>
-        <Tabs.Left>
-          <Link href='/' legacyBehavior>
-            <Tabs.Tab>Studios</Tabs.Tab>
-          </Link>
-          <Tabs.Tab active>Projects</Tabs.Tab>
-        </Tabs.Left>
-      </Tabs>
       <main className={styles.main}>
         <BannerProjects />
         <ProjectsList projects={projects}/>

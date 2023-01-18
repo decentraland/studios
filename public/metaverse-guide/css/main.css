@@ -347,6 +347,34 @@ button{
 }
 
 
+@media (max-width: 1064px) {
+  h1{
+    font-size: 40px;
+    line-height: 40px;
+    margin: 0;
+  }
+  
+  h2{
+    font-size: 36px;
+    line-height: 36px;
+    margin: 0;
+  }
+  
+  h3{
+    font-size: 28px;
+    line-height: 28px;
+    margin: 0;
+  }
+  
+  h4{
+    font-size: 16px;
+    line-height: 16px;
+  }
+  
+
+}
+
+
 /* HERO SECTION */
 
 
@@ -626,6 +654,7 @@ button{
 .section--whatsinside__cards__card__title{
   font-size: 24px;
   font-weight: bold;
+  line-height: 28px;
 }
 
 .section--whatsinside__cta{
@@ -716,6 +745,7 @@ button{
 @media (max-width: 1064px) {
   .section--journey__container{
     width: 80%;
+    padding: 80px 40px;
   }
 
   .section--journey__container h2{
@@ -836,7 +866,7 @@ button{
     flex-direction: column;
     align-items: center;
     padding: 140px 0;
-    margin-top: 40px;
+    margin-top: 0;
     text-align: center;
   }
 
@@ -881,6 +911,31 @@ button{
   position: absolute;
   right: -220px;
   bottom: -130px;
+}
+
+@media (max-width: 1064px) {
+  .section--deepdive__container{
+    max-width: 80%;
+    flex-direction: column;
+    align-items: center;
+    display: flex;
+    text-align: center;
+    padding: 16px 24px 32px 24px;
+  }
+
+  .section--deepdive__container h2{
+    margin-bottom: 32px;
+    width: 90%;
+  }
+
+  .section--deepdive__container__img{
+    position: relative;
+    right: initial;
+    bottom: initial;
+    width: 50%;
+  }
+
+
 }
 
 
@@ -940,6 +995,19 @@ button{
   margin: 4px 0;
 }
 
+@media (max-width: 1064px) {
+
+  .section--reviews{
+    width: initial;
+    padding: 80px 32px;
+  }
+
+  .section--reviews__container__review{
+    width: auto;
+  }
+
+}
+
 
 /* CONTACT SECTION */
 
@@ -959,6 +1027,15 @@ button{
 
 .section--contact_envelope{
   width: 250px;
+}
+
+@media (max-width: 1064px) {
+  .section--contact__container{
+    flex-direction: column-reverse;
+    align-items: center;
+    padding: 80px 32px;
+    text-align: center;
+  }
 }
 
 
@@ -986,6 +1063,13 @@ button{
 a.base-text{
   text-decoration: none;
   color: var(--stone);
+}
+
+@media (max-width: 1064px) {
+  .footer__container{
+    justify-content: space-between;
+    padding: 32px;
+  }
 }
 
 

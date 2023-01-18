@@ -188,7 +188,7 @@ function Filters({ partners, setFilteredPartners }: Props) {
                 let circleDiv = null
                 let serviceTooltipDiv = null
                 if (itemData.name === 'services') {
-                  circleDiv = <div className={styles.circle} />
+                  circleDiv = <img className={styles.circle} src={`/images/category_${key}.webp`} />
                   serviceTooltipDiv = (
                     <div className={styles.tooltip_container}>
                       <div className={styles.tooltip}>

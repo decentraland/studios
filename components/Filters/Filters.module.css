@@ -40,8 +40,8 @@
 }
 
 .circle {
-  width: 1em;
-  height: 1em;
+  width: 1.5em;
+  /* height: 1em; */
   border-radius: 50%;
   margin-right: 15px;
   flex-shrink: 0;
@@ -76,10 +76,10 @@
   background-color: #fbe5fd;
 }
 
-.tag_container:hover.serv_3d_modeling > .circle,
+/* .tag_container:hover.serv_3d_modeling > .circle,
 .serv_3d_modeling--check > .circle {
   background-color: #ee74f7;
-}
+} */
 
 .tag_container:hover.serv_advertisement,
 .serv_advertisement--check,
@@ -87,10 +87,10 @@
   background-color: #fdf7d6;
 }
 
-.tag_container:hover.serv_advertisement > .circle,
+/* .tag_container:hover.serv_advertisement > .circle,
 .serv_advertisement--check > .circle {
   background-color: #f4b356;
-}
+} */
 
 .tag_container:hover.serv_emote_design,
 .serv_emote_design--check,
@@ -98,10 +98,10 @@
   background-color: #eab6be;
 }
 
-.tag_container:hover.serv_emote_design > .circle,
+/* .tag_container:hover.serv_emote_design > .circle,
 .serv_emote_design--check > .circle {
   background-color: #c72b32;
-}
+} */
 
 .tag_container:hover.serv_land_rental,
 .serv_land_rental--check,
@@ -109,10 +109,10 @@
   background-color: #e3ecfa;
 }
 
-.tag_container:hover.serv_land_rental > .circle,
+/* .tag_container:hover.serv_land_rental > .circle,
 .serv_land_rental--check > .circle {
   background-color: #5688e7;
-}
+} */
 
 .tag_container:hover.serv_programming,
 .serv_programming--check,
@@ -120,10 +120,10 @@
   background-color: #dfdcf1;
 }
 
-.tag_container:hover.serv_programming > .circle,
+/* .tag_container:hover.serv_programming > .circle,
 .serv_programming--check > .circle {
   background-color: #382aac;
-}
+} */
 
 .tag_container:hover.serv_venue_rental,
 .serv_venue_rental--check,
@@ -131,10 +131,10 @@
   background-color: #fcefd5;
 }
 
-.tag_container:hover.serv_venue_rental > .circle,
+/* .tag_container:hover.serv_venue_rental > .circle,
 .serv_venue_rental--check > .circle {
   background-color: #f0804f;
-}
+} */
 
 .tag_container:hover.serv_wearable_design,
 .serv_wearable_design--check,
@@ -142,7 +142,7 @@
   background-color: #e4f2d8;
 }
 
-.tag_container:hover.serv_wearable_design > .circle,
+/* .tag_container:hover.serv_wearable_design > .circle,
 .serv_wearable_design--check > .circle {
   background-color: #63b334;
-}
+} */

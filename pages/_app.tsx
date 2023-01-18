@@ -11,6 +11,8 @@ import Script from 'next/script'
 import { loadIntercom } from 'next-intercom'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
+import { Tabs } from 'decentraland-ui/dist/components/Tabs/Tabs'
+import Link from 'next/link'
 
 declare global {
   interface Window {
@@ -50,7 +52,22 @@ function App({ Component, pageProps }: AppProps) {
     }
   }, [])
 
-  const isFullscreen= router.asPath === '/' || router.asPath === '/projects'
+  const tabsContents = [['/', 'Studios'],['/projects', 'Projects'], ['/resources', 'Resources']]
+  const showTabs = tabsContents.map(tab => tab[0]).includes(router.asPath)
+
+  let renderTabs = null
+  if (showTabs){
+    renderTabs = <Tabs>
+    <Tabs.Left>
+      {tabsContents.map(tab => 
+        <Link key={tab[0]} href={`${tab[0]}`} legacyBehavior>
+          <Tabs.Tab active={router.asPath === tab[0]}>{`${tab[1]}`}</Tabs.Tab>
+        </Link>
+      )}
+    </Tabs.Left>
+  </Tabs>
+  }
+
 
   return (
     <>
@@ -77,8 +94,9 @@ function App({ Component, pageProps }: AppProps) {
       </Script>
       <IntlProvider locale={shortLocale} messages={messages}>
         <div className='allocateNav'>
-          <Navbar isFullscreen={isFullscreen}/>
+          <Navbar isFullscreen={showTabs}/>
         </div>
+        {renderTabs}
         <Component {...pageProps} />
         <Footer />
       </IntlProvider>

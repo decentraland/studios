@@ -5,15 +5,16 @@ const PROJECTS_URL = `${process.env.NEXT_PUBLIC_PARTNERS_DATA_URL}/items/project
 export default class Projects {
   static Url = process.env.NEXT_PUBLIC_PARTNERS_DATA_URL || ''
 
-  static async get({basicData}: {basicData?: boolean}) {
+  static async get({basicData, ideas}: {basicData?: boolean, ideas?: boolean}) {
     let isFinished = false
     let offset = 0
-    const queryFields = basicData ? '&sort[]=-date_created&fields=image_1,id,title,profile' : ''
-
+    const queryFields = basicData && !ideas ? '&sort[]=-date_created&fields=image_1,id,title,profile' : ''
+    const queryIdeas = ideas ? '&filter[profile]=358' : '&filter[profile][_neq]=358'
+    
     const projects: PartnerProject[] = []
     while (!isFinished) {
       try {
-        const response = await fetch(`${PROJECTS_URL}?offset=${offset}${queryFields}`)
+        const response = await fetch(`${PROJECTS_URL}?offset=${offset}${queryIdeas}${queryFields}`)
         const data = (await response.json()).data as PartnerProject[]
         if (data.length === 0) {
           isFinished = true

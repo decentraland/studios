@@ -137,3 +137,28 @@ a {
     min-height: 56px;
   }
 }
+
+.button_primary {
+  padding: 9px 16px;
+  background: #ff2d55;
+  border-radius: 5px;
+  color: #fff;
+  font-size: 13px;
+  /* margin-bottom: 20px; */
+  display: inline-block;
+}
+
+.button_primary:hover {
+  color: #fff;
+}
+
+
+.button_secondary {
+  padding: 9px 0;
+  /* background: #ff2d55; */
+  /* border-radius: 5px; */
+  color: #ff2d55;
+  font-size: 13px;
+  /* margin-bottom: 20px; */
+  display: inline-block;
+}

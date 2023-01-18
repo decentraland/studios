@@ -19,7 +19,7 @@ declare global {
 }
 
 const Navbar = dynamic(() => import('decentraland-ui/dist/components/Navbar/Navbar').then((module) => module.Navbar), {
-  ssr: true,
+  ssr: false,
 })
 
 const METABASE_KEY = process.env.NEXT_PUBLIC_METABASE_KEY

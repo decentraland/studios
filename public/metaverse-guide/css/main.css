@@ -366,6 +366,11 @@ button{
   position: relative;
 }
 
+.section--hero__container__logo{
+  width: 200px;
+  margin-left: -10px;
+}
+
 .section--hero__container p, .section--hero__container h1{
   width: 50%;
   margin: 16px 0;
@@ -399,6 +404,10 @@ button{
 
   .section--hero__container p, .section--hero__container h1{
     width: 90%;
+  }
+
+  .section--hero__container__logo{
+    margin-left: 0;
   }
   
 }

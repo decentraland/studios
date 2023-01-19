@@ -18,6 +18,11 @@
 
   <link  rel="stylesheet" type="text/css" href="/metaverse-guide/css/normalize.css">
   <link  rel="stylesheet" type="text/css" href="/metaverse-guide/css/main.css">
+  <link  rel="stylesheet" type="text/css" href="/metaverse-guide/css/flickity.css">
+
+  <script src="/metaverse-guide/js/flickity.pkgd.js"></script>
+
+
 
   <meta name="theme-color" content="#fafafa">
 </head>
@@ -35,17 +40,31 @@
       </div>
     </div>
     <div class="section section--cta" id="section--cta">
-      <div id="cta__container" class="section--cta__container">
-        <img class="cta__image" src="/metaverse-guide/img/Plan-illustration.png" alt="">
-        <div class="cta__form">
-          <h3>Get our Metaverse guide for free</h3>
-          <p class="base-text cta__base-text">Write down your email and we’ll send you the document right away.</p>
-          <form action="">
-            <input type="text" name="name" id="name" placeholder="Your name" required/>
-            <input type="text" name="email" id="email" placeholder="Your email" required/>
-            <button class="cta" type="submit" href="/">Submit</button>
-          </form>
-        </div>  
+      <div id="cta__container" class="section--cta__container container--enabled">
+        <div class="section--cta__container__content form--enabled">
+          <img class="cta__image" src="/metaverse-guide/img/Plan-illustration.png" alt="">
+          <div class="cta__form">
+            <h3>Get our Metaverse guide for free</h3>
+            <p class="base-text cta__base-text">Write down your email and we’ll send you the document right away.</p>
+            <form action="">
+              <input type="text" name="name" id="name" placeholder="Your name" required/>
+              <input type="text" name="email" id="email" placeholder="Your email" required/>
+              <button class="cta" type="button" onclick="ctaSuccess()">Submit</button>
+            </form>
+          </div>    
+        </div>
+        <div class="section--cta__container__content form--success">
+          <img class="cta__image" src="/metaverse-guide/img/Success-form.png" alt="">
+          <div class="cta__form">
+            <h3>You got it! Click below to open the guide</h3>
+            <p class="base-text cta__base-text">We also sent it to your email, so check your inbox at <strong>crespi.f@gmail.com</strong>.</p>
+            <div class="cta__form--success__buttons">
+              <a href="/pdf.pdf" target="_blank" class="cta">get the guide</a>
+              <a onclick="ctaSendAgain()" class="inline-link">Send it again</a>
+            </div>
+          </div>    
+        </div>
+
       </div>
     </div>
     <div class="section section--aboutdcl">
@@ -238,7 +257,7 @@
       </div>
     </div>
     <div class="section section--reviews">
-      <h3>Read what people say about our guide</h3>
+      <h3>Read what people say about our guide</h3>      
       <div class="section--reviews__container">
         <div class="section--reviews__container__review">
           <p class="base-text section--reviews__container__review__text">“We were hesitant to build a presence in the Metaverse at first, but Decentraland’s Metaverse Studios made it easy and the results have been amazing. Our virtual events have been a huge hit and we've seen a significant increase in brand awareness as a result.”</p>
@@ -250,13 +269,40 @@
             </div>
           </div>
         </div>
+        <div class="section--reviews__container__review">
+          <p class="base-text section--reviews__container__review__text">“We were hesitant to build a presence in the Metaverse at first, but Decentraland’s Metaverse Studios made it easy and the results have been amazing. Our virtual events have been a huge hit and we've seen a significant increase in brand awareness as a result.”</p>
+          <div class="section--reviews__container__review__author">
+            <img src="https://picsum.photos/96" alt="" class="section--reviews__container__review__author__image">
+            <div class="section--reviews__container__review__author__authorname">
+              <p class="section--reviews__container__review__author__name">Brendan Eich</p>
+              <p class="section--reviews__container__review__author__company">Founder of Mozilla</p>
+            </div>
+          </div>
+        </div>
+        <div class="section--reviews__container__review">
+          <p class="base-text section--reviews__container__review__text">“We were hesitant to build a presence in the Metaverse at first, but Decentraland’s Metaverse Studios made it easy and the results have been amazing. Our virtual events have been a huge hit and we've seen a significant increase in brand awareness as a result.”</p>
+          <div class="section--reviews__container__review__author">
+            <img src="https://picsum.photos/96" alt="" class="section--reviews__container__review__author__image">
+            <div class="section--reviews__container__review__author__authorname">
+              <p class="section--reviews__container__review__author__name">Brendan Eich</p>
+              <p class="section--reviews__container__review__author__company">Founder of Mozilla</p>
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
     <div class="section section--contact">
       <div class="section--contact__container">
-        <h2>Unsure about the Metaverse? <a class="inline-link" href="mailto:studios@decentraland.org"> Chat with us.</a> We’d love to help.</h2>
+        <div class="section--contact__container__message">
+          <h2>Unsure about the Metaverse? <a class="inline-link" href="mailto:studios@decentraland.org"> Chat with us.</a> We’d love to help.</h2>
+          <div class="section--contact__cta">
+            <p class="base-text section--contact__cta__text">If you're ready to take your brand into the metaverse, <a class="inline-link" href="mailto:studios@decentraland.org"> get the guide.</a> </p>
+          </div>
+        </div>
         <img src="/metaverse-guide/img/envelope.png" alt="" class="section--contact_envelope">
       </div>
+
     </div>
     <div class="footer">
       <div class="footer__container">
@@ -265,6 +311,23 @@
       </div>
     </div>
   </div>
+
+  <script>
+      var ctaContainer = document.getElementById('cta__container');
+      ctaSuccess = function() {
+        ctaContainer.classList.remove('container--enabled');
+        ctaContainer.classList.add('container--success');
+      }
+  </script>
+
+  <script>
+    ctaSendAgain = function() {
+      ctaContainer.classList.remove('container--success');
+      ctaContainer.classList.add('container--enabled');
+    }
+  </script>
+
+
 
   <script>        
 
@@ -286,6 +349,7 @@
           ctaContainer.classList.remove('cta--highlight');
         }, 4000);
     }
+
     
   </script>
 

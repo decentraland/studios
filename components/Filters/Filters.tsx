@@ -207,7 +207,7 @@ function Filters({ partners, setFilteredPartners }: Props) {
                     } ${itemData.checked ? styles.check : ''}`}
                   >
                     {circleDiv}
-                    {value}
+                    {intl.formatMessage({ id: `service.${toSnakeCase(value)}`, defaultMessage: value })}
                     {serviceTooltipDiv}
                   </div>
                 )

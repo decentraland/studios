@@ -948,7 +948,7 @@ button{
 }
 
 .section--faq__container__faqlist__faq__answer{
-  display: initial;
+  display: block;
   opacity: 1;
   height: fit-content;
   transition: .2s;
@@ -964,7 +964,7 @@ button{
   animation-duration: 2s;
   box-shadow: var(--dclmain) 0px 0px 0px;
   animation-delay: .3s;
-  display: block;
+  display: none;
 }
 
 .faq--collapsed .section--faq__container__faqlist__faq__title__chevron{
@@ -1178,7 +1178,7 @@ button{
 
 .footer__container{
   width: 1064px;
-  padding: 24px 140px;
+  padding: 24px 8px;
   display: flex;
   justify-content: space-between;
   align-items: center;

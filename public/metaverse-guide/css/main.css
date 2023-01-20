@@ -281,6 +281,7 @@ body{
   --dclmainhover: #FF6482;
   --whitesand: #F3F2F5;
   --stone: #726D7C;
+  --border-width: 3px;
   background: var(--whitesand);
 }
 
@@ -464,11 +465,34 @@ button{
   overflow: hidden;
   position: relative;
   width: 1064px;
-  height: 300px;
+  height: 320px;
   background: white;
   border-radius: 32px;
   box-shadow: 0px 2px 16px 0px rgba(8, 43, 41, 0.06);
-  box-shadow: 0px 2px 2px 0px rgba(8, 43, 41, 0.04);
+}
+
+.section--cta__container::after{
+  position: absolute;
+  content: "";
+  top: calc(-1 * var(--border-width));
+  left: calc(-1 * var(--border-width));
+  z-index: -1;
+  width: calc(100% + var(--border-width) * 2);
+  height: calc(100% + var(--border-width) * 2);
+  background: linear-gradient(
+    60deg,
+    hsl(224, 85%, 66%),
+    hsl(269, 85%, 66%),
+    hsl(314, 85%, 66%),
+    hsl(359, 85%, 66%),
+    hsl(44, 85%, 66%),
+    hsl(89, 85%, 66%),
+    hsl(134, 85%, 66%),
+    hsl(179, 85%, 66%)
+  );
+  background-size: 300% 300%;
+  background-position: 0 50%;
+  border-radius: calc(2 * var(--border-width));
 }
 
 .section--cta__container__content{
@@ -673,6 +697,7 @@ button{
 
 .section--aboutdcl__cards__card__title{
   font-size: 24px;
+  line-height: 28px;
   font-weight: bold;
 }
 
@@ -817,6 +842,7 @@ button{
 
 .section--journey__container__cards__card__title{
   font-size: 24px;
+  line-height: 28px;
   font-weight: bold;
   margin: 0;
 }
@@ -851,7 +877,7 @@ button{
 @media (max-width: 1064px) {
   .section--journey__container{
     width: 80%;
-    padding: 80px 40px;
+    padding: 80px 16px;
   }
 
   .section--journey__container h2{
@@ -915,9 +941,18 @@ button{
 .section--faq__container__faqlist__faq{
   border: 1px solid var(--whitesand);
   border-radius: 8px;
-  padding: 16px;
   margin: 16px 0;
+  transition: .2s;
   cursor: pointer;
+  padding: 12px 24px 20px 24px;
+}
+
+.faq--collapsed.section--faq__container__faqlist__faq{
+  padding: 12px 24px;
+}
+
+.section--faq__container__faqlist__faq:hover{
+  border: 1px solid var(--dclmain);
 }
 
 .section--faq__container__faqlist__faq__title{
@@ -934,7 +969,7 @@ button{
 }
 
 .section--faq__container__faqlist__faq__title__question_title{
-  font-weight: bold;
+  font-weight: 600;
   color: black;
   margin: 8px 0;
   flex: 1;
@@ -952,7 +987,7 @@ button{
   opacity: 1;
   height: fit-content;
   transition: .2s;
-  margin: 8px 0 0 0;
+  margin: 0 0 0 32px;
 }
 
 .faq--collapsed .section--faq__container__faqlist__faq__answer{
@@ -962,7 +997,6 @@ button{
   top: -100%;
   z-index: 0;
   animation-duration: 2s;
-  box-shadow: var(--dclmain) 0px 0px 0px;
   animation-delay: .3s;
   display: none;
 }
@@ -978,11 +1012,11 @@ button{
     align-items: center;
     padding: 140px 0;
     margin-top: 0;
-    text-align: center;
+    text-align: left;
   }
 
   .section--faq__container__description{
-    margin: 40px 0;
+    margin: 8px 0;
   }
 
   .section--faq__container__faqlist__faq{
@@ -1116,6 +1150,24 @@ button{
   .section--reviews{
     width: initial;
     padding: 80px 32px;
+  }
+
+  .section--reviews__container{
+    flex-direction: column;
+  }
+
+  .section--reviews h3{
+    margin-bottom: 24px;
+  }
+
+  .section--reviews__container__review{
+    padding: 32px;
+    margin: 16px;
+  }
+
+  .section--reviews__container__review__text{
+    font-size: 16px;
+    line-height: 24px;
   }
 
   .section--reviews__container__review{

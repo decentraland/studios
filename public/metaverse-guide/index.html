@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="utf-8">
-  <title></title>
+  <title>Free Metaverse Guide</title>
   <meta name="description" content="">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -18,11 +18,6 @@
 
   <link  rel="stylesheet" type="text/css" href="/metaverse-guide/css/normalize.css">
   <link  rel="stylesheet" type="text/css" href="/metaverse-guide/css/main.css">
-  <link  rel="stylesheet" type="text/css" href="/metaverse-guide/css/flickity.css">
-
-  <script src="/metaverse-guide/js/flickity.pkgd.js"></script>
-
-
 
   <meta name="theme-color" content="#fafafa">
 </head>
@@ -59,7 +54,7 @@
             <h3>You got it! Click below to open the guide</h3>
             <p class="base-text cta__base-text">We also sent it to your email, so check your inbox at <strong>crespi.f@gmail.com</strong>.</p>
             <div class="cta__form--success__buttons">
-              <a href="/pdf.pdf" target="_blank" class="cta">get the guide</a>
+              <a href="/pdf.pdf" target="_blank" class="cta">Open guide</a>
               <a onclick="ctaSendAgain()" class="inline-link">Send it again</a>
             </div>
           </div>    
@@ -141,7 +136,7 @@
         </div>
         <div class="section--journey__container__cta">
           <p class="base-text section--journey__container__cta__text">Read about these in detail and follow the next steps in our guide.</p>
-          <a href="#cta-section" class="cta">get the guide</a>
+          <a href="#section--cta" class="cta">get the guide</a>
         </div>
 
       </div>
@@ -295,9 +290,9 @@
     <div class="section section--contact">
       <div class="section--contact__container">
         <div class="section--contact__container__message">
-          <h2>Unsure about the Metaverse? <a class="inline-link" href="mailto:studios@decentraland.org"> Chat with us.</a> We’d love to help.</h2>
+          <h2>Unsure about the Metaverse? <a onclick="Intercom('show')" class="inline-link" href="mailto:studios@decentraland.org"> Chat with us.</a> We’d love to help.</h2>
           <div class="section--contact__cta">
-            <p class="base-text section--contact__cta__text">If you're ready to take your brand into the metaverse, <a class="inline-link" href="mailto:studios@decentraland.org"> get the guide.</a> </p>
+            <p class="base-text section--contact__cta__text">If you're ready to take your brand into the metaverse, <a class="inline-link" href="#section--cta"> get the guide.</a> </p>
           </div>
         </div>
         <img src="/metaverse-guide/img/envelope.png" alt="" class="section--contact_envelope">
@@ -312,48 +307,58 @@
     </div>
   </div>
 
-  <script>
-      var ctaContainer = document.getElementById('cta__container');
-      ctaSuccess = function() {
-        ctaContainer.classList.remove('container--enabled');
-        ctaContainer.classList.add('container--success');
-      }
-  </script>
-
-  <script>
+  <script>   
+    //Success form change
+    var ctaContainer = document.getElementById('cta__container');
+    ctaSuccess = function() {
+      ctaContainer.classList.remove('container--enabled');
+      ctaContainer.classList.add('container--success');
+    }
+  
+    //Send again button change
     ctaSendAgain = function() {
       ctaContainer.classList.remove('container--success');
       ctaContainer.classList.add('container--enabled');
     }
-  </script>
 
-
-
-  <script>        
-
+    //FAQs state change
     var listItems = document.getElementsByClassName('faq');
     
     for(var i = 0; i < listItems.length; i++){
-        listItems[i].addEventListener('click', function(event) {
-          this.classList.toggle('faq--collapsed');
-        });
+      listItems[i].addEventListener('click', function(event) {
+        this.classList.toggle('faq--collapsed');
+      });
     }
 
+    //CTA Animation
     var ctaButtons = document.getElementsByClassName('cta');
     var ctaContainer = document.getElementById('cta__container');
     for(var i = 0; i < ctaButtons.length; i++){
-        ctaButtons[i].addEventListener('click', function(event) {
-          ctaContainer.classList.add('cta--highlight');
-        });
-        setTimeout(function() {
-          ctaContainer.classList.remove('cta--highlight');
-        }, 4000);
-    }
-
-    
+      ctaButtons[i].addEventListener('click', function(event) {
+        ctaContainer.classList.add('cta--highlight');
+      });
+      setTimeout(function() {
+        ctaContainer.classList.remove('cta--highlight');
+      }, 4000);
+    }    
   </script>
 
-  <!-- Google Analytics: change UA-XXXXX-Y to be your site's ID. -->
+  <script>
+    //intercom
+
+    window.intercomSettings = {
+      api_base: "https://api-iam.intercom.io",
+      app_id: "ht3lxko9",
+      hide_default_launcher: true
+    };
+  </script>
+
+  <script>
+    //intercom
+
+    // We pre-filled your app ID in the widget URL: 'https://widget.intercom.io/widget/ht3lxko9'
+    (function(){var w=window;var ic=w.Intercom;if(typeof ic==="function"){ic('reattach_activator');ic('update',w.intercomSettings);}else{var d=document;var i=function(){i.c(arguments);};i.q=[];i.c=function(args){i.q.push(args);};w.Intercom=i;var l=function(){var s=d.createElement('script');s.type='text/javascript';s.async=true;s.src='https://widget.intercom.io/widget/ht3lxko9';var x=d.getElementsByTagName('script')[0];x.parentNode.insertBefore(s,x);};if(document.readyState==='complete'){l();}else if(w.attachEvent){w.attachEvent('onload',l);}else{w.addEventListener('load',l,false);}}})();
+  </script>
 </body>
 
 </html>

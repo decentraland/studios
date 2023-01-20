@@ -146,3 +146,26 @@
 .serv_wearable_design--check > .circle {
   background-color: #63b334;
 } */
+
+.tag_container:hover.serv_linked_wearables,
+.serv_linked_wearables--check,
+.serv_linked_wearables > .circle {
+  background-color: #FFECB3;
+}
+
+/* .tag_container:hover.serv_linked_wearables > .circle,
+.serv_linked_wearables--check > .circle {
+  background-color: #FFA000;
+} */
+
+
+.tag_container:hover.serv_creative_director,
+.serv_creative_director--check,
+.serv_creative_director > .circle {
+  background-color: #F0F4C3;
+}
+
+/* .tag_container:hover.serv_creative_director > .circle,
+.serv_creative_director--check > .circle {
+  background-color: #AFB42B;
+} */

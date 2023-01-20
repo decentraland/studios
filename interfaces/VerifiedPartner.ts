@@ -50,8 +50,10 @@ export enum Region {
 export enum Service {
   '3DModeling' = '3D Modeling',
   Advertisement = 'Advertisement',
+  CreativeDirector = 'Creative Director',
   EmoteDesign = 'Emote Design',
   LandRental = 'Land Rental',
+  LinkedWearables = 'Linked Wearables',
   Programming = 'Programming',
   VenueRental = 'Venue Rental',
   WearableDesign = 'Wearable Design',

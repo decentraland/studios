@@ -18,6 +18,10 @@ interface Props {
 
 const DATA_URL = process.env.NEXT_PUBLIC_PARTNERS_DATA_URL
 
+const getVideoId = (video_url: any) => video_url.match(/v=([\w-]*)/)
+const getListId = (video_url: any) => video_url.match(/list=([\w-]*)/)
+
+
 function ProjectProfile({ project, partner }: Props) {
   const PROJECT_WEBSITE = project.link || ''
   const PARTNER_PROFILE_URL = `/profile/${partner.slug}`
@@ -29,10 +33,10 @@ function ProjectProfile({ project, partner }: Props) {
     ))
 
   const videos = [project.video_1, project.video_2]
-    .filter((vid) => vid)
+    .filter((video_url) => video_url && (getVideoId(video_url) || getListId(video_url)))
     .map((video_url) => {
-      const videoId = (video_url || '').match(/v=([\w-]*)/)
-      const listId = (video_url || '').match(/list=([\w-]*)/)
+      const videoId = getVideoId(video_url)
+      const listId = getListId(video_url)
 
       if (videoId) {
         return (

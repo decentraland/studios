@@ -691,8 +691,12 @@ button{
   width: 100%;
 }
 
-.section--aboutdcl__cards__card p{
+.section--aboutdcl__cards__card__title{
   margin: 0 0 8px 0;
+}
+
+.section--aboutdcl__cards__card__description{
+  margin: 0;
 }
 
 .section--aboutdcl__cards__card__title{
@@ -773,8 +777,12 @@ button{
   align-items: center;
 }
 
-.section--whatsinside__cards__card p{
+.section--whatsinside__cards__card__title{
   margin: 0 0 8px 0;
+}
+
+.section--whatsinside__cards__card__text{
+  margin: 0;
 }
 
 .section--whatsinside__cards__card img{
@@ -939,7 +947,7 @@ button{
 }
 
 .section--faq__container__faqlist__faq{
-  border: 1px solid var(--whitesand);
+  border: 1px solid var(--stone);
   border-radius: 8px;
   margin: 16px 0;
   transition: .2s;
@@ -947,12 +955,13 @@ button{
   padding: 12px 24px 20px 24px;
 }
 
-.faq--collapsed.section--faq__container__faqlist__faq{
+.section--faq__container__faqlist__faq.faq--collapsed{
   padding: 12px 24px;
+  border: 1px solid var(--whitesand);
 }
 
 .section--faq__container__faqlist__faq:hover{
-  border: 1px solid var(--dclmain);
+  border: 1px solid var(--stone);
 }
 
 .section--faq__container__faqlist__faq__title{

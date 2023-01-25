@@ -17,7 +17,7 @@ function BannerHeader() {
           </div>
         </div>
       </div>
-      <img alt='Let’s get you a team to build with' className={styles.image} src="/images/computer.webp"></img>
+      <img alt='Let’s get you a team to build with' className={styles.image} src="/images/banner_studios.webp"></img>
     </div>
   )
 }

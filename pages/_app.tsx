@@ -8,7 +8,6 @@ import React from 'react'
 import { Footer } from 'decentraland-ui/dist/components/Footer/Footer'
 import dynamic from 'next/dynamic'
 import Script from 'next/script'
-import { loadIntercom } from 'next-intercom'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { Tabs } from 'decentraland-ui/dist/components/Tabs/Tabs'
@@ -27,7 +26,13 @@ const Navbar = dynamic(() => import('decentraland-ui/dist/components/Navbar/Navb
 const METABASE_KEY = process.env.NEXT_PUBLIC_METABASE_KEY
 const INTERCOM_APP_ID = process.env.NEXT_PUBLIC_INTERCOM_APP_ID
 
+// loadIntercom({
+//   appId: INTERCOM_APP_ID,
+//   delay: 1000,
+// })
+
 function App({ Component, pageProps }: AppProps) {
+
   const router = useRouter()
   const [shortLocale] = ['en']
   const messages = useMemo(() => {
@@ -39,10 +44,14 @@ function App({ Component, pageProps }: AppProps) {
     }
   }, [shortLocale])
 
-  //store a flag for BackButton behaviour
+  
   useEffect(() => {
+
     const handleRouteChange = (url: string) => {
-      globalThis?.sessionStorage.setItem('prevInStudios', url)
+      //store a flag for BackButton behaviour
+      globalThis.sessionStorage.setItem('prevInStudios', url);
+      
+      (globalThis as any).fbq('track', 'PageView')
     }
 
     router.events.on('routeChangeComplete', handleRouteChange)
@@ -50,8 +59,9 @@ function App({ Component, pageProps }: AppProps) {
     return () => {
       router.events.off('routeChangeComplete', handleRouteChange)
     }
-  }, [])
+  }, [router.events])
 
+  const isMetaverseGuide = router.asPath.includes('/p/')
   const tabsContents = [['/', 'Studios'],['/projects', 'Projects'], ['/resources', 'Resources']]
   const showTabs = tabsContents.map(tab => tab[0]).includes(router.asPath)
 
@@ -72,16 +82,33 @@ function App({ Component, pageProps }: AppProps) {
   return (
     <>
       <Head>
-        <meta name="og:site_name" content="Decentraland" />
-        <meta name="description" content="Let’s build the metaverse together. Find the Right Team for Your Project" />
-        <meta name="og:type" content="website" />
+        <meta property="og:site_name" content="Decentraland | Metaverse Studios" />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="studios.decentraland.org" />
         <meta name="twitter:card" content="summary" />
-        <meta name="og:image" content="/images/decentraland.png" />
         <link rel="icon" href="/favicon.ico" />
-      </Head>      
-      {loadIntercom({
-        appId: INTERCOM_APP_ID,
-      })}
+        <title>Metaverse Studios</title>
+
+
+        <noscript>
+          <img height="1" width="1" style={{display:"none"}}
+            src={"https://www.facebook.com/tr?id=486890793629175&ev=PageView&noscript=1"}
+          />
+        </noscript>
+      </Head>
+
+      {isMetaverseGuide ? 
+        <Component {...pageProps} />
+        :
+        <IntlProvider locale={shortLocale} messages={messages}>
+          <div className='allocateNav'>
+            <Navbar isFullscreen={showTabs} />
+          </div>
+          {renderTabs}
+          <Component {...pageProps} />
+          <Footer />
+        </IntlProvider>}
+
       <Script id="metabase">
         {`!function(){var analytics=window.analytics=window.analytics||[];if(!analytics.initialize)if(analytics.invoked)window.console&&console.error&&console.error("Segment snippet included twice.");else{analytics.invoked=!0;analytics.methods=["trackSubmit","trackClick","trackLink","trackForm","pageview","identify","reset","group","track","ready","alias","debug","page","once","off","on","addSourceMiddleware","addIntegrationMiddleware","setAnonymousId","addDestinationMiddleware"];analytics.factory=function(e){return function(){var t=Array.prototype.slice.call(arguments);t.unshift(e);analytics.push(t);return analytics}};for(var e=0;e<analytics.methods.length;e++){var key=analytics.methods[e];analytics[key]=analytics.factory(key)}analytics.load=function(key,e){var t=document.createElement("script");t.type="text/javascript";t.async=!0;t.src="https://cdn.segment.com/analytics.js/v1/" + key + "/analytics.min.js";var n=document.getElementsByTagName("script")[0];n.parentNode.insertBefore(t,n);analytics._loadOptions=e};analytics._writeKey="${METABASE_KEY}";;analytics.SNIPPET_VERSION="4.15.3";
           analytics.load("${METABASE_KEY}");
@@ -89,17 +116,31 @@ function App({ Component, pageProps }: AppProps) {
           }}();`}
       </Script>
       <Script id="plausible"
-        data-domain="studios.decentraland.org" 
+        data-domain="studios.decentraland.org"
         src="https://plausible.io/js/script.outbound-links.js">
       </Script>
-      <IntlProvider locale={shortLocale} messages={messages}>
-        <div className='allocateNav'>
-          <Navbar isFullscreen={showTabs}/>
-        </div>
-        {renderTabs}
-        <Component {...pageProps} />
-        <Footer />
-      </IntlProvider>
+      <Script id="intercom" strategy="lazyOnload">
+        {`window.intercomSettings = {
+            api_base: "https://api-iam.intercom.io",
+            app_id: "${INTERCOM_APP_ID}",
+            hide_default_launcher: ${isMetaverseGuide}
+        };`}
+        {`(function(){var w=window;var ic=w.Intercom;if(typeof ic==="function"){ic('reattach_activator');ic('update',w.intercomSettings);}else{var d=document;var i=function(){i.c(arguments);};i.q=[];i.c=function(args){i.q.push(args);};w.Intercom=i;var l=function(){var s=d.createElement('script');s.type='text/javascript';s.async=true;s.src='https://widget.intercom.io/widget/ht3lxko9';var x=d.getElementsByTagName('script')[0];x.parentNode.insertBefore(s,x);};if(document.readyState==='complete'){l();}else if(w.attachEvent){w.attachEvent('onload',l);}else{w.addEventListener('load',l,false);}}})();`}
+      </Script>
+      <Script id="fb-pixel" strategy="afterInteractive"
+        dangerouslySetInnerHTML={{
+          __html:
+            `!function(f,b,e,v,n,t,s)
+        {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+        n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+        if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+        n.queue=[];t=b.createElement(e);t.async=!0;
+        t.src=v;s=b.getElementsByTagName(e)[0];
+        s.parentNode.insertBefore(t,s)}(window, document,'script',
+        'https://connect.facebook.net/en_US/fbevents.js');
+        fbq('init', '486890793629175');
+        fbq('track', 'PageView');`}}
+      />
     </>
   )
 }

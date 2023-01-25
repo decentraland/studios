@@ -9,6 +9,8 @@ import { VerifiedPartner } from '../../interfaces/VerifiedPartner'
 import Projects from '../../clients/Projects'
 import { PartnerProject } from '../../interfaces/PartnerProject'
 
+const DATA_URL = process.env.NEXT_PUBLIC_PARTNERS_DATA_URL
+
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   if (params && params.id) {
     const project = (await Projects.getProject(`?filter[id]=${params.id}`))[0]
@@ -52,7 +54,9 @@ function Project({ project, partner }: { project: PartnerProject; partner: Verif
   return (
     <Container>
       <Head>
-        <title>Metaverse Studios</title>
+        <meta property="og:title" content="Let’s build the metaverse together. Find the Right Team for Your Project" />
+        <meta property="og:description" content={`${project.title} by ${partner.name}`} />
+        <meta property="og:image" content={`${DATA_URL}/assets/${project.image_1}?key=meta-link`} />
       </Head>
 
       <main>

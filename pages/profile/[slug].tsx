@@ -10,6 +10,8 @@ import Projects from '../../clients/Projects'
 import { useIntl } from 'react-intl'
 import { PartnerReview } from '../../interfaces/PartnerReview'
 
+const DATA_URL = process.env.NEXT_PUBLIC_PARTNERS_DATA_URL
+
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   if (params && params.slug) {
     const partner = await Partners.getPartnerData(`?filter[slug]=${params.slug}`)
@@ -70,7 +72,9 @@ function Partner({ partner, projects, reviews }: Props) {
   return (
     <Container>
       <Head>
-        <title>Metaverse Studios</title>
+        <meta property="og:title" content="Let’s build the metaverse together. Find the Right Team for Your Project" />
+        <meta property="og:description" content={`Profile of ${partner.name} studio`} />
+        <meta property="og:image" content={`${DATA_URL}/assets/${partner.logo}?key=meta-link`} />
       </Head>
 
       <main>

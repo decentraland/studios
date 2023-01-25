@@ -40,8 +40,8 @@ function ReviewForm({ partner }: { partner: VerifiedPartner }) {
   return (
     <Container>
       <Head>
-        <title>{title}</title>
-        <meta name="description" content="Verified Partners" />
+        <meta property="og:title" content="Let’s build the metaverse together. Find the Right Team for Your Project" />
+        <meta property="og:description" content={`Leave a review to ${partner.name} studio`} />
         <link rel="icon" href="/favicon.ico" />
       </Head>
 

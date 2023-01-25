@@ -31,7 +31,9 @@ function ResourcesPage({ resources }: Props) {
       
     <Container className={styles.container}>
       <Head>
-        <title>Metaverse Studios</title>
+        <meta property="og:title" content="Browse free and open source ideas to inspire you" />
+        <meta property="og:description" content="Here you will find the building blocks to create engaging and interactive experiences in Decentraland. Any creator can customize these with complete creative freedom." />
+        <meta property="og:image" content="/images/banner_ideas.png" />
       </Head>
       <main className={styles.main}>
         <BannerResources />

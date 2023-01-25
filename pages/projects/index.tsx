@@ -39,7 +39,9 @@ function ProjectsPage({ projects }: Props) {
       
     <Container className={styles.container}>
       <Head>
-        <title>Metaverse Studios</title>
+        <meta property="og:title" content="Browse the latest projects on Decentraland and get new ideas for your brand" />
+        <meta property="og:description" content="Hundreds of designers and studios around the world showcase their portfolio work on Metaverse Studios." />
+        <meta property="og:image" content="/images/banner_projects.png" />
       </Head>
       <main className={styles.main}>
         <BannerProjects />

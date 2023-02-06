@@ -8,7 +8,7 @@ function BannerHeader() {
         <div className={styles.mainText}>Your brand belongs in the Metaverse. Let’s get you a team to build with.</div>
         <div className={styles.factsContainer}>
           <div className={styles.factContainer}>
-            <div className={styles.bigText}>180+</div>
+            <div className={styles.bigText}>150+</div>
             <div className={styles.smallText}>VERIFIED STUDIOS</div>
           </div>
           <div className={styles.factContainer}>

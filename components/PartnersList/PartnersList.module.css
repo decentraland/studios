@@ -48,6 +48,10 @@
   opacity: 32%;
 }
 
+.link {
+  color: #ff2d55;
+}
+
 .link_join:hover,
 .link_join {
   padding: 9px 16px;

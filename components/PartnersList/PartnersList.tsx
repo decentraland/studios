@@ -87,6 +87,7 @@ function PartnersList({ partners }: Props) {
             i: (chunks) => <i>{chunks}</i>,
             a1: (chunks) => (
               <a
+                className={styles.link}
                 target={'_blank'}
                 href="https://governance.decentraland.org/"
                 rel="noreferrer"
@@ -99,6 +100,7 @@ function PartnersList({ partners }: Props) {
             ),
             a2: (chunks) => (
               <a
+                className={styles.link}
                 target={'_blank'}
                 href={JOIN_REGISTRY_URL}
                 rel="noreferrer"

@@ -18,6 +18,7 @@ function PartnersList({ partners }: Props) {
   const JOIN_REGISTRY_URL = 'https://dclstudios.typeform.com/to/NfzmbzXi'
 
   const [filteredPartners, setFilteredPartners] = useState(partners)
+  const [limit, setLimit] = useState(10)
 
   const sortAlphabeticPartners = (filteredPartners: VerifiedPartner[]) =>
     [...filteredPartners].sort((p1: VerifiedPartner, p2: VerifiedPartner) => p1.slug.localeCompare(p2.slug))
@@ -38,7 +39,7 @@ function PartnersList({ partners }: Props) {
     setPartnersList(() => sortByServicesCount(randomizePartners(filteredPartners)))
   }, [filteredPartners.length])
 
-  let renderList = partnersList
+  let renderList = partnersList.slice( 0, limit )
 
   if (!isDevelopment){
     //prevent dev studios from showing in production
@@ -56,7 +57,7 @@ function PartnersList({ partners }: Props) {
               <h3>
                 <FormattedMessage id="title" />
               </h3>
-              <span className={styles.results_count}>{renderList.length} RESULTS</span>
+              <span className={styles.results_count}>{partnersList.length} RESULTS</span>
             </div>
             <a
               className={styles.link_join}
@@ -69,7 +70,10 @@ function PartnersList({ partners }: Props) {
             </a>
           </div>
           {renderList.length ? (
-            renderList.map((partner) => <PartnerCard key={partner.id} partner={partner} />)
+            <>
+              {renderList.map((partner) => <PartnerCard key={partner.id} partner={partner} />)}
+              
+            </>
           ) : (
             <div className={styles.empty}>
               <Empty />
@@ -79,7 +83,7 @@ function PartnersList({ partners }: Props) {
           )}
         </div>
       </div>
-
+      {renderList.length >= limit && <div className={styles.load_more_container}><div className={'button_primary'} onClick={() => setLimit(current => current + 10)}>LOAD MORE</div></div>}
       <div className={styles.footer_text_container}>
         <FormattedMessage
           id="footer_message"

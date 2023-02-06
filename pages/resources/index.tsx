@@ -1,6 +1,6 @@
 import styles from '../../styles/Home.module.css'
 
-import React from 'react'
+import React, { useState } from 'react'
 import Head from 'next/head'
 
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
@@ -27,6 +27,10 @@ interface Props {
 }
 
 function ResourcesPage({ resources }: Props) {
+  const [limit, setLimit] = useState(5)
+
+  const renderResources = resources.slice(0, limit)
+
   return (
       
     <Container className={styles.container}>
@@ -38,7 +42,8 @@ function ResourcesPage({ resources }: Props) {
       <main className={styles.main}>
         <BannerResources />
         <div>
-          {resources.map((resource) => <ResourceCard key={resource.id} resource={resource} />)}
+          {renderResources.map((resource) => <ResourceCard key={resource.id} resource={resource} />)}
+          {resources.length >= limit && <div style={{textAlign: 'center'}}><div onClick={() => setLimit(current => current + 5)} className='button_primary mt-2 center'>LOAD MORE</div></div>}
         </div>
       </main>
     </Container>

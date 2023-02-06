@@ -52,7 +52,6 @@
   color: #ff2d55;
 }
 
-.link_join:hover,
 .link_join {
   padding: 9px 16px;
   background: #FF2D55;
@@ -62,8 +61,19 @@
   margin-bottom:  20px;
 }
 
+.link_join:hover {
+  color: #FFF;
+  transform: translateY(-2px);
+}
+
+
 .footer_text_container {
-  width: 50%;
   text-align: center;
   margin: auto;
+}
+
+.load_more_container{
+  width: 100%;
+  text-align: center;
+  margin-bottom: 5rem;
 }

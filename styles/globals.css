@@ -146,10 +146,12 @@ a {
   font-size: 13px;
   /* margin-bottom: 20px; */
   display: inline-block;
+  cursor: pointer;
 }
 
 .button_primary:hover {
   color: #fff;
+  transform: translateY(-2px);
 }
 
 
@@ -162,3 +164,14 @@ a {
   /* margin-bottom: 20px; */
   display: inline-block;
 }
+ .mb-2{
+  margin-bottom: 20px;
+ }
+ 
+ .mt-2{
+  margin-top: 20px;
+ }
+
+ .center {
+  align-self: center;
+ }

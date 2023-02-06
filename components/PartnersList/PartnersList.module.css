@@ -48,15 +48,6 @@
   opacity: 32%;
 }
 
-.link {
-  padding: 9px 16px;
-  background: #ff2d55;
-  border-radius: 5px;
-  color: #fff;
-  font-size: 13px;
-  margin-bottom: 20px;
-}
-
 .link_join:hover,
 .link_join {
   padding: 9px 16px;

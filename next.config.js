@@ -20,9 +20,18 @@ const nextConfig = {
   },
   
   webpack(config) {
-    config.plugins.push(new EnvironmentPlugin(['API_SUBMIT', 'API_VERIFY', 'API_ACCESS_TOKEN']))
+    config.plugins.push(new EnvironmentPlugin(['API_SUBMIT', 'API_VERIFY', 'API_ACCESS_TOKEN', 'SENDGRID_ACCESS_TOKEN']))
     
     return config
+  },
+
+  async rewrites() {
+    return  [
+      {
+        source: '/metaverse-guide',
+        destination: '/metaverse-guide/index.html'
+      }
+    ]
   }
 }
 

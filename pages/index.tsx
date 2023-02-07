@@ -27,7 +27,9 @@ function Home({ partners }: Props) {
   return (
     <Container className={styles.container}>
       <Head>
-        <title>Metaverse Studios</title>
+        <meta property="og:title" content="Let’s build the metaverse together" />
+        <meta property="og:description" content="Find the Right Team for Your Project." />
+        <meta property="og:image" content="/images/banner_studios.png" />
       </Head>
       <main className={styles.main}>
         <BannerHeader />

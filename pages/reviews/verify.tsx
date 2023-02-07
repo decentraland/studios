@@ -12,9 +12,8 @@ function ReviewForm() {
   return (
     <Container>
       <Head>
-        <title>{title}</title>
-        <meta name="description" content="Verified Partners" />
-        <link rel="icon" href="/favicon.ico" />
+        <meta property="og:title" content="Email verfication link" />
+        <meta property="og:description" content={`Metaverse Studios e-mail verfication link`} />
       </Head>
 
       <main>

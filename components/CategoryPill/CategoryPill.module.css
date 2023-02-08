@@ -3,9 +3,14 @@
   color: #736e7d;
   border-radius: 1rem;
   font-size: 0.7rem;
-  padding: 0.1rem 0.5rem;
+  padding: 0.1rem 0.7rem 0.1rem 0.5rem;
   font-weight: bold;
-  display: inline-block;
+  display: flex;
+  align-items: center;
+}
+
+.container:hover .tooltip_container .tooltip{
+  visibility: visible;
 }
 
 .container--venue_rental {
@@ -29,7 +34,7 @@
 }
 
 .container--emote_design {
-  background-color: #f3b3be;
+  background-color: #F6DFE3;
   color: #d80027;
 }
 
@@ -39,7 +44,7 @@
 }
 
 .container--programming {
-  background-color: #e0dcf3;
+  background-color: #EEEDF8;
   color: #3c24b3;
 }
 
@@ -52,3 +57,26 @@
   background-color: #F0F4C3 ;
   color: #AFB42B;
 }
+
+.tooltip_container {
+  display: block;
+  position: absolute;
+}
+
+.tooltip {
+  position: absolute;
+  visibility: hidden;
+  background: white;
+  border-radius: 5px;
+  padding: 10px;
+  left: -100px;
+  width: 230px;
+  top: 1rem;
+  box-shadow: var(--card_shadow);
+  font-weight: 400;
+  z-index: 10;
+  color: black;
+  font-size: 14px;
+  line-height: 1rem;
+}
+

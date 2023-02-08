@@ -65,7 +65,8 @@
   width: 230px;
   left: 150px;
   top: -4rem;
-  box-shadow: 0 2px 4px #726d7c;
+  /* box-shadow: 0 2px 4px #726d7c; */
+  box-shadow: var(--card_shadow);
   font-weight: 400;
   z-index: 10;
 }
@@ -95,7 +96,7 @@
 .tag_container:hover.serv_emote_design,
 .serv_emote_design--check,
 .serv_emote_design > .circle {
-  background-color: #eab6be;
+  background-color: #F6DFE3;
 }
 
 /* .tag_container:hover.serv_emote_design > .circle,
@@ -117,7 +118,7 @@
 .tag_container:hover.serv_programming,
 .serv_programming--check,
 .serv_programming > .circle {
-  background-color: #dfdcf1;
+  background-color: #EEEDF8;
 }
 
 /* .tag_container:hover.serv_programming > .circle,

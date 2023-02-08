@@ -4,9 +4,10 @@ import Link from 'next/link'
 import { VerifiedPartner, Service } from '../../interfaces/VerifiedPartner'
 import CategoryPill from '../CategoryPill/CategoryPill'
 import styles from './PartnerCard.module.css'
-import { FormattedMessage } from 'react-intl'
+import { FormattedMessage, useIntl } from 'react-intl'
 import MarkdownDescription from '../MarkdownDescription/MarkdownDescription'
 import Image from 'next/image'
+import { toSnakeCase } from '../utils'
 
 interface Props {
   partner: VerifiedPartner
@@ -20,6 +21,8 @@ function PartnerCard({ partner }: Props) {
   const PROFILE_WEBSITE = `/profile/${partner.slug}`
 
   const displayServices = (partner.services || []).filter((service) => SERVICES.includes(service))
+  
+  const intl = useIntl()
 
   return (
     <Link href={PROFILE_WEBSITE} passHref legacyBehavior>
@@ -35,7 +38,7 @@ function PartnerCard({ partner }: Props) {
             <div className={styles.pills}>
               {displayServices.map((service, i) => (
                 <span key={`${service}-${i}`} className={styles.services}>
-                  <CategoryPill type={service} />
+                  <img alt='' title={intl.formatMessage({ id: `service.${toSnakeCase(service)}`})} src={`/images/category_${service.replace(' ', '')}.svg`} />
                 </span>
               ))}
             </div>

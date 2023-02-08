@@ -15,7 +15,7 @@ import styles from './PartnerProfile.module.css'
 import Marketplace from '../Icons/Marketplace'
 import Opensea from '../Icons/Opensea'
 import Icon from '../Icon/Icon'
-import { FormattedMessage } from 'react-intl'
+import { FormattedMessage, useIntl } from 'react-intl'
 import DetailsList from '../DetailsList/DetailsList'
 import { PartnerProject } from '../../interfaces/PartnerProject'
 import ProjectCard from '../ProjectCard/ProjectCard'
@@ -38,6 +38,8 @@ const SERVICES = Object.values(Service)
 function PartnerProfile({ partner, projects, reviews }: Props) {
   const WEBSITE = partner.website || ''
   const REPORT_URL = 'https://dclstudios.typeform.com/to/HQpD0z5S'
+
+  const intl = useIntl()
 
   const displayServices = partner.services || [].filter((service) => SERVICES.includes(service))
 
@@ -143,7 +145,7 @@ function PartnerProfile({ partner, projects, reviews }: Props) {
                 <div className={styles.pills}>
                   {displayServices.map((service, i) => (
                     <span key={`${service}-${i}`} className={styles.services}>
-                      <CategoryPill type={service} />
+                      <CategoryPill showIcon type={service} />
                     </span>
                   ))}
                 </div>

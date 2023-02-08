@@ -21,6 +21,9 @@ const customComponents: object = {
     ul({ children }: { children: string }) {
       return <ul style={{ display: 'inline-block' }}>{children}</ul>
     },
+    img({ src }: { src: string }){
+      return <img alt='' src={src} style={{maxWidth: '100%'}} />
+    }
   }
 
   interface Props extends React.HTMLAttributes<HTMLDivElement> {
@@ -34,6 +37,7 @@ function MarkdownDescription ({description, inPartnersList, ...otherProps}: Prop
   
   if (inPartnersList){
     renderCustomComponents.p = 'span'
+    renderCustomComponents.img = () => {return null}
   }
 
   return (

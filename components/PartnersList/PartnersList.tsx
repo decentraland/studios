@@ -83,7 +83,7 @@ function PartnersList({ partners }: Props) {
           )}
         </div>
       </div>
-      {renderList.length >= limit && <div className={styles.load_more_container}><div className={'button_primary'} onClick={() => setLimit(current => current + 10)}>LOAD MORE</div></div>}
+      {partnersList.length >= limit && <div className={styles.load_more_container}><div className={'button_primary'} onClick={() => setLimit(current => current + 10)}>LOAD MORE</div></div>}
       <div className={styles.footer_text_container}>
         <FormattedMessage
           id="footer_message"

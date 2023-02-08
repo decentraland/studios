@@ -157,6 +157,12 @@
   width: 100%;
 }
 
+.load_more_container{
+  /* width: 100%; */
+  text-align: center;
+  margin-top: 3rem;
+}
+
 @media (max-width: 768px) {
   .container {
     flex-direction: column;

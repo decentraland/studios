@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { VerifiedPartner, Service } from '../../interfaces/VerifiedPartner'
 import CategoryPill from '../CategoryPill/CategoryPill'
 import Discord from '../Icons/Discord'
@@ -15,7 +15,7 @@ import styles from './PartnerProfile.module.css'
 import Marketplace from '../Icons/Marketplace'
 import Opensea from '../Icons/Opensea'
 import Icon from '../Icon/Icon'
-import { FormattedMessage, useIntl } from 'react-intl'
+import { FormattedMessage } from 'react-intl'
 import DetailsList from '../DetailsList/DetailsList'
 import { PartnerProject } from '../../interfaces/PartnerProject'
 import ProjectCard from '../ProjectCard/ProjectCard'
@@ -36,12 +36,17 @@ const DATA_URL = process.env.NEXT_PUBLIC_PARTNERS_DATA_URL
 const SERVICES = Object.values(Service)
 
 function PartnerProfile({ partner, projects, reviews }: Props) {
+  const [projectsLimit, setProjectsLimit] = useState(6)
+  const [reviewsLimit, setReviewsLimit] = useState(4)
+
   const WEBSITE = partner.website || ''
   const REPORT_URL = 'https://dclstudios.typeform.com/to/HQpD0z5S'
 
-  const intl = useIntl()
-
   const displayServices = partner.services || [].filter((service) => SERVICES.includes(service))
+
+  const renderProjects = projects.slice(0, projectsLimit)
+  
+  const renderReviews = reviews.slice(0, reviewsLimit)
 
   return (
     <div className={styles.container}>
@@ -216,11 +221,17 @@ function PartnerProfile({ partner, projects, reviews }: Props) {
             <FormattedMessage id="projects" />
           </div>
           {projects.length ? (
-            <div className={styles.projects_grid}>
-              {projects.map((project) => (
-                <ProjectCard key={project.id} project={project} />
-              ))}
-            </div>
+            <>
+              <div className={styles.projects_grid}>
+                {renderProjects.map((project) => (
+                  <ProjectCard key={project.id} project={project} />
+                ))}
+              </div>
+              {renderProjects.length < projects.length && 
+                <div className={styles.load_more_container}>
+                  <div className={'button_primary--inverted'} onClick={() => setProjectsLimit(projects.length)}>LOAD MORE</div>
+                </div>}
+            </>
           ) : (
             <div className={styles.empty}>
               <Empty />
@@ -234,11 +245,17 @@ function PartnerProfile({ partner, projects, reviews }: Props) {
             <a className='button_basic' href={`/reviews/submit/${partner.slug}`} target="_blank" rel="noreferrer">LEAVE A REVIEW</a>
           </div>
           {reviews.length ? (
-            <div className={styles.reviews_grid}>
-              {reviews.map((review) => (
-                <ReviewCard key={review.id} review={review} />
-              ))}
-            </div>
+            <>
+              <div className={styles.reviews_grid}>
+                {renderReviews.map((review) => (
+                  <ReviewCard key={review.id} review={review} />
+                ))}
+              </div>
+              {renderReviews.length < reviews.length && 
+                <div className={styles.load_more_container}>
+                  <div className={'button_primary--inverted'} onClick={() => setReviewsLimit(reviews.length)}>LOAD MORE</div>
+                </div>}
+            </>
           ) : (
             <div className={styles.empty}>
               <Empty />

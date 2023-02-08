@@ -348,6 +348,7 @@ h4{
   border-radius: 8px;
   transition: ease-in-out .2s;
   height: fit-content;
+  cursor: pointer;
 }
 
 .cta:hover{

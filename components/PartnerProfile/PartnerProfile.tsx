@@ -231,7 +231,7 @@ function PartnerProfile({ partner, projects, reviews }: Props) {
         <div>
           <div className={styles.info_title}>
             <FormattedMessage id="reviews" />
-            <a className='button_secondary' href={`/reviews/submit/${partner.slug}`} target="_blank" rel="noreferrer">LEAVE A REVIEW</a>
+            <a className='button_basic' href={`/reviews/submit/${partner.slug}`} target="_blank" rel="noreferrer">LEAVE A REVIEW</a>
           </div>
           {reviews.length ? (
             <div className={styles.reviews_grid}>

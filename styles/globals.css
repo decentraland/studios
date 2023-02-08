@@ -154,14 +154,25 @@ a {
   transform: translateY(-2px);
 }
 
+.button_primary--inverted {
+  padding: 9px 16px;
+  border-radius: 5px;
+  font-size: 13px;
+  display: inline-block;
+  cursor: pointer;
+  background-color: transparent;
+  color: var(--primary);
+  border: 1px solid var(--primary);
+}
 
-.button_secondary {
+.button_primary--inverted:hover{
+  transform: translateY(-2px);
+}
+
+.button_basic {
   padding: 9px 0;
-  /* background: #ff2d55; */
-  /* border-radius: 5px; */
   color: #ff2d55;
   font-size: 13px;
-  /* margin-bottom: 20px; */
   display: inline-block;
 }
  .mb-2{

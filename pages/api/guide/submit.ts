@@ -15,7 +15,7 @@ export default async function (req: NextRequest) {
   const body = await req.json()
 
   try {
-    await fetch(`${DB_URL}/items/mailing_list`, {
+    await fetch(`${DB_URL}/items/leads`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

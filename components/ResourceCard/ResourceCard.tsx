@@ -27,8 +27,8 @@ function ResourceCard({ resource }: Props) {
           <div className={styles.description}>{resource.description}</div>
           <div className={styles.tags}>{(resource.tags || []).map((tag, i) => <div key={i} className={styles.tag}>{tag}</div> )}</div>
           <div className={styles.buttons}>
-            {resource.play_link && <a className='button_primary' href={resource.play_link} target='_blank' rel="noreferrer">TRY IT NOW</a>}
-            {resource.github_link && <a className='button_secondary' href={resource.github_link} target='_blank' rel="noreferrer">READ MORE</a>}
+            {resource.play_link && <a className='button_primary--inverted' href={resource.play_link} target='_blank' rel="noreferrer">TRY IT NOW</a>}
+            {resource.github_link && <a className='button_basic' href={resource.github_link} target='_blank' rel="noreferrer">VIEW CODE</a>}
           </div>
         </div>
     </div>

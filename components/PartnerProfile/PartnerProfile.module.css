@@ -90,9 +90,12 @@
   font-weight: 500;
   text-transform: uppercase;
   font-size: 12px;
-  margin-bottom: 8px;
+  margin-bottom: 1rem;
   color: #736e7d;
-  margin-top: 20px;
+  margin-top: 3rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .pills {
@@ -101,7 +104,6 @@
 }
 
 .description {
-  margin-bottom: 40px;
   font-size: 16px;
 }
 
@@ -138,17 +140,12 @@
 }
 
 .report_link {
-  margin-top: 56px;
+  margin-top: 4rem;
   font-size: 14px;
-}
-
-.report_link a {
   font-weight: normal !important;
   color: #726d7c;
-}
-
-.report_link a:hover {
-  color: #ff2d55;
+  margin-left: 10px;
+  display: block;
 }
 
 .container {
@@ -188,4 +185,9 @@
   .reviews_grid {
     grid-template-columns: repeat(1, 1fr);
   }
+  .description {
+    margin-bottom: 3rem;
+    font-size: 16px;
+  }
+  
 }

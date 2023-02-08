@@ -229,6 +229,7 @@ function PartnerProfile({ partner, projects, reviews }: Props) {
         <div>
           <div className={styles.info_title}>
             <FormattedMessage id="reviews" />
+            <a className='button_secondary' href={`/reviews/submit/${partner.slug}`} target="_blank" rel="noreferrer">LEAVE A REVIEW</a>
           </div>
           {reviews.length ? (
             <div className={styles.reviews_grid}>
@@ -243,8 +244,7 @@ function PartnerProfile({ partner, projects, reviews }: Props) {
             </div>
           )}
         </div>
-        <div className={styles.report_link}>
-          <a
+          <a className={styles.report_link}
             href={REPORT_URL}
             target="_blank"
             rel="noreferrer"
@@ -252,7 +252,6 @@ function PartnerProfile({ partner, projects, reviews }: Props) {
           >
             Report this studio
           </a>
-        </div>
       </div>
     </div>
   )

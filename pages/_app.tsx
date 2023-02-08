@@ -26,11 +26,6 @@ const Navbar = dynamic(() => import('decentraland-ui/dist/components/Navbar/Navb
 const METABASE_KEY = process.env.NEXT_PUBLIC_METABASE_KEY
 const INTERCOM_APP_ID = process.env.NEXT_PUBLIC_INTERCOM_APP_ID
 
-// loadIntercom({
-//   appId: INTERCOM_APP_ID,
-//   delay: 1000,
-// })
-
 function App({ Component, pageProps }: AppProps) {
 
   const router = useRouter()
@@ -63,7 +58,7 @@ function App({ Component, pageProps }: AppProps) {
 
   const isMetaverseGuide = router.asPath.includes('/p/')
   const tabsContents = [['/', 'Studios'],['/projects', 'Projects'], ['/resources', 'Resources']]
-  const showTabs = tabsContents.map(tab => tab[0]).includes(router.asPath)
+  const showTabs = tabsContents.map(tab => tab[0]).includes(router.route)
 
   let renderTabs = null
   if (showTabs){
@@ -71,7 +66,7 @@ function App({ Component, pageProps }: AppProps) {
     <Tabs.Left>
       {tabsContents.map(tab => 
         <Link key={tab[0]} href={`${tab[0]}`} legacyBehavior>
-          <Tabs.Tab active={router.asPath === tab[0]}>{`${tab[1]}`}</Tabs.Tab>
+          <Tabs.Tab active={router.route === tab[0]}>{`${tab[1]}`}</Tabs.Tab>
         </Link>
       )}
     </Tabs.Left>

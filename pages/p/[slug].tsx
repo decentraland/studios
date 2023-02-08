@@ -271,7 +271,7 @@ function MetaverseGuide({ landing }: Props) {
             <div className="footer">
                 <div className="footer__container">
                     <img src="/images/guide/DCL_Logo_white.webp" alt="" className="logo" />
-                    <a href="mailto:studios@decentraland.org" className="base-text">{landing.contact_us}</a>
+                    <a href="mailto:metaverse.studios@decentraland.org" className="base-text">{landing.contact_us}</a>
                 </div>
             </div>
         </main>

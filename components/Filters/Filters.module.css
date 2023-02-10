@@ -1,6 +1,44 @@
+@media (min-width: 701px) {
+  .filtersContainer { 
+    display: block !important;
+  }
+}
+
 @media (max-width: 700px) {
-  .hidden_mobile {
+  .filtersContainer {
+    background-color: #FFF;
+    position: fixed;
+    inset: 0;
+    z-index: 20;
     display: none;
+  }
+}
+
+.filtersMobile_title,
+.filtersMobile_buttons{
+  display: none;
+}
+
+@media (max-width: 700px) {
+  .filtersMobile_title{
+  font-size: 16px;
+  font-weight: 600;
+  padding: 16px;
+  display: flex;
+  justify-content: space-between;
+  box-shadow: 0px 1px 1px rgba(8, 43, 41, 0.08), 0px 0px 8px rgba(8, 43, 41, 0.06);
+  }
+  .filtersMobile_container {
+    padding: 16px;
+    height: calc(100vh - 122px);
+    position: static;
+    overflow-y: scroll;
+  }
+  .filtersMobile_buttons {
+    padding: 16px;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
   }
 }
 

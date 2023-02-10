@@ -19,6 +19,7 @@ function PartnersList({ partners }: Props) {
 
   const [filteredPartners, setFilteredPartners] = useState(partners)
   const [limit, setLimit] = useState(10)
+  const [showMobileFilters, setShowMobileFilters] = useState(false)
 
   const sortAlphabeticPartners = (filteredPartners: VerifiedPartner[]) =>
     [...filteredPartners].sort((p1: VerifiedPartner, p2: VerifiedPartner) => p1.slug.localeCompare(p2.slug))
@@ -50,7 +51,10 @@ function PartnersList({ partners }: Props) {
   return (
     <>
       <div className={styles.container}>
-        <Filters partners={partners} setFilteredPartners={setFilteredPartners} />
+        <Filters partners={partners} 
+          setFilteredPartners={setFilteredPartners} 
+          onClose={() => setShowMobileFilters(false)}
+          showMobileFilters={showMobileFilters}/>
         <div className={styles.list_container}>
           <div className={styles.title_container}>
             <div className={styles.title_subcontainer}>
@@ -58,6 +62,8 @@ function PartnersList({ partners }: Props) {
                 <FormattedMessage id="title" />
               </h3>
               <span className={styles.results_count}>{partnersList.length} RESULTS</span>
+              <span className={styles.filtersButton}><img src='/images/icon_filter.svg' onClick={() => setShowMobileFilters(true)} /></span>
+              
             </div>
             <a
               className={styles.link_join}
@@ -65,9 +71,8 @@ function PartnersList({ partners }: Props) {
               href={JOIN_REGISTRY_URL}
               rel="noreferrer"
               onClick={() => trackLink('Open External Link', 'Join Registry', JOIN_REGISTRY_URL)}
-            >
-              <FormattedMessage id="join_registry" />
-            </a>
+            />
+
           </div>
           {renderList.length ? (
             <>

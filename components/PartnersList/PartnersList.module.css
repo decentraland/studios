@@ -30,9 +30,17 @@
   margin-left: 24px;
 }
 
+.filtersButton{
+  margin-left: 10px;
+  display: none;
+}
+
 @media (max-width: 700px) {
   .results_count {
     display: none;
+  }
+  .filtersButton{
+    display: block;
   }
 }
 
@@ -61,6 +69,10 @@
   margin-bottom:  20px;
 }
 
+.link_join::before{
+  content:'JOIN THIS REGISTRY';
+}
+
 .link_join:hover {
   color: #FFF;
   transform: translateY(-2px);
@@ -76,4 +88,10 @@
   width: 100%;
   text-align: center;
   margin-bottom: 5rem;
+}
+
+@media (max-width: 700px) {
+  .link_join::before{
+    content:'JOIN';
+  }
 }

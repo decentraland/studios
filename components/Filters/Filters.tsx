@@ -10,6 +10,8 @@ import { toSnakeCase } from '../utils'
 interface Props {
   partners: VerifiedPartner[]
   setFilteredPartners: React.Dispatch<React.SetStateAction<VerifiedPartner[]>>
+  onClose(event: React.MouseEvent<HTMLElement>): void
+  showMobileFilters: boolean
 }
 
 enum FilterType {
@@ -51,7 +53,7 @@ function getCheckboxKey(filter: FilterType, value: string): string {
   return `${filter}#${value}`
 }
 
-function Filters({ partners, setFilteredPartners }: Props) {
+function Filters({ partners, setFilteredPartners, showMobileFilters, onClose }: Props) {
   const [currentFilterCategory, setCurrentFilterCategory] = useState(0)
   const [filters, setFilters] = useState<Filters>(EMPTY_FILTER)
   const [checkBoxState, setCheckBoxState] = useState<CheckBoxStates>({})
@@ -171,51 +173,83 @@ function Filters({ partners, setFilteredPartners }: Props) {
     }
   }
 
-  return (
-    <div className={styles.hidden_mobile}>
-      {dropdownContent.map((item, index) => {
-        return (
-          <div key={item.key} className={styles.filter_container}>
-            <div className={styles.filter_name}>{item.title}</div>
-            <div>
-              {Object.entries(item.options).map(([key, value]) => {
-                const itemData: CheckboxProps = {
-                  checked: checkBoxState[getCheckboxKey(item.key, value)],
-                  value: value,
-                  name: item.key,
-                }
+  const handleClearFilters = () => {
+    setFilters(EMPTY_FILTER)
+    setUrlFilters(EMPTY_FILTER)
+    setFilteredPartners(partners)
+    for (const key of Object.keys(checkBoxState)) {
+      setCheckBoxState((prevState) => ({ ...prevState, [key]: false }))
+    }
+  }
 
-                let circleDiv = null
-                let serviceTooltipDiv = null
-                if (itemData.name === 'services') {
-                  circleDiv = <img className={styles.circle} src={`/images/category_${key}.svg`} />
-                  serviceTooltipDiv = (
-                    <div className={styles.tooltip_container}>
-                      <div className={styles.tooltip}>
-                        {intl.formatMessage({ id: `service.${toSnakeCase(value)}.description` })}
+  const showIntercom = () => {
+    (globalThis as any).Intercom && (globalThis as any).Intercom("update", { "hide_default_launcher": false });
+  }
+  
+  const hideIntercom = () => {
+    (globalThis as any).Intercom && (globalThis as any).Intercom("update", { "hide_default_launcher": true });
+  }
+
+  useEffect(() => {
+    if (showMobileFilters){
+      hideIntercom()
+    } else {
+      showIntercom()
+    }
+  }, [showMobileFilters])
+
+  return (
+    <div className={styles.filtersContainer} style={{display: showMobileFilters ? 'block' : 'none'}}>
+    <div className={styles.filtersMobile_title}>Filter studios<img src='/images/icon_x.svg' onClick={onClose}/></div>
+      <div className={styles.filtersMobile_container}>
+        {dropdownContent.map((item, index) => {
+          return (
+            <div key={item.key} className={styles.filter_container}>
+              <div className={styles.filter_name}>{item.title}</div>
+              <div>
+                {Object.entries(item.options).map(([key, value]) => {
+                  const itemData: CheckboxProps = {
+                    checked: checkBoxState[getCheckboxKey(item.key, value)],
+                    value: value,
+                    name: item.key,
+                  }
+
+                  let circleDiv = null
+                  let serviceTooltipDiv = null
+                  if (itemData.name === 'services') {
+                    circleDiv = <img className={styles.circle} src={`/images/category_${key}.svg`} />
+                    serviceTooltipDiv = (
+                      <div className={styles.tooltip_container}>
+                        <div className={styles.tooltip}>
+                          {intl.formatMessage({ id: `service.${toSnakeCase(value)}.description` })}
+                        </div>
                       </div>
+                    )
+                  }
+
+                  return (
+                    <div
+                      key={key}
+                      onClick={(e) => handleItemClick(e, itemData)}
+                      className={`${styles.tag_container} ${
+                        styles[`serv_${toSnakeCase(value)}${itemData.checked ? '--check' : ''}`]
+                      } ${itemData.checked ? styles.check : ''}`}
+                    >
+                      {circleDiv}
+                      {intl.formatMessage({ id: `service.${toSnakeCase(value)}`, defaultMessage: value })}
+                      {serviceTooltipDiv}
                     </div>
                   )
-                }
-
-                return (
-                  <div
-                    key={key}
-                    onClick={(e) => handleItemClick(e, itemData)}
-                    className={`${styles.tag_container} ${
-                      styles[`serv_${toSnakeCase(value)}${itemData.checked ? '--check' : ''}`]
-                    } ${itemData.checked ? styles.check : ''}`}
-                  >
-                    {circleDiv}
-                    {intl.formatMessage({ id: `service.${toSnakeCase(value)}`, defaultMessage: value })}
-                    {serviceTooltipDiv}
-                  </div>
-                )
-              })}
+                })}
+              </div>
             </div>
-          </div>
-        )
-      })}
+          )
+        })}
+      </div>
+      <div className={styles.filtersMobile_buttons}>
+          <span className='button_basic' onClick={handleClearFilters}>CLEAR FILTERS</span>
+          <span className='button_primary' onClick={onClose}>APPLY FILTERS</span>
+      </div>
     </div>
   )
 }

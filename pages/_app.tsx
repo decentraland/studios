@@ -77,12 +77,12 @@ function App({ Component, pageProps }: AppProps) {
   return (
     <>
       <Head>
-        <meta property="og:site_name" content="Decentraland | Metaverse Studios" />
+        <meta property="og:site_name" content="Decentraland Studios" />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="studios.decentraland.org" />
         <meta name="twitter:card" content="summary" />
         <link rel="icon" href="/favicon.ico" />
-        <title>Metaverse Studios</title>
+        <title>Decentraland Studios</title>
 
 
         <noscript>

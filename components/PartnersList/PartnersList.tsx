@@ -18,7 +18,7 @@ function PartnersList({ partners }: Props) {
   const JOIN_REGISTRY_URL = 'https://dclstudios.typeform.com/to/NfzmbzXi'
 
   const [filteredPartners, setFilteredPartners] = useState(partners)
-  const [limit, setLimit] = useState(10)
+  const [limit, setLimit] = useState(parseInt(globalThis?.sessionStorage?.studiosListLimit) || 10)
   const [showMobileFilters, setShowMobileFilters] = useState(false)
 
   const sortAlphabeticPartners = (filteredPartners: VerifiedPartner[]) =>
@@ -40,7 +40,13 @@ function PartnersList({ partners }: Props) {
     setPartnersList(() => sortByServicesCount(randomizePartners(filteredPartners)))
   }, [filteredPartners.length])
 
+  
+
   let renderList = partnersList.slice( 0, limit )
+
+  useEffect(() => {
+    globalThis.sessionStorage.setItem('studiosListLimit', limit.toString());
+  }, [limit])
 
   if (!isDevelopment){
     //prevent dev studios from showing in production

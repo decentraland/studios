@@ -229,7 +229,7 @@ function PartnerProfile({ partner, projects, reviews }: Props) {
               </div>
               {renderProjects.length < projects.length && 
                 <div className={styles.load_more_container}>
-                  <div className={'button_primary--inverted'} onClick={() => setProjectsLimit(projects.length)}>LOAD MORE</div>
+                  <div className={'button_primary--inverted'} onClick={() => setProjectsLimit(projectsLimit + 6)}>LOAD MORE</div>
                 </div>}
             </>
           ) : (
@@ -253,7 +253,7 @@ function PartnerProfile({ partner, projects, reviews }: Props) {
               </div>
               {renderReviews.length < reviews.length && 
                 <div className={styles.load_more_container}>
-                  <div className={'button_primary--inverted'} onClick={() => setReviewsLimit(reviews.length)}>LOAD MORE</div>
+                  <div className={'button_primary--inverted'} onClick={() => setReviewsLimit(reviewsLimit + 4)}>LOAD MORE</div>
                 </div>}
             </>
           ) : (

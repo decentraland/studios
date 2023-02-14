@@ -6,24 +6,29 @@ import Partners from '../clients/Partners'
 
 import React from 'react'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
-import BannerHeader from '../components/BannerHeader/BannerHeader'
+import BannerStudios from '../components/BannerStudios/BannerStudios'
+import Projects from '../clients/Projects'
 
 
 export async function getStaticProps() {
   const partners = await Partners.get({basicData: true})
 
+  const projects = await Projects.get({basicData: true})
+
   return {
     props: {
       partners: partners,
+      projectsCount: projects.length,
     },
   }
 } 
 
 interface Props {
   partners: VerifiedPartner[]
+  projectsCount: number
 }
 
-function Home({ partners }: Props) {
+function Home({ partners, projectsCount }: Props) {
   return (
     <Container className={styles.container}>
       <Head>
@@ -32,7 +37,7 @@ function Home({ partners }: Props) {
         <meta property="og:image" content="/images/banner_studios.png" />
       </Head>
       <main className={styles.main}>
-        <BannerHeader />
+        <BannerStudios studiosCount={partners.length} projectsCount={projectsCount}/>
         <PartnersList partners={partners} />
       </main>
     </Container>

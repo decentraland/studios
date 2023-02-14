@@ -1,6 +1,6 @@
 import styles from '../../styles/Home.module.css'
 
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Head from 'next/head'
 
 import { Container } from 'decentraland-ui/dist/components/Container/Container'

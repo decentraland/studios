@@ -1,5 +1,5 @@
 import React from 'react'
-import { FormattedMessage, useIntl } from 'react-intl'
+import { useIntl } from 'react-intl'
 import { Service } from '../../interfaces/VerifiedPartner'
 import { toSnakeCase } from '../utils'
 
@@ -15,17 +15,17 @@ function CategoryPill({ type, showIcon = false }: Props) {
   const typeClass = `container--${service}`
 
   const intl = useIntl()
-  const serviceName = intl.formatMessage({ id: `service.${toSnakeCase(service)}`})
+  const serviceName = intl.formatMessage({ id: `service.${service}` })
 
   const tooltip = <div className={styles.tooltip_container}>
-  <div className={styles.tooltip}>
-    {intl.formatMessage({ id: `service.${toSnakeCase(service)}.description`})}
+    <div className={styles.tooltip}>
+      {intl.formatMessage({ id: `service.${service}.description` })}
+    </div>
   </div>
-</div>
 
   return (
     <span className={`${styles.container} ${styles[typeClass]}`}>
-      {showIcon && <><img alt='' src={`/images/category_${serviceName.replace(' ', '')}.svg`} />&nbsp;</>}
+      {showIcon && <><img alt='' src={`/images/category_${type.replace(' ', '')}.svg`} />&nbsp;</>}
       {serviceName}
       {tooltip}
     </span>

@@ -7,7 +7,12 @@ function BackButton() {
   const router = useRouter()
 
   const onClickHandler = () => {
-    if(globalThis?.sessionStorage.prevInStudios){ 
+    let prevInStudios = JSON.parse(globalThis.sessionStorage.prevInStudios || '[]')
+
+    if(prevInStudios.length > 1){ 
+      prevInStudios.pop()
+      globalThis.sessionStorage.setItem('prevInStudios', JSON.stringify(prevInStudios));
+
       router.back()
     } else {
       router.push('/')

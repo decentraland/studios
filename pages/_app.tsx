@@ -43,16 +43,26 @@ function App({ Component, pageProps }: AppProps) {
   useEffect(() => {
 
     const handleRouteChange = (url: string) => {
-      //store a flag for BackButton behaviour
-      globalThis.sessionStorage.setItem('prevInStudios', url);
+      let prevInStudios = JSON.parse(globalThis.sessionStorage.prevInStudios || '[]')
+      
+      if (prevInStudios.at(-1) !== url){
+        prevInStudios.push(url)
+        globalThis.sessionStorage.setItem('prevInStudios', JSON.stringify(prevInStudios));
+      }
+
       
       (globalThis as any).fbq('track', 'PageView')
     }
 
-    router.events.on('routeChangeComplete', handleRouteChange)
+    router.events.on('routeChangeStart', handleRouteChange)
+
+    //initialize prevInStudios on first pageView
+    if (!JSON.parse(globalThis.sessionStorage.prevInStudios || '[]').length){
+      globalThis.sessionStorage.setItem('prevInStudios', JSON.stringify([router.asPath]));
+    }
 
     return () => {
-      router.events.off('routeChangeComplete', handleRouteChange)
+      router.events.off('routeChangeStart', handleRouteChange)
     }
   }, [router.events])
 

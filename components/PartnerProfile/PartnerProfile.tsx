@@ -217,7 +217,7 @@ function PartnerProfile({ partner, projects, reviews }: Props) {
         </div>
 
         <div>
-          <div className={styles.info_title}>
+          <div className={`${styles.info_title} mt-3r`}>
             <FormattedMessage id="projects" />
           </div>
           {projects.length ? (
@@ -240,7 +240,7 @@ function PartnerProfile({ partner, projects, reviews }: Props) {
           )}
         </div>
         <div>
-          <div className={styles.info_title}>
+          <div className={`${styles.info_title} mt-3r`}>
             <FormattedMessage id="reviews" />
             <a className='button_basic' href={`/reviews/submit/${partner.slug}`} target="_blank" rel="noreferrer">LEAVE A REVIEW</a>
           </div>

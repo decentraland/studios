@@ -7,7 +7,13 @@ function BackButton() {
   const router = useRouter()
 
   const onClickHandler = () => {
-    let prevInStudios = JSON.parse(globalThis.sessionStorage.prevInStudios || '[]')
+    let prevInStudios = globalThis.sessionStorage.prevInStudios || '[]'
+    if (!prevInStudios.includes('[')){ 
+      prevInStudios = []
+    } else {
+      prevInStudios = JSON.parse(globalThis.sessionStorage.prevInStudios || '[]')
+    }
+    
 
     if(prevInStudios.length > 1){ 
       prevInStudios.pop()

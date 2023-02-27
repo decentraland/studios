@@ -43,7 +43,13 @@ function App({ Component, pageProps }: AppProps) {
   useEffect(() => {
 
     const handleRouteChange = (url: string) => {
-      let prevInStudios = JSON.parse(globalThis.sessionStorage.prevInStudios || '[]')
+      let prevInStudios
+      //handler for sessions with older prevInStudios
+      if (!globalThis.sessionStorage.prevInStudios.includes('[')){
+        prevInStudios = []
+      } else {
+        prevInStudios = JSON.parse(globalThis.sessionStorage.prevInStudios || '[]')
+      }
       
       if (prevInStudios.at(-1) !== url){
         prevInStudios.push(url)
@@ -56,8 +62,9 @@ function App({ Component, pageProps }: AppProps) {
 
     router.events.on('routeChangeStart', handleRouteChange)
 
-    //initialize prevInStudios on first pageView
-    if (!JSON.parse(globalThis.sessionStorage.prevInStudios || '[]').length){
+    //initialize prevInStudios on first pageView, added handler for sessions with older prevInStudios
+    const prevInStudios = globalThis.sessionStorage.prevInStudios || '[]'
+    if (!prevInStudios.includes('[') || !JSON.parse(prevInStudios).length){
       globalThis.sessionStorage.setItem('prevInStudios', JSON.stringify([router.asPath]));
     }
 

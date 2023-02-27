@@ -175,12 +175,16 @@ a {
   font-size: 13px;
   display: inline-block;
 }
- .mb-2{
+ .mb-2 {
   margin-bottom: 20px;
  }
  
- .mt-2{
+ .mt-2 {
   margin-top: 20px;
+ }
+
+ .mt-3r {
+  margin-top: 3rem;
  }
 
  .center {

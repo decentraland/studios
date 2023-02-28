@@ -7,17 +7,11 @@ function BackButton() {
   const router = useRouter()
 
   const onClickHandler = () => {
-    let prevInStudios = globalThis.sessionStorage.prevInStudios || '[]'
-    if (!prevInStudios.includes('[')){ 
-      prevInStudios = []
-    } else {
-      prevInStudios = JSON.parse(globalThis.sessionStorage.prevInStudios || '[]')
-    }
-    
+    let navHist = JSON.parse(globalThis.sessionStorage.navHist || '[]')
 
-    if(prevInStudios.length > 1){ 
-      prevInStudios.pop()
-      globalThis.sessionStorage.setItem('prevInStudios', JSON.stringify(prevInStudios));
+    if(navHist.length > 1){ 
+      navHist.pop()
+      globalThis.sessionStorage.setItem('navHist', JSON.stringify(navHist));
 
       router.back()
     } else {

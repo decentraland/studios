@@ -11,6 +11,8 @@ export default async function (req: NextRequest) {
 
   const SENDRGRID_URL = process.env.NEXT_PUBLIC_API_SENDGRID
   const SENDGRID_ACCESS_TOKEN = process.env.SENDGRID_ACCESS_TOKEN
+  const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN
+  const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID
 
   const body = await req.json()
 
@@ -77,6 +79,16 @@ export default async function (req: NextRequest) {
       })
     })
 
+    await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        chat_id: TELEGRAM_CHAT_ID,
+        text: `🎉 ${body.name} ${body.email} just downloaded the guide`
+      })
+    })
     
     return new Response(null, { status: 204 })
 

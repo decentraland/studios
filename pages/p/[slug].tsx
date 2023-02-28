@@ -83,6 +83,8 @@ function MetaverseGuide({ landing }: Props) {
             body: JSON.stringify(body)
         })
 
+        fbqTrackLead()
+
         ctaSuccess()
     }
 
@@ -160,7 +162,7 @@ function MetaverseGuide({ landing }: Props) {
                             <h3>{landing.form_success_title}</h3>
                             <p className="base-text cta__base-text">{landing.form_success_text} <strong>{email}</strong>.</p>
                             <div className="cta__form--success__buttons">
-                                <a onClick={fbqTrackLead} href={landing.form_success_open_url} target="_blank" rel="noreferrer" className="cta">{landing.form_success_open}</a>
+                                <a href={landing.form_success_open_url} target="_blank" rel="noreferrer" className="cta">{landing.form_success_open}</a>
                                 <a onClick={ctaSendAgain} className="inline-link">{landing.form_success_send_again}</a>
                             </div>
                         </div>

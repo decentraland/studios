@@ -1,0 +1,52 @@
+.navTabs {
+  width: 100%;
+  border-bottom: 1px solid var(--divider);
+  margin-bottom: 24px;
+}
+
+.navTabs .container {
+  max-width: 933px;
+  margin-left: auto!important;
+  margin-right: auto!important;
+  /* display: flex;
+  justify-content: space-between;
+  align-items: center; */
+  position: relative;
+}
+
+.navTab {
+  position: relative;
+  display: inline-block;
+  padding: 19px 0;
+  margin-right: 32px;
+  font-size: 17px;
+  line-height: 26px;
+  letter-spacing: -.2px;
+  cursor: pointer
+}
+
+.navTab--active {
+  font-weight: 600;
+}
+
+.navTab .active-bar {
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  right: 0;
+  border-bottom: 3px solid var(--primary);
+  border-radius: 10px;
+  z-index: 10
+}
+
+@media(max-width: 768px) {
+  .navTabs {
+      padding: 0 16px 0 16px;
+  }
+
+  .navTab {
+      font-size: 16px;
+      padding: 8px 0;
+      margin-right: 32px;
+  }
+}

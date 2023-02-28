@@ -1,5 +1,5 @@
-import '../styles/globals.css'
 import 'decentraland-ui/lib/styles.css'
+import '../styles/globals.css'
 import type { AppProps } from 'next/app'
 import { useEffect, useMemo } from 'react'
 import English from '../locales/en.json'
@@ -10,8 +10,7 @@ import dynamic from 'next/dynamic'
 import Script from 'next/script'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
-import { Tabs } from 'decentraland-ui/dist/components/Tabs/Tabs'
-import Link from 'next/link'
+import NavTabs from '../components/NavTabs/NavTabs'
 
 declare global {
   interface Window {
@@ -25,6 +24,9 @@ const Navbar = dynamic(() => import('decentraland-ui/dist/components/Navbar/Navb
 
 const METABASE_KEY = process.env.NEXT_PUBLIC_METABASE_KEY
 const INTERCOM_APP_ID = process.env.NEXT_PUBLIC_INTERCOM_APP_ID
+
+const tabsContents = [['/', 'Studios'],['/projects', 'Projects'], ['/resources', 'Resources']]
+
 
 function App({ Component, pageProps }: AppProps) {
 
@@ -61,9 +63,6 @@ function App({ Component, pageProps }: AppProps) {
     if (!globalThis.sessionStorage.navHist){
       globalThis.sessionStorage.setItem('navHist', JSON.stringify([router.asPath]));
     }
-    
-    //remove older navigation history handler
-    globalThis.sessionStorage.removeItem('prevInStudios')
 
     return () => {
       router.events.off('routeChangeStart', handleRouteChange)
@@ -71,22 +70,7 @@ function App({ Component, pageProps }: AppProps) {
   }, [router.events])
 
   const isMetaverseGuide = router.asPath.includes('/p/')
-  const tabsContents = [['/', 'Studios'],['/projects', 'Projects'], ['/resources', 'Resources']]
-  const showTabs = tabsContents.map(tab => tab[0]).includes(router.route)
-
-  let renderTabs = null
-  if (showTabs){
-    renderTabs = <Tabs>
-    <Tabs.Left>
-      {tabsContents.map(tab => 
-        <Link key={tab[0]} href={`${tab[0]}`} legacyBehavior>
-          <Tabs.Tab active={router.route === tab[0]}>{`${tab[1]}`}</Tabs.Tab>
-        </Link>
-      )}
-    </Tabs.Left>
-  </Tabs>
-  }
-
+  const showTabs = [...tabsContents, ['/search']].map(tab => tab[0]).includes(router.route)
 
   return (
     <>
@@ -113,7 +97,7 @@ function App({ Component, pageProps }: AppProps) {
           <div className='allocateNav'>
             <Navbar isFullscreen={showTabs} />
           </div>
-          {renderTabs}
+          {showTabs && <NavTabs tabsContents={tabsContents} />}
           <Component {...pageProps} />
           <Footer />
         </IntlProvider>}

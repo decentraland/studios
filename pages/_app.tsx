@@ -43,17 +43,12 @@ function App({ Component, pageProps }: AppProps) {
   useEffect(() => {
 
     const handleRouteChange = (url: string) => {
-      let prevInStudios
-      //handler for sessions with older prevInStudios
-      if (!globalThis.sessionStorage.prevInStudios.includes('[')){
-        prevInStudios = []
-      } else {
-        prevInStudios = JSON.parse(globalThis.sessionStorage.prevInStudios || '[]')
-      }
+      //sessionStorage for back button behaviour
+      let navHist = JSON.parse(globalThis.sessionStorage.navHist || '[]')
       
-      if (prevInStudios.at(-1) !== url){
-        prevInStudios.push(url)
-        globalThis.sessionStorage.setItem('prevInStudios', JSON.stringify(prevInStudios));
+      if (navHist.at(-1) !== url){
+        navHist.push(url)
+        globalThis.sessionStorage.setItem('navHist', JSON.stringify(navHist));
       }
 
       
@@ -62,11 +57,13 @@ function App({ Component, pageProps }: AppProps) {
 
     router.events.on('routeChangeStart', handleRouteChange)
 
-    //initialize prevInStudios on first pageView, added handler for sessions with older prevInStudios
-    const prevInStudios = globalThis.sessionStorage.prevInStudios || '[]'
-    if (!prevInStudios.includes('[') || !JSON.parse(prevInStudios).length){
-      globalThis.sessionStorage.setItem('prevInStudios', JSON.stringify([router.asPath]));
+    //initialize navHist on first pageView
+    if (!globalThis.sessionStorage.navHist){
+      globalThis.sessionStorage.setItem('navHist', JSON.stringify([router.asPath]));
     }
+    
+    //remove older navigation history handler
+    globalThis.sessionStorage.removeItem('prevInStudios')
 
     return () => {
       router.events.off('routeChangeStart', handleRouteChange)

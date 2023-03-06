@@ -1,12 +1,12 @@
 import React from 'react'
 
 import styles from './ProjectCard.module.css'
-import { PartnerProjectExtended } from '../../interfaces/PartnerProject'
+import { PartnerProject } from '../../interfaces/PartnerProject'
 import Link from 'next/link'
 import Image from 'next/image'
 
 interface Props {
-  project: PartnerProjectExtended
+  project: PartnerProject
 }
 
 const DATA_URL = process.env.NEXT_PUBLIC_PARTNERS_DATA_URL
@@ -25,9 +25,9 @@ function ProjectCard({ project }: Props) {
         </div>
       </Link>
     </div>
-    {project.partner_name ? <div className={styles.partner__data}>
-      <Image className={styles.partner_logo} unoptimized width='16' height='16' alt={project.partner_name} src={`${DATA_URL}/assets/${project.partner_logo}?key=logo`}/>
-      {project.partner_name}
+    {project.profile?.name ? <div className={styles.partner__data}>
+      <Image className={styles.partner_logo} unoptimized width='16' height='16' alt={project.profile.name} src={`${DATA_URL}/assets/${project.profile.logo}?key=logo`}/>
+      {project.profile.name}
     </div> : null}
     </div>
   )

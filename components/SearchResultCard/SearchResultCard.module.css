@@ -1,0 +1,153 @@
+.cardContainer {
+    border: var(--card_border);
+    border-radius: 8px;
+    box-shadow: var(--card_shadow);
+    padding: 0 1rem 0 0;
+    margin-bottom: 2rem;
+    min-height: 12rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+  }
+  
+  .cardContainer:hover {
+    transform: var(--card_animation);
+  }
+
+  .flatAnchor {
+    font-weight: unset;
+  }
+  
+  .flatAnchor:hover {
+    color: var(--text);
+    font-weight: unset;
+  }
+  
+  .name {
+    margin: 0;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: flex-start;
+    font-weight: 700;
+    flex-wrap: wrap;
+  }
+  
+  .image {
+    width: 10rem;
+    height: 12em;
+    float: left;
+    margin-right: 1rem;
+    border-radius: 8px;
+  
+    overflow: hidden;
+    position: relative;
+    flex-shrink: 0;
+  }
+  
+  .logo {
+    width: 10rem;
+    height: 10em;
+    float: left;
+    margin-right: 1rem;
+    margin-left: 24px;
+    border-radius: 8px;
+    overflow: hidden;
+    position: relative;
+    flex-shrink: 0;
+  }
+
+  .video{
+    height: 12rem;
+    width: 10rem;
+    object-fit: cover;
+    border-radius: 8px 0 0 8px;
+    flex-shrink: 0;
+    margin-right: 1rem;
+  }
+  
+  .description_container{
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .description {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    display: -moz-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    -moz-box-orient: vertical;
+    white-space: normal;
+    margin-bottom: 0.5em;
+    max-height: 97px;
+    padding-right: 12px;
+  }
+
+  .read_more_trigger {
+    color: #ff2d55;
+    font-size: 1em;
+    font-weight: 500;
+  }
+
+  .logoMini {
+    width: 24px;
+    height: 24px;
+    /* float: left; */
+    margin-left: 8px;
+    margin-right: 8px;
+    border-radius: 1rem;
+    background-size: contain !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+  }
+  
+  .partner_name {
+    /* font-size: 15px; */
+    /* font-weight: 600; */
+    display: flex;
+  }
+
+  .partner_info {
+    align-items: center;
+    margin-left: 8px;
+    display: flex;
+    font-weight: initial;
+  }
+  
+  
+  @media (max-width: 700px) {
+    .name {
+      display: block;
+    }
+
+    .cardContainer {
+      min-height: 9rem;
+    }
+    .image {
+      width: 7rem;
+      height: 9rem;   
+    }
+    .logo {
+      width: 7rem;
+      height: 7rem;
+      margin-left: 12px;
+    }
+    .video {
+      width: 7rem;
+      height: 9rem;   
+    }
+    .logoMini {
+      width: 16px;
+      height: 16px;
+    }
+    .partner_info {
+      margin-left: 0;
+      margin-top: 8px;
+    }
+    .partner_name {
+      font-weight: 700;
+    }
+
+  }

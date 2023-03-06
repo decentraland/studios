@@ -4,8 +4,8 @@
   margin-bottom: 24px;
 }
 
-.navTabs .container {
-  max-width: 933px;
+.container {
+  max-width: 1064px;
   margin-left: auto!important;
   margin-right: auto!important;
   /* display: flex;
@@ -37,6 +37,18 @@
   border-bottom: 3px solid var(--primary);
   border-radius: 10px;
   z-index: 10
+}
+
+@media(max-width: 1200px) {
+  .container {
+    max-width: 933px;
+  }
+}
+
+@media(max-width: 989px) {
+  .container {
+    max-width: 723px;
+  }
 }
 
 @media(max-width: 768px) {

@@ -21,7 +21,7 @@ function ResultCard ( {data, query} : Props ) {
     if (data.type === 'resource') linkUrl = data.github_link;
 
     let linkContainer = (child: ReactElement) => {
-        if (data.type === 'resource') return <a href={linkUrl} className={styles.flatAnchor} target={'_blank'}>{child}</a>
+        if (data.type === 'resource') return <a href={linkUrl} className={styles.flatAnchor} target={'_blank'} rel="noreferrer">{child}</a>
         return <Link href={linkUrl} legacyBehavior>{child}</Link>
     }
 

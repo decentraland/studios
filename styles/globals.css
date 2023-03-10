@@ -136,6 +136,10 @@ a {
   .allocateNav{
     min-height: 56px;
   }
+
+  .ui.container.dcl.footer {
+    flex-direction: column;
+  }
 }
 
 .button_primary {
@@ -144,7 +148,6 @@ a {
   border-radius: 5px;
   color: #fff;
   font-size: 13px;
-  /* margin-bottom: 20px; */
   display: inline-block;
   cursor: pointer;
 }
@@ -177,6 +180,10 @@ a {
 }
  .mb-2 {
   margin-bottom: 20px;
+ }
+ 
+ .mb-4 {
+  margin-bottom: 40px;
  }
  
  .mt-2 {

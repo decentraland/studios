@@ -6,6 +6,7 @@ import { PaymentMethod, Region, Service, TeamSize, VerifiedPartner } from '../..
 
 import styles from './Filters.module.css'
 import { toSnakeCase } from '../utils'
+import IconX from '../Icons/IconX'
 
 interface Props {
   partners: VerifiedPartner[]
@@ -200,7 +201,7 @@ function Filters({ partners, setFilteredPartners, showMobileFilters, onClose }: 
 
   return (
     <div className={styles.filtersContainer} style={{display: showMobileFilters ? 'block' : 'none'}}>
-    <div className={styles.filtersMobile_title}>Filter studios<img src='/images/icon_x.svg' onClick={onClose}/></div>
+    <div className={styles.filtersMobile_title}>Filter studios<IconX onClick={onClose} /></div>
       <div className={styles.filtersMobile_container}>
         {dropdownContent.map((item, index) => {
           return (

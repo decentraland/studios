@@ -62,7 +62,6 @@ export default function Search() {
 			})
 		}).then((res) => res.json())
 
-		console.log(response)
 		setResults(response.results)
 		setLoading(false)
 	}

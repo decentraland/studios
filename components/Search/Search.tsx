@@ -13,7 +13,7 @@ const resultTypes = ['resource', 'studio', 'project']
 
 export default function Search() {
 	const router = useRouter()
-	const query = router.query.searchText as string
+	const query = router.query.q as string
 
 	const [results, setResults] = useState(Object.fromEntries(resultTypes.map(item => [item, []])))
 	const [loading, setLoading] = useState(false)

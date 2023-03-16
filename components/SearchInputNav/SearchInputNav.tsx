@@ -20,7 +20,7 @@ export default function SearchInputNav () {
 
     const handleSubmit = (e: React.KeyboardEvent) => {
         if (e.code === 'Enter'){
-            router.push(`/search/${searchText}`)
+            router.push(`/search?q=${searchText}`)
             inputRef.current?.blur()
             // setOpen(false)
             // setSearchText('')

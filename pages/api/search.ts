@@ -47,7 +47,9 @@ export default async function (req: NextRequest) {
         'Authorization': `Bearer ${API_TOKEN}`
       },
       body: JSON.stringify({
-        query
+        query,
+        geo: req.geo, 
+        ip: req.ip
       })
     })
 
@@ -63,5 +65,5 @@ export default async function (req: NextRequest) {
    
     const results = { resource, studio, project }
     
-    return new Response(JSON.stringify({results, geo: req.geo, ip: req.ip}))
+    return new Response(JSON.stringify({results }))
   }

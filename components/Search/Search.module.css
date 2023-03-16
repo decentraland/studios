@@ -139,6 +139,7 @@
   .clearButton--mobile {
     display: flex;
     position: fixed;
+    z-index: 100;
     bottom: 32px;
     left: 50%;
     transform: translateX(-50%);

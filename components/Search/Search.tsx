@@ -84,19 +84,20 @@ export default function Search() {
 		}
 	}
 
-	const resultsCount = resultTypes.map(type => render[type].length).reduce((part, a) => part + a, 0)
+	const resultCount = resultTypes.map(type => results[type].length).reduce((part, a) => part + a, 0)
+	const renderCount = resultTypes.map(type => render[type].length).reduce((part, a) => part + a, 0)
 
 	if (loading) return <><Loader active/><h3 className={styles.loading}>Searching...</h3></>
 
 	return <>
 		<div className={styles.container}>
 			<Filters />
-			{resultsCount ? (
+			{resultCount ? (
 				<div className={styles.list_container}>
 
 					<div className={styles.title_container}>
 						<span className={styles.results_count}>
-							{resultsCount} result{resultsCount > 1 ? 's' : ''} for <b>{query}</b>
+							{renderCount} result{renderCount > 1 ? 's' : ''} for <b>{query}</b>
 							{filters.length ? <span className={styles.clearButton} onClick={() => setFilters([])}><IconX red/> CLEAR FILTERS</span> : null}
 						</span>
 						<span className={styles.filtersButton}><IconFilter onClick={() => setShowMobileFilters(true)} /></span>

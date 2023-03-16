@@ -40,7 +40,9 @@ function MarkdownDescription ({description, inPartnersList, rehypePlugins, ...ot
     renderCustomComponents.p = 'span'
     renderCustomComponents.ul = 'span'
     renderCustomComponents.li = 'span'
-    renderCustomComponents.h1 = 'div'
+    renderCustomComponents.h1 = ({ children }: { children: string }) => {
+      return <div><i><b>{children}</b></i></div>
+    }
     renderCustomComponents.img = () => {return null}
   }
 

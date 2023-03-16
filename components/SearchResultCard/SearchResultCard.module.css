@@ -4,7 +4,6 @@
     box-shadow: var(--card_shadow);
     padding: 0 1rem 0 0;
     margin-bottom: 2rem;
-    height: 9rem;
     cursor: pointer;
     display: table;
     width: 100%;
@@ -41,10 +40,21 @@
     font-weight: 700;
     flex-wrap: wrap;
   }
+
+  .name div:first-of-type {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    display: -moz-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    -moz-box-orient: vertical;
+    white-space: normal;
+  }
   
   .image{
-    height: 9rem;
-    width: 9rem;
+    height: 12rem;
+    width: 12rem;
     float: left;
     margin-right: 1rem;
     border-radius: 8px;
@@ -122,9 +132,6 @@
       display: block;
     }
 
-    .cardContainer {
-      height: 8rem;
-    }
     .image {
       width: 8rem;
       height: 8rem;   

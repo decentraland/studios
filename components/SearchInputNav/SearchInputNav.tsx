@@ -36,6 +36,12 @@ export default function SearchInputNav () {
         }
     }
 
+    const handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
+        setOpen(true)
+        // select current text
+        // inputRef.current?.setSelectionRange(0, inputRef.current?.value.length)
+    }
+
     useEffect(() => {
 
         const handleRouteChange = (url: string) => {
@@ -59,7 +65,7 @@ export default function SearchInputNav () {
             placeholder='Search...'
             ref={inputRef}
             value={searchText}
-            onFocus={() => setOpen(true)}
+            onFocus={handleFocus}
             onBlur={() => setOpen(!!searchText)}
             onChange={(e) => setSearchText(e.target.value)}
             onKeyUp={handleSubmit} />

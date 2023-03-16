@@ -38,6 +38,8 @@ function MarkdownDescription ({description, inPartnersList, rehypePlugins, ...ot
   
   if (inPartnersList){
     renderCustomComponents.p = 'span'
+    renderCustomComponents.ul = 'span'
+    renderCustomComponents.li = 'span'
     renderCustomComponents.h1 = 'div'
     renderCustomComponents.img = () => {return null}
   }

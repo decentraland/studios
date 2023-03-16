@@ -70,7 +70,7 @@ function App({ Component, pageProps }: AppProps) {
   }, [router.events])
 
   const isMetaverseGuide = router.asPath.includes('/p/')
-  const showTabs = [...tabsContents, ['/search/[q]']].map(tab => tab[0]).includes(router.route)
+  const showTabs = [...tabsContents, ['/search/[searchText]']].map(tab => tab[0]).includes(router.route)
 
   return (
     <>
@@ -81,7 +81,7 @@ function App({ Component, pageProps }: AppProps) {
         <meta name="twitter:card" content="summary" />
         <link rel="icon" href="/favicon.ico" />
         <title>Decentraland Studios</title>
-
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
 
         <noscript>
           <img height="1" width="1" style={{display:"none"}}

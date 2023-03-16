@@ -19,7 +19,7 @@ const sliceAroundQuery = (query: string, description: string) => {
     const queryIndex = (description || '').toLowerCase().indexOf(query.toLowerCase())
     const slicedStart = queryIndex >= 50
     if (slicedStart){
-        sliceRange= [queryIndex - 50, queryIndex + 250]
+        sliceRange= [queryIndex - 10, queryIndex + 190]
     }
     
     return `${slicedStart ? '...' : ''}${(description || '').substring(sliceRange[0], sliceRange[1]).trim()}...`

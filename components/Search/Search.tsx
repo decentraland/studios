@@ -12,7 +12,7 @@ const resultTypes = ['resource', 'studio', 'project']
 
 export default function Search() {
 	const router = useRouter()
-	const { q } = router.query
+	const query = router.query.searchText as string
 
 	const [results, setResults] = useState(Object.fromEntries(resultTypes.map(item => [item, []])))
 	const [loading, setLoading] = useState(false)
@@ -68,11 +68,11 @@ export default function Search() {
 	}
 
 	useEffect(() => {
-		if (q) {
-			handleSearch(q as string)
+		if (query) {
+			handleSearch(query)
 		}
 
-	}, [q])
+	}, [query])
 
 	let render: any = {}
 
@@ -96,7 +96,7 @@ export default function Search() {
 
 					<div className={styles.title_container}>
 						<span className={styles.results_count}>
-							{resultsCount} result{resultsCount > 1 ? 's' : ''} for <b>{q}</b>
+							{resultsCount} result{resultsCount > 1 ? 's' : ''} for <b>{query}</b>
 							{filters.length ? <span className={styles.clearButton} onClick={() => setFilters([])}><IconX red/> CLEAR FILTERS</span> : null}
 						</span>
 						<span className={styles.filtersButton}><IconFilter onClick={() => setShowMobileFilters(true)} /></span>
@@ -104,7 +104,7 @@ export default function Search() {
 					{resultTypes.map(type => render[type].length ? <div key={`result-${type}`}>
 						<div className={`${styles.tag} ${styles[`tag_${type}--active`]}`}>{type.toUpperCase()}</div>
 						{render[type].map((result: any) => <div key={`${result.type}${result.id}`}>
-							<SearchResultCard data={result} query={q as string} />
+							<SearchResultCard data={result} query={query} />
 						</div>)}
 						{results[type].length > render[type].length && !filters.length && <div className='button_primary--inverted mb-4' onClick={() => setFilters([type])}>SHOW ALL {type.toUpperCase()} RESULTS</div>}
 					</div> 
@@ -115,7 +115,7 @@ export default function Search() {
 				<div className={styles.empty}>
 					<Empty />
 					<br />
-					There are no results for <b>{q}</b>
+					There are no results for <b>{query}</b>
 				</div>
 
 			)}

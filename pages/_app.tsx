@@ -70,7 +70,7 @@ function App({ Component, pageProps }: AppProps) {
   }, [router.events])
 
   const isMetaverseGuide = router.asPath.includes('/p/')
-  const showTabs = [...tabsContents, ['/search']].map(tab => tab[0]).includes(router.route)
+  const showTabs = [...tabsContents, ['/search/[q]']].map(tab => tab[0]).includes(router.route)
 
   return (
     <>

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
+import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 
 import styles from './Search.module.css'
 import SearchResultCard from '../SearchResultCard/SearchResultCard'
@@ -11,7 +12,7 @@ const resultTypes = ['resource', 'studio', 'project']
 
 export default function Search() {
 	const router = useRouter()
-	const q = router.query.q as string
+	const { q } = router.query
 
 	const [results, setResults] = useState(Object.fromEntries(resultTypes.map(item => [item, []])))
 	const [loading, setLoading] = useState(false)
@@ -68,7 +69,7 @@ export default function Search() {
 
 	useEffect(() => {
 		if (q) {
-			handleSearch(q)
+			handleSearch(q as string)
 		}
 
 	}, [q])
@@ -83,9 +84,9 @@ export default function Search() {
 		}
 	}
 
-	const resultsCount = resultTypes.map(type => results[type].length).reduce((part, a) => part + a, 0)
+	const resultsCount = resultTypes.map(type => render[type].length).reduce((part, a) => part + a, 0)
 
-	if (loading) return <h3 style={{ width: 'fit-content', margin: '30px auto' }}>Searching...</h3>
+	if (loading) return <><Loader active/><h3 className={styles.loading}>Searching...</h3></>
 
 	return <>
 		<div className={styles.container}>
@@ -102,7 +103,9 @@ export default function Search() {
 					</div>
 					{resultTypes.map(type => render[type].length ? <div key={`result-${type}`}>
 						<div className={`${styles.tag} ${styles[`tag_${type}--active`]}`}>{type.toUpperCase()}</div>
-						{render[type].map((result: any) => <div key={`${result.type}${result.id}`}><SearchResultCard data={result} query={q} /></div>)}
+						{render[type].map((result: any) => <div key={`${result.type}${result.id}`}>
+							<SearchResultCard data={result} query={q as string} />
+						</div>)}
 						{results[type].length > render[type].length && !filters.length && <div className='button_primary--inverted mb-4' onClick={() => setFilters([type])}>SHOW ALL {type.toUpperCase()} RESULTS</div>}
 					</div> 
 					: null)}

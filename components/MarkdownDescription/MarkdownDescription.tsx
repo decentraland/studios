@@ -19,7 +19,7 @@ const customComponents: object = {
       return <ol style={{ display: 'inline-block' }}>{children}</ol>
     },
     ul({ children }: { children: string }) {
-      return <ul style={{ display: 'inline-block' }}>{children}</ul>
+      return <ul style={{ display: 'table', tableLayout: 'fixed', width: '100%'}}>{children}</ul>
     },
     img({ src }: { src: string }){
       return <img alt='' src={src} style={{maxWidth: '100%'}} />
@@ -27,21 +27,23 @@ const customComponents: object = {
   }
 
   interface Props extends React.HTMLAttributes<HTMLDivElement> {
-    description: string,
+    description: string
     inPartnersList?: boolean
+    rehypePlugins?: object[]
   }
 
-function MarkdownDescription ({description, inPartnersList, ...otherProps}: Props){
+function MarkdownDescription ({description, inPartnersList, rehypePlugins, ...otherProps}: Props){
   
   let renderCustomComponents: any = {...customComponents}
   
   if (inPartnersList){
     renderCustomComponents.p = 'span'
+    renderCustomComponents.h1 = 'div'
     renderCustomComponents.img = () => {return null}
   }
 
   return (
-  <ReactMarkdown components={renderCustomComponents}  {...otherProps} >
+  <ReactMarkdown components={renderCustomComponents} rehypePlugins={rehypePlugins}  {...otherProps} >
           {description}
   </ReactMarkdown>
   )

@@ -1,7 +1,7 @@
 .searchContainer {
     position: absolute;
     right: 0;
-    bottom: -6px;
+    bottom: 6px;
 }
 
 .searchInput {
@@ -24,7 +24,7 @@
 }
 
 .searchInput--open {
-    width: 30vw;
+    width: 200px;
     padding: 8px 32px;
     /* box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.04); */
     box-shadow: var(--shadow-2);
@@ -39,12 +39,18 @@
 .clearBtn {
     position: absolute;
     right: 12px;
-    bottom: 28px;
-    zoom: 0.75;
+    /* bottom: 28px; */
+    bottom: 1.4rem;
+    /* zoom: 0.75; */
+    transform: scale(0.75);
 }
 
 
 @media(max-width: 768px) {
+    .searchContainer{
+        bottom: -6px;
+    }
+
     .searchInput--open {
         width: calc(100vw - 32px);
     }

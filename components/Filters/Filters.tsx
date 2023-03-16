@@ -5,7 +5,7 @@ import { CheckboxProps } from 'semantic-ui-react/dist/commonjs/modules/Checkbox'
 import { PaymentMethod, Region, Service, TeamSize, VerifiedPartner } from '../../interfaces/VerifiedPartner'
 
 import styles from './Filters.module.css'
-import { toSnakeCase } from '../utils'
+import { hideIntercom, showIntercom, toSnakeCase } from '../utils'
 import IconX from '../Icons/IconX'
 
 interface Props {
@@ -181,14 +181,6 @@ function Filters({ partners, setFilteredPartners, showMobileFilters, onClose }: 
     for (const key of Object.keys(checkBoxState)) {
       setCheckBoxState((prevState) => ({ ...prevState, [key]: false }))
     }
-  }
-
-  const showIntercom = () => {
-    (globalThis as any).Intercom && (globalThis as any).Intercom("update", { "hide_default_launcher": false });
-  }
-  
-  const hideIntercom = () => {
-    (globalThis as any).Intercom && (globalThis as any).Intercom("update", { "hide_default_launcher": true });
   }
 
   useEffect(() => {

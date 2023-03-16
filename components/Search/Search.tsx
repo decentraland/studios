@@ -7,6 +7,7 @@ import SearchResultCard from '../SearchResultCard/SearchResultCard'
 import Empty from '../Icons/Empty'
 import IconX from '../Icons/IconX'
 import IconFilter from '../Icons/IconFilter'
+import { hideIntercom, showIntercom } from '../utils'
 
 const resultTypes = ['resource', 'studio', 'project']
 
@@ -72,6 +73,15 @@ export default function Search() {
 		}
 
 	}, [query])
+
+	
+  useEffect(() => {
+    if (showMobileFilters){
+      hideIntercom()
+    } else {
+      showIntercom()
+    }
+  }, [showMobileFilters])
 
 	let render: any = {}
 

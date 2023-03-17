@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { FormattedMessage } from 'react-intl'
 import { VerifiedPartner } from '../../interfaces/VerifiedPartner'
 import PartnerCard from '../PartnerCard/PartnerCard'
@@ -8,6 +8,7 @@ import Filters from '../Filters/Filters'
 import Empty from '../Icons/Empty'
 import { trackLink } from '../utils'
 import IconFilter from '../Icons/IconFilter'
+import IconX from '../Icons/IconX'
 
 interface Props {
   partners: VerifiedPartner[]
@@ -21,6 +22,7 @@ function PartnersList({ partners }: Props) {
   const [filteredPartners, setFilteredPartners] = useState(partners)
   const [limit, setLimit] = useState(parseInt(globalThis?.sessionStorage?.studiosListLimit) || 10)
   const [showMobileFilters, setShowMobileFilters] = useState(false)
+  const [filtersCount, setFiltersCount] = useState(0)
 
   const sortAlphabeticPartners = (filteredPartners: VerifiedPartner[]) =>
     [...filteredPartners].sort((p1: VerifiedPartner, p2: VerifiedPartner) => p1.slug.localeCompare(p2.slug))
@@ -58,9 +60,10 @@ function PartnersList({ partners }: Props) {
   return (
     <>
       <div className={styles.container}>
-        <Filters partners={partners} 
+        <Filters partners={partners}
           setFilteredPartners={setFilteredPartners} 
           onClose={() => setShowMobileFilters(false)}
+          setFiltersCount={(count: number) => setFiltersCount(count)}
           showMobileFilters={showMobileFilters}/>
         <div className={styles.list_container}>
           <div className={styles.title_container}>
@@ -96,6 +99,8 @@ function PartnersList({ partners }: Props) {
         </div>
       </div>
       {partnersList.length >= limit && <div className={styles.load_more_container}><div className={'button_primary'} onClick={() => setLimit(current => current + 10)}>LOAD MORE</div></div>}
+      {filtersCount ? <div className={styles['clearButton--mobile']} onClick={() => setShowMobileFilters(true)}><IconFilter white />&nbsp;{filtersCount} filter{filtersCount > 1 ? 's' : ''} active</div> : null}
+
       <div className={styles.footer_text_container}>
         <FormattedMessage
           id="footer_message"

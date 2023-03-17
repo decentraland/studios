@@ -139,7 +139,7 @@
   .clearButton--mobile {
     display: flex;
     position: fixed;
-    z-index: 100;
+    z-index: 50;
     bottom: 32px;
     left: 50%;
     transform: translateX(-50%);
@@ -158,7 +158,7 @@
     background-color: #FFF;
     position: fixed;
     inset: 0;
-    z-index: 20;
+    z-index: 100;
     display: none;
     width: 100%;
   }

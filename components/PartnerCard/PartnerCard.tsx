@@ -45,9 +45,9 @@ function PartnerCard({ partner }: Props) {
           </div>
           <div className={styles.description_container}>
             <MarkdownDescription className={styles.description} description={partner.description} inPartnersList />
-            <div className={styles.read_more_trigger}>
+            {/* <div className={styles.read_more_trigger}>
               <FormattedMessage id="show_more" />
-            </div>
+            </div> */}
           </div>
         </div>
       </div>

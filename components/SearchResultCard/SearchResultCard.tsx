@@ -31,8 +31,11 @@ function ResultCard ( {data, query} : Props ) {
             <source src={`${DATA_URL}/assets/${data.video_1}`} type="video/mp4" />
           </video> 
           : 
-          <div className={styles.image}><Image style={{objectFit: 'cover'}} alt='' src={`${DATA_URL}/assets/${data.logo || data.image_1}?key=${data.type === 'profile' ? 'logo' : 'thumb'}`} fill unoptimized/></div>
-        }
+          (data.logo ? 
+            <div className={styles.logo}><Image alt='' src={`${DATA_URL}/assets/${data.logo || data.image_1}?key=${data.type === 'profile' ? 'logo' : 'thumb'}`} fill unoptimized/></div>
+            :
+            <div className={styles.image}><Image style={{objectFit: 'cover'}} alt='' src={`${DATA_URL}/assets/${data.logo || data.image_1}?key=${data.type === 'profile' ? 'logo' : 'thumb'}`} fill unoptimized/></div>
+        )}
         <div className={styles.infoContainer}>
             <div className={styles.name}>
                 <div dangerouslySetInnerHTML={{__html: title.replace(new RegExp('(' + query + ')', 'gi'), '<mark>$1</mark>') }} /> 

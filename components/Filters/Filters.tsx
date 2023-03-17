@@ -13,6 +13,7 @@ interface Props {
   setFilteredPartners: React.Dispatch<React.SetStateAction<VerifiedPartner[]>>
   onClose(event: React.MouseEvent<HTMLElement>): void
   showMobileFilters: boolean
+  setFiltersCount: any
 }
 
 enum FilterType {
@@ -54,7 +55,7 @@ function getCheckboxKey(filter: FilterType, value: string): string {
   return `${filter}#${value}`
 }
 
-function Filters({ partners, setFilteredPartners, showMobileFilters, onClose }: Props) {
+function Filters({ partners, setFilteredPartners, showMobileFilters, onClose, setFiltersCount }: Props) {
   const [currentFilterCategory, setCurrentFilterCategory] = useState(0)
   const [filters, setFilters] = useState<Filters>(EMPTY_FILTER)
   const [checkBoxState, setCheckBoxState] = useState<CheckBoxStates>({})
@@ -142,6 +143,10 @@ function Filters({ partners, setFilteredPartners, showMobileFilters, onClose }: 
     }
   }
 
+  useEffect(() => {
+    setFiltersCount(Object.entries(filters).length)
+  }, [filters])
+
   const setUrlFilters = (filters: Filters) => {
     router.replace(
       {
@@ -190,7 +195,7 @@ function Filters({ partners, setFilteredPartners, showMobileFilters, onClose }: 
       showIntercom()
     }
   }, [showMobileFilters])
-
+  
   return (
     <div className={styles.filtersContainer} style={{display: showMobileFilters ? 'block' : 'none'}}>
     <div className={styles.filtersMobile_title}>Filter studios<IconX onClick={onClose} /></div>

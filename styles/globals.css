@@ -13,7 +13,7 @@ body {
 
   /* Shadows */
   --card_shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
-  --card_border: 1px solid hsla(260, 6%, 46%, 0.05);
+  --card_border: 0px solid hsla(260, 6%, 46%, 0.05);
 
   /* Animations */
   --card_animation: translateY(-2px);
@@ -136,6 +136,10 @@ a {
   .allocateNav{
     min-height: 56px;
   }
+
+  .ui.container.dcl.footer {
+    flex-direction: column;
+  }
 }
 
 .button_primary {
@@ -144,7 +148,6 @@ a {
   border-radius: 5px;
   color: #fff;
   font-size: 13px;
-  /* margin-bottom: 20px; */
   display: inline-block;
   cursor: pointer;
 }
@@ -175,8 +178,27 @@ a {
   font-size: 13px;
   display: inline-block;
 }
+
+.buttonSmall_basic {
+  padding: 9px 0;
+  color: #ff2d55;
+  font-size: 9px;
+  display: inline-block;
+}
+
+@media (max-width: 700px) {
+  .button--small {
+    padding: 3px 11px;
+    font-size: 9px;
+  }
+}
+
  .mb-2 {
   margin-bottom: 20px;
+ }
+ 
+ .mb-4 {
+  margin-bottom: 40px;
  }
  
  .mt-2 {

@@ -13,7 +13,6 @@ import MarkdownDescription from '../MarkdownDescription/MarkdownDescription'
 
 interface Props {
   project: PartnerProject
-  partner: VerifiedPartner
 }
 
 const DATA_URL = process.env.NEXT_PUBLIC_PARTNERS_DATA_URL
@@ -22,9 +21,9 @@ const getVideoId = (video_url: any) => video_url.match(/v=([\w-]*)/)
 const getListId = (video_url: any) => video_url.match(/list=([\w-]*)/)
 
 
-function ProjectProfile({ project, partner }: Props) {
+function ProjectProfile({ project }: Props) {
   const PROJECT_WEBSITE = project.link || ''
-  const PARTNER_PROFILE_URL = `/profile/${partner.slug}`
+  const PARTNER_PROFILE_URL = `/profile/${project.profile?.slug}`
 
   const images = [project.image_1, project.image_2, project.image_3, project.image_4, project.image_5]
     .filter((img) => img)
@@ -134,13 +133,13 @@ function ProjectProfile({ project, partner }: Props) {
                   <div
                     className={styles.partner_logo}
                     style={{
-                      background: `url(${DATA_URL}/assets/${partner.logo}?key=logo)`,
+                      background: `url(${DATA_URL}/assets/${project.profile.logo}?key=logo)`,
                     }}
                   ></div>
                 </a>
 
                 <div className={styles.partner_name}>
-                  <a href={PARTNER_PROFILE_URL}>{partner.name}</a>
+                  <a href={PARTNER_PROFILE_URL}>{project.profile.name}</a>
                 </div>
               </div>
             </div>

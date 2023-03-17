@@ -7,6 +7,7 @@ import styles from './PartnersList.module.css'
 import Filters from '../Filters/Filters'
 import Empty from '../Icons/Empty'
 import { trackLink } from '../utils'
+import IconFilter from '../Icons/IconFilter'
 
 interface Props {
   partners: VerifiedPartner[]
@@ -68,7 +69,7 @@ function PartnersList({ partners }: Props) {
                 <FormattedMessage id="title" />
               </h3>
               <span className={styles.results_count}>{partnersList.length} RESULTS</span>
-              <span className={styles.filtersButton}><img src='/images/icon_filter.svg' onClick={() => setShowMobileFilters(true)} /></span>
+              <span className={styles.filtersButton}><IconFilter onClick={() => setShowMobileFilters(true)} /></span>
               
             </div>
             <a

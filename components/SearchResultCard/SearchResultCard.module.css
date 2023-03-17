@@ -64,6 +64,18 @@
     overflow: hidden;
   }
   
+  .logo{
+    height: 12rem;
+    width: 12rem;
+    float: left;
+    margin-right: 1rem;
+    border-radius: 8px;
+    flex-shrink: 0;
+    object-fit: contain;
+    position: relative;
+    overflow: hidden;
+  }
+  
   .description_container{
     display: flex;
     flex-direction: column;

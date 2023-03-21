@@ -1,0 +1,167 @@
+import Link from 'next/link'
+import { useRouter } from 'next/router'
+import React, { useEffect, useState } from 'react'
+import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
+import { Filter, FilterGroup } from '../../interfaces/Filters'
+import { Job } from '../../interfaces/Job'
+import BannerJobs from '../BannerJobs/BannerJobs'
+import Empty from '../Icons/Empty'
+import IconMenu from '../Icons/IconMenu'
+import JobDetails from '../JobDetails/JobDetails'
+import LayoutFilteredList from '../LayoutFilteredList/LayoutFilteredList'
+import { logout, getLoggedState } from '../sessions'
+import { timeSince } from '../utils'
+
+import styles from './Jobs.module.css'
+
+const avilableFilters: FilterGroup[] = [
+    {
+        title: 'BUDGET',
+        options: [
+            {
+                key: 'budget',
+                value: [0, 1000],
+                displayValue: 'Up to $1000'
+            },
+            {
+                key: 'budget',
+                value: [1000, 5000],
+                displayValue: '$1000 to $5000'
+            },
+            {
+                key: 'budget',
+                value: [5000, 20000],
+                displayValue: '$5000 to $20000'
+            },
+            {
+                key: 'budget',
+                value: [20000, 50000],
+                displayValue: '$20000 to $50000'
+            },
+            {
+                key: 'budget',
+                value: [50000, 0],
+                displayValue: 'More than $50000'
+            }
+        ]
+    }
+]
+
+export default function Jobs() {
+
+    const router = useRouter()
+
+
+    const [jobs, setJobs] = useState([])
+    const [isLogged, setLogged] = useState(false)
+    const [filters, setFilters] = useState([] as Filter[])
+    const [limit, setLimit] = useState(5)
+
+    useEffect(() => {
+        getLoggedState().then(res => {
+            if (res) {
+                setLogged(res)
+            } else {
+                router.push(`/login?from=${router.asPath}`, '/login')
+            }
+        })
+    }, [])
+
+    useEffect(() => {
+        handleFetchJobs()
+    }, [isLogged])
+
+    const handleLogout = () => {
+
+        logout().then(() => router.push("/login"))
+        .catch((e) => alert(e));
+    }
+
+    const handleFetchJobs = () => {
+        if (isLogged) {
+            fetch('/api/jobs/list')
+                .then(res => res.ok && res.json())
+                .then((res) => res.data && setJobs(res.data))
+                .catch((err) => console.log(err))
+        }
+    }
+
+    const jobCard = (data: Job) => {
+        return <Link href={`/jobs?id=${data.id}`} key={data.id} legacyBehavior>
+            <div className={styles.jobContainer} >
+                <div className={styles.titleContainer}><span className={styles.jobTitle}>{data.title}</span> <span className={styles.jobBudget}>${data.budget_min} to ${data.budget_max}</span></div>
+                <div style={{whiteSpace: 'pre-line'}}>{data.short_description}</div>
+                <div className={styles.jobBy}>Posted by <b>{data.author_name}</b> {timeSince(data.date_created)} ago</div>
+            </div>
+        </Link>
+    }
+
+    const EmptyPanel = () => <div className={styles.empty}>
+        <Empty />
+        <br />
+        {filters.length ? 'There are no jobs available with your selected filter' : 'There are no jobs available right now'}
+    </div>
+
+
+    const UserMenu = () => {
+        const [open, setOpen] = useState(false)
+        
+        return <div tabIndex={0} className={styles.menuContainer}
+            onFocus={() => setOpen(true)} 
+            onBlur={() => setOpen(false)}
+            >
+            <IconMenu />
+            {open && <div className={`button_primary--inverted ${styles.menuItem}`}
+                onClick={handleLogout}>
+                    Log out
+                </div>}
+            </ div>
+    }
+
+    const filterElements = (items: Job[], filter: Filter) => {
+        if (filter.key === 'budget') {
+            return items.filter((item: Job) => filter.value[0] ? filter.value[0] <= item.budget_min : true && filter.value[1] ? filter.value[1] >= item.budget_max : true)
+        }
+        return items.filter((item: any) => item[filter.key] === filter.value)
+    }
+
+    let filteredJobs: Job[] = []
+
+    if (filters.length) {
+        filters.forEach(filter => filteredJobs = filteredJobs.concat(filterElements(jobs, filter)))
+    } else {
+        filteredJobs = jobs
+    }
+
+    if (!isLogged) {
+        return <><Loader active>Loading...</Loader></>
+    }
+
+    if (router.query.id){
+        return <JobDetails />
+    }
+
+    const HeaderBar = () => <span className={styles.headerText}>Jobs for Metaverse Studios <span className={styles.resultsCount}>{filteredJobs.length} RESULT{filteredJobs.length > 1 ? 'S' : ''}</span></ span>
+
+    const JobsList = () =>{
+        if (filteredJobs.length){
+            return <>
+                {filteredJobs.slice(0, limit).map(job => jobCard(job))}
+                {filteredJobs.length > limit ? <div style={{textAlign: 'center'}}>
+                        <div className='button_primary--inverted mb-4' onClick={() => setLimit(limit + 10)}>
+                            SHOW MORE
+                        </div>
+                    </div> : null}
+            </>
+        }
+        return <EmptyPanel />
+    }
+
+    return <><BannerJobs /><LayoutFilteredList filters={filters} setFilters={setFilters}
+        items={avilableFilters}
+        listPanel={<JobsList />}
+        emptyPanel={!jobs.length && <EmptyPanel />}
+        headerBar={<HeaderBar />}
+        headerButton={<UserMenu />} />
+        </>
+}

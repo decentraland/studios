@@ -23,13 +23,6 @@
   margin-bottom: 20px;
 }
 
-.loading {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translateX(-50%) translateY(50%);
-}
-
 /* .title_subcontainer{
     display: flex;
   } */
@@ -87,7 +80,6 @@
   color: #5688E7;
   background: #E3ECFA;
   border: 1px solid #E3ECFA;
-
 }
 
 .tag_studio--active {
@@ -105,7 +97,7 @@
 .filtersContainer {
   width: 250px;
   flex-shrink: 0;
-  display: flex;
+  display: block;
   flex-direction: column;
 }
 
@@ -207,3 +199,4 @@
     max-width: 100%;
   }
 }
+

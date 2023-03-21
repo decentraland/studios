@@ -16,6 +16,7 @@
     "decentraland-ui": "^3.71.0",
     "eslint": "8.30.0",
     "eslint-config-next": "13.1.1",
+    "js-cookie": "^3.0.1",
     "next": "13.1.1",
     "next-intercom": "^0.1.4",
     "react": "18.2.0",
@@ -28,6 +29,7 @@
     "uuid": "^9.0.0"
   },
   "devDependencies": {
+    "@types/js-cookie": "^3.0.3",
     "@types/uuid": "^9.0.0"
   }
 }

@@ -1,6 +1,6 @@
 .container {
   border: var(--card_border);
-  border-radius: 8px;
+  border-radius: 20px;
   box-shadow: var(--card_shadow);
   padding: 1rem;
   margin-bottom: 2rem;

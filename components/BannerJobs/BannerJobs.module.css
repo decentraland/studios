@@ -4,7 +4,7 @@
   margin-bottom: 40px;
   position: relative;
 
-  background: linear-gradient(180deg, #DA58D8 0%, #9CA0D9 100%);
+  background: linear-gradient(180deg, #426BFF 0%, #4265E3 100%);
   color: #ffffff;
   border-radius: 20px;
 
@@ -14,17 +14,14 @@
   padding: 32px;
 }
 
-
-
 .leftPanel {
-  max-width: 585px;
+  max-width: 500px;
 }
 
 .image {
-  height: 240px;
+  width: 240px;
   position: absolute;
-  right: 10px;
-  bottom: -55px;
+  right: 24px;
   z-index: 0;
 }
 

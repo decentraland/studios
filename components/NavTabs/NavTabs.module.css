@@ -2,13 +2,34 @@
   width: 100%;
   border-bottom: 1px solid var(--divider);
   margin-bottom: 32px;
+  position: relative;
+  
 }
 
-.container {
+.tabsContainer::-webkit-scrollbar {
+  display: none;
+}
+
+.tabsContainer::after{
+  display: inline-block;
+  content:'';
+  min-width: 25px;
+}
+
+.barContainer {
   max-width: 1064px;
   margin-left: auto!important;
   margin-right: auto!important;
   position: relative;
+}
+
+.tabsContainer{
+  overflow-x: scroll;
+  overflow-y: hidden;
+  white-space: nowrap;
+
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;
 }
 
 .navTab {
@@ -28,7 +49,7 @@
 
 .navTab .active-bar {
   position: absolute;
-  bottom: -2px;
+  bottom: 0px;
   left: 0;
   right: 0;
   border-bottom: 3px solid var(--primary);
@@ -37,13 +58,13 @@
 }
 
 @media(max-width: 1200px) {
-  .container {
+  .barContainer {
     max-width: 933px;
   }
 }
 
 @media(max-width: 989px) {
-  .container {
+  .barContainer {
     max-width: 723px;
   }
 }

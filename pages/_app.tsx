@@ -25,7 +25,7 @@ const Navbar = dynamic(() => import('decentraland-ui/dist/components/Navbar/Navb
 const METABASE_KEY = process.env.NEXT_PUBLIC_METABASE_KEY
 const INTERCOM_APP_ID = process.env.NEXT_PUBLIC_INTERCOM_APP_ID
 
-const tabsContents = [['/', 'Studios'],['/projects', 'Projects'], ['/resources', 'Resources']]
+const tabsContents = [['/', 'Studios'],['/projects', 'Projects'], ['/resources', 'Resources'], ['/jobs', 'Jobs']]
 
 
 function App({ Component, pageProps }: AppProps) {
@@ -70,7 +70,8 @@ function App({ Component, pageProps }: AppProps) {
   }, [router.events])
 
   const isMetaverseGuide = router.asPath.includes('/p/')
-  const showTabs = [...tabsContents, ['/search']].map(tab => tab[0]).includes(router.route)
+  // const showTabs = [...tabsContents, ['/search']].map(tab => tab[0]).includes(router.route)
+  const showTabs = !['/p/', '/project/', '/profile/'].includes(router.route)
   
   return (
     <>

@@ -5,51 +5,56 @@ import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 import styles from './Search.module.css'
 import SearchResultCard from '../SearchResultCard/SearchResultCard'
 import Empty from '../Icons/Empty'
-import IconX from '../Icons/IconX'
-import IconFilter from '../Icons/IconFilter'
-import { hideIntercom, showIntercom } from '../utils'
+import LayoutFilteredList from '../LayoutFilteredList/LayoutFilteredList'
+import { Filter, FilterGroup } from '../../interfaces/Filters'
+import { SearchResult } from '../../interfaces/SearchResult'
 
-const resultTypes = ['resource', 'studio', 'project']
+const listGroups: Filter[] = [
+	{
+		key: 'type',
+		value: 'resource',
+		displayValue: 'RESOURCE',
+		style: {
+			color: '#5688E7',
+			background: '#E3ECFA',
+			border: '1px solid #E3ECFA',
+		  }
+	},
+	{
+		key: 'type',
+		value: 'studio',
+		displayValue: 'STUDIO',
+		style: {
+			color: '#C72B32',
+			background: '#F6DFE3',
+			border: '1px solid #F6DFE3'
+		  }
+	},
+	{
+		key: 'type',
+		value: 'project',
+		displayValue: 'PROJECT',
+		style: {
+			color: '#382AAC',
+			background: '#EEEDF8',
+			border: '1px solid #EEEDF8'
+		  }
+	}
+]
+const avilableFilters: FilterGroup[] = [
+	{
+		title: 'TYPE',
+		options: listGroups
+	}
+]
 
 export default function Search() {
 	const router = useRouter()
 	const query = router.query.q as string
 
-	const [results, setResults] = useState(Object.fromEntries(resultTypes.map(item => [item, []])))
+	const [results, setResults] = useState([] as SearchResult[])
 	const [loading, setLoading] = useState(false)
-	const [filters, setFilters] = useState([] as String[])
-	const [showMobileFilters, setShowMobileFilters] = useState(false)
-
-	const Filters = () => {
-
-		const onFilterClick = (item: string) => {
-			let newFilters = [...filters]
-			const filtIndex = newFilters.indexOf(item)
-			if (filtIndex !== -1) {
-				newFilters.splice(filtIndex, 1)
-			} else {
-				newFilters.push(item)
-			}
-			setFilters(newFilters)
-		}
-
-		return <div className={styles.filtersContainer} style={{ display: showMobileFilters ? 'block' : 'none' }}>
-			<div className={styles.filtersMobile_title}>Filter results<IconX onClick={() => setShowMobileFilters(false)} /></div>
-			<div className={styles.filtersMobile_container}>
-				<div className={styles.filtersType}>TYPE</div>
-				{resultTypes.map(item => <div key={`filt-${item}`} style={{ cursor: 'pointer' }}
-					className={`${styles.tag} ${filters.includes(item) ? styles['tag_' + item + '--active'] : ''}`}
-					onClick={() => onFilterClick(item)}>
-					{item.toUpperCase()}
-				</div>
-				)}
-			</div>
-			<div className={styles.filtersMobile_buttons}>
-				<span className='button_basic' onClick={() => setFilters([])}>CLEAR FILTERS</span>
-				<span className='button_primary' onClick={() => setShowMobileFilters(false)}>APPLY FILTERS</span>
-			</div>
-		</div>
-	}
+	const [filters, setFilters] = useState([] as Filter[])
 
 	const handleSearch = async (query: string) => {
 		setLoading(true)
@@ -62,7 +67,6 @@ export default function Search() {
 				query: query
 			})
 		}).then((res) => res.json())
-
 		setResults(response.results)
 		setLoading(false)
 	}
@@ -75,60 +79,43 @@ export default function Search() {
 	}, [query])
 
 	
-  useEffect(() => {
-    if (showMobileFilters){
-      hideIntercom()
-    } else {
-      showIntercom()
-    }
-  }, [showMobileFilters])
-
-	let render: any = {}
-
-	for (const type of resultTypes) {
-		if (filters.length) {
-			render[type] = filters.includes(type) ? results[type].slice(0, 50) : []
-		} else {
-			render[type] = results[type].slice(0, 5)
-		}
+	const filterElements = (items: SearchResult[], filter: Filter) => {
+		return  items.filter((item: any) => item[filter.key] === filter.value)
 	}
+	
+	let filteredList: SearchResult[] = []
 
-	const resultCount = resultTypes.map(type => results[type].length).reduce((part, a) => part + a, 0)
-	const renderCount = resultTypes.map(type => render[type].length).reduce((part, a) => part + a, 0)
+	if (filters.length){
+		filters.forEach(filter => filteredList = filteredList.concat(filterElements(results, filter)))	
+	} else {
+		filteredList = results
+	}
+	
+	const GroupedList = () => {
+		const renderGroups = listGroups.filter(group => filteredList.some((item: any) => item[group.key] === group.value))
+		return <>{renderGroups.map(group => {
+			const groupItems = filterElements(filteredList, group)
+			return <div key={`result-${group.value}`}>
+		<div className={`${styles.tag} ${styles[`tag_${group.value}--active`]}`}>{group.value.toUpperCase()}</div>
+		{groupItems.slice(0,5).map(result => <div key={`${result.type}${result.id}`}>
+			<SearchResultCard data={result} query={query} />
+		</div>)}
+		{groupItems.length > 5 && !filters.length && <div className='button_primary--inverted mb-4' onClick={() => setFilters([group])}>SHOW ALL {group.value.toUpperCase()} RESULTS</div>}
+	</div>})}</>}
 
-	if (loading) return <><Loader active/><h3 className={styles.loading}>Searching...</h3></>
+	const EmptyPanel = () => <div className={styles.empty}>
+		<Empty />
+		<br />
+		There are no results for <b>{query}</b>
+	</div>
 
-	return <>
-		<div className={styles.container}>
-			<Filters />
-			{resultCount ? (
-				<div className={styles.list_container}>
+	const HeaderBar = () => <>{filteredList.length} result{filteredList.length > 1 ? 's' : ''} for <b>{query}</b></>
 
-					<div className={styles.title_container}>
-						<span className={styles.results_count}>
-							{renderCount} result{renderCount > 1 ? 's' : ''} for <b>{query}</b>
-							{filters.length ? <span className={styles.clearButton} onClick={() => setFilters([])}><IconX red/> CLEAR FILTERS</span> : null}
-						</span>
-						<span className={styles.filtersButton}><IconFilter onClick={() => setShowMobileFilters(true)} /></span>
-					</div>
-					{resultTypes.map(type => render[type].length ? <div key={`result-${type}`}>
-						<div className={`${styles.tag} ${styles[`tag_${type}--active`]}`}>{type.toUpperCase()}</div>
-						{render[type].map((result: any) => <div key={`${result.type}${result.id}`}>
-							<SearchResultCard data={result} query={query} />
-						</div>)}
-						{results[type].length > render[type].length && !filters.length && <div className='button_primary--inverted mb-4' onClick={() => setFilters([type])}>SHOW ALL {type.toUpperCase()} RESULTS</div>}
-					</div> 
-					: null)}
-							{filters.length ? <div className={styles['clearButton--mobile']} onClick={() => setShowMobileFilters(true)}><IconFilter white />&nbsp;{filters.length} filter{filters.length > 1 ? 's' : ''} active</div> : null}
-				</div>
-			) : (
-				<div className={styles.empty}>
-					<Empty />
-					<br />
-					There are no results for <b>{query}</b>
-				</div>
+	if (loading) return <><Loader active>Searching...</Loader></>
 
-			)}
-		</div>
-	</>
+	return <LayoutFilteredList filters={filters} setFilters={setFilters}
+			items={avilableFilters}
+			listPanel={<GroupedList />}
+			emptyPanel={!results.length && <EmptyPanel />}
+			headerBar={<HeaderBar />} />
 }

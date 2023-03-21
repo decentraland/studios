@@ -1,0 +1,181 @@
+.backButton{
+  position: absolute;
+}
+
+.postedBy {
+  font-size: 20px;
+  color: #736E7D;
+}
+
+.title {
+  font-size: 30px;
+  font-weight: 700;
+  margin-top: 16px;
+  margin-bottom: 32px;
+}
+
+.subTitle{
+  font-size: 24px;
+  font-weight: 500;
+  line-height: 28px;
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1px solid #E5E7EC;
+}
+
+.description {
+  font-size: 19px;
+  white-space: pre-line;
+}
+
+.infoTitle {
+  font-weight: 600;
+  font-size: 12px;
+  margin-top: 16px;
+  margin-bottom: 8px;
+  color: #736e7d;
+}
+
+.text_primary {
+  font-size: 16px;
+  margin-top: 24px;
+  white-space: pre-line;
+}
+
+.text_secondary {
+  font-style: normal;
+  font-size: 13px;
+  color: #736E7D;
+}
+
+.text_secondary svg {
+  margin-right: 5px;
+}
+
+.text_postMessage {
+  font-size: 16px;
+  margin-top: 48px;
+  text-align: center;
+}
+
+.partner_info {
+  /* margin-top: 48px; */
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.partner_info span:last-of-type {
+  float: right;
+  font-weight: 400;
+  color: #736E7D
+}
+  
+.partner_logo {
+  width: 24px;
+  height: 24px;
+  float: left;
+  margin-right: 8px;
+  border-radius: 1rem;
+  background-size: contain !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+}
+
+.message {
+  padding: 24px;
+  margin: 24px 0;
+  border: 1px solid #F3F2F5;
+  border-radius: 16px;
+}
+
+.sentMessage__badge {
+  position: fixed;
+  z-index: 50;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 16px;
+  width: fit-content;
+  white-space: nowrap;
+  
+  background: #263238;
+  box-shadow: 0px 2px 2px rgba(8, 43, 41, 0.04), 0px 2px 16px rgba(8, 43, 41, 0.06);
+  border-radius: 8px;
+  border-left: 3px solid #A5D6A7;
+
+  font-size: 16px;
+  color: #FFFFFF;
+}
+
+.sentMessage__badge svg {
+  margin-right: 12px;
+}
+
+.container {
+  display: flex;
+  /* flex-wrap: wrap; */
+  flex-direction: column;
+  width: 100%;
+}
+
+.dataContainer {
+  /* display: flex; */
+  max-width: 600px;
+  margin: auto;
+}
+
+.inputText {
+  margin-top: 8px;
+  width: 100%;
+  padding: 12px 10px;
+  border: 1px solid rgba(115, 110, 125, 0.32);
+  border-radius: 6px;
+}
+
+.submitBtn{
+  width: 100%;
+  margin-top: 32px;
+  padding: 9px 17px;
+  background: #FF2D55;
+  border-radius: 5px;
+  border: none;
+  color: white;
+  cursor: pointer;
+}
+
+.submitBtn_disabled {
+  background: rgba(255, 45, 85, 0.32);
+  cursor: default;
+}
+
+
+@media (max-width: 768px) {
+  .backButton{
+    position: relative;
+  }
+  .postedBy {
+    margin-top: 16px;
+  }
+  .postedBy b {
+    font-weight: 400;
+  }
+
+  .title {
+    font-size: 24px;
+  }
+
+  .subTitle{
+    font-size: 20px;
+  }
+
+  .postedBy,
+  .description {
+    font-size: 16px;
+  }
+
+  .text_postMessage,
+  .partner_info,
+  .text_primary {
+    font-size: 14px;
+  }
+}

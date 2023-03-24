@@ -84,7 +84,6 @@ function MetaverseGuide({ landing }: Props) {
         })
 
         fbqTrackLead()
-
         ctaSuccess()
     }
 

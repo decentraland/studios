@@ -8,9 +8,9 @@ export interface Job {
     company:            string;
     budget_min:         string;
     budget_max:         string;
-    tittle:             string;
-    short_description:  string;
+    short_description:  string[];
     long_description:   string;
+    email:              string;
 }
 
 export interface JobMessage {

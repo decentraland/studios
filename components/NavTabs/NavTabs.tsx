@@ -13,8 +13,7 @@ interface Props {
 
 export default function NavTabs ({ tabsContents }: Props) {
     const router = useRouter()
-
-
+    
     return <div className={styles.navTabs}>
         <div className={styles.barContainer}>
             <div className={styles.tabsContainer}>
@@ -22,7 +21,7 @@ export default function NavTabs ({ tabsContents }: Props) {
                     <Link key={tab[0]} href={`${tab[0]}`} legacyBehavior>
                         <div className={`${styles.navTab} ${router.route === tab[0] ? styles['navTab--active']: '' }`}>
                             {`${tab[1]}`}
-                            {router.route === tab[0] ? <div className={styles['active-bar']}/> : null}
+                            {`/${router.route.split('/')[1]}` === tab[0] ? <div className={styles['active-bar']}/> : null}
                         </div>
                     </Link>
                 )}

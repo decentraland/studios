@@ -124,17 +124,14 @@ function JobSubmitForm() {
                 Confirm your job post
             </div>
             <div className={styles.confirm_text}>
-                Thank you for creating a job post! Please confirm your publication by clicking on a link we sent you via email to
-                <div>{formData.email}</div>
+                Thank you for creating a job post! Please confirm your publication by clicking on a link we sent you via email to <b>{formData.email}</b>
             </div>
         </div>
     }
 
     return <div className={styles.container}>
-        <div className={styles.backButton}>{ currentStep === 2 ? 
-        <BackButton onClick={onBackButtonPress} /> 
-        : 
-        <BackButton />}</div>
+            
+            <BackButton { ... (currentStep === 2 ? {onClick: onBackButtonPress} : {}) }  /> 
         
         <div className={styles.formContainer}>
         <div className={styles.title}>

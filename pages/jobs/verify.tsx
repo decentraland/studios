@@ -12,7 +12,7 @@ function JobsPage() {
       <Head>
         <meta property="og:title" content="Let’s build the metaverse together" />
         <meta property="og:description" content="Find the Right Team for Your Project." />
-        <meta property="og:image" content="/images/banner_studios.png" />
+        <meta property="og:image" content="/images/banner_jobs.png" />
       </Head>
       <main className={styles.main}>
         <JobVerify />

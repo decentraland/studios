@@ -15,6 +15,10 @@ export function showIntercom() {
   (globalThis as any).Intercom && (globalThis as any).Intercom("update", { "hide_default_launcher": false });
 }
 
+export function openIntercom() {
+  (globalThis as any).Intercom && (globalThis as any).Intercom('show');
+}
+
 export function hideIntercom(){
   (globalThis as any).Intercom && (globalThis as any).Intercom("update", { "hide_default_launcher": true });
 }

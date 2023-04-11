@@ -90,7 +90,7 @@ export default function Jobs() {
         return <Link href={`/jobs?id=${data.id}`} key={data.id} legacyBehavior>
             <div className={styles.jobContainer} >
                 <div className={styles.titleContainer}><span className={styles.jobTitle}>{data.title}</span> <span className={styles.jobBudget}>${data.budget_min} to ${data.budget_max}</span></div>
-                <div style={{whiteSpace: 'pre-line'}}>{data.short_description}</div>
+                <div className={styles.description}>{data.long_description}</div>
                 <div className={styles.jobBy}>Posted by <b>{data.author_name}</b> {timeSince(data.date_created)} ago</div>
             </div>
         </Link>
@@ -99,7 +99,7 @@ export default function Jobs() {
     const EmptyPanel = () => <div className={styles.empty}>
         <Empty />
         <br />
-        {filters.length ? 'There are no jobs available with your selected filter' : 'There are no jobs available right now'}
+        {filters.length ? "Sorry, we couldn't find any jobs that match your search criteria." : "There are no jobs available right now"}
     </div>
 
 
@@ -145,9 +145,11 @@ export default function Jobs() {
 
     const JobsList = () =>{
         if (filteredJobs.length){
+            const dateToMilis = (stringDate: string) => (new Date(stringDate)).getTime()
+            const sortedByDateJobs = filteredJobs.sort((j1, j2) => dateToMilis(j2.date_created) - dateToMilis(j1.date_created))
             return <>
-                {filteredJobs.slice(0, limit).map(job => jobCard(job))}
-                {filteredJobs.length > limit ? <div style={{textAlign: 'center'}}>
+                {sortedByDateJobs.slice(0, limit).map(job => jobCard(job))}
+                {sortedByDateJobs.length > limit ? <div style={{textAlign: 'center'}}>
                         <div className='button_primary--inverted mb-4' onClick={() => setLimit(limit + 10)}>
                             SHOW MORE
                         </div>

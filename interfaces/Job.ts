@@ -5,7 +5,7 @@ export interface Job {
     title:              string;
     date_created:       string;    
     author_name:        string;
-    company:            string;
+    company?:            string;
     budget_min:         string;
     budget_max:         string;
     short_description:  string[];

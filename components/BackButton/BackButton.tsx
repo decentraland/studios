@@ -3,7 +3,7 @@ import styles from './BackButton.module.css'
 import ArrowRight from '../Icons/ArrowRight'
 import { useRouter } from 'next/router'
 
-function BackButton() {
+function BackButton({ ...otherProps }) {
   const router = useRouter()
 
   const onClickHandler = () => {
@@ -20,7 +20,7 @@ function BackButton() {
   }
   
   return (
-    <div onClick={onClickHandler} className={styles.arrowright}>
+    <div onClick={onClickHandler} className={styles.arrowright} {...otherProps}>
       <ArrowRight />
     </div>
   )

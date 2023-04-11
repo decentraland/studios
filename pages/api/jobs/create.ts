@@ -1,0 +1,65 @@
+import type { NextRequest } from 'next/server'
+import submit from '../guide/submit'
+
+export const config = {
+  runtime: 'experimental-edge',
+}
+
+
+export default async function (req: NextRequest) {
+
+  const DB_URL = process.env.NEXT_PUBLIC_PARTNERS_DATA_URL
+  const API_TOKEN = process.env.API_ACCESS_TOKEN
+  
+  const SENDRGRID_URL = process.env.NEXT_PUBLIC_API_SENDGRID
+  const SENDGRID_ACCESS_TOKEN = process.env.SENDGRID_ACCESS_TOKEN
+  
+  const { job } = await req.json()
+
+  try{
+    const createJob = await fetch(`${DB_URL}/items/jobs`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${API_TOKEN}`
+      },
+      body: JSON.stringify( { 
+        ...job, 
+        short_description: job.short_description.join('\n'),
+        verified_email : false,
+        geo: req.geo
+      } )
+    }).then(res => res.ok && res.json()).then(res => res.data && res.data)
+
+    const sendMail = createJob && await fetch(`${SENDRGRID_URL}/mail/send`, {
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${SENDGRID_ACCESS_TOKEN}`
+      },
+      body: JSON.stringify({
+          from: {
+              email: "studios@decentraland.org", name: "Decentraland Studios"
+          },
+          personalizations: [ {
+            to: [
+                { email: createJob.email, name: createJob.author_name }
+            ],
+            dynamic_template_data: {
+                ...createJob,
+                verify_url: `https://studios.decentraland.org/jobs/verify?id=${createJob.id}`,
+            }
+        } ],
+          template_id: "d-0dd32315fc5241c89e78783713c66934"
+      })
+    })
+
+    if (sendMail.ok) return new Response()
+
+    return new Response(null, { status: 400 })
+
+  } catch (error) {
+    console.log('API Review Submit error: ', error )
+    return new Response(null, { status: 400 })
+  }
+}

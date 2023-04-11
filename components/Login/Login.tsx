@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react'
 
 import styles from './Login.module.css'
-import { showIntercom, trackLink } from '../utils'
+import { openIntercom, trackLink } from '../utils'
 import { login } from '../sessions'
 import { useRouter } from 'next/router'
 import IconInfo from '../Icons/IconInfo'
+import BackButton from '../BackButton/BackButton'
 
 const JOIN_REGISTRY_URL = 'https://dclstudios.typeform.com/to/NfzmbzXi'
-const CONTACT_US_URL = 'mailto://studios@decentraland.org'
 
 export default function Login() {
 
@@ -35,30 +35,31 @@ export default function Login() {
         href={JOIN_REGISTRY_URL}
         rel="noreferrer"
         onClick={() => trackLink('Open External Link', 'Join Registry', JOIN_REGISTRY_URL)}>register here</a>
-        
+
     const contact_link = <a href=""
     rel="noreferrer"
     onClick={(e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => { 
         e.preventDefault()
-        showIntercom()
+        openIntercom()
     }}>contact us</a>
 
-    const credentialsMessage = <div className={styles.credentialsMessage}>{credentialsError ? <><IconInfo />These email and password are not registered in the back office platform.</> : null}</div>
+    const credentialsMessage = <div className={styles.credentialsMessage}>{credentialsError ? <><IconInfo />We couldn&apos;t find an account with that email and password. Check your credentials and try again.</> : null}</div>
 
-    return <>
-        <div className={styles.container}>
+    return <div className={styles.container}>
+        <BackButton />
+        <div className={styles.formContainer}>
             <div className={styles.header}>
                 <div className={styles.title}>Log in to find your next project</div>
                 <div className={styles.description}>
-                    <div>The job board is exclusive for Decentraland creators.</div>
-                    <div>Use your <a target={'_blank'} rel="noreferrer" href="https://admin.dclstudios.org/">back office</a> platform credentials to log in.</div>
+                    <div>The job board is exclusive for Decentraland creators.
+                    Use your <a target={'_blank'} rel="noreferrer" href="https://admin.dclstudios.org/">back office</a> platform credentials to log in.</div>
                 </div>
             </div>
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit} >
                 <label className={styles.label}>Email</label>
-                <input className={styles.input} required type='email' onChange={(e) => setEmail(e.currentTarget.value)} value={email} />
+                <input className={styles.input} required type='email' onChange={(e) => setEmail(e.currentTarget.value)} value={email} placeholder="studioname@studio.com"/>
                 <label className={styles.label}>Password</label>
-                <input className={styles.input} required type='password' onChange={(e) => setPassword(e.currentTarget.value)} value={password} />
+                <input className={styles.input} required type='password' onChange={(e) => setPassword(e.currentTarget.value)} value={password} placeholder="*******" />
                 {credentialsMessage}
                 <input
                     className={`${styles.submitBtn} ${emptyFields ? styles.submitBtn_disabled : ''}`}
@@ -67,7 +68,7 @@ export default function Login() {
                     value="LOGIN"
                 />
             </form>
-            <div className={styles.description}>The job board is exclusive for Decentraland creators. If you want to become one {join_link}. If you are already part of this community and don’t know how to log in, please {contact_link}.</div>
+            <div className={styles.description}>The job board is exclusive for Decentraland Studios. If you want to become one, {join_link}. If you are already part of this community and need help logging in, {contact_link}.</div>
         </div>
-    </>
+    </div>
 }

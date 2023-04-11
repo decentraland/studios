@@ -26,6 +26,7 @@ function JobDetails() {
     const [data, setData] = useState({} as DataProps)
     const [message, setMessage] = useState('' as string)
     const [isLogged, setLogged] = useState(false)
+    const [loading, setLoading] = useState(false)
     const [showSentBadge, setShowSentBadge] = useState(true)
 
     useEffect(() => {
@@ -42,48 +43,49 @@ function JobDetails() {
         fetchData()
     }, [isLogged, jobId])
 
-    const fetchData = () => {
+    const fetchData = async () => {
         if (isLogged && jobId) {
-            fetch('/api/jobs/get', {
+            setLoading(true)
+            await fetch('/api/jobs/get', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ id: jobId })
-            })
+                body: JSON.stringify({ id: jobId }) })
                 .then(res => res.ok && res.json())
                 .then((res) => {
                     res.job && setData( {job: res.job, message: res.message})
                     // res.message && setMessage(res.message)
                 })
                 .catch((err) => console.log(err))
+            setLoading(false)
         }
     }
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
-
-        fetch('/api/jobs/apply', {
+        
+        setLoading(true)
+        await fetch('/api/jobs/apply', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({ job, message })
         })
-            .then(res => res.ok && res.json())
-            .then((res) => {
-                res.message && setData(currentData => ({ ...currentData, message: res.message}))
-                // res.message && setMessage(res.message)
+            .then(res => {res.ok && fetchData()})
+            .catch((err) => {
+                console.log(err)
+                setLoading(false)
             })
-            .catch((err) => console.log(err))
     }
 
     const emptyFields = !message
     const job = data.job
     const sentMessage = data.message
 
-    if (!isLogged || !job?.id) {
-        return <><Loader active>Loading...</Loader></>
+    if (loading || !isLogged || !job?.id) {
+        return <Loader active>Loading...</Loader>
     }
 
     const MessageSentBadge = () => {
@@ -96,9 +98,9 @@ function JobDetails() {
 
     return (
         <div className={styles.container}>
-            <div className={styles.backButton}><BackButton /></div>
+            <div className={styles.backButton}><BackButton onClick={() => router.push('/jobs')} /></div>
             <div className={styles.dataContainer}>
-                <div className={styles.postedBy}>Job created by <b>{job.author_name}</b> from <b>{job.company}</b></div>
+                <div className={styles.postedBy}>Job created by <b>{job.author_name}</b>{job.company && <> from <b>{job.company}</b></>}</div>
                 <div className={styles.title}>{job.title}</div>
                 <div className={styles.infoTitle}>SHORT DESCRIPTION</div>
                 <div className={styles.description}>{job.short_description}</div>

@@ -23,7 +23,7 @@ export default async function (req: NextRequest) {
         let message = []
 
         if (jobData) {
-            message = (await fetch(`${DB_URL}/items/messages?filter[to_job][id]=${jobData.id}&fields=*,from_profile.name,from_profile.logo`, {
+            message = (await fetch(`${DB_URL}/items/messages?filter[to_job][id]=${jobData.id}&filter[user_created]=$CURRENT_USER&fields=*,from_profile.name,from_profile.logo`, {
                 headers: { 
                     'Authorization': `Bearer ${authorization}`
                 }

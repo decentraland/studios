@@ -2,9 +2,9 @@
   margin: auto;
   margin-top: 10vh;
   padding: 10px;
-  height: 50%;
-  width: 50%;
-  max-width: 230px;
+  /* height: 50%; */
+  /* width: 100%; */
+  max-width: 300px;
   text-align: center;
   font-size: medium;
   color: #37333d;
@@ -31,6 +31,10 @@
   cursor: pointer;
   /* display: table; */
   width: 100%;
+}
+
+.jobContainer:hover {
+  transform: var(--card_animation);
 }
 
 .titleContainer {
@@ -69,6 +73,19 @@
   white-space: nowrap;
   right: 0;
   bottom: -40px;
+}
+
+.description {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  display: -moz-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  -moz-box-orient: vertical;
+  /* white-space: normal; */
+  /* max-height: 97px; */
+  /* word-break: break-all;  */
 }
 
 @media (max-width: 700px) {

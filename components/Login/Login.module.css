@@ -1,5 +1,12 @@
- 
+  
   .container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    width: 100%;
+}
+
+  .formContainer {
     display: flex;
     flex-direction: column;
     max-width: 500px;
@@ -11,6 +18,10 @@
     padding: 12px 10px;
     border: 1px solid rgba(115, 110, 125, 0.32);
     border-radius: 6px;
+  }
+
+  .input:not(:placeholder-shown):invalid{
+    background-color: rgba(255, 45, 85, 0.32);
   }
   
   .submitBtn{
@@ -41,6 +52,7 @@
     margin-top: 10px;
     color: #ff2d55;
     height: 1.5rem;
+    display: flex;
   }
 
   .credentialsMessage svg {

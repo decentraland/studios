@@ -9,9 +9,9 @@ function JobsPage() {
   return (
     <Container className={styles.container}>
       <Head>
-        <meta property="og:title" content="Let’s build the metaverse together" />
-        <meta property="og:description" content="Find the Right Team for Your Project." />
-        <meta property="og:image" content="/images/banner_studios.png" />
+        <meta property="og:title" content="Creative freelance jobs in Decentraland" />
+        <meta property="og:description" content="The project board is an exclusive resource for contract work. It’s perfect for agencies, and brands looking to take their first steps into Decentraland." />
+        <meta property="og:image" content="/images/banner_jobs.png" />
       </Head>
       <main className={styles.main}>
         <Jobs />

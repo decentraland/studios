@@ -20,12 +20,10 @@ const nextConfig = {
     ],
   },
   
-  webpack(config, { isServer }) {
+  webpack(config) {
     config.plugins.push(new EnvironmentPlugin(['API_SUBMIT', 'API_VERIFY', 'API_ACCESS_TOKEN', 'SENDGRID_ACCESS_TOKEN', 'TELEGRAM_BOT_TOKEN', 'TELEGRAM_CHAT_ID']))
 
-    if (isServer){
-      require('./clients/sitemap')
-    }
+    require('./clients/sitemap')
     
     return config
   }

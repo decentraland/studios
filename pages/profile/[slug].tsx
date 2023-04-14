@@ -1,4 +1,4 @@
-import { GetServerSideProps, GetStaticPaths, GetStaticProps } from 'next'
+import { GetStaticPaths, GetStaticProps } from 'next'
 import Head from 'next/head'
 import Partners from '../../clients/Partners'
 import { VerifiedPartner } from '../../interfaces/VerifiedPartner'

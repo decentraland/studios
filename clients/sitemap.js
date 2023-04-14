@@ -27,17 +27,19 @@ function generateSiteMap(paths) {
 }
 
 async function writeSitemap() {
-    console.log('Generating Sitemap.xml')
-    
+  //TODO: make dynamic site sections, handle db fetch errors?
+
+    console.log('Generating public/sitemap.xml')
+
     const fs = require("fs")
 
     const DB_URL = `${process.env.NEXT_PUBLIC_PARTNERS_DATA_URL}`
 
-    const partnersPaths = (await (await fetch(`${DB_URL}/items/profile?fields=slug`)).json()).data.map((item) => `profile/${item.slug}`)
+    const partnersPaths = (await (await fetch(`${DB_URL}/items/profile?fields=slug&limit=-1`)).json()).data.map((item) => `profile/${item.slug}`)
 
-    const projectsPaths = (await (await fetch(`${DB_URL}/items/projects?fields=id`)).json()).data.map((item) => `project/${item.id}`)
+    const projectsPaths = (await (await fetch(`${DB_URL}/items/projects?fields=id&limit=-1`)).json()).data.map((item) => `project/${item.id}`)
 
-    const guidesPaths = (await (await fetch(`${DB_URL}/items/landings?fields=slug`)).json()).data.map((item) => `p/${item.slug}`)
+    const guidesPaths = (await (await fetch(`${DB_URL}/items/landings?fields=slug&limit=-1`)).json()).data.map((item) => `p/${item.slug}`)
 
     const sitemap = generateSiteMap([...partnersPaths, ...projectsPaths, ...guidesPaths]);
 

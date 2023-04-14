@@ -4,7 +4,6 @@ export const config = {
   runtime: 'experimental-edge',
 }
 
-
 export default async function (req: NextRequest) {
 
   const API_SUBMIT = process.env.API_SUBMIT

@@ -1,6 +1,4 @@
 import type { NextRequest } from 'next/server'
-import { StringifyOptions } from 'querystring'
-import { SearchResult } from 'semantic-ui-react'
 import { PartnerProject } from '../../interfaces/PartnerProject'
 import { Resource } from '../../interfaces/Resource'
 import { VerifiedPartner } from '../../interfaces/VerifiedPartner'

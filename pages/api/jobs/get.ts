@@ -14,7 +14,7 @@ export default async function (req: NextRequest) {
     const body = await req.json()
     const { id } = body;
 
-    const jobData = (await fetch(`${DB_URL}/items/jobs?filter[id]=${id}`, {
+    const jobData = (await fetch(`${DB_URL}/items/jobs?filter[id]=${id}&fields=*,brief_file.id,brief_file.filename_download`, {
             headers: { 
                 'Authorization': `Bearer ${authorization}`
             }
@@ -23,7 +23,7 @@ export default async function (req: NextRequest) {
         let message = []
 
         if (jobData) {
-            message = (await fetch(`${DB_URL}/items/messages?filter[to_job][id]=${jobData.id}&filter[user_created]=$CURRENT_USER&fields=*,from_profile.name,from_profile.logo`, {
+            message = (await fetch(`${DB_URL}/items/messages?filter[to_job][id]=${jobData.id}&filter[user_created]=$CURRENT_USER&fields=*,from_profile.name,from_profile.logo,brief_file.id,brief_file.filename_download`, {
                 headers: { 
                     'Authorization': `Bearer ${authorization}`
                 }

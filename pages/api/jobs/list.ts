@@ -8,10 +8,9 @@ const DB_URL = process.env.NEXT_PUBLIC_PARTNERS_DATA_URL
 
 export default async function (req: NextRequest) {
     const user = req.cookies.get("currentUser")?.value || ''
-
     const authorization = JSON.parse(user).access_token
 
-    return fetch(`${DB_URL}/items/jobs`, {
+    return fetch(`${DB_URL}/items/jobs?filter[verified_email]=true`, {
             headers: { 
                 'Authorization': `Bearer ${authorization}`
             }

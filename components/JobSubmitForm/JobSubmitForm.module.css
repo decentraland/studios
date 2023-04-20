@@ -36,6 +36,21 @@
   border-radius: 6px;
 }
 
+.input_file input {
+  display: none;
+}
+
+.input_file{
+  /* padding: 9px 16px; */
+  border-radius: 5px;
+  font-size: 13px;
+  display: inline-block;
+  cursor: pointer;
+  background-color: transparent;
+  /* color: var(--primary); */
+  /* border: 1px solid var(--primary); */
+}
+
 .input_long {
   height: 130px;
   width: 100%;

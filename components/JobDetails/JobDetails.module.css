@@ -2,6 +2,10 @@
   position: absolute;
 }
 
+.link {
+  color: #ff2d55;
+}
+
 .postedBy {
   font-size: 20px;
   color: #736E7D;
@@ -10,6 +14,7 @@
 .title {
   font-size: 30px;
   font-weight: 700;
+  line-height: 1;
   margin-top: 16px;
   margin-bottom: 32px;
 }
@@ -130,6 +135,25 @@
   padding: 12px 10px;
   border: 1px solid rgba(115, 110, 125, 0.32);
   border-radius: 6px;
+}
+
+.input_file input {
+  display: none;
+}
+
+.input_file {
+  border-radius: 5px;
+  font-size: 13px;
+  display: inline-block;
+  cursor: pointer;
+  background-color: transparent;
+  margin-top: 16px;
+}
+
+.label_file {
+  font-size: 16px;
+  font-weight: 700;
+  margin-top: 24px;
 }
 
 .submitBtn{

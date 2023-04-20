@@ -1,5 +1,4 @@
 import type { NextRequest } from 'next/server'
-import submit from '../guide/submit'
 
 export const config = {
   runtime: 'experimental-edge',
@@ -17,7 +16,7 @@ export default async function (req: NextRequest) {
   const { job } = await req.json()
 
   try{
-    const createJob = await fetch(`${DB_URL}/items/jobs`, {
+    const createJob = await fetch(`${DB_URL}/items/jobs?fields=*,brief_file.id,brief_file.filename_download`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

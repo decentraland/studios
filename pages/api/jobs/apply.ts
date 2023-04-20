@@ -50,7 +50,8 @@ export default async function (req: NextRequest) {
             partner_name: currentStudio.name,
             partner_logo: `${DB_URL}/assets/${currentStudio.logo}?key=logo`,
             partner_url: `https://studios.decentraland.org/profile/${currentStudio.slug}`,
-            message: body.message
+            message: body.message?.message,
+            brief_file: body.message?.brief_file
         }
     }
 
@@ -77,16 +78,17 @@ export default async function (req: NextRequest) {
     })
 
     
-    const createMessage = sendMail && await fetch(`${DB_URL}/items/messages`, {
+    const createMessage = sendMail && await fetch(`${DB_URL}/items/messages?fields=*,brief_file.id,brief_file.filename_download`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${authorization}`
         },
         body: JSON.stringify({
-            message: body.message,
+            message: body.message?.message,
             to_job: body.job.id,
-            from_profile: currentStudio.id
+            from_profile: currentStudio.id,
+            brief_file: body.message?.brief_file?.id
         })
     }).then(res => res.ok)
 

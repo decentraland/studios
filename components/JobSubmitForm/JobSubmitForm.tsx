@@ -1,10 +1,11 @@
-import React, { useState } from 'react'
+import React, { ChangeEvent, useState } from 'react'
 
 import styles from './JobSubmitForm.module.css'
 import { Job } from '../../interfaces/Job'
 import BackButton from '../BackButton/BackButton'
 import IconInfo from '../Icons/IconInfo'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
+import IconX from '../Icons/IconX'
 
 const DESCRIPTION_MAX_LENGTH = 4000
 
@@ -28,7 +29,7 @@ const budgetOptions = [
 
 function JobSubmitForm() {
 
-    const initData: Job = {
+    const initData = {
         long_description: '',
         title: '',
         budget_min: '',
@@ -41,7 +42,9 @@ function JobSubmitForm() {
         email: ''
     }
 
-    const [formData, setFormData] = useState(initData)
+    const [formData, setFormData] = useState<Job>(initData)
+    const [selectedFile, setSelectedFile] = useState<File>()
+    const [fileError, setFileError] = useState(false)
     const [currentStep, setCurrentStep] = useState(1)
     const [loading, setLoading] = useState(false)
 
@@ -67,20 +70,39 @@ function JobSubmitForm() {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
-        setLoading(true)
 
-        const verification = await fetch(`/api/jobs/create`, {
+        setLoading(true)
+        let postData = {...formData}
+
+        if (fileError){
+            setLoading(false)
+           return alert('Please check slected file size.')
+        }
+
+        if (selectedFile){
+            await fetch(`/api/upload`, {
+                method: 'POST',
+                headers: {
+                    fileName: selectedFile.name,
+                    folder: 'b06b8fa0-9f3f-495a-88f5-cacf33f321e3'
+                },
+                body: selectedFile,
+            }).then(res => res.ok && res.json()).then(({ data }) => postData.brief_file = data.id)
+        }
+
+        const jobCreate = await fetch(`/api/jobs/create`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ job: formData }),
+            body: JSON.stringify({ job: postData }),
         })
-        if (verification.ok) {
+
+        if (jobCreate.ok) {
             setCurrentStep(3)
             setLoading(false)
         } else {
-            console.log(verification)
+            console.log(jobCreate)
         }
     }
 
@@ -89,12 +111,11 @@ function JobSubmitForm() {
         let newValue: any = element.value
 
         if (element.name === 'budget'){
-            setFormData({ 
+            return setFormData({ 
                 ...formData, 
                 budget_min: element.value.split(',')[0],
                 budget_max: element.value.split(',')[1] 
             })
-            return
         }
 
         if (element.name === 'short_description') {
@@ -111,7 +132,28 @@ function JobSubmitForm() {
         setFormData({ ...formData, [element.name]: newValue })
     }
 
-    const RequiredMark = () => <span style={{color: 'red'}}>*</span>
+    const handleFileInput = (e: ChangeEvent<HTMLInputElement>) => {
+        setFileError(false)
+
+        if (e.target.files?.length){
+            if (e.target.files[0].size > 10000000){
+                setFileError(true)
+            } else {
+                setSelectedFile(e.target.files[0])
+                setFileError(false)
+            }
+        } else {
+            setSelectedFile(undefined)
+        }
+    }
+
+    const handleFileRemove = (e: React.MouseEvent<HTMLElement>) => {
+        e.preventDefault()
+        setSelectedFile(undefined)
+    }
+
+    // const RequiredMark = () => <span style={{color: 'red'}}>*</span>
+    const RequiredMark = () => null
 
     if (loading){
         return <Loader active>Loading...</Loader>
@@ -174,7 +216,18 @@ function JobSubmitForm() {
             />
             <div className={styles.text_secondary}>{remainCharsText}</div>
 
-            <label className={styles.label}>Which of the following best describes your project? <RequiredMark /></label>
+            <label className={styles.label}>Upload a brief (Optional)</label>
+            <div className={styles.text}>
+                If you already have a document that describes your project upload it here.
+            </div>
+            <label className={styles.input_file}>
+                <input type='file' name="brief_file" accept=".pdf" onChange={handleFileInput} onClick={(event: React.MouseEvent<HTMLInputElement>)  => event.currentTarget.value = ''}/>
+                <span className='button_primary--inverted'>SELECT FILE</span>
+                <span className='ml-1'>{selectedFile ? <span>{selectedFile.name} <IconX gray className='ml-1' style={{height: '11px', width: '11px'}} onClick={handleFileRemove}/></span> : 'No file selected.'}</span>
+            </label>
+            <div className={styles.text_secondary} style={fileError ? {color: '#FF2D55'} : {}}><IconInfo gray={!fileError} /> PDF files only, maximum size is 10 MB.</div>
+
+            <label className={styles.label}>What is your budget for this project? <RequiredMark /></label>
 
             {budgetOptions.map((option) => <div key={option.text}><label className={styles.options}>
                 <input type="radio" name="budget"
@@ -205,7 +258,7 @@ function JobSubmitForm() {
                 value={formData.author_name} 
                 onChange={handleInput} />
             
-            <label className={styles.label}>What’s your company?</label>
+            <label className={styles.label}>What’s your company? (Optional)</label>
             <input className={styles.input} type="text" 
                 name="company" 
                 value={formData.company} 

@@ -7,7 +7,7 @@ import { Job } from '../../interfaces/Job'
 import BannerJobs from '../BannerJobs/BannerJobs'
 import Empty from '../Icons/Empty'
 import IconMenu from '../Icons/IconMenu'
-import JobDetails from '../JobDetails/JobDetails'
+import JobProfile from '../JobProfile/JobProfile'
 import LayoutFilteredList from '../LayoutFilteredList/LayoutFilteredList'
 import { logout, getLoggedState } from '../sessions'
 import { timeSince } from '../utils'
@@ -138,7 +138,7 @@ export default function Jobs() {
     }
 
     if (router.query.id){
-        return <JobDetails />
+        return <JobProfile />
     }
 
     const HeaderBar = () => <span className={styles.headerText}>Jobs for Metaverse Studios <span className={styles.resultsCount}>{filteredJobs.length} RESULT{filteredJobs.length > 1 ? 'S' : ''}</span></ span>

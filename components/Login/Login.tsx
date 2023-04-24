@@ -14,6 +14,7 @@ export default function Login() {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [credentialsError, setCredentialsError] = useState(false)
+    const [invalidClass, setInvalidClass] = useState('')
 
     const router = useRouter()
 
@@ -21,6 +22,7 @@ export default function Login() {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
+        setInvalidClass('')
         login(email, password)
         .then(res => {
             if (res.error){
@@ -55,9 +57,9 @@ export default function Login() {
                     Use your <a target={'_blank'} rel="noreferrer" href="https://admin.dclstudios.org/">back office</a> platform credentials to log in.</div>
                 </div>
             </div>
-            <form onSubmit={handleSubmit} >
+            <form onSubmit={handleSubmit} onInvalid={() => setInvalidClass('input__invalid')}>
                 <label className={styles.label}>Email</label>
-                <input className={styles.input} required type='email' onChange={(e) => setEmail(e.currentTarget.value)} value={email} placeholder="studioname@studio.com"/>
+                <input className={`${styles.input} ${styles[invalidClass]}`} required type='email' onChange={(e) => setEmail(e.currentTarget.value)} value={email} placeholder="studioname@studio.com"/>
                 <label className={styles.label}>Password</label>
                 <input className={styles.input} required type='password' onChange={(e) => setPassword(e.currentTarget.value)} value={password} placeholder="*******" />
                 {credentialsMessage}

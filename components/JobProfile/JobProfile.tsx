@@ -1,7 +1,7 @@
 import React, { ChangeEvent, useEffect, useState } from 'react'
 import BackButton from '../BackButton/BackButton'
 
-import styles from './JobDetails.module.css'
+import styles from './JobProfile.module.css'
 
 import MarkdownDescription from '../MarkdownDescription/MarkdownDescription'
 import { useRouter } from 'next/router'
@@ -12,22 +12,25 @@ import IconInfo from '../Icons/IconInfo'
 import IconOk from '../Icons/IconOk'
 import IconFile from '../Icons/IconFile'
 import IconX from '../Icons/IconX'
+import ErrorScreen from '../ErrorScreen/ErrorScreen'
+import Link from 'next/link'
 
 const DB_URL = process.env.NEXT_PUBLIC_PARTNERS_DATA_URL
 
-function JobDetails() {
+function JobProfile() {
 
     const router = useRouter()
     const jobId = router.query.id
 
     const [jobData, setJobData] = useState<Job>()
     const [sentMessage, setSentMessage] = useState<JobMessage>()
-    const [showSentBadge, setShowSentBadge] = useState(true)
+    const [showSentBadge, setShowSentBadge] = useState(false)
     const [isLogged, setLogged] = useState(false)
     const [loading, setLoading] = useState(false)
     const [newMessage, setNewMessage] = useState<string>()
     const [selectedFile, setSelectedFile] = useState<File>()
     const [fileError, setFileError] = useState(false)
+    const [fetchError, setFetchError] = useState<string>('')
 
     useEffect(() => {
         getLoggedState().then(res => {
@@ -105,7 +108,15 @@ function JobDetails() {
                     folder: '193e00bb-923e-46f0-b350-bf73ba107a80'
                 },
                 body: selectedFile,
-            }).then(res => res.ok && res.json()).then(({ data }) => postMessage.brief_file = data)
+            })
+            .then(res => {
+                if (res.ok){
+                    return res.json()
+                } else {
+                    setFetchError('file upload error')
+                }
+            })
+            .then(({ data }) => {postMessage.brief_file = data})
         }
 
         await fetch('/api/jobs/apply', {
@@ -115,18 +126,17 @@ function JobDetails() {
             },
             body: JSON.stringify({ job: jobData, message: postMessage })
         })
-            .then(res => { res.ok && fetchData() })
-            .catch((err) => {
-                console.log(err)
-                setLoading(false)
-            })
+            .then(res => { 
+                if (res.ok) {
+                    fetchData()
+                    setShowSentBadge(true)
+                } else {
+                    setFetchError('message submit error')
+                }
+        })
     }
 
     const emptyFields = !newMessage
-
-    if (loading || !isLogged || !jobData?.id) {
-        return <Loader active>Loading...</Loader>
-    }
 
     const MessageSentBadge = () => {
         if (showSentBadge) {
@@ -134,6 +144,19 @@ function JobDetails() {
             return <div className={styles.sentMessage__badge}><IconOk />Message Sent</div>
         }
         return null
+    }
+
+    if(fetchError){
+        console.log(fetchError)
+        return <ErrorScreen button={<Link className="button_primary--inverted" href="/jobs">GO TO JOBS</Link>}
+                 onBackClick={() => { 
+                    setFetchError('')
+                    setLoading(false)
+                }} />
+    }
+
+    if (loading || !isLogged || !jobData?.id) {
+        return <Loader active>Loading...</Loader>
     }
 
     return (
@@ -186,6 +209,7 @@ function JobDetails() {
                         <form onSubmit={handleSubmit}>
                             <textarea className={styles.inputText} rows={6}
                                 placeholder='Your message goes here'
+                                value={newMessage}
                                 onChange={val => setNewMessage(val.target.value)} />
                             <div className={styles.text_secondary}><IconInfo gray /> This will be sent to {jobData.author_name} via email, along with your portfolio in Decentraland Studios.</div>
                             
@@ -198,7 +222,7 @@ function JobDetails() {
                                 <span className='button_primary--inverted'>SELECT FILE</span>
                                 <span className='ml-1'>{selectedFile ? <span>{selectedFile.name} <IconX gray className='ml-1' style={{height: '11px', width: '11px'}} onClick={handleFileRemove}/></span> : 'No file selected.'}</span>
                             </label>
-                            <div className={`mt-16 ${styles.text_secondary}`} style={fileError ? {color: '#FF2D55'} : {}}><IconInfo gray={!fileError} /> PDF files only, maximum size is 10 MB.</div>
+                            <div className={styles.text_secondary} style={fileError ? {color: '#FF2D55'} : {}}><IconInfo gray={!fileError} /> PDF files only, maximum size is 10 MB.</div>
 
                             
                             <input type="submit" value="SEND MESSAGE"
@@ -211,4 +235,4 @@ function JobDetails() {
     )
 }
 
-export default JobDetails
+export default JobProfile

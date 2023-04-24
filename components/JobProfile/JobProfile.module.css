@@ -7,7 +7,7 @@
 }
 
 .postedBy {
-  font-size: 20px;
+  font-size: 16px;
   color: #736E7D;
 }
 
@@ -24,12 +24,13 @@
   font-weight: 500;
   line-height: 28px;
   margin-top: 32px;
+  margin-bottom: 24px;
   padding-top: 24px;
   border-top: 1px solid #E5E7EC;
 }
 
 .description {
-  font-size: 19px;
+  font-size: 16px;
   white-space: pre-line;
 }
 
@@ -43,7 +44,7 @@
 
 .text_primary {
   font-size: 16px;
-  margin-top: 24px;
+  /* margin-top: 24px; */
   white-space: pre-line;
 }
 
@@ -51,6 +52,7 @@
   font-style: normal;
   font-size: 13px;
   color: #736E7D;
+  margin-top: 8px;
 }
 
 .text_secondary svg {
@@ -64,7 +66,7 @@
 }
 
 .partner_info {
-  /* margin-top: 48px; */
+  margin-bottom: 16px;
   font-size: 16px;
   font-weight: 700;
 }
@@ -114,6 +116,7 @@
 
 .sentMessage__badge svg {
   margin-right: 12px;
+  vertical-align: middle;
 }
 
 .container {
@@ -154,6 +157,7 @@
   font-size: 16px;
   font-weight: 700;
   margin-top: 24px;
+  margin-bottom: 8px;
 }
 
 .submitBtn{
@@ -190,11 +194,6 @@
 
   .subTitle{
     font-size: 20px;
-  }
-
-  .postedBy,
-  .description {
-    font-size: 16px;
   }
 
   .text_postMessage,

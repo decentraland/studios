@@ -20,7 +20,7 @@
     border-radius: 6px;
   }
 
-  .input:not(:placeholder-shown):invalid{
+  .input__invalid{
     background-color: rgba(255, 45, 85, 0.32);
   }
   

@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useState } from 'react'
+import React, { ChangeEvent, useEffect, useState } from 'react'
 
 import styles from './JobSubmitForm.module.css'
 import { Job } from '../../interfaces/Job'
@@ -6,6 +6,8 @@ import BackButton from '../BackButton/BackButton'
 import IconInfo from '../Icons/IconInfo'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 import IconX from '../Icons/IconX'
+import Link from 'next/link'
+import ErrorScreen from '../ErrorScreen/ErrorScreen'
 
 const DESCRIPTION_MAX_LENGTH = 4000
 
@@ -47,6 +49,7 @@ function JobSubmitForm() {
     const [fileError, setFileError] = useState(false)
     const [currentStep, setCurrentStep] = useState(1)
     const [loading, setLoading] = useState(false)
+    const [fetchError, setFetchError] = useState<string>('')
 
     const remainCharsText = `${formData.long_description.length}/${DESCRIPTION_MAX_LENGTH}`
 
@@ -87,7 +90,13 @@ function JobSubmitForm() {
                     folder: 'b06b8fa0-9f3f-495a-88f5-cacf33f321e3'
                 },
                 body: selectedFile,
-            }).then(res => res.ok && res.json()).then(({ data }) => postData.brief_file = data.id)
+            }).then(res => {
+                if (res.ok) {
+                    return res.json()
+                } else {
+                    setFetchError('file upload error')
+                }
+            }).then(({ data }) => postData.brief_file = data.id)
         }
 
         const jobCreate = await fetch(`/api/jobs/create`, {
@@ -102,7 +111,7 @@ function JobSubmitForm() {
             setCurrentStep(3)
             setLoading(false)
         } else {
-            console.log(jobCreate)
+            setFetchError('job creation error')
         }
     }
 
@@ -152,8 +161,100 @@ function JobSubmitForm() {
         setSelectedFile(undefined)
     }
 
-    // const RequiredMark = () => <span style={{color: 'red'}}>*</span>
-    const RequiredMark = () => null
+    const ExamplesModal = ({children}: {children: string}) => {
+        const [open, setOpen] = useState(false)
+        const [page, setPage] = useState(1)
+
+        useEffect(() => {
+            const close = (e: KeyboardEvent) => {
+              if(e.key === 'Escape'){
+                setOpen(false)
+              }
+            }
+            window.addEventListener('keydown', close)
+          return () => window.removeEventListener('keydown', close)
+        },[])
+        
+        return <>
+            <div className={styles.link}
+            onClick={() => setOpen(true)}>
+            {children}
+            </ div>
+            {open && <>
+            <div className={styles.modalBackground} onClick={() => setOpen(false)}/>
+            <div className={styles.examplesModal}
+                onBlur={() => setOpen(false)}>
+                    {page === 1 ? 
+                        <>
+                        <div className={styles.examplesTitleBar}>Example of a clear project description <IconX gray onClick={() => setOpen(false)}/></div>
+                        <div className={styles.examplesContents}>
+                            <i>
+                                Goals:
+                                <ul>
+                                    <li>Create an engaging virtual experience that showcases our latest fashion collections and attracts a younger and tech-savvy audience.</li>
+                                    <li>Increase brand awareness and engagement by providing an interactive and immersive experience.</li>
+                                    <li>Establish a presence in the Metaverse and demonstrate our commitment to innovation and technology.</li>
+                                </ul>
+                                Target Audience:
+                                <ul>
+                                    <li>Tech-savvy millennials and Gen Z consumers interested in fashion and virtual experiences.</li>
+                                </ul>
+                                General User Journey:
+                                <ul>
+                                    <li>Users will enter our virtual store and be greeted by a personalized avatar shopping assistant.</li>
+                                    <li>They will be able to browse through our latest collections, including clothing, accessories, and cosmetics.</li>
+                                    <li>They can try on virtual clothing and accessories, mix and match outfits, and customize their avatar&apos;s appearance.</li>
+                                </ul>
+                                Deadline:
+                                <ul>
+                                    <li>The project should be completed within 4 months, with a soft launch in 3 months and a full launch in 4 months.</li>
+                                </ul>
+                            </i>
+                            <div className={styles.link} onClick={() => setPage(2)}>Read tips on writing a description</div>
+                        </div>
+                        </>
+                    : 
+                    <>
+                        <div className={styles.examplesTitleBar}>Tips for writing a clear project description <IconX gray onClick={() => setOpen(false)}/></div>
+                        <div className={styles.examplesContents}>
+                            <ol>
+                                <li>
+                                    Write a short introduction
+                                    <div>Start with a clear and concise summary of the project, including its purpose, goals, and target audience.</div>
+                                </li>
+                                <li>
+                                    Provide detailed information
+                                    <div>Write down the details about the experience you want to create, including its look and feel, interactive features, and overall user journey.</div>
+                                </li>
+                                <li>
+                                    Define a timeline
+                                    <div>When should this project go live? State a deadline for your projects so that studios know how much time they would have to work on it.</div>
+                                </li>
+                                <li>
+                                    Style
+                                    <div>Explain any branding or style guidelines that the studio should adhere to when designing the project.</div>
+                                </li>
+                                <li>
+                                    References and examples
+                                    <div>If you know any examples or references that inspire you, share them as a link in the description.</div>
+                                </li>
+                            </ol>
+                            <div className={styles.link} onClick={() => setPage(1)}>Read example description</div>
+                        </div>
+                    </>}
+                </div>
+                </>}
+            </>
+    }
+
+    if(fetchError){
+        console.log(fetchError)
+        return <ErrorScreen button={<Link className="button_primary--inverted" href="/jobs">GO TO JOBS</Link>}
+                 onBackClick={() => { 
+                    setFetchError('')
+                    setLoading(false)
+                }} />
+    }
 
     if (loading){
         return <Loader active>Loading...</Loader>
@@ -184,14 +285,14 @@ function JobSubmitForm() {
         </div>
 
         {currentStep === 1 ? <form onSubmit={handleSubmitStep1}>
-            <label className={styles.label}>Project title <RequiredMark /></label>
+            <label className={styles.label}>Project title</label>
             <input className={styles.input} type="text" 
                 required name="title" 
                 value={formData.title} 
                 placeholder='Modern-looking building to promote my brand'
                 onChange={handleInput} />
 
-            <label className={styles.label}>Which of the following best describes your project? <RequiredMark /></label>
+            <label className={styles.label}>Which of the following best describes your project?</label>
 
             {descriptionOptions.map(text => <div key={text}><label className={styles.options}>
                 <input type="checkbox" name="short_description"
@@ -200,10 +301,9 @@ function JobSubmitForm() {
                     checked={formData.short_description?.includes(text)} />
                 {text}</label></div>)}
 
-
-            <label className={styles.label}>Describe your project <RequiredMark /></label>
+            <label className={styles.label}>Describe your project</label>
             <div className={styles.text}>
-                Use this space to explain the type of experience you want to create. Describe your project as detailed as you can!
+            Explain in detail the type of experience you want to create. Here are some <ExamplesModal>tips on writing clear project descriptions.</ExamplesModal>
             </div>
             <textarea
                 className={styles.input_long}
@@ -227,7 +327,7 @@ function JobSubmitForm() {
             </label>
             <div className={styles.text_secondary} style={fileError ? {color: '#FF2D55'} : {}}><IconInfo gray={!fileError} /> PDF files only, maximum size is 10 MB.</div>
 
-            <label className={styles.label}>What is your budget for this project? <RequiredMark /></label>
+            <label className={styles.label}>What is your budget for this project?</label>
 
             {budgetOptions.map((option) => <div key={option.text}><label className={styles.options}>
                 <input type="radio" name="budget"
@@ -245,14 +345,14 @@ function JobSubmitForm() {
         </form> 
         :
         <form onSubmit={handleSubmit}>
-            <label className={styles.label}>What’s your email? <RequiredMark /></label>
+            <label className={styles.label}>What’s your email?</label>
             <input className={styles.input} type="text" 
                 required name="email" 
                 value={formData.email} 
                 onChange={handleInput} />
             <div className={styles.text_secondary}><IconInfo gray /> Your email will only be visible to studios that apply to your job</div>
             
-            <label className={styles.label}>What’s your name? <RequiredMark /></label>
+            <label className={styles.label}>What’s your name?</label>
             <input className={styles.input} type="text" 
                 required name="author_name" 
                 value={formData.author_name} 

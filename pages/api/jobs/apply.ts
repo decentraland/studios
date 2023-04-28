@@ -46,7 +46,7 @@ export default async function (req: NextRequest) {
         ],
         dynamic_template_data: {
             job_author: currentJob.author_name,
-            job_url: `https://studios.decentraland.org/jobs?id=${currentJob.id}`,
+            job_url: `https://studios.decentraland.org/jobs/list?id=${currentJob.id}`,
             partner_name: currentStudio.name,
             partner_logo: `${DB_URL}/assets/${currentStudio.logo}?key=logo`,
             partner_url: `https://studios.decentraland.org/profile/${currentStudio.slug}`,

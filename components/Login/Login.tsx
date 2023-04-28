@@ -28,7 +28,7 @@ export default function Login() {
             if (res.error){
                 setCredentialsError(true)
             } else {
-                router.push(router.query?.from ? `${router.query.from}` : '/jobs')
+                router.push(router.query?.from ? `${router.query.from}` : '/jobs/list')
             }
         })
     }

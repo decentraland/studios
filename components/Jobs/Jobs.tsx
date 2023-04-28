@@ -87,7 +87,7 @@ export default function Jobs() {
     }
 
     const jobCard = (data: Job) => {
-        return <Link href={`/jobs?id=${data.id}`} key={data.id} legacyBehavior>
+        return <Link href={`/jobs/list?id=${data.id}`} key={data.id} legacyBehavior>
             <div className={styles.jobContainer} >
                 <div className={styles.titleContainer}><span className={styles.jobTitle}>{data.title}</span> <span className={styles.jobBudget}>${data.budget_min} to ${data.budget_max}</span></div>
                 <div className={styles.description}>{data.long_description}</div>

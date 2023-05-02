@@ -14,6 +14,7 @@ import IconFile from '../Icons/IconFile'
 import IconX from '../Icons/IconX'
 import ErrorScreen from '../ErrorScreen/ErrorScreen'
 import Link from 'next/link'
+import { budgetToRanges } from '../utils'
 
 const DB_URL = process.env.NEXT_PUBLIC_PARTNERS_DATA_URL
 
@@ -174,7 +175,7 @@ function JobProfile() {
                     <a className={styles.link} href={`${DB_URL}/assets/${jobData.brief_file.id}`} rel="noreferrer" target='_blank'><IconFile red /> {jobData.brief_file.filename_download}</a>
                 </>}
                 <div className={styles.infoTitle}>BUDGET</div>
-                <div className={styles.description}>${jobData.budget_min} to ${jobData.budget_max}</div>
+                <div className={styles.description}>{budgetToRanges(jobData.budget)}</div>
 
                 {sentMessage ? <>
                     <div className={styles.subTitle}>You’ve sent a message to {jobData.author_name}</div>

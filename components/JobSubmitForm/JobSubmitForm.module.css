@@ -12,6 +12,7 @@
 
 .link {
   color: #ff2d55;
+  cursor: pointer;
 }
 
 .link:hover {

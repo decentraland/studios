@@ -37,29 +37,11 @@ export default async function (req: NextRequest) {
         }
     }).then(res => res.ok && res.json()).then(res => res.data.length && res.data[0])
 
+    //TODO: revert original fields
+    // job_url: `https://studios.decentraland.org/jobs/verify?id=${currentJob.id}`
+    // partner_url: `https://studios.decentraland.org/profile/${currentStudio.slug}`,
 
-    let recipientsList = [... new Set([currentJob.email, currentUser.email, currentStudio.email])]
-
-    let personalizations: any = {
-        to: [
-            { email: recipientsList.pop() }
-        ],
-        dynamic_template_data: {
-            job_author: currentJob.author_name,
-            job_url: `https://studios.decentraland.org/jobs/list?id=${currentJob.id}`,
-            partner_name: currentStudio.name,
-            partner_logo: `${DB_URL}/assets/${currentStudio.logo}?key=logo`,
-            partner_url: `https://studios.decentraland.org/profile/${currentStudio.slug}`,
-            message: body.message?.message,
-            brief_file: body.message?.brief_file
-        }
-    }
-
-    if (recipientsList.length) {
-        personalizations.cc = recipientsList.map(email => ({ email: email }))
-    }
-
-    const sendMail = currentStudio && await fetch(`${SENDRGRID_URL}/mail/send`, {
+    const mailToAuthor = currentStudio && await fetch(`${SENDRGRID_URL}/mail/send`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -72,13 +54,53 @@ export default async function (req: NextRequest) {
             reply_to: {
                 email: currentUser.email, name: currentStudio.name
             },
-            personalizations: [personalizations],
+            personalizations: [{
+                to: [
+                    { email: currentJob.email }
+                ],
+                dynamic_template_data: {
+                    job_author: currentJob.author_name,
+                    job_url: `https://jobs.studios.pages.dev/jobs/verify?id=${currentJob.id}`,
+                    partner_name: currentStudio.name,
+                    partner_logo: `${DB_URL}/assets/${currentStudio.logo}?key=logo`,
+                    partner_url: `https://jobs.studios.pages.dev/profile/${currentStudio.slug}`,
+                    message: body.message?.message,
+                    brief_file: body.message?.brief_file
+                }
+            }],
             template_id: "d-510e48fb8bed468c8c3411510d30d04e"
         })
     })
-
     
-    const createMessage = sendMail && await fetch(`${DB_URL}/items/messages?fields=*,brief_file.id,brief_file.filename_download`, {
+
+    // const mailToStudio = mailToAuthor && await fetch(`${SENDRGRID_URL}/mail/send`, {
+    //     method: 'POST',
+    //     headers: {
+    //         'Content-Type': 'application/json',
+    //         'Authorization': `Bearer ${SENDGRID_ACCESS_TOKEN}`
+    //     },
+    //     body: JSON.stringify({
+    //         from: {
+    //             email: "studios@decentraland.org", name: "Decentraland Studios"
+    //         },
+    //         personalizations: [{
+    //             to: [... new Set([currentUser.email, currentStudio.email])].map(email => ({email: email})),
+    //             dynamic_template_data: {
+    //                 job_author: currentJob.author_name,
+    //                 job_url: `https://studios.decentraland.org/jobs/list?id=${currentJob.id}`,
+    //                 partner_name: currentStudio.name,
+    //                 partner_logo: `${DB_URL}/assets/${currentStudio.logo}?key=logo`,
+    //                 partner_url: `https://studios.decentraland.org/profile/${currentStudio.slug}`,
+    //                 message: body.message?.message,
+    //                 brief_file: body.message?.brief_file
+    //             }
+    //         }],
+    //         template_id: "d-510e48fb8bed468c8c3411510d30d04e"
+    //     })
+    // })
+
+
+    const createMessage = mailToAuthor && await fetch(`${DB_URL}/items/messages?fields=*,brief_file.id,brief_file.filename_download`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

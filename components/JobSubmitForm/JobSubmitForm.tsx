@@ -22,11 +22,11 @@ const descriptionOptions = [
 ]
 
 const budgetOptions = [
-    {budget: ['0', '1000'] , text: 'Up to $1000'},
-    {budget: ['1000', '5000'] , text: '$1000 to $5000'},
-    {budget: ['5000', '2000'] , text: '$5000 to $20000'},
-    {budget: ['20000', '50000'] , text: '$20000 to $50000'},
-    {budget: ['50000', '0'] , text: 'More than $50000'}
+    {budget: '0' , text: 'Up to $1000'},
+    {budget: '1000' , text: '$1000 to $5000'},
+    {budget: '5000' , text: '$5000 to $20000'},
+    {budget: '20000' , text: '$20000 to $50000'},
+    {budget: '50000' , text: 'More than $50000'}
 ]
 
 function JobSubmitForm() {
@@ -34,8 +34,7 @@ function JobSubmitForm() {
     const initData = {
         long_description: '',
         title: '',
-        budget_min: '',
-        budget_max: '',
+        budget: '',
         short_description: [],
         id: '',
         date_created: '',
@@ -53,7 +52,7 @@ function JobSubmitForm() {
 
     const remainCharsText = `${formData.long_description.length}/${DESCRIPTION_MAX_LENGTH}`
 
-    const emptyFieldsStep1 = formData.title === '' || !formData.short_description.length || formData.long_description === '' || formData.budget_max === '' || formData.budget_min === ''
+    const emptyFieldsStep1 = formData.title === '' || !formData.short_description.length || formData.long_description === '' || formData.budget === ''
     
     const emptyFieldsStep2 = formData.author_name === '' || formData.email === ''
 
@@ -119,13 +118,13 @@ function JobSubmitForm() {
         const element = e.currentTarget as HTMLInputElement
         let newValue: any = element.value
 
-        if (element.name === 'budget'){
-            return setFormData({ 
-                ...formData, 
-                budget_min: element.value.split(',')[0],
-                budget_max: element.value.split(',')[1] 
-            })
-        }
+        // if (element.name === 'budget'){
+        //     return setFormData({ 
+        //         ...formData, 
+        //         budget_min: element.value.split(',')[0],
+        //         budget_max: element.value.split(',')[1] 
+        //     })
+        // }
 
         if (element.name === 'short_description') {
             let newShortDescription = formData.short_description || []
@@ -333,7 +332,7 @@ function JobSubmitForm() {
                 <input type="radio" name="budget"
                     value={option.budget}
                     onChange={handleInput}
-                    checked={formData.budget_min === option.budget[0] && formData.budget_max === option.budget[1]} />
+                    checked={formData.budget === option.budget} />
                 {option.text}</label></div>)}
 
             <input

@@ -48,12 +48,12 @@ export default function Login() {
     const credentialsMessage = <div className={styles.credentialsMessage}>{credentialsError ? <><IconInfo />We couldn&apos;t find an account with that email and password. Check your credentials and try again.</> : null}</div>
 
     return <div className={styles.container}>
-        <BackButton />
+        <BackButton onClick={() => router.push('/jobs')}/>
         <div className={styles.formContainer}>
             <div className={styles.header}>
                 <div className={styles.title}>Log in to find your next project</div>
                 <div className={styles.description}>
-                    <div>The job board is exclusive for Decentraland creators.
+                    <div>The job board is exclusive for Decentraland verified studios.
                     Use your <a target={'_blank'} rel="noreferrer" href="https://admin.dclstudios.org/">back office</a> platform credentials to log in.</div>
                 </div>
             </div>

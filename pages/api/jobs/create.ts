@@ -1,4 +1,5 @@
 import type { NextRequest } from 'next/server'
+import { budgetToRanges } from '../../../components/utils'
 
 export const config = {
   runtime: 'experimental-edge',
@@ -30,6 +31,8 @@ export default async function (req: NextRequest) {
       } )
     }).then(res => res.ok && res.json()).then(res => res.data && res.data)
 
+    //TODO: revert original url
+    //verify_url: `https://studios.decentraland.org/jobs/verify?id=${createJob.id}`
     const sendMail = createJob && await fetch(`${SENDRGRID_URL}/mail/send`, {
       method: 'POST',
       headers: {
@@ -46,7 +49,8 @@ export default async function (req: NextRequest) {
             ],
             dynamic_template_data: {
                 ...createJob,
-                verify_url: `https://studios.decentraland.org/jobs/verify?id=${createJob.id}`,
+                budget: budgetToRanges(createJob.budget),
+                verify_url: `https://jobs.studios.pages.dev/jobs/verify?id=${createJob.id}`,
             }
         } ],
           template_id: "d-0dd32315fc5241c89e78783713c66934"

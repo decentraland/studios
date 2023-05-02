@@ -38,8 +38,6 @@
 }
 
 .titleContainer {
-  display: flex;
-  justify-content: space-between;
   margin-bottom: 16px;
 }
 
@@ -48,14 +46,27 @@
   font-size: 24px;
 }
 
-.jobBudget {
+.jobBudget--desktop {
   font-size: 16px;
-  font-weight: 400;
+  color: #736E7D;
+  white-space: nowrap;
+}
+
+.jobBudget--desktop b {
+  color: #000000
+}
+
+.jobBudget--mobile {
+  display: none;
+  font-size: 16px;
   color: #736E7D;
 }
 
 .jobBy {
   margin-top: 16px;
+  display: flex;
+  justify-content: space-between;
+  font-size: 16px;
 }
 
 .menuContainer {
@@ -94,6 +105,7 @@
   }
 
   .titleContainer {
+    display: flex;
     flex-direction: column;
   }
 
@@ -101,8 +113,15 @@
     font-size: 20px;
   }
 
-  .jobBudget {
+  .jobBudget--desktop{
+    display: none;
+  }
+
+  .jobBudget--mobile {
     margin-top: 16px;
+    font-size: 16px;
+    display: block;
+    color: ;
   }
 
   .jobBudget::before {

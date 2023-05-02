@@ -1,4 +1,5 @@
 import type { NextRequest } from 'next/server'
+import { budgetToRanges } from '../../../components/utils'
 
 export const config = {
   runtime: 'experimental-edge',
@@ -13,6 +14,17 @@ export default async function (req: NextRequest) {
   const SENDGRID_ACCESS_TOKEN = process.env.SENDGRID_ACCESS_TOKEN
 
   const { id } = await req.json()
+
+  const currentJob = await fetch(`${DB_URL}/items/jobs/${id}?fields=*,brief_file.id,brief_file.filename_download`, {
+    method: 'GET',
+    headers: {
+    'Authorization': `Bearer ${API_TOKEN}`
+    }
+  }).then(res => res.ok && res.json()).then(res => res.data && res.data)
+
+  if (currentJob.verified_email){
+    return new Response(JSON.stringify(currentJob))
+  }
 
   const verify = await fetch(`${DB_URL}/items/jobs/${id}?fields=*,brief_file.id,brief_file.filename_download`, {
       method: 'PATCH',
@@ -40,7 +52,8 @@ export default async function (req: NextRequest) {
               { email: verify.email, name: verify.author_name }
           ],
           dynamic_template_data: {
-              ...verify
+              ...verify,
+              budget: budgetToRanges(verify.budget)
           }
       } ],
         template_id: "d-6629f64176d842458785b3e127c687f9"

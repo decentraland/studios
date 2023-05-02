@@ -10,7 +10,7 @@ import IconMenu from '../Icons/IconMenu'
 import JobProfile from '../JobProfile/JobProfile'
 import LayoutFilteredList from '../LayoutFilteredList/LayoutFilteredList'
 import { logout, getLoggedState } from '../sessions'
-import { timeSince } from '../utils'
+import { budgetToRanges, timeSince } from '../utils'
 
 import styles from './Jobs.module.css'
 
@@ -40,7 +40,7 @@ const avilableFilters: FilterGroup[] = [
             },
             {
                 key: 'budget',
-                value: [50000, 0],
+                value: [50000, Infinity],
                 displayValue: 'More than $50000'
             }
         ]
@@ -89,9 +89,15 @@ export default function Jobs() {
     const jobCard = (data: Job) => {
         return <Link href={`/jobs/list?id=${data.id}`} key={data.id} legacyBehavior>
             <div className={styles.jobContainer} >
-                <div className={styles.titleContainer}><span className={styles.jobTitle}>{data.title}</span> <span className={styles.jobBudget}>${data.budget_min} to ${data.budget_max}</span></div>
+                <div className={styles.titleContainer}>
+                    <span className={styles.jobTitle}>{data.title}</span>
+                    <span className={styles['jobBudget--mobile']}>Budget: {budgetToRanges(data.budget)}</span>
+                </div>
                 <div className={styles.description}>{data.long_description}</div>
-                <div className={styles.jobBy}>Posted by <b>{data.author_name}</b> {timeSince(data.date_created)} ago</div>
+                <div className={styles.jobBy}>
+                    <span>Posted by <b>{data.author_name}</b> {timeSince(data.date_created)} ago</span>
+                    <span className={styles['jobBudget--desktop']}><b>Budget: </b>{budgetToRanges(data.budget)}</span>
+                </div>
             </div>
         </Link>
     }
@@ -120,7 +126,7 @@ export default function Jobs() {
 
     const filterElements = (items: Job[], filter: Filter) => {
         if (filter.key === 'budget') {
-            return items.filter((item: Job) => filter.value[0] ? filter.value[0] <= item.budget_min : true && filter.value[1] ? filter.value[1] >= item.budget_max : true)
+            return items.filter((item: Job) => filter.value[0] <= item.budget && filter.value[1] > item.budget)
         }
         return items.filter((item: any) => item[filter.key] === filter.value)
     }

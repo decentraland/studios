@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import styles from './JobVerify.module.css'
 import { useRouter } from 'next/router'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
-import { openIntercom } from '../utils'
+import { budgetToRanges, openIntercom } from '../utils'
 import { Job } from '../../interfaces/Job'
 import IconFile from '../Icons/IconFile'
 
@@ -65,7 +65,7 @@ function JobVerify() {
       <div className={styles.factCard}>
         <img className={styles.factIcon} alt='calendar' src="/images/iconCalendar.png" />
         <div className={styles.factText}>
-          <b>Your job post will be available for 30 days.</b> If you need to remove it sooner, {reach_out_link} and we will take it down.
+          <b>Your job will be available for 30 days after you publish it.</b> If you need to remove it sooner, {reach_out_link} and we will take it down.
         </div>
       </div>
       <div className={styles.factCard}>
@@ -90,7 +90,7 @@ function JobVerify() {
         <div className={styles.jobText}><a className={styles.link} href={`${DB_URL}/assets/${jobData.brief_file.id}`} rel="noreferrer" target='_blank'><IconFile red /> {jobData.brief_file.filename_download}</a></div>
       </>}
       <div className={styles.jobSectionTitle}>BUDGET</div>
-      <div className={styles.jobText}>${jobData.budget_min} to ${jobData.budget_max}</div>
+      <div className={styles.jobText}>{budgetToRanges(jobData.budget)}</div>
     </div>
     <div style={{ textAlign: 'center' }} className={styles.jobAuthor}>
       If you have any questions or need help regarding your listing, don’t hesitate to {reach_out_link}.

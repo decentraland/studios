@@ -10,7 +10,6 @@ export default class Projects {
     let isFinished = false
     let offset = 0
     const queryFields = basicData && !ideas ? '&sort[]=-date_created&fields=image_1,id,title,profile.name,profile.slug,profile.logo' : '&fields=*,profile.name,profile.slug,profile.logo'
-    
     const projects: PartnerProject[] = []
     while (!isFinished) {
       try {

@@ -42,6 +42,8 @@ interface VisitData {
     IPv4: string
 }
 
+const DB_URL = process.env.NEXT_PUBLIC_PARTNERS_DATA_URL
+
 function MetaverseGuide({ landing }: Props) {
     const [name, setName] = useState('')
     const [email, setEmail] = useState('')
@@ -73,12 +75,13 @@ function MetaverseGuide({ landing }: Props) {
             country_code: ipData.country_code,
             country: ipData.country_name,
             city: ipData.state,
-            pdfUrl: landing.form_success_open_url,
             mobile: !!globalThis?.navigator.userAgent.match(/Mobi/),
-            user_agent: globalThis?.navigator.userAgent
+            user_agent: globalThis?.navigator.userAgent,
+            list_ids: landing.list_ids,
+            custom_fields: landing.custom_fields
         }
 
-        fetch('/api/guide/submit', {
+        fetch('/api/landing/submit', {
             method: 'POST',
             body: JSON.stringify(body)
         })
@@ -126,9 +129,9 @@ function MetaverseGuide({ landing }: Props) {
 
     return (<>
         <Head>
-            <meta property="og:title" content="Unleash the Power of the Metaverse for Your Brand" />
-            <meta property="og:description" content="Read our Metaverse guide to learn how to leverage the immersive and interactive nature of the Metaverse to create marketing campaigns that drive results." />
-            <meta property="og:image" content="/images/guide/PDF-cover.png" />
+            <meta property="og:title" content={landing.hero_title} />
+            <meta property="og:description" content={landing.hero_description} />
+            <meta property="og:image" content={`${DB_URL}/assets/${landing.hero_cover}`} />
         </Head>
         <main>
             <link  rel="stylesheet" type="text/css" href="/guides.css"/>
@@ -138,7 +141,7 @@ function MetaverseGuide({ landing }: Props) {
                     <h1>{landing.hero_title}</h1>
                     <p className="base-text hero__container__base-text">{landing.hero_description}</p>
                     <a onClick={ctaHighlight} href="#section--cta" className="cta hero__container__cta">{landing.hero_button}</a>
-                    <img className="hero__container__pdf-cover" src="/images/guide/PDF-cover.webp" alt="" />
+                    <img className="hero__container__pdf-cover" src={`${DB_URL}/assets/${landing.hero_cover}`} alt="" />
                 </div>
             </div>
             <div className="section section--cta" id="section--cta">
@@ -181,7 +184,7 @@ function MetaverseGuide({ landing }: Props) {
                         <p>{aboutBlock.description}</p>
                     </div>)}
                 </div>
-                <img className="section--aboutdcl__image" src="/images/guide/about-dcl.webp" alt="" />
+                <img className="section--aboutdcl__image" src={`${DB_URL}/assets/${landing.about_image}`} alt="" />
             </div>
             <div className="section section--whatsinside">
                 <div className="section--whatsinside__description">
@@ -198,7 +201,7 @@ function MetaverseGuide({ landing }: Props) {
                 </div>
                 <a onClick={ctaHighlight} href="#section--cta" className="cta section--whatsinside__cta">{landing.content1_button}</a>
             </div>
-            <div className="section section--journey">
+            <div className="section section--journey" style={{background: `url('${DB_URL}/assets/${landing.content2_background}')`}}>
                 <div className="section--journey__container">
                     <h2>{landing.content2_title}</h2>
                     <div className="section--journey__container__cards">
@@ -237,7 +240,7 @@ function MetaverseGuide({ landing }: Props) {
             </div>
             <div className="section section--deepdive">
                 <div className="section--deepdive__container">
-                    <img src="/images/guide/deepdive.webp" className="section--deepdive__container__img" alt="" />
+                    <img src={`${DB_URL}/assets/${landing.call_image}`} className="section--deepdive__container__img" alt="" />
                     <h2>{landing.call_title}</h2>
                     <a onClick={ctaHighlight} href="#section--cta" className="cta section--deepdive__container__cta">{landing.call_button}</a>
                 </div>

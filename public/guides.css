@@ -843,7 +843,7 @@ button{
 
 .section--journey{
   width: 100%;
-  background: url('../images/guide/journey-background.webp'); 
+  /* background: url('../images/guide/journey-background.webp');  */
   background-size: cover;
   display: flex;
   justify-content: center;
@@ -1091,8 +1091,8 @@ button{
 }
 
 .section--deepdive__container__img{
-  width: 600px;
   position: absolute;
+  width: 600px;
   right: -220px;
   bottom: -130px;
 }

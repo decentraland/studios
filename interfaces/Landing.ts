@@ -9,6 +9,7 @@ export interface Landing {
   hero_title:              string;
   hero_description:        string;
   hero_button:             string;
+  hero_cover:              string;
   slug:                    string;
   form_title:              string;
   form_description:        string;
@@ -22,15 +23,18 @@ export interface Landing {
   form_success_open_url:   string;
   about_intro:             string;
   about_title:             string;
+  about_image:             string;
   content1_title:          string;
   content1_description:    string;
   content1_button:         string;
   content2_title:          string;
   content2_button:         string;
   content2_description:    string;
+  content2_background:     string;
   faqs:                    FAQ[];
   call_title:              string;
   call_button:             string;
+  call_image:              string;
   reviews:                 Review[];
   contact_title:           string;
   contact_action:          string;
@@ -44,6 +48,8 @@ export interface Landing {
   contact_text:            string;
   contact_text_close:      string;
   contact_us:              string;
+  custom_fields:           string;
+  list_ids:                string;
 }
 
 export interface Block {

@@ -23,32 +23,12 @@ export default async function (req: NextRequest) {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${API_TOKEN}`
       },
-      body: JSON.stringify(body)
+      body: JSON.stringify({
+        ...body,
+        ip: req.ip,
+        geo: req.geo
+      })
     })
-
-    // await fetch(`${SENDRGRID_URL}/mail/send`, {
-    //   method: 'POST',
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //     'Authorization': `Bearer ${SENDGRID_ACCESS_TOKEN}`
-    //   },
-    //   body: JSON.stringify({
-    //     from: {
-    //       email: "metaverse.studios@decentraland.org", name: "Metaverse Studios"
-    //     },
-    //     personalizations: [
-    //       {
-    //         to: [
-    //           { email: body.email }
-    //         ],
-    //         dynamic_template_data: {
-    //           name: body.name,
-    //           pdfUrl: body.pdfUrl
-    //         }
-    //       }],
-    //     template_id: "d-d66ce471d8ae47f18f036a1ebfeca73e"
-    //   })
-    // })
 
     //get custom fields definitions
     // console.log(await (await fetch(`${SENDRGRID_URL}/marketing/field_definitions`, {
@@ -65,15 +45,12 @@ export default async function (req: NextRequest) {
         'Authorization': `Bearer ${SENDGRID_ACCESS_TOKEN}`
       },
       body: JSON.stringify({
-        list_ids: ["f3748621-3758-4c5a-aea5-dea74eef93fc"],
+        list_ids: body.list_ids,
         contacts: [
           {
             email: body.email,
             first_name: body.name,
-            custom_fields: {
-              e3_T: body.pdfUrl
-            }
-            
+            custom_fields: body.custom_fields
           }
         ]
       })
@@ -86,7 +63,7 @@ export default async function (req: NextRequest) {
       },
       body: JSON.stringify({
         chat_id: TELEGRAM_CHAT_ID,
-        text: `🎉 ${body.name} ${body.email} just downloaded the guide`
+        text: `🎉 New lead on ${body.slug}!\n${body.name} ${body.email}`
       })
     })
     

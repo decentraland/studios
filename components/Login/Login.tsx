@@ -53,7 +53,7 @@ export default function Login() {
             <div className={styles.header}>
                 <div className={styles.title}>Log in to find your next project</div>
                 <div className={styles.description}>
-                    <div>The job board is exclusive for Decentraland verified studios.
+                    <div>The job board is exclusive for verified Decentraland studios.
                     Use your <a target={'_blank'} rel="noreferrer" href="https://admin.dclstudios.org/">back office</a> platform credentials to log in.</div>
                 </div>
             </div>

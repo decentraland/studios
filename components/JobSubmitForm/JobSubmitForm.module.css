@@ -96,6 +96,15 @@
   cursor: default;
 }
 
+.submit_btn:hover {
+  transform: translateY(-2px);
+}
+
+.submit_btn_disabled:hover {
+  transform: none;
+}
+
+
 .label {
   display: block;
   font-size: 15px;

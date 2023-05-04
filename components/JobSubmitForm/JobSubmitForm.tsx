@@ -175,10 +175,10 @@ function JobSubmitForm() {
         },[])
         
         return <>
-            <div className={styles.link}
+            <span className={styles.link}
             onClick={() => setOpen(true)}>
             {children}
-            </ div>
+            </ span>
             {open && <>
             <div className={styles.modalBackground} onClick={() => setOpen(false)}/>
             <div className={styles.examplesModal}

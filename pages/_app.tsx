@@ -83,6 +83,8 @@ function App({ Component, pageProps }: AppProps) {
         <title>Decentraland Studios</title>
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
 
+        <meta name="google-site-verification" content="GsC7SYvV1UMqj0g5_0rWEMvTcp474fn8vKtSHQaZIm8" />
+        
         <noscript>
           <img height="1" width="1" style={{display:"none"}}
             src={"https://www.facebook.com/tr?id=486890793629175&ev=PageView&noscript=1"}

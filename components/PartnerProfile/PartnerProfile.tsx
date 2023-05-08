@@ -91,7 +91,7 @@ function PartnerProfile({ partner, projects, reviews }: Props) {
                   )}
                   {partner.email && (
                     <Icon
-                      url={`mailto:${partner.email}?bcc=metaverse.studios@decentraland.org&subject=Work Inquiry - Project in Decentraland&body=${
+                      url={`mailto:${partner.email}?bcc=studios@decentraland.org&subject=Work Inquiry - Project in Decentraland&body=${
                         encodeURI(`Hello ${partner.name},
                       I am interested in hiring your services for an upcoming Decentraland project. I found your studio listed in the Decentraland Verified Partners Registry and wanted to inquire about a potential collaboration.
                       

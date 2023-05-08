@@ -1,0 +1,78 @@
+.container {
+  width: 100%;
+  min-height: 214px;
+  margin-bottom: 40px;
+  position: relative;
+
+  background: linear-gradient(180deg, #426BFF 0%, #4265E3 100%);
+  color: #ffffff;
+  border-radius: 20px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 32px;
+}
+
+.leftPanel {
+  max-width: 500px;
+}
+
+.image {
+  width: 240px;
+  position: absolute;
+  right: 24px;
+  z-index: 0;
+}
+
+.factsContainer {
+  margin-top: 24px;
+  display: flex;
+
+  width: 100%;
+  place-content: space-between;
+}
+
+.factContainer {
+  width: 50%;
+  margin-right: 5px;
+}
+
+.mainText {
+  font-weight: 600;
+  font-size: 28px;
+  line-height: 33px;
+  letter-spacing: -1px;
+}
+
+.smallText {
+  margin-top: 16px;
+  font-size: 16px;
+  letter-spacing: 0.5px;
+  font-weight: 400;
+
+}
+
+@media (max-width: 990px){
+  .leftPanel{
+    max-width: 70%;
+  }
+  /* .image{
+    opacity: 0.2;
+  } */
+}
+
+@media (max-width: 767px){
+  .leftPanel{
+    max-width: 100%;
+  }
+
+  .mainText{
+    font-size: 22px;
+    line-height: 28px;
+  }
+  .image{
+    display: none;
+  }
+  
+}

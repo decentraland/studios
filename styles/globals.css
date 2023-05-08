@@ -201,12 +201,20 @@ a {
   margin-bottom: 40px;
  }
  
+ .mt-16 {
+  margin-top: 16px;
+ }
+
  .mt-2 {
   margin-top: 20px;
  }
 
  .mt-3r {
   margin-top: 3rem;
+ }
+
+ .ml-1 {
+  margin-left: 10px;
  }
 
  .center {

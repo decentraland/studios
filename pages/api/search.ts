@@ -61,7 +61,7 @@ export default async function (req: NextRequest) {
     const studio = resStudios.sort((a: any , b: any ) => sortResult(a, b, query)).map((profile: VerifiedPartner) => ( { ...profile, title:profile.name, description: sliceAroundQuery(query, profile.description) , type: 'profile'} ))
     const project = resProjects.sort((a: any , b: any ) => sortResult(a, b, query)).map((project: PartnerProject) => ({ ...project, description: sliceAroundQuery(query, project.description), type: 'project'}))
    
-    const results = { resource, studio, project }
+    const results = [].concat(resource, studio, project)
     
     return new Response(JSON.stringify({results }))
   }

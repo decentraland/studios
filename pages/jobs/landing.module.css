@@ -1,0 +1,711 @@
+.fakeBackground{
+    background-color: #F7F7F7;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    position: fixed;
+    z-index: -1
+}
+
+.heroContainer {
+    margin-top: 128px;
+    display: flex;
+    flex-flow: row wrap;
+    gap: 24px;
+}
+
+.heroContainer > div:first-of-type {
+    font-size: 52px;
+    font-weight: 600;
+    line-height: 1;
+    flex: 1 1 500px;
+}
+
+.heroContainer > div:last-of-type {
+    font-size: 18px;
+    flex: 1 1 400px;
+    color: #37333D;
+    padding-top: 10px;
+}
+
+.trusted { 
+    text-align: center;
+    font-size: 16px;
+    font-weight: 510;
+    color: #736E7D;
+}
+
+.buttonsContainer{
+    margin-top: 24px;
+}
+
+.buttonsContainer > div {
+    margin-right: 24px;
+}
+
+
+.heroSliderContainer {
+    margin-top: 100px;
+    width: 100%;
+}
+
+.heroSlider {
+    width: 100vw;
+    /* overflow: hidden; */
+    position: absolute;
+    left: 0;
+}
+
+.heroSlider--moving{
+    width: fit-content;
+    white-space: nowrap;
+    position: relative;
+    left: calc(50vw - 2 * 500px + 0.5 * 500px - 32px);
+    animation: scroll 24s ease-out infinite;
+}
+
+@keyframes scroll {
+    0% {
+      transform: translateX(-50%);
+    }
+    25%, 45% {
+        transform: translateX(-37.5%);
+    }
+    50%, 70% {
+        transform: translateX(-25%);
+    }
+    75%, 95% {
+        transform: translateX(-12.5%);
+    }
+    100% {
+        transform: translateX(0);
+    }
+}
+
+.heroAllocator {
+    height: 320px;
+    margin-top: 16px;
+}
+
+.heroImgContainer {
+    display: inline-block;
+    position: relative;
+    border-radius: 8px;
+    overflow: hidden;
+    height: 320px;
+    width: 500px;    
+    white-space: pre-line;
+    line-height: 1;
+    margin-right: 32px;
+}
+
+.heroOverlay {
+    visibility: hidden;
+    position: absolute;
+    bottom: 0;
+    height: 100%;
+    width: 100%;
+
+    background: url('/images/jobs/read_bg_small.png') no-repeat;
+    background-size: cover;
+    opacity: 0.9;
+}
+
+.heroNames {
+    position: absolute;
+    bottom: 0;
+    color: #FFFFFF;
+    margin-bottom: 24px;
+    margin-left: 24px;
+    font-size: 24px;
+}
+
+.heroImgContainer:hover {
+    transform: translateY(-16px);
+}
+
+.heroImgContainer:hover .heroOverlay{
+    visibility: visible;
+}
+
+.heroImage {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.brandsAllocator {
+    height: 62px;
+    margin-top: 32px;
+}
+
+.brandsMask {
+    background: linear-gradient(90deg,  #F7F7F7 0%, #F7F7F700 20%, #F7F7F700 80%, #F7F7F7 100%);
+    z-index: 20;
+    position: absolute;
+    height: 100%;
+    width: 100vw;
+}
+
+.brandsSlider--moving{
+    width: fit-content;
+    white-space: nowrap;
+    position: relative;
+    animation: brandsScroll 30s ease infinite;
+}
+
+.brandsSlider--moving img{
+    height: 62px;
+    width: auto;
+}
+
+@keyframes brandsScroll {
+    0% {
+      transform: translateX(0);
+    }
+    25% {
+        transform: translateX(-12%);
+    }
+    50% {
+        transform: translateX(-25%);
+    }
+    75% {
+        transform: translateX(-36%);
+    }
+    100% {
+        transform: translateX(-50%);
+    }
+}
+
+.howToTitle {
+    width: 100%;
+    text-align: center;
+    font-size: 32px;
+    font-weight: 510;
+    line-height: 1;
+    margin-top: 250px;
+}
+
+.howToContainer {
+    margin-top: 40px;
+    display: flex;
+    flex-flow: row wrap;
+    gap: 32px;
+    justify-content: center;
+}
+
+.howToCard {
+    flex-basis: 242px;
+    background-color: #FFFFFF;
+    padding: 24px;
+    border-radius: 16px;
+}
+
+.howToCard--titleRow {
+    font-size: 16px;
+    font-weight: 700;
+}
+ 
+.howToCard--titleRow > span {
+    color: #37333D;
+    opacity: 0.56;
+    margin-right: 8px;
+}
+
+.howToCard--content {
+    margin-top: 40px;
+    font-size: 16px;
+}
+
+.hireContainer {
+    width: 100%;
+    text-align: center;
+    margin-top: 64px;
+}
+
+.examplesContainer {
+    margin-top: 268px;
+    display: flex;
+    flex-flow: row;
+    gap: 32px;
+    align-items: center;
+}
+
+.examplesLeftPanel .hireTalentBtn {
+    margin-top: 52px;
+}
+
+.examplesTitle {
+    font-size: 32px;
+    font-weight: 700;
+    margin-bottom: 56px;
+    line-height: 1;
+}
+.examplesText {
+    font-size: 24px;
+    margin-top: 32px;
+    display: flex;
+    align-items: baseline;
+    gap: 22px;
+    transition: all 0.6s ease-in-out;
+}
+
+.examplesText--gray {
+    opacity: 0.32;
+}
+
+.examplesFooterText{
+    color: #736E7D;
+    font-size: 14px;
+    font-weight: 590;
+    margin-top: 14px;
+}
+
+.examplesImg {
+    width: calc(100vw / 3);
+    height: calc(100vw / 5);
+    background-size: cover;
+
+    border-radius: 16px;
+    transition: all 0.6s ease-in-out;
+    margin-bottom: 24px;
+}
+
+.examplesImgMobile {
+    margin-top: 12px;
+    overflow: hidden;
+    display: none;
+}
+
+.examplesImgMobile .examplesImg {
+    margin: auto;
+    width:  calc(100vw - 32px);
+    height: calc(100vw  / 1.7);
+    background-size: cover;
+}
+
+.readAllocator {
+    width: 100%;
+    height: 812px;
+    margin-top: 228px;
+}
+
+.readContainer {
+    background: url('/images/jobs/read_bg.jpg');
+    background-size: cover;
+    width: 100vW;
+    left: 0;
+    position: absolute;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 100px;
+}
+
+.readTitle {
+    font-weight: 700;
+    font-size: 40px;
+    line-height: 1;
+    color: #FFFFFF;
+}
+
+.readText {
+    font-size: 16px;
+    line-height: 24px;
+    color: #FFFFFF;
+    border-color: #FFFFFF;
+    margin-top: 20px;
+}
+
+.readLeftPanel {
+    max-width: 500px;
+    margin-left: 50px;
+}
+
+.readRightPanel {
+    flex-basis: 500px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+}
+
+.readCenterImg{
+    /* margin-right: 20px; */
+    width: 90%;
+    height: auto;
+}
+
+.readEndImg {
+    margin-left: 80px;
+    max-width: 617px;
+    height: auto;
+}
+
+.getGuideBtn {
+    padding: 9px 16px;
+    border-radius: 5px;
+    border: 1px solid #FFFFFF;
+    color: #fff;
+    font-size: 16px;
+    display: inline-block;
+    cursor: pointer;
+    text-align: center;
+    line-height: 24px;
+    margin-top: 20px;
+}
+  
+.getGuideBtn:hover {
+    transform: translateY(-2px);
+}
+
+.reviewsContainer {
+    margin-top: 228px;
+    display: flex;
+    flex-flow: row wrap;
+    gap: 48px;
+    justify-content: center;
+}
+
+.reviewCard {
+    flex-basis: 464px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.reviewsTitle {
+    font-weight: 700;
+    font-size: 24px;
+    line-height: 1.5;
+}
+
+.reviewsSubTitle {
+    font-size: 24px;
+    line-height: 1;
+
+    margin-top: 16px
+}
+
+.reviewAuthor {
+    font-size: 16px;
+    margin-top: 24px;
+    text-align: center;
+}
+
+.reviewFrame{
+    padding: 32px;
+    box-shadow: 0px 2px 2px rgba(8, 43, 41, 0.04), 0px 2px 16px rgba(8, 43, 41, 0.06);
+    border-radius: 32px 32px 32px 4px;
+    font-size: 16px;
+    background-color: #FFFFFF;
+}
+
+.reviewTitleRow {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-bottom: 24px;
+}
+
+.reviewTitleRow img {
+    vertical-align: middle;
+}
+
+.banner {
+    background-image: url('/images/jobs/banner_bg.png');
+    background-repeat: no-repeat;
+    background-position: right bottom;
+    background-color: #121E2E;
+    background-size: 50%;
+    max-width: 946px;
+    width: 100%;
+    margin: auto;
+    margin-top: 320px;
+    padding: 36px 40px;
+
+    color: #FFFFFF;
+    font-size: 48px;
+    font-weight: 590;
+    line-height: 1;
+    letter-spacing: -0.2px;
+
+    box-shadow: 0px 2px 2px rgba(8, 43, 41, 0.12), 0px 2px 16px rgba(8, 43, 41, 0.16);
+    border-radius: 32px;
+}
+
+.banner > div:first-of-type {
+    max-width: 550px;
+    margin-bottom: 32px;
+}
+
+.hireTalentBtn {
+    padding: 14px 41px;background: #ff2d55;
+    border-radius: 5px;
+    color: #fff;
+    font-size: 13px;
+    display: inline-block;
+    cursor: pointer;
+    text-align: center;
+  }
+  
+.hireTalentBtn:hover {
+    color: #fff;
+    transform: translateY(-2px);
+}
+
+.unsureWrapper {
+    height: 300px;
+    margin-top: 380px;
+}
+
+.unsureContainer {
+    position: absolute;
+    left: 0;
+    width: 100vw;
+}    
+
+.unsureText {
+    font-weight: 510;
+    font-size: 52px;
+    line-height: 1;
+    max-width: 670px;
+    margin-left: 5%;
+}
+
+.unsureImg{
+    height: 28vw;
+    position: absolute;
+    right: 0;
+    top: 0;
+    transform: translateY(-40%);
+    z-index: -1;
+}   
+
+.linkText {
+    color: #FF2D55;
+    cursor: pointer;
+}
+
+.linkText:hover {
+    text-decoration: underline;
+}
+
+@media (max-width: 768px){
+
+    .hireContainer {
+        margin-top: 48px;
+    }
+
+    .hireTalentBtn {
+        width: 100%;
+    }
+
+    .heroContainer{
+        margin-top: 48px;
+    }
+
+    .trusted { 
+        font-size: 12px;
+    }
+
+    .heroSlider {
+        overflow: hidden;
+    }
+
+    .heroSliderContainer {
+        margin-top: 52px;
+    }
+
+    .heroAllocator {
+        height: 200px;
+    }
+
+    .heroSlider--moving {
+        left: calc(50vw - 2 * 300px + 0.5 * 300px - 16px);
+    }
+    .heroContainer > div:first-of-type{
+        font-size: 32px;
+    }
+
+    .heroContainer > div:last-of-type{
+        font-size: 14px;
+        padding-top: 10px;
+    }
+
+    .heroImgContainer {
+        height: 200px;
+        width: 300px;
+        margin-right: 16px;
+    }
+
+    .heroImgContainer:hover {
+        transform: none;
+    }
+
+    .heroImage {
+        height: 200px;
+        width: 300px;
+    }
+
+    .brandsAllocator {
+        height: 40px;
+        margin-top: 24px;
+    }
+
+    .brandsSlider--moving img{
+        height: 40px;
+    }
+
+    .howToTitle {
+        margin-top: 144px;
+        font-size: 24px;
+    }
+
+    .howToContainer {
+        gap: 24px;
+    }
+
+    .howToCard {
+        flex-basis: auto;
+    }
+
+    .examplesContainer {
+        margin-top: 164px;
+        /* height: 900px; */
+    }
+
+    .examplesLeftPanel{
+        position: relative;
+        height: 900px;
+    }
+
+    .examplesLeftPanel .hireTalentBtn{
+        position: absolute;
+        bottom: 0;
+    }
+
+    .examplesRightPanel {
+        display: none;
+    }
+
+    .examplesImgMobile {
+        display: block;
+        transition: max-height 0.4s ease-out;
+        max-height: 0;
+    }
+
+    .examplesImgMobile--show {
+        max-height: 500px;
+        transition: max-height 0.6s ease-in;
+
+    }
+
+    .examplesText{
+        font-size: 16px;
+    }
+
+    .examplesFooterText {
+        font-size: 12px;
+    }
+
+    .readAllocator {
+        margin-top: 84px;
+        /* height: 418px; */
+        height: calc(100vw);
+    }
+
+    .readContainer {
+        display: block;
+        height: calc(100vw);
+    }
+
+    .readLeftPanel {
+        margin: 0 16px;
+        max-width: unset;
+    }
+
+    .readTitle {
+        font-size: 24px;
+        margin-top: 40px;
+    }
+    
+    .readText {
+        font-size: 14px;
+    }
+    
+    .readRightPanel {
+        margin-top: 48px;
+    }
+    .readEndImg {
+        display: none;
+    }
+
+    .getGuideBtn {
+        width: 100%;
+        font-size: 13px;
+    }
+
+    .getGuideBtn svg {
+        height: 13px;
+        width: auto;
+    }
+
+    
+    .reviewsContainer {
+        margin-top: 177px;
+    }
+    
+    .reviewsSubTitle,
+    .reviewsTitle {
+        font-size: 20px;
+    }
+
+    .reviewFrame {
+        font-size: 14px;
+    }
+
+    .reviewAuthor {
+        font-size: 14px;
+        text-align: left;
+    }
+
+    .banner {
+        margin-top: 140px;
+        font-size: 20px;
+        padding: 24px;
+        border-radius: 16px;
+    }
+
+    .banner .hireTalentBtn {
+        width: auto;
+    }
+
+    .unsureWrapper {
+        margin-top: 140px;
+        height: 400px;
+    }
+
+    .unsureContainer {
+        display: flex;
+        flex-direction: column-reverse;
+        /* overflow: hidden; */
+        align-items: flex-end;
+    }
+
+    .unsureImg {
+        height: auto;
+        width: 50vw;
+        position: relative;
+        margin-right: 32px;
+        margin-bottom: 40px;
+        transform: translateY(0);
+    }
+
+    .unsureText {
+        font-size: 32px;
+        max-width: unset;
+    }
+}

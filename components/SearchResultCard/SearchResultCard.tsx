@@ -6,9 +6,10 @@ import rehypeRaw from 'rehype-raw'
 
 import styles from './SearchResultCard.module.css'
 import MarkdownDescription from '../MarkdownDescription/MarkdownDescription'
+import { SearchResult } from '../../interfaces/SearchResult';
 
 interface Props {
-  data: any
+  data: SearchResult
   query: string
 }
 

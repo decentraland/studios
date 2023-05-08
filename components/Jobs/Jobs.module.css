@@ -1,0 +1,134 @@
+.empty {
+  margin: auto;
+  margin-top: 10vh;
+  padding: 10px;
+  /* height: 50%; */
+  /* width: 100%; */
+  max-width: 300px;
+  text-align: center;
+  font-size: medium;
+  color: #37333d;
+  opacity: 32%;
+  line-height: 32px;
+}
+
+.headerText {
+  font-weight: 600;
+}
+
+.resultsCount {
+  margin-left: 24px;
+  font-size: 13px;
+  font-weight: 400;
+}
+
+.jobContainer {
+  border: var(--card_border);
+  border-radius: 20px;
+  box-shadow: var(--card_shadow);
+  padding: 24px;
+  margin-bottom: 2rem;
+  cursor: pointer;
+  /* display: table; */
+  width: 100%;
+}
+
+.jobContainer:hover {
+  transform: var(--card_animation);
+}
+
+.titleContainer {
+  margin-bottom: 16px;
+}
+
+.jobTitle {
+  font-weight: 600;
+  font-size: 24px;
+}
+
+.jobBudget--desktop {
+  font-size: 16px;
+  color: #736E7D;
+  white-space: nowrap;
+}
+
+.jobBudget--desktop b {
+  color: #000000
+}
+
+.jobBudget--mobile {
+  display: none;
+  font-size: 16px;
+  color: #736E7D;
+}
+
+.jobBy {
+  margin-top: 16px;
+  display: flex;
+  justify-content: space-between;
+  font-size: 16px;
+}
+
+.menuContainer {
+  position: relative;
+}
+
+.menuItem {
+  background: #FFFFFF;
+  box-shadow: 0px 2px 4px rgba(22, 20, 26, 0.08), 0px 0px 4px rgba(22, 20, 26, 0.12);
+  border: none;
+  border-radius: 8px;
+  color: #FF2D55;
+  font-size: 14px;
+  position: absolute;
+  white-space: nowrap;
+  right: 0;
+  bottom: -40px;
+}
+
+.description {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  display: -moz-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  -moz-box-orient: vertical;
+  /* white-space: normal; */
+  /* max-height: 97px; */
+  /* word-break: break-all;  */
+}
+
+@media (max-width: 700px) {
+  .resultsCount {
+    display: none;
+  }
+
+  .titleContainer {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .jobTitle {
+    font-size: 20px;
+  }
+
+  .jobBudget--desktop{
+    display: none;
+  }
+
+  .jobBudget--mobile {
+    margin-top: 16px;
+    font-size: 16px;
+    display: block;
+    color: ;
+  }
+
+  .jobBudget::before {
+    content: "Budget "
+  }
+
+  .jobBy {
+    font-size: 12px;
+  }
+}

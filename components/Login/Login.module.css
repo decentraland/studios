@@ -1,0 +1,84 @@
+  
+  .container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    width: 100%;
+}
+
+  .formContainer {
+    display: flex;
+    flex-direction: column;
+    max-width: 500px;
+    margin: auto;
+  }
+  
+  .input {
+    width: 100%;
+    padding: 12px 10px;
+    border: 1px solid rgba(115, 110, 125, 0.32);
+    border-radius: 6px;
+  }
+
+  .input__invalid{
+    background-color: rgba(255, 45, 85, 0.32);
+  }
+  
+  .submitBtn{
+    width: 100%;
+    margin-top: 32px;
+    padding: 9px 17px;
+    background: #FF2D55;
+    border-radius: 5px;
+    border: none;
+    color: white;
+    cursor: pointer;
+  }
+  
+  .submitBtn_disabled {
+    background: rgba(255, 45, 85, 0.32);
+    cursor: default;
+  }
+  
+  .label {
+    display: block;
+    font-size: 15px;
+    font-weight: 510;
+    margin-top: 30px;
+    margin-bottom: 10px;
+  }
+  
+  .credentialsMessage {
+    margin-top: 10px;
+    color: #ff2d55;
+    height: 1.5rem;
+    display: flex;
+  }
+
+  .credentialsMessage svg {
+    margin-right: 5px;
+  }
+
+  .title {
+    margin-bottom: 15px;
+    font-size: 32px;
+    font-weight: 600;
+    text-align: center;
+  }
+  
+  .description {
+    font-size: 16px;
+    text-align: center;
+    width: 100%;
+    margin-top: 16px;
+  }
+  
+  .description a {
+    color: red;
+  }
+
+  @media (max-width: 700px){
+    .title {
+      font-size: 24px;
+    }
+  }

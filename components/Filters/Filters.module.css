@@ -19,8 +19,6 @@
   display: none;
 }
 
-
-
 .filter_container {
   width: 250px;
 }
@@ -37,11 +35,11 @@
   display: flex;
   flex-direction: row;
   align-items: center;
-  margin-bottom: 20px;
   color: #242129;
   cursor: pointer;
   border-radius: 2rem;
   padding: 0.5rem 1rem;
+  margin-bottom: 20px;
   margin-left: -1rem;
   margin-right: 4rem;
 }
@@ -49,43 +47,12 @@
 .tag_container:last-of-type {
   margin-bottom: 50px;
 }
+
 .check,
-.tag_container:hover {
+.tag_container--hover:hover {
   font-weight: 600;
   color: #16141a;
   background-color: #726d7c25;
-}
-
-.circle {
-  width: 1.5em;
-  /* height: 1em; */
-  border-radius: 50%;
-  margin-right: 15px;
-  flex-shrink: 0;
-}
-
-.tooltip_container {
-  display: block;
-  position: absolute;
-}
-
-.tag_container:hover .tooltip_container .tooltip {
-  display: block;
-}
-
-.tooltip {
-  position: absolute;
-  display: none;
-  background: white;
-  border-radius: 5px;
-  padding: 10px;
-  width: 230px;
-  left: 150px;
-  top: -4rem;
-  /* box-shadow: 0 2px 4px #726d7c; */
-  box-shadow: var(--card_shadow);
-  font-weight: 400;
-  z-index: 10;
 }
 
 @media (max-width: 700px) {
@@ -97,12 +64,14 @@
   justify-content: space-between;
   box-shadow: 0px 1px 1px rgba(8, 43, 41, 0.08), 0px 0px 8px rgba(8, 43, 41, 0.06);
   }
+
   .filtersMobile_container {
     padding: 16px;
     height: calc(100vh - 122px);
     position: static;
     overflow-y: scroll;
   }
+
   .filtersMobile_buttons {
     padding: 16px;
     width: 100%;
@@ -113,114 +82,13 @@
     bottom: 0;
     background-color: #fff;
   }
+
   .filter_container{
     width: 100%;
   }
+
   .tag_container{
     margin-left: auto;
     margin-right: auto;
   }
-  .tag_container:hover .tooltip_container .tooltip {
-    display: none;
-  }
 }
-
-.tag_container:hover.serv_3d_modeling,
-.serv_3d_modeling--check,
-.serv_3d_modeling > .circle {
-  background-color: #fbe5fd;
-}
-
-/* .tag_container:hover.serv_3d_modeling > .circle,
-.serv_3d_modeling--check > .circle {
-  background-color: #ee74f7;
-} */
-
-.tag_container:hover.serv_advertisement,
-.serv_advertisement--check,
-.serv_advertisement > .circle {
-  background-color: #fdf7d6;
-}
-
-/* .tag_container:hover.serv_advertisement > .circle,
-.serv_advertisement--check > .circle {
-  background-color: #f4b356;
-} */
-
-.tag_container:hover.serv_emote_design,
-.serv_emote_design--check,
-.serv_emote_design > .circle {
-  background-color: #F6DFE3;
-}
-
-/* .tag_container:hover.serv_emote_design > .circle,
-.serv_emote_design--check > .circle {
-  background-color: #c72b32;
-} */
-
-.tag_container:hover.serv_land_rental,
-.serv_land_rental--check,
-.serv_land_rental > .circle {
-  background-color: #e3ecfa;
-}
-
-/* .tag_container:hover.serv_land_rental > .circle,
-.serv_land_rental--check > .circle {
-  background-color: #5688e7;
-} */
-
-.tag_container:hover.serv_programming,
-.serv_programming--check,
-.serv_programming > .circle {
-  background-color: #EEEDF8;
-}
-
-/* .tag_container:hover.serv_programming > .circle,
-.serv_programming--check > .circle {
-  background-color: #382aac;
-} */
-
-.tag_container:hover.serv_venue_rental,
-.serv_venue_rental--check,
-.serv_venue_rental > .circle {
-  background-color: #fcefd5;
-}
-
-/* .tag_container:hover.serv_venue_rental > .circle,
-.serv_venue_rental--check > .circle {
-  background-color: #f0804f;
-} */
-
-.tag_container:hover.serv_wearable_design,
-.serv_wearable_design--check,
-.serv_wearable_design > .circle {
-  background-color: #e4f2d8;
-}
-
-/* .tag_container:hover.serv_wearable_design > .circle,
-.serv_wearable_design--check > .circle {
-  background-color: #63b334;
-} */
-
-.tag_container:hover.serv_linked_wearables,
-.serv_linked_wearables--check,
-.serv_linked_wearables > .circle {
-  background-color: #FFECB3;
-}
-
-/* .tag_container:hover.serv_linked_wearables > .circle,
-.serv_linked_wearables--check > .circle {
-  background-color: #FFA000;
-} */
-
-
-.tag_container:hover.serv_creative_director,
-.serv_creative_director--check,
-.serv_creative_director > .circle {
-  background-color: #F0F4C3;
-}
-
-/* .tag_container:hover.serv_creative_director > .circle,
-.serv_creative_director--check > .circle {
-  background-color: #AFB42B;
-} */

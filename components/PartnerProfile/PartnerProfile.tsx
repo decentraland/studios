@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { VerifiedPartner, Service } from '../../interfaces/VerifiedPartner'
-import CategoryPill from '../CategoryPill/CategoryPill'
+import ServiceTag from '../ServiceTag/ServiceTag'
 import Discord from '../Icons/Discord'
 import Email from '../Icons/Email'
 import Instagram from '../Icons/Instagram'
@@ -150,7 +150,7 @@ function PartnerProfile({ partner, projects, reviews }: Props) {
                 <div className={styles.pills}>
                   {displayServices.map((service, i) => (
                     <span key={`${service}-${i}`} className={styles.services}>
-                      <CategoryPill showIcon type={service} />
+                      <ServiceTag type={service} active />
                     </span>
                   ))}
                 </div>

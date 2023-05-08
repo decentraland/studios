@@ -2,7 +2,7 @@ import React from 'react'
 import Link from 'next/link'
 
 import { VerifiedPartner, Service } from '../../interfaces/VerifiedPartner'
-import CategoryPill from '../CategoryPill/CategoryPill'
+import ServiceTag from '../ServiceTag/ServiceTag'
 import styles from './PartnerCard.module.css'
 import { FormattedMessage, useIntl } from 'react-intl'
 import MarkdownDescription from '../MarkdownDescription/MarkdownDescription'
@@ -38,16 +38,13 @@ function PartnerCard({ partner }: Props) {
             <div className={styles.pills}>
               {displayServices.map((service, i) => (
                 <span key={`${service}-${i}`} className={styles.services}>
-                  <img alt='' title={intl.formatMessage({ id: `service.${toSnakeCase(service)}`})} src={`/images/category_${service.replace(' ', '')}.svg`} />
+                  <ServiceTag type={service} active hideText hideTooltip />
                 </span>
               ))}
             </div>
           </div>
           <div className={styles.description_container}>
             <MarkdownDescription className={styles.description} description={partner.description} inPartnersList />
-            {/* <div className={styles.read_more_trigger}>
-              <FormattedMessage id="show_more" />
-            </div> */}
           </div>
         </div>
       </div>

@@ -1,0 +1,91 @@
+.container {
+  color: #37333D;
+  border: 1px solid #F3F2F5;
+  border-radius: 100px;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.service_name {
+  font-size: 12px;
+  margin-right: 6px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.container:hover .tooltip_container .tooltip{
+  visibility: visible;
+}
+
+.container--active {
+  color: #FFFFFF;
+  background: linear-gradient(119.19deg, rgba(255, 255, 255, 0.05) 22.3%, rgba(255, 255, 255, 0) 64.05%);
+  box-shadow: 0px 1px 4px rgba(62, 62, 62, 0.24), inset 0px 1px 4px rgba(255, 255, 255, 0.24);
+  border: none;
+  margin: 1px;
+}
+
+.container--venue_rental {
+  background-color: #B91D90;
+}
+
+.container--advertisement {
+  background-color: #C25400;
+}
+
+.container--wearable_design {
+  background-color: #A31F5E;
+}
+
+.container--3d_modeling {
+  background-color: #A53627;
+}
+
+.container--emote_design {
+  background-color: #128073;
+}
+
+.container--land_rental {
+  background-color: #4D56DF;
+}
+
+.container--programming {
+  background-color: #9541CA;
+}
+
+.container--linked_wearables {
+  background-color: #304C9C ;
+}
+
+.container--creative_director {
+  background-color: #267829 ;
+}
+
+.container--entertainment {
+  background-color: #0078B4 ;
+}
+
+.tooltip_container {
+  display: block;
+  position: absolute;
+}
+
+.tooltip {
+  position: absolute;
+  visibility: hidden;
+  background: white;
+  border-radius: 5px;
+  padding: 10px;
+  left: 0px;
+  width: 230px;
+  top: 1.5rem;
+  box-shadow: var(--card_shadow);
+  font-weight: 400;
+  z-index: 10;
+  color: black;
+  font-size: 14px;
+  line-height: 1rem;
+}
+

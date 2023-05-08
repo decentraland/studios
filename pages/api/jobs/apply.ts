@@ -37,10 +37,6 @@ export default async function (req: NextRequest) {
         }
     }).then(res => res.ok && res.json()).then(res => res.data.length && res.data[0])
 
-    //TODO: revert original fields
-    // job_url: `https://studios.decentraland.org/jobs/verify?id=${currentJob.id}`
-    // partner_url: `https://studios.decentraland.org/profile/${currentStudio.slug}`,
-
     const mailToAuthor = currentStudio && await fetch(`${SENDRGRID_URL}/mail/send`, {
         method: 'POST',
         headers: {
@@ -60,10 +56,10 @@ export default async function (req: NextRequest) {
                 ],
                 dynamic_template_data: {
                     job_author: currentJob.author_name,
-                    job_url: `https://jobs.studios.pages.dev/jobs/verify?id=${currentJob.id}`,
+                    job_url: `https://studios.decentraland.org/jobs/verify?id=${currentJob.id}`,
                     partner_name: currentStudio.name,
                     partner_logo: `${DB_URL}/assets/${currentStudio.logo}?key=logo`,
-                    partner_url: `https://jobs.studios.pages.dev/profile/${currentStudio.slug}`,
+                    partner_url: `https://studios.decentraland.org/profile/${currentStudio.slug}`,
                     message: body.message?.message,
                     brief_file: body.message?.brief_file
                 }

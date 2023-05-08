@@ -105,9 +105,9 @@ function JobsLandingPage() {
             <main className={globalStyles.main}>
                 <div className={styles.fakeBackground} />
                 <div className={styles.heroContainer}>
-                    <div>Creative Freelance jobs in Decentraland</div>
+                    <div>Decentraland creative services, on demand</div>
                     <div>
-                        Tap into a network of verified studios and build brand presence in Decentraland.
+                    Looking to bring your brand to Decentraland? Connect with top-tier studios and professionals to make it happen.
                         <div className={styles.buttonsContainer}>
                             <Link href={'/jobs/hire'} legacyBehavior ><div className='button_primary'>HIRE TALENT</div></Link>
                             <Link href={'/jobs/list'} legacyBehavior ><div className='button_primary--inverted'>APPLY TO A JOB</div></Link>

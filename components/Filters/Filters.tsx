@@ -26,7 +26,6 @@ enum FilterType {
 }
 
 type Filters = Record<FilterType, string[]>
-type CheckBoxStates = Record<string, boolean>
 const EMPTY_FILTER = {} as Filters
 
 const dropdownContent = [
@@ -57,9 +56,8 @@ function getCheckboxKey(filter: FilterType, value: string): string {
 }
 
 function Filters({ partners, setFilteredPartners, showMobileFilters, onClose, setFiltersCount }: Props) {
-  const [currentFilterCategory, setCurrentFilterCategory] = useState(0)
+
   const [filters, setFilters] = useState<Filters>(EMPTY_FILTER)
-  const [checkBoxState, setCheckBoxState] = useState<CheckBoxStates>({})
   const router = useRouter()
   const intl = useIntl()
 
@@ -69,7 +67,7 @@ function Filters({ partners, setFilteredPartners, showMobileFilters, onClose, se
     return Array.from(uniqueLanguages).sort((a, b) => a.localeCompare(b))
   }, [partners])
 
-  const getUrlFilters = useCallback(() => {
+  const getUrlFilters = () => {
     const filters = { ...EMPTY_FILTER }
 
     // const { query } = router
@@ -86,39 +84,20 @@ function Filters({ partners, setFilteredPartners, showMobileFilters, onClose, se
     }
 
     return filters
-  }, [router])
+  }
 
   useEffect(() => {
-    const initialCheckBoxState: CheckBoxStates = {}
-    for (const category of dropdownContent) {
-      for (const item of Object.values(category.options)) {
-        initialCheckBoxState[getCheckboxKey(category.key, item)] = false
-      }
-    }
-
-    for (const language of languages) {
-      initialCheckBoxState[getCheckboxKey(FilterType.Language, language)] = false
-    }
 
     const urlFilters = getUrlFilters()
     if (Object.keys(urlFilters).length > 0) {
       setFilters(urlFilters)
-      for (const [key, values] of Object.entries(urlFilters)) {
-        for (const value of values) {
-          const checkboxKey = getCheckboxKey(key as FilterType, value)
-          if (checkboxKey in initialCheckBoxState) {
-            initialCheckBoxState[checkboxKey] = true
-          }
-        }
-      }
     }
 
-    setCheckBoxState(initialCheckBoxState)
-  }, [languages])
+  }, [router.asPath])
 
   useEffect(() => {
     handleApplyFilters()
-  }, [checkBoxState])
+  }, [filters])
 
   const handleItemClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>, itemData: CheckboxProps) => {
     event.stopPropagation()
@@ -126,21 +105,14 @@ function Filters({ partners, setFilteredPartners, showMobileFilters, onClose, se
     const { checked, name, value } = itemData
     const filterType = name as FilterType
 
-    setCheckBoxState((prevState) => ({ ...prevState, [getCheckboxKey(filterType, `${value}`)]: !checked }))
-
-    if (!checked) {
-      setFilters((prev) => ({ ...prev, [filterType]: [...(prev[filterType] || []), value] }))
+    if (checked) {
+      setFilters((prev) => {
+        const filterRemoved = { ...prev }
+        delete filterRemoved[filterType]
+        return filterRemoved
+      })
     } else {
-      const newFilters = filters[filterType].filter((item) => item !== value)
-      if (newFilters.length === 0) {
-        setFilters((prev) => {
-          const filterRemoved = { ...prev }
-          delete filterRemoved[filterType]
-          return filterRemoved
-        })
-      } else {
-        setFilters((prev) => ({ ...prev, [filterType]: newFilters }))
-      }
+      setFilters((prev) => ({ ...prev, [filterType]: [value] }))
     }
   }
 
@@ -158,8 +130,8 @@ function Filters({ partners, setFilteredPartners, showMobileFilters, onClose, se
     )
   }
 
-  const handleApplyFilters = (customFilters?: Filters) => {
-    const appliedFilters = customFilters || filters
+  const handleApplyFilters = () => {
+    const appliedFilters = filters
 
     const selectedPartners = partners.filter((partner) =>
       Object.entries(appliedFilters).every(([type, filters]) => {
@@ -184,9 +156,6 @@ function Filters({ partners, setFilteredPartners, showMobileFilters, onClose, se
     setFilters(EMPTY_FILTER)
     setUrlFilters(EMPTY_FILTER)
     setFilteredPartners(partners)
-    for (const key of Object.keys(checkBoxState)) {
-      setCheckBoxState((prevState) => ({ ...prevState, [key]: false }))
-    }
   }
 
   useEffect(() => {
@@ -208,12 +177,10 @@ function Filters({ partners, setFilteredPartners, showMobileFilters, onClose, se
               <div>
                 {Object.entries(item.options).map(([key, value]) => {
                   const itemData: CheckboxProps = {
-                    checked: checkBoxState[getCheckboxKey(item.key, value)],
+                    checked: filters[item.key]?.includes(value),
                     value: value,
                     name: item.key,
                   }
-                  console.log(itemData)
-                  console.log(key)
 
                   const notService = itemData.name !== 'services'
 

@@ -52,6 +52,7 @@ export enum Service {
   Advertisement = 'Advertisement',
   CreativeDirector = 'Creative Director',
   EmoteDesign = 'Emote Design',
+  Entertainment = 'Entertainment',
   LandRental = 'Land Rental',
   LinkedWearables = 'Linked Wearables',
   Programming = 'Programming',

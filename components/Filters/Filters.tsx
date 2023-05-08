@@ -7,6 +7,7 @@ import { PaymentMethod, Region, Service, TeamSize, VerifiedPartner } from '../..
 import styles from './Filters.module.css'
 import { hideIntercom, showIntercom, toSnakeCase } from '../utils'
 import IconX from '../Icons/IconX'
+import ServiceTag from '../ServiceTag/ServiceTag'
 
 interface Props {
   partners: VerifiedPartner[]
@@ -211,31 +212,22 @@ function Filters({ partners, setFilteredPartners, showMobileFilters, onClose, se
                     value: value,
                     name: item.key,
                   }
+                  console.log(itemData)
+                  console.log(key)
 
-                  let circleDiv = null
-                  let serviceTooltipDiv = null
-                  if (itemData.name === 'services') {
-                    circleDiv = <img className={styles.circle} src={`/images/category_${key}.svg`} />
-                    serviceTooltipDiv = (
-                      <div className={styles.tooltip_container}>
-                        <div className={styles.tooltip}>
-                          {intl.formatMessage({ id: `service.${toSnakeCase(value)}.description` })}
-                        </div>
-                      </div>
-                    )
-                  }
+                  const notService = itemData.name !== 'services'
 
                   return (
                     <div
                       key={key}
                       onClick={(e) => handleItemClick(e, itemData)}
-                      className={`${styles.tag_container} ${
-                        styles[`serv_${toSnakeCase(value)}${itemData.checked ? '--check' : ''}`]
-                      } ${itemData.checked ? styles.check : ''}`}
+                      className={`${styles.tag_container} ${notService && styles['tag_container--hover']} ${notService && itemData.checked ? styles.check : ''}`}
                     >
-                      {circleDiv}
-                      {intl.formatMessage({ id: `service.${toSnakeCase(value)}`, defaultMessage: value })}
-                      {serviceTooltipDiv}
+                      {notService ? 
+                        intl.formatMessage({ id: `service.${toSnakeCase(value)}`, defaultMessage: value })
+                      :
+                        <ServiceTag type={value} active={itemData.checked} hover/>
+                      }
                     </div>
                   )
                 })}

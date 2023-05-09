@@ -98,8 +98,8 @@ function JobsLandingPage() {
     return (
         <Container className={globalStyles.container}>
             <Head>
-                <meta property="og:title" content="Creative freelance jobs in Decentraland" />
-                <meta property="og:description" content="The project board is an exclusive resource for contract work. It’s perfect for agencies, and brands looking to take their first steps into Decentraland." />
+                <meta property="og:title" content="Decentraland creative services, on demand" />
+                <meta property="og:description" content="Looking to bring your brand to Decentraland? Connect with top-tier studios and professionals to make it happen." />
                 <meta property="og:image" content="/images/banner_jobs.png" />
             </Head>
             <main className={globalStyles.main}>

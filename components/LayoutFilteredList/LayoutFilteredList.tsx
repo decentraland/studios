@@ -23,10 +23,11 @@ export default function LayoutFilteredList({ filters, setFilters, items, headerB
 
         const onFilterClick = (item: Filter) => {
             let newFilters = [...filters]
-            const filtIndex = newFilters.findIndex(filt => filt === item)
+            const filtIndex = newFilters.findIndex(filt => filt.key === item.key && filt.value === item.value)
             if (filtIndex !== -1) {
                 newFilters.splice(filtIndex, 1)
             } else {
+                newFilters = newFilters.filter(filter => filter.key !== item.key)
                 newFilters.push(item)
             }
             setFilters(newFilters)
@@ -38,7 +39,7 @@ export default function LayoutFilteredList({ filters, setFilters, items, headerB
                 {items?.map(filterGroup => <div key={`filtGroup-${filterGroup.title}`}>
                 <div className={styles.filtersType}>{filterGroup.title}</div>
                 {filterGroup.options.map(filter => {
-                    const isChecked = filters.findIndex(filt => filt === filter) !== -1
+                    const isChecked = filters.findIndex(filt => filt.key === filter.key && filter.value === filt.value) !== -1
                     return <div key={`filt-${filter.value}`} style={isChecked ? filter.style : {}}
                     className={`${styles.tag} ${isChecked ? styles.tag_check : ''}`}
                     onClick={() => onFilterClick(filter)}>

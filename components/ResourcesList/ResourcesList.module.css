@@ -1,0 +1,13 @@
+.empty {
+    margin: auto;
+    margin-top: 10vh;
+    padding: 10px;
+    height: 50%;
+    width: 50%;
+    text-align: center;
+    font-size: medium;
+    color: #37333d;
+    opacity: 32%;
+    line-height: 32px;
+  }
+  

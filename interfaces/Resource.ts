@@ -11,4 +11,7 @@ export interface Resource {
     image_1:     string | null;
     play_link:   string | null;
     id:          number;
+    scene_type?:  string;
+    difficulty_level?: string;
+    sdk_version?: string;
 }

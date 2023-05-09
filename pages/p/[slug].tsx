@@ -127,6 +127,15 @@ function MetaverseGuide({ landing }: Props) {
     
     const fbqTrackLead = () => (globalThis as any).fbq('track', 'Lead');
 
+    let hero_background = {}
+
+    if (landing.hero_background){
+        hero_background = {
+            backgroundSize: 'cover',
+            backgroundImage: `url(${DB_URL}/assets/${landing.hero_background}`
+        }
+    }
+
     return (<>
         <Head>
             <meta property="og:title" content={landing.hero_title} />
@@ -136,7 +145,7 @@ function MetaverseGuide({ landing }: Props) {
         <main>
             <link  rel="stylesheet" type="text/css" href="/guides.css"/>
             <div className="section section--hero" 
-                style={ landing.hero_background ? {background: `url(${DB_URL}/assets/${landing.hero_background}`} : {}}>
+                style={hero_background}>
                 <div className="section--hero__container">
                     <img src="/images/guide/DCL_Logo_dark.webp" alt="" className="section--hero__container__logo" />
                     <h1>{landing.hero_title}</h1>

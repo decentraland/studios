@@ -629,7 +629,8 @@ button{
     align-items: center;
     text-align: center;
     width: 90%;
-    height: 75vh;
+    height: calc(850px - 40vw);
+    min-height: 650px;
   }
 
   

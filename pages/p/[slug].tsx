@@ -135,7 +135,8 @@ function MetaverseGuide({ landing }: Props) {
         </Head>
         <main>
             <link  rel="stylesheet" type="text/css" href="/guides.css"/>
-            <div className="section section--hero">
+            <div className="section section--hero" 
+                style={ landing.hero_background ? {background: `url(${DB_URL}/assets/${landing.hero_background}`} : {}}>
                 <div className="section--hero__container">
                     <img src="/images/guide/DCL_Logo_dark.webp" alt="" className="section--hero__container__logo" />
                     <h1>{landing.hero_title}</h1>
@@ -147,7 +148,7 @@ function MetaverseGuide({ landing }: Props) {
             <div className="section section--cta" id="section--cta">
                 <div id="cta__container" className="section--cta__container container--enabled">
                     <div className="section--cta__container__content form--enabled">
-                        <img className="cta__image" src="/images/guide/Plan-illustration.webp" alt="" />
+                        <img className="cta__image" src={`${DB_URL}/assets/${landing.form_image}`} alt="" />
                         <div className="cta__form">
                             <h3>{landing.form_title}</h3>
                             <p className="base-text cta__base-text">{landing.form_description}</p>

@@ -349,6 +349,7 @@ h4{
   transition: ease-in-out .2s;
   height: fit-content;
   cursor: pointer;
+  white-space: nowrap;
 }
 
 .cta:hover{
@@ -406,6 +407,7 @@ button{
 .section--hero{
   width: 100%;
   background: linear-gradient(90deg, rgba(32,29,36,1) 0%, rgba(22,20,25,1) 100%); 
+  background-size: cover;
   color: white;
   display: flex;
   justify-content: center;

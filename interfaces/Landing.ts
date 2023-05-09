@@ -7,11 +7,13 @@ export interface Landing {
   user_updated:            string;
   date_updated:            Date;
   hero_title:              string;
+  hero_background:         string;
   hero_description:        string;
   hero_button:             string;
   hero_cover:              string;
   slug:                    string;
   form_title:              string;
+  form_image:              string;
   form_description:        string;
   form_name:               string;
   form_email:              string;

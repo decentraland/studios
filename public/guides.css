@@ -431,11 +431,11 @@ button{
 }
 
 .hero__container__pdf-cover{
-  max-width: 400px;
+  max-width: 450px;
   width: 100%;
   position: absolute;
   bottom: -100px;
-  right: 100px;
+  right: 20px;
 }
 
 .hero__container__cta{

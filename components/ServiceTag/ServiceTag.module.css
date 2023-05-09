@@ -89,3 +89,12 @@
   line-height: 1rem;
 }
 
+@media (max-width: 768px) {
+  .container {
+    font-size: 12px;
+  }
+  .container svg {
+    width: 20px;
+    height: 20px;
+  }
+}

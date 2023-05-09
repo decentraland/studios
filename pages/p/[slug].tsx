@@ -132,7 +132,7 @@ function MetaverseGuide({ landing }: Props) {
     if (landing.hero_background){
         hero_background = {
             backgroundSize: 'cover',
-            backgroundImage: `url(${DB_URL}/assets/${landing.hero_background}`
+            backgroundImage: `url("${DB_URL}/assets/${landing.hero_background}")`
         }
     }
 

@@ -40,7 +40,7 @@ export const logout = async () => {
 }
 
 export const refreshLogin = async (user: User) => {
-    return fetcher('/api/login', {
+    return fetcher('/api/relogin', {
         refresh_token: user.refresh_token
     })
 

@@ -19,7 +19,7 @@ function ResultCard ( {data, query} : Props ) {
     const title = data.title || data.name
     let linkUrl: string = ''
     if (data.type === 'project') linkUrl = `/project/${data.id}`;
-    if (data.type === 'profile') linkUrl = `/profile/${data.slug}`;
+    if (data.type === 'studio') linkUrl = `/profile/${data.slug}`;
     if (data.type === 'resource') linkUrl = data.github_link;
 
     let linkContainer = (child: ReactElement) => {
@@ -33,9 +33,9 @@ function ResultCard ( {data, query} : Props ) {
           </video> 
           : 
           (data.logo ? 
-            <div className={styles.logo}><Image alt='' src={`${DATA_URL}/assets/${data.logo || data.image_1}?key=${data.type === 'profile' ? 'logo' : 'thumb'}`} fill unoptimized/></div>
+            <div className={styles.logo}><Image alt='' src={`${DATA_URL}/assets/${data.logo || data.image_1}?key=${data.type === 'studio' ? 'logo' : 'thumb'}`} fill unoptimized/></div>
             :
-            <div className={styles.image}><Image style={{objectFit: 'cover'}} alt='' src={`${DATA_URL}/assets/${data.logo || data.image_1}?key=${data.type === 'profile' ? 'logo' : 'thumb'}`} fill unoptimized/></div>
+            <div className={styles.image}><Image style={{objectFit: 'cover'}} alt='' src={`${DATA_URL}/assets/${data.logo || data.image_1}?key=${data.type === 'studio' ? 'logo' : 'thumb'}`} fill unoptimized/></div>
         )}
         <div className={styles.infoContainer}>
             <div className={styles.name}>

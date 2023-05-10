@@ -168,7 +168,6 @@ export default function Jobs() {
     return <><BannerJobs /><LayoutFilteredList filters={filters} setFilters={setFilters}
         items={avilableFilters}
         listPanel={<JobsList />}
-        emptyPanel={!jobs.length && <EmptyPanel />}
         headerBar={<HeaderBar />}
         headerButton={<UserMenu />} />
         </>

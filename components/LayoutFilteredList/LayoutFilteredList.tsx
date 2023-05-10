@@ -12,7 +12,7 @@ interface Props {
     headerButton?: React.ReactNode
     filters: Filter[]
     setFilters: React.Dispatch<React.SetStateAction<Filter[]>>
-    emptyPanel: React.ReactNode
+    emptyPanel?: React.ReactNode
 }
 
 export default function LayoutFilteredList({ filters, setFilters, items, headerBar, listPanel, headerButton, emptyPanel }: Props) {

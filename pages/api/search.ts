@@ -58,7 +58,7 @@ export default async function (req: NextRequest) {
     const resProjects = (await fetch(`${DB_URL}/items/projects?search=${query}&fields=id,image_1,title,description,profile.name,profile.logo`).then((res) => res.json())).data
 
     const resource = resResources.sort((a: any , b: any ) => sortResult(a, b, query)).map((resource: Resource) => ({ ...resource, description: sliceAroundQuery(query, resource.description), type: 'resource'}))
-    const studio = resStudios.sort((a: any , b: any ) => sortResult(a, b, query)).map((profile: VerifiedPartner) => ( { ...profile, title:profile.name, description: sliceAroundQuery(query, profile.description) , type: 'profile'} ))
+    const studio = resStudios.sort((a: any , b: any ) => sortResult(a, b, query)).map((profile: VerifiedPartner) => ( { ...profile, title:profile.name, description: sliceAroundQuery(query, profile.description) , type: 'studio'} ))
     const project = resProjects.sort((a: any , b: any ) => sortResult(a, b, query)).map((project: PartnerProject) => ({ ...project, description: sliceAroundQuery(query, project.description), type: 'project'}))
    
     const results = [].concat(resource, studio, project)

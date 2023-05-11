@@ -52,6 +52,7 @@ export interface Landing {
   contact_us:              string;
   custom_fields:           string;
   list_ids:                string;
+  fb_pixel:                string;
 }
 
 export interface Block {

@@ -58,8 +58,17 @@ function MetaverseGuide({ landing }: Props) {
             setIpData(ipData)
         }
 
+        
+
         fetchIp()
     }, [])
+
+    useEffect(() => {
+        if (landing.fb_pixel){
+            (globalThis as any).fbq && (globalThis as any).fbq('init', landing.fb_pixel);
+            (globalThis as any).fbq && (globalThis as any).fbq('trackSingle', landing.fb_pixel, 'PageView');
+        }
+    }, [(globalThis as any).fbq])
 
     const onFormSubmit = async (e: React.FormEvent) => {
         e.preventDefault()

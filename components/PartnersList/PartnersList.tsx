@@ -87,7 +87,7 @@ function PartnersList({ partners }: Props) {
           {renderList.length ? (
             <>
               {renderList.map((partner) => <PartnerCard key={partner.id} partner={partner} />)}
-              
+              {partnersList.length >= limit && <div className={styles.load_more_container}><div className={'button_primary'} onClick={() => setLimit(current => current + 10)}>LOAD MORE</div></div>}
             </>
           ) : (
             <div className={styles.empty}>
@@ -98,9 +98,7 @@ function PartnersList({ partners }: Props) {
           )}
         </div>
       </div>
-      {partnersList.length >= limit && <div className={styles.load_more_container}><div className={'button_primary'} onClick={() => setLimit(current => current + 10)}>LOAD MORE</div></div>}
       {filtersCount ? <div className={styles['clearButton--mobile']} onClick={() => setShowMobileFilters(true)}><IconFilter white />&nbsp;{filtersCount} filter{filtersCount > 1 ? 's' : ''} active</div> : null}
-
       <div className={styles.footer_text_container}>
         <FormattedMessage
           id="footer_message"

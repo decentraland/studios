@@ -52,17 +52,13 @@
 }
 
 .header_info {
-  /* margin: 8px; */
-  /* display: flex; */
-  /* justify-content: space-between; */
-  /* align-items: center; */
   position: absolute;
   bottom: 0;
   color: #FFF;
   height: 100%;
   width: 100%;
   background: linear-gradient(180deg, rgba(0, 0, 0, 0) 41.49%, #242129 100%);
-  border-radius: 8px;
+  border-radius: 20px;
   visibility: hidden;
 }
 

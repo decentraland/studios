@@ -4,10 +4,8 @@ import Link from 'next/link'
 import { VerifiedPartner, Service } from '../../interfaces/VerifiedPartner'
 import ServiceTag from '../ServiceTag/ServiceTag'
 import styles from './PartnerCard.module.css'
-import { FormattedMessage, useIntl } from 'react-intl'
 import MarkdownDescription from '../MarkdownDescription/MarkdownDescription'
 import Image from 'next/image'
-import { toSnakeCase } from '../utils'
 
 interface Props {
   partner: VerifiedPartner
@@ -21,8 +19,6 @@ function PartnerCard({ partner }: Props) {
   const PROFILE_WEBSITE = `/profile/${partner.slug}`
 
   const displayServices = (partner.services || []).filter((service) => SERVICES.includes(service))
-  
-  const intl = useIntl()
 
   return (
     <Link href={PROFILE_WEBSITE} passHref legacyBehavior>

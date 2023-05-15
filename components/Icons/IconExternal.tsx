@@ -7,7 +7,7 @@ interface Props {
 function IconExternal({ red, ...otherProps }: Props) {
 
   const style = {
-    verticalAlign: 'middle'
+    verticalAlign: 'text-bottom'
   }
 
   let stroke = "white" 

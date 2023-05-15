@@ -1,6 +1,6 @@
 .container {
   height: 240px;
-  margin-bottom: 1rem;
+  margin-bottom: 24px;
   display: flex;
   border-radius: 20px;
   overflow: hidden;

@@ -37,11 +37,11 @@
   align-items: center;
   color: #242129;
   cursor: pointer;
-  border-radius: 2rem;
-  padding: 0.5rem 1rem;
-  margin-bottom: 20px;
-  margin-left: -1rem;
-  margin-right: 4rem;
+  border-radius: 6px;
+  padding: 8px 6px;
+  margin-bottom: 10px;
+  margin-left: -0.5rem;
+  margin-right: 28px;
 }
 
 .tag_container:last-of-type {

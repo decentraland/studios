@@ -3,7 +3,7 @@
   border-radius: 20px;
   box-shadow: var(--card_shadow);
   padding: 1rem;
-  margin-bottom: 2rem;
+  margin-bottom: 24px;
   min-height: 12rem;
   cursor: pointer;
 }

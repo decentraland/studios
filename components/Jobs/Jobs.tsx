@@ -147,7 +147,7 @@ export default function Jobs() {
         return <JobProfile />
     }
 
-    const HeaderBar = () => <span className={styles.headerText}>Jobs for Metaverse Studios <span className={styles.resultsCount}>{filteredJobs.length} RESULT{filteredJobs.length > 1 ? 'S' : ''}</span></ span>
+    const HeaderBar = () => <span className={styles.headerText}>Jobs for Decentraland Studios <span className={styles.resultsCount}>{filteredJobs.length} RESULT{filteredJobs.length > 1 ? 'S' : ''}</span></ span>
 
     const JobsList = () =>{
         if (filteredJobs.length){

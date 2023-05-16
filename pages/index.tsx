@@ -34,7 +34,13 @@ function Home({ partners, projectsCount }: Props) {
       <Head>
         <meta property="og:title" content="Let’s build the metaverse together" />
         <meta property="og:description" content="Find the Right Team for Your Project." />
-        <meta property="og:image" content="/images/banner_studios.png" />
+        <meta property="og:image" content="https://studios.decentraland.org/images/banner_studios.png" />
+        <meta property="og:url" content="https://studios.decentraland.org/" />
+
+        <meta property="twitter:url" content="https://studios.decentraland.org/" />
+        <meta name="twitter:title" content="Let’s build the metaverse together" />
+        <meta name="twitter:description" content="Find the Right Team for Your Project." />
+        <meta name="twitter:image" content="https://studios.decentraland.org/images/banner_studios.png"/>
       </Head>
       <main className={styles.main}>
         <BannerStudios studiosCount={partners.length} projectsCount={projectsCount}/>

@@ -75,6 +75,13 @@ function Partner({ partner, projects, reviews }: Props) {
         <meta property="og:title" content="Let’s build the metaverse together. Find the Right Team for Your Project" />
         <meta property="og:description" content={`Profile of ${partner.name} studio`} />
         <meta property="og:image" content={`${DATA_URL}/assets/${partner.logo}?key=meta-link`} />
+
+        <meta property="og:url" content={`https://studios.decentraland.org/profile/${partner.slug}`} />
+
+        <meta property="twitter:url" content={`https://studios.decentraland.org/profile/${partner.slug}`} />
+        <meta name="twitter:title" content="Let’s build the metaverse together. Find the Right Team for Your Project" />
+        <meta name="twitter:description" content={`Profile of ${partner.name} studio`} />
+        <meta name="twitter:image" content={`${DATA_URL}/assets/${partner.logo}?key=meta-link`}/>
       </Head>
 
       <main>

@@ -48,6 +48,13 @@ function Project({ project }: Props) {
         <meta property="og:title" content="Let’s build the metaverse together. Find the Right Team for Your Project" />
         <meta property="og:description" content={`${project.title} by ${project.profile.name}`} />
         <meta property="og:image" content={`${DATA_URL}/assets/${project.image_1}?key=meta-link`} />
+
+        <meta property="og:url" content={`https://studios.decentraland.org/project/${project.id}`} />
+
+        <meta property="twitter:url" content={`https://studios.decentraland.org/project/${project.id}`} />
+        <meta name="twitter:title" content="Let’s build the metaverse together. Find the Right Team for Your Project" />
+        <meta name="twitter:description" content={`${project.title} by ${project.profile.name}`} />
+        <meta name="twitter:image" content={`${DATA_URL}/assets/${project.image_1}?key=meta-link`}/>
       </Head>
 
       <main>

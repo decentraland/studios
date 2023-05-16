@@ -43,6 +43,12 @@ function ReviewForm({ partner }: { partner: VerifiedPartner }) {
         <meta property="og:title" content="Let’s build the metaverse together. Find the Right Team for Your Project" />
         <meta property="og:description" content={`Leave a review to ${partner.name} studio`} />
         <link rel="icon" href="/favicon.ico" />
+
+        <meta property="og:url" content={`https://studios.decentraland.org/reviews/submit/${partner.slug}`} />
+
+        <meta property="twitter:url" content={`https://studios.decentraland.org/reviews/submit/${partner.slug}`} />
+        <meta name="twitter:title" content="Let’s build the metaverse together. Find the Right Team for Your Project" />
+        <meta name="twitter:description" content={`Leave a review to ${partner.name} studio`} />
       </Head>
 
       <main>

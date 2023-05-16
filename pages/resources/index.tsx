@@ -37,7 +37,13 @@ function ResourcesPage({ resources }: Props) {
       <Head>
         <meta property="og:title" content="Browse free and open source ideas to inspire you" />
         <meta property="og:description" content="Here you will find the building blocks to create engaging and interactive experiences in Decentraland. Any creator can customize these with complete creative freedom." />
-        <meta property="og:image" content="/images/banner_ideas.png" />
+        <meta property="og:image" content="https://studios.decentraland.org/images/banner_ideas.png" />
+        <meta property="og:url" content="https://studios.decentraland.org/resources" />
+
+        <meta property="twitter:url" content="https://studios.decentraland.org/resources" />
+        <meta name="twitter:title" content="Browse free and open source ideas to inspire you" />
+        <meta name="twitter:description" content="Here you will find the building blocks to create engaging and interactive experiences in Decentraland. Any creator can customize these with complete creative freedom." />
+        <meta name="twitter:image" content="https://studios.decentraland.org/images/banner_ideas.png"/>
       </Head>
       <main className={styles.main}>
         <BannerResources />

@@ -100,7 +100,14 @@ function JobsLandingPage() {
             <Head>
                 <meta property="og:title" content="Decentraland creative services, on demand" />
                 <meta property="og:description" content="Looking to bring your brand to Decentraland? Connect with top-tier studios and professionals to make it happen." />
-                <meta property="og:image" content="/images/banner_jobs.png" />
+                <meta property="og:image" content="https://studios.decentraland.org/images/banner_jobs.png" />
+
+                <meta property="og:url" content="https://studios.decentraland.org/jobs" />
+
+                <meta property="twitter:url" content="https://studios.decentraland.org/jobs" />
+                <meta name="twitter:title" content="Decentraland creative services, on demand" />
+                <meta name="twitter:description" content="Looking to bring your brand to Decentraland? Connect with top-tier studios and professionals to make it happen." />
+                <meta name="twitter:image" content="https://studios.decentraland.org/images/banner_jobs.png"/>
             </Head>
             <main className={globalStyles.main}>
                 <div className={styles.fakeBackground} />

@@ -76,12 +76,16 @@ function App({ Component, pageProps }: AppProps) {
   return (
     <>
       <Head>
+        <title>Decentraland Studios</title>
+        <link rel="icon" href="/favicon.ico" />
+
         <meta property="og:site_name" content="Decentraland Studios" />
         <meta property="og:type" content="website" />
-        <meta property="og:url" content="studios.decentraland.org" />
+        <meta property="og:url" content="https://studios.decentraland.org" />
+        <meta property="twitter:url" content="https://studios.decentraland.org/" />
+        <meta property="twitter:domain" content="studios.decentraland.org" />
         <meta name="twitter:card" content="summary" />
-        <link rel="icon" href="/favicon.ico" />
-        <title>Decentraland Studios</title>
+        
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
 
         <meta name="google-site-verification" content="GsC7SYvV1UMqj0g5_0rWEMvTcp474fn8vKtSHQaZIm8" />

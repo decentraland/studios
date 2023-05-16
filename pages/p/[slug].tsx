@@ -150,6 +150,13 @@ function MetaverseGuide({ landing }: Props) {
             <meta property="og:title" content={landing.hero_title} />
             <meta property="og:description" content={landing.hero_description} />
             <meta property="og:image" content={`${DB_URL}/assets/${landing.hero_cover}`} />
+
+            <meta property="og:url" content={`https://studios.decentraland.org/p/${landing.slug}`} />
+
+            <meta property="twitter:url" content={`https://studios.decentraland.org/p/${landing.slug}`} />
+            <meta name="twitter:title" content={landing.hero_title} />
+            <meta name="twitter:description" content={landing.hero_description} />
+            <meta name="twitter:image" content={`${DB_URL}/assets/${landing.hero_cover}`} />
         </Head>
         <main>
             <link  rel="stylesheet" type="text/css" href="/guides.css"/>

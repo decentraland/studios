@@ -31,7 +31,14 @@ function ProjectsPage({ projects }: Props) {
       <Head>
         <meta property="og:title" content="Browse the latest projects on Decentraland and get new ideas for your brand" />
         <meta property="og:description" content="Hundreds of designers and studios around the world showcase their portfolio work on Metaverse Studios." />
-        <meta property="og:image" content="/images/banner_projects.png" />
+        <meta property="og:image" content="https://studios.decentraland.org/images/banner_projects.png" />
+
+        <meta property="og:url" content="https://studios.decentraland.org/projects" />
+
+        <meta property="twitter:url" content="https://studios.decentraland.org/projects" />
+        <meta name="twitter:title" content="Browse the latest projects on Decentraland and get new ideas for your brand" />
+        <meta name="twitter:description" content="Hundreds of designers and studios around the world showcase their portfolio work on Metaverse Studios." />
+        <meta name="twitter:image" content="https://studios.decentraland.org/images/banner_projects.png"/>
       </Head>
       <main className={styles.main}>
         <BannerProjects />

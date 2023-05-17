@@ -77,6 +77,7 @@ function App({ Component, pageProps }: AppProps) {
         <meta name="og:type" content="website" />
         <meta name="twitter:card" content="summary" />
         <meta name="og:image" content="/images/decentraland.png" />
+        
         <link rel="icon" href="/favicon.ico" />
       </Head>      
       {loadIntercom({

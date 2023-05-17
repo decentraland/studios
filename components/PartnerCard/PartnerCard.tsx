@@ -27,9 +27,9 @@ function PartnerCard({ partner }: Props) {
           <div className={styles.image}><Image alt='' src={`${DATA_URL}/assets/${partner.logo}?key=logo`} fill unoptimized/></div>
         </a>
         <div className={styles.info_container}>
-          <h3 className={styles.name}>
-            <a href={PROFILE_WEBSITE}>{partner.name}</a>
-          </h3>
+          <div className={styles.name}>
+            {partner.name}
+            </div>
           <div className={styles.meta}>
             <div className={styles.pills}>
               {displayServices.map((service, i) => (

@@ -15,10 +15,8 @@ const DATA_URL = process.env.NEXT_PUBLIC_PARTNERS_DATA_URL
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   if (params && params.slug) {
     const partner = await Partners.getPartnerData(`?filter[slug]=${params.slug}`)
-    const projects = await Projects.getProject(`?filter[profile]=${partner.id}`)
+    const projects = await Projects.getProject(`?filter[profile]=${partner.id}&sort[]=-date_created`)
     const reviews = await Partners.getReviews(partner.id)
-    
-    
 
     return {
       props: {

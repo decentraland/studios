@@ -5,9 +5,9 @@ export interface PartnerProjectResponse {
 export interface PartnerProject {
   id: number
   user_created: string
-  date_created: Date
+  date_created: string
   user_updated: string | null
-  date_updated: Date | null
+  date_updated: string | null
   title: string
   description: string
   link: string | null

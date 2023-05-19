@@ -5,9 +5,8 @@ import styles from './ProjectsList.module.css'
 
 
 function ProjectsList({ projects }: { projects: PartnerProject[] }) {
-    // const renderProjects = projects.sort((a,b) => new Date(b.date_updated || b.date_created).getTime()  - new Date(a.date_updated || a.date_created).getTime())
-    
-    const [limit, setLimit] = useState(parseInt(globalThis?.sessionStorage?.projectsListLimit) || 18)
+
+  const [limit, setLimit] = useState(parseInt(globalThis?.sessionStorage?.projectsListLimit) || 18)
 
     const renderProjects = projects.slice(0, limit)
 

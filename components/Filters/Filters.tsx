@@ -61,39 +61,37 @@ function Filters({ partners, setFilteredPartners, showMobileFilters, onClose, se
   const router = useRouter()
   const intl = useIntl()
 
-  const languages = useMemo(() => {
-    let uniqueLanguages = new Set<string>()
-    partners.map((partner) => (uniqueLanguages = new Set([...uniqueLanguages, ...partner.languages])))
-    return Array.from(uniqueLanguages).sort((a, b) => a.localeCompare(b))
-  }, [partners])
+  // const languages = useMemo(() => {
+  //   let uniqueLanguages = new Set<string>()
+  //   partners.map((partner) => (uniqueLanguages = new Set([...uniqueLanguages, ...partner.languages])))
+  //   return Array.from(uniqueLanguages).sort((a, b) => a.localeCompare(b))
+  // }, [partners])
 
   const getUrlFilters = () => {
     const filters = { ...EMPTY_FILTER }
 
     // const { query } = router
     // Reading query from router.asPath because router.query was slower getting populated
+    
     const urlSearchParams = new URLSearchParams(router.asPath.slice(1))
     const query = Object.fromEntries(urlSearchParams.entries())
 
     for (const key of Object.keys(query)) {
       const filterKey = key as keyof Filters
+
       if (Object.values(FilterType).includes(filterKey)) {
-        const value = query[key]
-        filters[filterKey] = typeof value === 'string' ? [value] : [...(value || [])]
+        filters[filterKey] = urlSearchParams.getAll(key)
       }
     }
 
-    return filters
+    if (Object.keys(filters).length > 0) {
+      setFilters(filters)
+    }
   }
 
   useEffect(() => {
-
-    const urlFilters = getUrlFilters()
-    if (Object.keys(urlFilters).length > 0) {
-      setFilters(urlFilters)
-    }
-
-  }, [router.asPath])
+    getUrlFilters()
+  }, [])
 
   useEffect(() => {
     handleApplyFilters()
@@ -105,14 +103,29 @@ function Filters({ partners, setFilteredPartners, showMobileFilters, onClose, se
     const { checked, name, value } = itemData
     const filterType = name as FilterType
 
+    let newFilters = { ...filters }
+    let filterGroup = newFilters[filterType] || []
+    
     if (checked) {
-      setFilters((prev) => {
-        const filterRemoved = { ...prev }
-        delete filterRemoved[filterType]
-        return filterRemoved
-      })
+      
+      if (filterGroup.length > 1){
+
+        const itemIndex = filterGroup.indexOf(`${value}`)
+        filterGroup.splice(itemIndex, 1)
+        newFilters = {... newFilters, [filterType]: filterGroup}
+
+      } else {
+        delete newFilters[filterType]
+      }
+      setFilters(() => newFilters)
+
     } else {
-      setFilters((prev) => ({ ...prev, [filterType]: [value] }))
+
+      if (name === 'services'){
+        setFilters(() => ({ ...newFilters, [filterType]: [ ...filterGroup, value ] }))
+      } else {
+        setFilters(() => ({ ...newFilters, [filterType]: [ value ] }))
+      }
     }
   }
 

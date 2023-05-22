@@ -4,6 +4,7 @@ import Landings from "../../clients/Landings";
 import { Landing } from "../../interfaces/Landing";
 import { useRouter } from "next/router";
 import Head from "next/head";
+import Script from "next/script";
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
 
@@ -58,8 +59,6 @@ function MetaverseGuide({ landing }: Props) {
             setIpData(ipData)
         }
 
-        
-
         fetchIp()
     }, [])
 
@@ -96,6 +95,7 @@ function MetaverseGuide({ landing }: Props) {
         })
 
         fbqTrackLead()
+        linkedinTrackLead()
         ctaSuccess()
     }
 
@@ -135,6 +135,8 @@ function MetaverseGuide({ landing }: Props) {
     }
     
     const fbqTrackLead = () => (globalThis as any).fbq('track', 'Lead');
+    
+    const linkedinTrackLead = () => (globalThis as any).lintrk && (globalThis as any).lintrk('track', { conversion_id: landing.track_linkedin?.conversion_id });
 
     let hero_background = {}
 
@@ -143,6 +145,31 @@ function MetaverseGuide({ landing }: Props) {
             backgroundSize: 'cover',
             backgroundImage: `url("${DB_URL}/assets/${landing.hero_background}")`
         }
+    }
+
+    let linkedinTracking = null
+
+    if (landing.track_linkedin?.partner_id) {
+        linkedinTracking = <footer>
+            <Script id="linkedin-partner_id" strategy="afterInteractive">
+                {`_linkedin_partner_id = "${landing.track_linkedin.partner_id}";
+                window._linkedin_data_partner_ids = window._linkedin_data_partner_ids || [];
+                window._linkedin_data_partner_ids.push(_linkedin_partner_id);`}
+            </Script>
+            <Script id="linkedin-tracking" strategy="afterInteractive">
+                {`(function(l) {
+                if (!l){window.lintrk = function(a,b){window.lintrk.q.push([a,b])};
+                window.lintrk.q=[]}
+                var s = document.getElementsByTagName("script")[0];
+                var b = document.createElement("script");
+                b.type = "text/javascript";b.async = true;
+                b.src = "https://snap.licdn.com/li.lms-analytics/insight.min.js";
+                s.parentNode.insertBefore(b, s);})(window.lintrk);`} 
+            </Script>
+            <noscript>
+                <img height="1" width="1" style={{display:"none"}} alt="" src={`https://px.ads.linkedin.com/collect/?pid=${landing.track_linkedin.partner_id}&fmt=gif`} />
+            </noscript>
+        </footer>
     }
 
     return (<>
@@ -305,6 +332,7 @@ function MetaverseGuide({ landing }: Props) {
                 </div>
             </div>
         </main>
+        {linkedinTracking}
         </>)
 }
 

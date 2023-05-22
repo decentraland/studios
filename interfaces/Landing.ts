@@ -53,6 +53,12 @@ export interface Landing {
   custom_fields:           string;
   list_ids:                string;
   fb_pixel:                string;
+  track_linkedin:          LinkedinTrackData;
+}
+
+export interface LinkedinTrackData {
+  partner_id: string;
+  conversion_id?: string;
 }
 
 export interface Block {

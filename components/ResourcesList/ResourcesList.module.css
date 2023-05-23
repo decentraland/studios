@@ -3,7 +3,8 @@
     margin-top: 10vh;
     padding: 10px;
     height: 50%;
-    width: 50%;
+    /* width: 50%; */
+    max-width: 400px;
     text-align: center;
     font-size: medium;
     color: #37333d;

@@ -6,6 +6,7 @@
   display: flex;
   align-items: center;
   gap: 6px;
+  width: fit-content;
 }
 
 .service_name {

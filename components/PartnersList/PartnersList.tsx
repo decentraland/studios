@@ -1,14 +1,14 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { FormattedMessage } from 'react-intl'
 import { VerifiedPartner } from '../../interfaces/VerifiedPartner'
 import PartnerCard from '../PartnerCard/PartnerCard'
 
 import styles from './PartnersList.module.css'
-import Filters from '../Filters/Filters'
 import Empty from '../Icons/Empty'
 import { trackLink } from '../utils'
-import IconFilter from '../Icons/IconFilter'
-import IconX from '../Icons/IconX'
+import LayoutFilteredList from '../LayoutFilteredList/LayoutFilteredList'
+import { Filter, FilterGroup } from '../../interfaces/Filters'
+import { useRouter } from 'next/router'
 
 interface Props {
   partners: VerifiedPartner[]
@@ -16,40 +16,168 @@ interface Props {
 
 const isDevelopment = process.env.NODE_ENV === 'development'
 
+const services: Filter[] = [
+  {
+    key: 'services',
+    value: '3D Modeling'
+  },
+  {
+    key: 'services',
+    value: 'Advertisement'
+  },
+  {
+    key: 'services',
+    value: 'Creative Director'
+  },
+  {
+    key: 'services',
+    value: 'Emote Design'
+  },
+  {
+    key: 'services',
+    value: 'Entertainment'
+  },
+  {
+    key: 'services',
+    value: 'Land Rental'
+  },
+  {
+    key: 'services',
+    value: 'Linked Wearables'
+  },
+  {
+    key: 'services',
+    value: 'Programming'
+  },
+  {
+    key: 'services',
+    value: 'Venue Rental'
+  },
+  {
+    key: 'services',
+    value: 'Wearable Design'
+  }
+]
+
+const payment_methods = [
+	{
+    key: 'payment_methods',
+    value: 'Wire Transfer'
+  },
+  {
+    key: 'payment_methods',
+    value: 'Credit Card'
+  },
+  {
+    key: 'payment_methods',
+    value: 'Crypto'
+  }
+]
+
+const region = [
+	{
+    key: 'region',
+    value: 'North America'
+  },
+  {
+    key: 'region',
+    value: 'Europe'
+  },
+  {
+    key: 'region',
+    value: 'Latin America'
+  },
+  {
+    key: 'region',
+    value: 'Asia'
+  },
+  {
+    key: 'region',
+    value: 'Oceania'
+  },
+  {
+    key: 'region',
+    value: 'Africa'
+  }
+]
+
+const team_size = [
+  {
+    key: 'team_size',
+    value: 'Individual'
+  },
+  {
+    key: 'team_size',
+    value: 'Small Studio'
+  },
+  {
+    key: 'team_size',
+    value: 'Medium Studio'
+  },
+  {
+    key: 'team_size',
+    value: 'Large Studio'
+  }
+]
+
+const avilableFilters: FilterGroup[] = [
+	{
+		title: 'SERVICES',
+		options: services
+	},
+  {
+    title: 'REGION',
+    options: region
+  },
+  {
+    title: 'TEAM SIZE',
+    options: team_size
+  },
+	{
+		title: 'PAYMENT METHODS',
+		options: payment_methods
+	}
+]
+
+const randomizePartners = (filteredPartners: VerifiedPartner[]) =>
+  [...filteredPartners]
+    .map((value) => ({ value, sort: Math.random() }))
+    .sort((a, b) => a.sort - b.sort)
+    .map(({ value }) => value)
+
+const sortAlphabeticPartners = (filteredPartners: VerifiedPartner[]) =>
+  [...filteredPartners].sort((p1: VerifiedPartner, p2: VerifiedPartner) => p1.slug.localeCompare(p2.slug))
+
+const sortByServicesCount = (partners: VerifiedPartner[]) =>
+  partners.sort((p1: VerifiedPartner, p2: VerifiedPartner) => (p2.services || []).length - (p1.services || []).length)
+
+const filterItem = (partner: any, filter: Filter) => {
+  if (['services', 'payment_methods'].includes(filter.key)){
+    return partner[filter.key]?.includes(filter.value)
+  }
+  return  partner[filter.key] === filter.value
+}
+
+const JOIN_REGISTRY_URL = 'https://dclstudios.typeform.com/to/NfzmbzXi'
+
 function PartnersList({ partners }: Props) {
-  const JOIN_REGISTRY_URL = 'https://dclstudios.typeform.com/to/NfzmbzXi'
 
-  const [filteredPartners, setFilteredPartners] = useState(partners)
+  const router = useRouter()
+	const urlSearchParams = new URLSearchParams(router.asPath.replace('/', ''))
+	const urlFilters = [...urlSearchParams].map(([keyName, val]) => ({key: keyName, value: val}))
+
+	const [filters, setFilters] = useState<Filter[]>(urlFilters.length ? urlFilters : [])
   const [limit, setLimit] = useState(parseInt(globalThis?.sessionStorage?.studiosListLimit) || 10)
-  const [showMobileFilters, setShowMobileFilters] = useState(false)
-  const [filtersCount, setFiltersCount] = useState(0)
 
-  const sortAlphabeticPartners = (filteredPartners: VerifiedPartner[]) =>
-    [...filteredPartners].sort((p1: VerifiedPartner, p2: VerifiedPartner) => p1.slug.localeCompare(p2.slug))
 
-  const randomizePartners = (filteredPartners: VerifiedPartner[]) =>
-    [...filteredPartners]
-      .map((value) => ({ value, sort: Math.random() }))
-      .sort((a, b) => a.sort - b.sort)
-      .map(({ value }) => value)
-
-  const sortByServicesCount = (partners: VerifiedPartner[]) =>
-    partners.sort((p1: VerifiedPartner, p2: VerifiedPartner) => (p2.services || []).length - (p1.services || []).length)
-
-  const initPartnerList = sortByServicesCount(sortAlphabeticPartners(filteredPartners))
-  const [partnersList, setPartnersList] = useState(initPartnerList)
-
-  useEffect(() => {
-    setPartnersList(() => sortByServicesCount(randomizePartners(filteredPartners)))
-  }, [filteredPartners.length])
-
+  let filteredList = sortByServicesCount(sortAlphabeticPartners(partners))
   
-
-  let renderList = partnersList.slice( 0, limit )
-
-  useEffect(() => {
-    globalThis.sessionStorage.setItem('studiosListLimit', limit.toString());
-  }, [limit])
+	if (filters.length){
+    filteredList = partners.filter(partner => filters.every(filter => filterItem(partner, filter)))
+    filteredList = sortByServicesCount(randomizePartners(filteredList))
+	}
+  
+  let renderList = filteredList.slice( 0, limit )
 
   if (!isDevelopment){
     //prevent dev studios from showing in production
@@ -57,48 +185,59 @@ function PartnersList({ partners }: Props) {
     renderList = renderList.filter(partner => !restrictedIds.includes(partner.id))
   }
 
+  useEffect(() => {
+    let newQuery: any = {}
+    filters.forEach(filter => newQuery[filter.key] = [ ...(newQuery[filter.key] || []), filter.value])
+		
+    router.replace(
+			{
+			  query: newQuery
+			},
+			undefined,
+	  		{ shallow: true }
+		  )
+	}, [filters])
+
+  useEffect(() => {
+    globalThis.sessionStorage.setItem('studiosListLimit', limit.toString());
+  }, [limit])
+
+  const joinButton = <a
+    className={styles.link_join}
+    target={'_blank'}
+    href={JOIN_REGISTRY_URL}
+    rel="noreferrer"
+    onClick={() => trackLink('Open External Link', 'Join Registry', JOIN_REGISTRY_URL)}
+  />
+
+  const headerBar = <>
+    <span className={styles.results_title}>{filteredList.length} <FormattedMessage id="title" /></span>
+  </>
+
+  const emptyPanel = <div className={styles.empty}>
+    <Empty />
+    <br />
+    <FormattedMessage id="filter.noResults" />
+  </div>
+
+  const listPanel = <>
+    {renderList.map((partner) => <PartnerCard key={partner.id} partner={partner} />)}
+    {filteredList.length >= limit && <div className={styles.load_more_container}><div className={'button_primary'} onClick={() => setLimit(current => current + 10)}>LOAD MORE</div></div>}
+  </>
+
   return (
     <>
       <div className={styles.container}>
-        <Filters partners={partners}
-          setFilteredPartners={setFilteredPartners} 
-          onClose={() => setShowMobileFilters(false)}
-          setFiltersCount={(count: number) => setFiltersCount(count)}
-          showMobileFilters={showMobileFilters}/>
-        <div className={styles.list_container}>
-          <div className={styles.title_container}>
-            <div className={styles.title_subcontainer}>
-              <h3>
-                <FormattedMessage id="title" />
-              </h3>
-              <span className={styles.results_count}>{partnersList.length} RESULTS</span>
-              <span className={styles.filtersButton}><IconFilter onClick={() => setShowMobileFilters(true)} /></span>
-              
-            </div>
-            <a
-              className={styles.link_join}
-              target={'_blank'}
-              href={JOIN_REGISTRY_URL}
-              rel="noreferrer"
-              onClick={() => trackLink('Open External Link', 'Join Registry', JOIN_REGISTRY_URL)}
-            />
+        
+        <LayoutFilteredList activeFilters={filters} setActiveFilters={setFilters}
+          filtersList={avilableFilters}
+          headerButton={joinButton}
+          headerBar={headerBar}
+          listPanel={renderList.length ? listPanel : emptyPanel}
+        />
 
-          </div>
-          {renderList.length ? (
-            <>
-              {renderList.map((partner) => <PartnerCard key={partner.id} partner={partner} />)}
-              {partnersList.length >= limit && <div className={styles.load_more_container}><div className={'button_primary'} onClick={() => setLimit(current => current + 10)}>LOAD MORE</div></div>}
-            </>
-          ) : (
-            <div className={styles.empty}>
-              <Empty />
-              <br />
-              <FormattedMessage id="filter.noResults" />
-            </div>
-          )}
-        </div>
       </div>
-      {filtersCount ? <div className={styles['clearButton--mobile']} onClick={() => setShowMobileFilters(true)}><IconFilter white />&nbsp;{filtersCount} filter{filtersCount > 1 ? 's' : ''} active</div> : null}
+      
       <div className={styles.footer_text_container}>
         <FormattedMessage
           id="footer_message"

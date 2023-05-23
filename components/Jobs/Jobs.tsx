@@ -165,10 +165,12 @@ export default function Jobs() {
         return <EmptyPanel />
     }
 
-    return <><BannerJobs /><LayoutFilteredList filters={filters} setFilters={setFilters}
-        items={avilableFilters}
-        listPanel={<JobsList />}
-        headerBar={<HeaderBar />}
-        headerButton={<UserMenu />} />
-        </>
+    return <>
+        <BannerJobs />
+        <LayoutFilteredList activeFilters={filters} setActiveFilters={setFilters}
+            filtersList={avilableFilters}
+            listPanel={<JobsList />}
+            headerBar={<HeaderBar />}
+            headerButton={<UserMenu />} />
+    </>
 }

@@ -116,9 +116,8 @@ export default function ResourcesList({resources}: Props) {
 
 	const HeaderBar = () => <>{filteredList.length} result{filteredList.length > 1 ? 's' : ''}	</>
 
-	return <LayoutFilteredList filters={filters} setFilters={setFilters}
-			items={avilableFilters}
-			listPanel={<ListPanel />}
-			emptyPanel={!resources.length && <EmptyPanel />}
+	return <LayoutFilteredList activeFilters={filters} setActiveFilters={setFilters}
+			filtersList={avilableFilters}
+			listPanel={filteredList.length ? <ListPanel /> : <EmptyPanel />}
 			headerBar={<HeaderBar />} />
 }

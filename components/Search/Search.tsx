@@ -93,6 +93,11 @@ export default function Search() {
 	
 	const GroupedList = () => {
 		const renderGroups = listGroups.filter(group => filteredList.some((item: any) => item[group.key] === group.value))
+		
+		if (!renderGroups.length){
+			return <EmptyPanel message="There are no results for the selected filter" />
+		}
+
 		return <>{renderGroups.map(group => {
 			const groupItems = filterElements(filteredList, group)
 			return <div key={`result-${group.value}`}>
@@ -103,19 +108,18 @@ export default function Search() {
 		{groupItems.length > 5 && !filters.length && <div className='button_primary--inverted mb-4' onClick={() => setFilters([group])}>SHOW ALL {group.value.toUpperCase()} RESULTS</div>}
 	</div>})}</>}
 
-	const EmptyPanel = () => <div className={styles.empty}>
+	const EmptyPanel = ({ message }: { message?: string }) => <div className={styles.empty}>
 		<Empty />
 		<br />
-		There are no results for <b>{query}</b>
+		{message ? message : <span>There are no results for <b>{query}</b></span>}
 	</div>
 
 	const HeaderBar = () => <>{filteredList.length} result{filteredList.length > 1 ? 's' : ''} for <b>{query}</b></>
 
 	if (loading) return <><Loader active>Searching...</Loader></>
 
-	return <LayoutFilteredList filters={filters} setFilters={setFilters}
-			items={avilableFilters}
-			listPanel={<GroupedList />}
-			emptyPanel={!results.length && <EmptyPanel />}
+	return <LayoutFilteredList activeFilters={filters} setActiveFilters={setFilters}
+			filtersList={avilableFilters}
+			listPanel={results.length ? <GroupedList /> : <EmptyPanel />}
 			headerBar={<HeaderBar />} />
 }

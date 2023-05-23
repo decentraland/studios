@@ -4,51 +4,65 @@ import IconFilter from "../Icons/IconFilter"
 import IconX from "../Icons/IconX"
 import { hideIntercom, showIntercom } from "../utils"
 import styles from './LayoutFilteredList.module.css'
+import ServiceTag from "../ServiceTag/ServiceTag"
 
 interface Props {
-    items: FilterGroup[]
+    filtersList: FilterGroup[]
     headerBar: React.ReactNode
     listPanel: JSX.Element
     headerButton?: React.ReactNode
-    filters: Filter[]
-    setFilters: React.Dispatch<React.SetStateAction<Filter[]>>
-    emptyPanel?: React.ReactNode
+    activeFilters: Filter[]
+    setActiveFilters: React.Dispatch<React.SetStateAction<Filter[]>>
 }
 
-export default function LayoutFilteredList({ filters, setFilters, items, headerBar, listPanel, headerButton, emptyPanel }: Props) {
+export default function LayoutFilteredList({ activeFilters, setActiveFilters, filtersList, headerBar, listPanel, headerButton }: Props) {
 
     const [showMobileFilters, setShowMobileFilters] = useState(false)
 
     const Filters = () => {
 
         const onFilterClick = (item: Filter) => {
-            let newFilters = [...filters]
+            let newFilters = [...activeFilters]
             const filtIndex = newFilters.findIndex(filt => filt.key === item.key && filt.value === item.value)
+            
             if (filtIndex !== -1) {
                 newFilters.splice(filtIndex, 1)
             } else {
-                newFilters = newFilters.filter(filter => filter.key !== item.key)
+                
+                if (item.key !== 'services'){
+                    newFilters = newFilters.filter(filter => filter.key !== item.key)
+                }
                 newFilters.push(item)
+
             }
-            setFilters(newFilters)
+            setActiveFilters(newFilters)
         }
 
         return <div className={styles.filtersContainer} style={{ display: showMobileFilters ? 'block' : 'none' }}>
             <div className={styles.filtersMobile_title}>Filter results<IconX onClick={() => setShowMobileFilters(false)} /></div>
             <div className={styles.filtersMobile_container}>
-                {items?.map(filterGroup => <div key={`filtGroup-${filterGroup.title}`}>
+                {filtersList?.map(filterGroup => <div key={`filtGroup-${filterGroup.title}`}>
                 <div className={styles.filtersType}>{filterGroup.title}</div>
                 {filterGroup.options.map(filter => {
-                    const isChecked = filters.findIndex(filt => filt.key === filter.key && filter.value === filt.value) !== -1
+                    const isChecked = activeFilters.findIndex(filt => filt.key === filter.key && filter.value === filt.value) !== -1
+                    
+                    if (filter.key === 'services'){
+                        return <div key={`filt-${filter.value}`}
+                            className={`${styles.tag}`}
+                            onClick={() => onFilterClick(filter)}>
+                                <ServiceTag hover type={filter.value} active={isChecked} />
+                        </div>
+                    }
+                    
                     return <div key={`filt-${filter.value}`} style={isChecked ? filter.style : {}}
-                    className={`${styles.tag} ${isChecked ? styles.tag_check : ''}`}
+                    className={`${styles.tag} ${styles.tag_over} ${isChecked ? styles.tag_check : ''}`}
                     onClick={() => onFilterClick(filter)}>
                     {filter.displayValue || filter.value}
                 </div>})}
                 </ div>)}
             </div>
             <div className={styles.filtersMobile_buttons}>
-                <span className='button_basic' onClick={() => setFilters([])}>CLEAR FILTERS</span>
+                <span className='button_basic' onClick={() => setActiveFilters([])}>CLEAR FILTERS</span>
                 <span className='button_primary' onClick={() => setShowMobileFilters(false)}>APPLY FILTERS</span>
             </div>
         </div>
@@ -65,21 +79,18 @@ export default function LayoutFilteredList({ filters, setFilters, items, headerB
     const openFiltersButton = <IconFilter onClick={() => setShowMobileFilters(true)} />
     return <div className={styles.container}>
         <Filters />
-        {emptyPanel ? emptyPanel :
-            <div className={styles.listContainer}>
-                <div className={styles.titleContainer}>
-						<span className={styles.resultsCount}>
-                            {headerBar}
-							{filters.length ? <span className={styles.clearButton} onClick={() => setFilters([])}><IconX red/> CLEAR FILTERS</span> : null}
-                            {headerButton ? <span className={styles.filtersButton}>{openFiltersButton}</span> : null}
-                        </span>
-                        {headerButton ? headerButton : <span className={styles.filtersButton}>{openFiltersButton}</span>}
-
-                </div>
-                {listPanel}
+        <div className={styles.listContainer}>
+            <div className={styles.titleContainer}>
+                <span className={styles.resultsCount}>
+                    {headerBar}
+                    {activeFilters.length ? <span className={styles.clearButton} onClick={() => setActiveFilters([])}><IconX red/> CLEAR FILTERS</span> : null}
+                    {headerButton ? <span className={styles.filtersButton}>{openFiltersButton}</span> : null}
+                </span>
+                {headerButton ? headerButton : <span className={styles.filtersButton}>{openFiltersButton}</span>}
             </div>
-        }
-        {filters.length ? <div className={styles['clearButton--mobile']} onClick={() => setShowMobileFilters(true)}><IconFilter white />&nbsp;{filters.length} filter{filters.length > 1 ? 's' : ''} active</div> : null}
+            {listPanel}
+        </div>
+        {activeFilters.length ? <div className={styles['clearButton--mobile']} onClick={() => setShowMobileFilters(true)}><IconFilter white />&nbsp;{activeFilters.length} filter{activeFilters.length > 1 ? 's' : ''} active</div> : null}
     </div>
 
 }

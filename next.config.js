@@ -26,8 +26,8 @@ const nextConfig = {
     require('./clients/sitemap')
     
     return config
-  }
-  
+  },
+    
 }
 
 module.exports = nextConfig

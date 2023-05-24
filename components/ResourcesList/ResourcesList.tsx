@@ -114,7 +114,7 @@ export default function ResourcesList({resources}: Props) {
 		There are no results for current filters
 	</div>
 
-	const HeaderBar = () => <>{filteredList.length} result{filteredList.length > 1 ? 's' : ''}	</>
+	const HeaderBar = () => <>{filteredList.length} resource{filteredList.length !== 1 ? 's' : ''}</>
 
 	return <LayoutFilteredList activeFilters={filters} setActiveFilters={setFilters}
 			filtersList={avilableFilters}

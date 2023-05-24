@@ -25,7 +25,7 @@ const Navbar = dynamic(() => import('decentraland-ui/dist/components/Navbar/Navb
 const METABASE_KEY = process.env.NEXT_PUBLIC_METABASE_KEY
 const INTERCOM_APP_ID = process.env.NEXT_PUBLIC_INTERCOM_APP_ID
 
-const tabsContents = [['/', 'Studios'],['/projects', 'Projects'], ['/resources', 'Resources'], ['/jobs', 'Jobs']]
+const tabsContents = [['/jobs', 'Jobs'], ['/studios', 'Studios'],['/projects', 'Projects'], ['/resources', 'Resources']]
 
 
 function App({ Component, pageProps }: AppProps) {

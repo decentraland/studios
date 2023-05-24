@@ -14,12 +14,14 @@
     display: flex;
     justify-content: space-between;
     font-size: 13px;
-    align-items: baseline;
-    margin-bottom: 20px;
+    align-items: center;
+    margin-bottom: 40px;
+    min-height: 3rem;
 }
 
 .resultsCount {
     font-size: 20px;
+    font-weight: 600;
 }
 
 .filtersButton {

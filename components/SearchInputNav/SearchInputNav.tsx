@@ -38,8 +38,7 @@ export default function SearchInputNav () {
 
     const handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
         setOpen(true)
-        // select current text
-        // inputRef.current?.setSelectionRange(0, inputRef.current?.value.length)
+        inputRef.current?.setSelectionRange(0, inputRef.current?.value.length)
     }
 
     useEffect(() => {

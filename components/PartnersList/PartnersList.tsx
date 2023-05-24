@@ -163,7 +163,7 @@ const JOIN_REGISTRY_URL = 'https://dclstudios.typeform.com/to/NfzmbzXi'
 function PartnersList({ partners }: Props) {
 
   const router = useRouter()
-	const urlSearchParams = new URLSearchParams(router.asPath.replace('/', ''))
+	const urlSearchParams = new URLSearchParams(router.asPath.replace('/studios', ''))
 	const urlFilters = [...urlSearchParams].map(([keyName, val]) => ({key: keyName, value: val}))
 
 	const [filters, setFilters] = useState<Filter[]>(urlFilters.length ? urlFilters : [])
@@ -210,9 +210,7 @@ function PartnersList({ partners }: Props) {
     onClick={() => trackLink('Open External Link', 'Join Registry', JOIN_REGISTRY_URL)}
   />
 
-  const headerBar = <>
-    <span className={styles.results_title}>{filteredList.length} <FormattedMessage id="title" /></span>
-  </>
+  const headerBar = <>{filteredList.length} Verified studio{filteredList.length !== 1 ? 's' : ''}</>
 
   const emptyPanel = <div className={styles.empty}>
     <Empty />

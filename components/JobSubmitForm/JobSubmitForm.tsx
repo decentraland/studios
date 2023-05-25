@@ -67,7 +67,10 @@ function JobSubmitForm() {
     const handleSubmitStep1 = (e: React.FormEvent) => {
         e.preventDefault()
 
-        !emptyFieldsStep1 && setCurrentStep(2)
+        if (!emptyFieldsStep1) {
+            (globalThis as any).plausible && (globalThis as any).plausible('JobsSubmitForm: Step2')
+            setCurrentStep(2)
+        }
     }
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -107,6 +110,7 @@ function JobSubmitForm() {
         })
 
         if (jobCreate.ok) {
+            (globalThis as any).plausible && (globalThis as any).plausible('JobsSubmitForm: Step3')
             setCurrentStep(3)
             setLoading(false)
         } else {

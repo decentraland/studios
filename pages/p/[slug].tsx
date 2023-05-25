@@ -96,6 +96,7 @@ function MetaverseGuide({ landing }: Props) {
 
         fbqTrackLead()
         linkedinTrackLead()
+        plausibleTrackLead()
         ctaSuccess()
     }
 
@@ -130,13 +131,14 @@ function MetaverseGuide({ landing }: Props) {
           }, 4000);
     }
 
-    const showIntercom = () => {
-        typeof window !== 'undefined' && (window as any).Intercom && (window as any).Intercom('show');
-    }
+    const showIntercom = () => (globalThis as any).Intercom && (window as any).Intercom('show')
     
-    const fbqTrackLead = () => (globalThis as any).fbq('track', 'Lead');
+    const fbqTrackLead = () => (globalThis as any).fbq('track', 'Lead')
     
-    const linkedinTrackLead = () => (globalThis as any).lintrk && (globalThis as any).lintrk('track', { conversion_id: landing.track_linkedin?.conversion_id });
+    const linkedinTrackLead = () => (globalThis as any).lintrk && (globalThis as any).lintrk('track', { conversion_id: landing.track_linkedin?.conversion_id })
+   
+    const plausibleTrackLead = () => (globalThis as any).plausible && (globalThis as any).plausible(`LandingSubmit`, { props: { slug: landing.slug } })
+
 
     let hero_background = {}
 

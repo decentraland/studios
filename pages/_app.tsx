@@ -117,8 +117,13 @@ function App({ Component, pageProps }: AppProps) {
       </Script>
       <Script id="plausible"
         data-domain="studios.decentraland.org"
-        src="https://plausible.io/js/script.outbound-links.js">
+        src="https://plausible.io/js/script.outbound-links.tagged-events.js">
       </Script>
+      <Script id='plausible-javaScript' strategy="beforeInteractive">
+        {`window.plausible = window.plausible || function() { (window.plausible.q = window.plausible.q || []).push(arguments) }`}
+      </Script>
+
+
       <Script id="intercom" strategy="lazyOnload">
         {`window.intercomSettings = {
             api_base: "https://api-iam.intercom.io",

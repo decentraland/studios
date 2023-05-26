@@ -58,6 +58,7 @@
 
 .jobBudget--mobile {
   display: none;
+  margin-top: 16px;
   font-size: 16px;
   color: #736E7D;
 }
@@ -118,10 +119,7 @@
   }
 
   .jobBudget--mobile {
-    margin-top: 16px;
-    font-size: 16px;
     display: block;
-    color: ;
   }
 
   .jobBudget::before {

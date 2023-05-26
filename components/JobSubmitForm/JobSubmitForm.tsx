@@ -181,7 +181,7 @@ function JobSubmitForm() {
         return <>
             <span className={styles.link}
             onClick={() => setOpen(true)}>
-            {children}
+            <u>{children}</u>
             </ span>
             {open && <>
             <div className={styles.modalBackground} onClick={() => setOpen(false)}/>

@@ -15,9 +15,9 @@ function JobsLandingPage() {
 
         const images = [
             ["Vice Media building in Decentraland", "/images/jobs/hero_1.png"],
-            ["LaLiga stadium in Decentraland by \nVegas City", "/images/jobs/hero_2.png"],
-            ["Mango store in Decentraland by \nMetacast", "/images/jobs/hero_3.png"],
-            ["Absolut store in Decentraland by \nPARCEL PARTY", "/images/jobs/hero_4.png"],
+            ["LaLiga stadium in Decentraland by Vegas City", "/images/jobs/hero_2.png"],
+            ["Mango store in Decentraland by Metacast", "/images/jobs/hero_3.png"],
+            ["Absolut store in Decentraland by PARCEL PARTY", "/images/jobs/hero_4.png"],
         ]
         
         return <div className={styles.heroAllocator}>

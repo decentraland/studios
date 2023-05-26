@@ -60,6 +60,7 @@ export default async function (req: NextRequest) {
                     partner_name: currentStudio.name,
                     partner_logo: `${DB_URL}/assets/${currentStudio.logo}?key=logo`,
                     partner_url: `https://studios.decentraland.org/profile/${currentStudio.slug}`,
+                    partner_email: currentUser.email,
                     message: body.message?.message,
                     brief_file: body.message?.brief_file
                 }
@@ -69,31 +70,30 @@ export default async function (req: NextRequest) {
     })
     
 
-    // const mailToStudio = mailToAuthor && await fetch(`${SENDRGRID_URL}/mail/send`, {
-    //     method: 'POST',
-    //     headers: {
-    //         'Content-Type': 'application/json',
-    //         'Authorization': `Bearer ${SENDGRID_ACCESS_TOKEN}`
-    //     },
-    //     body: JSON.stringify({
-    //         from: {
-    //             email: "studios@decentraland.org", name: "Decentraland Studios"
-    //         },
-    //         personalizations: [{
-    //             to: [... new Set([currentUser.email, currentStudio.email])].map(email => ({email: email})),
-    //             dynamic_template_data: {
-    //                 job_author: currentJob.author_name,
-    //                 job_url: `https://studios.decentraland.org/jobs/list?id=${currentJob.id}`,
-    //                 partner_name: currentStudio.name,
-    //                 partner_logo: `${DB_URL}/assets/${currentStudio.logo}?key=logo`,
-    //                 partner_url: `https://studios.decentraland.org/profile/${currentStudio.slug}`,
-    //                 message: body.message?.message,
-    //                 brief_file: body.message?.brief_file
-    //             }
-    //         }],
-    //         template_id: "d-510e48fb8bed468c8c3411510d30d04e"
-    //     })
-    // })
+    const mailToStudio = mailToAuthor && await fetch(`${SENDRGRID_URL}/mail/send`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${SENDGRID_ACCESS_TOKEN}`
+        },
+        body: JSON.stringify({
+            from: {
+                email: "studios@decentraland.org", name: "Decentraland Studios"
+            },
+            personalizations: [{
+                to: [... new Set([currentUser.email, currentStudio.email])].map(email => ({email: email})),
+                dynamic_template_data: {
+                    job_author: currentJob.author_name,
+                    job_company: currentJob.company,
+                    job_url: `https://studios.decentraland.org/jobs/list?id=${currentJob.id}`,
+                    partner_name: currentStudio.name,
+                    message: body.message?.message,
+                    brief_file: body.message?.brief_file
+                }
+            }],
+            template_id: "d-0f855e4fdc154093bd51fea886cdb2d2"
+        })
+    })
 
 
     const createMessage = mailToAuthor && await fetch(`${DB_URL}/items/messages?fields=*,brief_file.id,brief_file.filename_download`, {

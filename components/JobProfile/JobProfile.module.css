@@ -37,9 +37,9 @@
 .infoTitle {
   font-weight: 600;
   font-size: 12px;
-  margin-top: 16px;
+  margin-top: 40px;
   margin-bottom: 8px;
-  color: #736e7d;
+  color: #242129;
 }
 
 .text_primary {
@@ -195,7 +195,11 @@
   .subTitle{
     font-size: 20px;
   }
-
+  
+  .infoTitle {
+    margin-top: 30px;
+  }
+  
   .text_postMessage,
   .partner_info,
   .text_primary {

@@ -206,7 +206,7 @@ function JobProfile() {
                     :
                     <>
                         <div className={styles.subTitle}>Interested in this project? Write a private message to {jobData.author_name}</div>
-                        <div className={styles.text_primary}>Use this message to explain why you are a good fit for this project. Focus on the studio proposal for the brand.</div>
+                        <div className={styles.text_primary}>You can only send one message to {jobData.author_name}. Use this message to leave a memorable and impactful impression.</div>
                         <form onSubmit={handleSubmit}>
                             <textarea className={styles.inputText} rows={6}
                                 placeholder='Your message goes here'

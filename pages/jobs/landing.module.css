@@ -101,14 +101,14 @@
 }
 
 .heroOverlay {
-    visibility: hidden;
+    /* visibility: hidden; */
     position: absolute;
     bottom: 0;
     height: 100%;
     width: 100%;
-
-    background: url('/images/jobs/read_bg_small.png') no-repeat;
-    background-size: cover;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0) 30%, rgba(0, 0, 0, 0.75) 100%);
+    /* background: url('/images/jobs/read_bg_small.png') no-repeat; */
+    /* background-size: cover; */
     opacity: 0.9;
 }
 
@@ -118,16 +118,16 @@
     color: #FFFFFF;
     margin-bottom: 24px;
     margin-left: 24px;
-    font-size: 24px;
+    font-size: 12px;
 }
 
-.heroImgContainer:hover {
+/* .heroImgContainer:hover {
     transform: translateY(-16px);
-}
+} */
 
-.heroImgContainer:hover .heroOverlay{
+/* .heroImgContainer:hover .heroOverlay{
     visibility: visible;
-}
+} */
 
 .heroImage {
     width: 100%;
@@ -548,6 +548,10 @@
     .heroImage {
         height: 200px;
         width: 300px;
+    }
+
+    .heroNames {
+        font-size: 10px;
     }
 
     .brandsAllocator {

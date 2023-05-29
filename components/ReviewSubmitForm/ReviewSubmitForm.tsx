@@ -3,7 +3,6 @@ import { VerifiedPartner } from '../../interfaces/VerifiedPartner'
 
 import styles from './ReviewSubmitForm.module.css'
 import { FormattedMessage } from 'react-intl'
-import { v4 as genUUID } from 'uuid'
 
 interface Props {
   partner: VerifiedPartner
@@ -11,11 +10,9 @@ interface Props {
 
 const DATA_URL = process.env.NEXT_PUBLIC_PARTNERS_DATA_URL
 const REVIEW_MAX_LENGTH = 400
-const UUID = genUUID()
 
 function ReviewSubmitForm({ partner }: Props) {
   const initData = {
-    uuid: UUID,
     profile: partner.id,
     name: '',
     company: '',

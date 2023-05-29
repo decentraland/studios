@@ -4,30 +4,53 @@ export const config = {
   runtime: 'experimental-edge',
 }
 
-export default async function (req: NextRequest) {
+const API_TOKEN = process.env.API_ACCESS_TOKEN
+const DB_URL = process.env.NEXT_PUBLIC_PARTNERS_DATA_URL
 
-  const API_SUBMIT = process.env.API_SUBMIT
-  const API_TOKEN = process.env.API_ACCESS_TOKEN
+const SENDRGRID_URL = process.env.NEXT_PUBLIC_API_SENDGRID
+const SENDGRID_ACCESS_TOKEN = process.env.SENDGRID_ACCESS_TOKEN
+
+export default async function (req: NextRequest) {
   
-  const body = await req.json()
+  const { review } = await req.json()
 
   try{
-    const submitResponse = await fetch(`${API_SUBMIT}`, {
+
+    const submitReview = await fetch(`${DB_URL}/items/reviews?fields=*,profile.name`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${API_TOKEN}`
       },
+      body: JSON.stringify(review)
+    }).then(res => res.ok && res.json()).then(res => res.data && res.data)
+
+    const sendMail = submitReview && await fetch(`${SENDRGRID_URL}/mail/send`, {
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${SENDGRID_ACCESS_TOKEN}`
+      },
       body: JSON.stringify({
-        review: body.review
+          from: {
+              email: "studios@decentraland.org", name: "Decentraland Studios"
+          },
+          personalizations: [ {
+            to: [
+                { email: submitReview.email, name: submitReview.name }
+            ],
+            dynamic_template_data: {
+              studioName: submitReview.profile.name, 
+              reviewerName: submitReview.name,
+              confirmUrl: `https://studios.decentraland.org/reviews/verify?uuid=${submitReview.uuid}`
+                }
+        } ],
+          template_id: "d-8967311aea8f46a29471ae1049b2dcdc"
       })
     })
 
-
-    const submitBody = await submitResponse.json()
-
-    if (submitBody.uuid && submitBody.email){
-      return new Response(JSON.stringify(submitBody))
+    if (sendMail.ok){
+      return new Response(JSON.stringify(submitReview))
     }
 
     return new Response(null, { status: 400 })

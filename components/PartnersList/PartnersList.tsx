@@ -168,14 +168,18 @@ function PartnersList({ partners }: Props) {
 
 	const [filters, setFilters] = useState<Filter[]>(urlFilters.length ? urlFilters : [])
   const [limit, setLimit] = useState(parseInt(globalThis?.sessionStorage?.studiosListLimit) || 10)
+  const [filteredList, setFilteredList] = useState(sortByServicesCount(sortAlphabeticPartners(partners)))
 
 
-  let filteredList = sortByServicesCount(sortAlphabeticPartners(partners))
+  useEffect(() => {
+    setFilteredList(sortByServicesCount(randomizePartners(partners)))
+  }, [])
   
-	if (filters.length){
-    filteredList = partners.filter(partner => filters.every(filter => filterItem(partner, filter)))
-    filteredList = sortByServicesCount(randomizePartners(filteredList))
-	}
+  useEffect(() => {
+    let newList = partners.filter(partner => filters.every(filter => filterItem(partner, filter)))
+    newList = sortByServicesCount(randomizePartners(newList))
+    setFilteredList(newList)
+  }, [filters.length])
   
   let renderList = filteredList.slice( 0, limit )
 

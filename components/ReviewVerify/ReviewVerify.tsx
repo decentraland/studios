@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react'
-import { VerifiedPartner } from '../../interfaces/VerifiedPartner'
 
 import styles from './ReviewVerify.module.css'
 import { FormattedMessage } from 'react-intl'
@@ -9,7 +8,7 @@ import Link from 'next/link'
 import ReviewCard from '../ReviewCard/ReviewCard'
 
 function ReviewVerify() {
-  const [data, setData] = useState(null)
+  const [review, setReview] = useState<PartnerReview>()
   const [isLoading, setLoading] = useState(true)
 
   const router = useRouter()
@@ -27,7 +26,7 @@ function ReviewVerify() {
         })
         .then((res) => res.json())
         .then((data) => {
-          setData(data)
+          setReview(data)
           setLoading(false)
         })
     }
@@ -36,10 +35,7 @@ function ReviewVerify() {
 
   if (isLoading) return <div className={styles.title}>Loading</div>
 
-  if (!data ) return <p>No profile data</p>
-
-  const review = data['review'] as PartnerReview
-  const partner = data['partner'] as VerifiedPartner
+  if (!review ) return <p>No profile data</p>
 
   return <div className={styles.container}>
     <ReviewCard review={review} />
@@ -51,8 +47,8 @@ function ReviewVerify() {
           id="review.verify.subtitle"
           values={{
             a1: (chunk) => <Link className={styles.link}
-                  href={`/profile/${partner.slug}`}>
-                {partner.name}
+                  href={`/profile/${review.profile.slug}`}>
+                {review.profile.name}
                 {chunk}
               </Link>
             ,

@@ -1,6 +1,4 @@
-export interface PartnerReviewResponse {
-  data: PartnerReview[]
-}
+import { VerifiedPartner } from "./VerifiedPartner"
 
 export interface PartnerReview {
   id: number
@@ -9,6 +7,7 @@ export interface PartnerReview {
   email: string
   company: string
   review: string
-  profile: number
+  profile: VerifiedPartner
   uuid: string
+  verified_mail: boolean
 }

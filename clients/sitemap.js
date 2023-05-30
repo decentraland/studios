@@ -8,6 +8,12 @@ function generateSiteMap(paths) {
        <loc>https://studios.decentraland.org</loc>
      </url>
      <url>
+       <loc>https://studios.decentraland.org/jobs</loc>
+     </url>
+     <url>
+       <loc>https://studios.decentraland.org/studios</loc>
+     </url>
+     <url>
        <loc>https://studios.decentraland.org/projects</loc>
      </url>
      <url>

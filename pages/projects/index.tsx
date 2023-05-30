@@ -39,6 +39,8 @@ function ProjectsPage({ projects }: Props) {
         <meta name="twitter:title" content="Browse the latest projects on Decentraland and get new ideas for your brand" />
         <meta name="twitter:description" content="Hundreds of designers and studios around the world showcase their portfolio work on Metaverse Studios." />
         <meta name="twitter:image" content="https://studios.decentraland.org/images/banner_projects.png"/>
+        
+        <link rel="canonical" href="https://studios.decentraland.org/projects" />
       </Head>
       <main className={styles.main}>
         <BannerProjects />

@@ -186,6 +186,8 @@ function MetaverseGuide({ landing }: Props) {
             <meta name="twitter:title" content={landing.hero_title} />
             <meta name="twitter:description" content={landing.hero_description} />
             <meta name="twitter:image" content={`${DB_URL}/assets/${landing.hero_cover}`} />
+    
+            <link rel="canonical" href={`https://studios.decentraland.org/p/${landing.slug}`} />
         </Head>
         <main>
             <link  rel="stylesheet" type="text/css" href="/guides.css"/>

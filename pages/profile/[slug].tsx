@@ -80,6 +80,8 @@ function Partner({ partner, projects, reviews }: Props) {
         <meta name="twitter:title" content="Let’s build the metaverse together. Find the Right Team for Your Project" />
         <meta name="twitter:description" content={`Profile of ${partner.name} studio`} />
         <meta name="twitter:image" content={`${DATA_URL}/assets/${partner.logo}?key=meta-link`}/>
+
+        <link rel="canonical" href={`https://studios.decentraland.org/profile/${partner.slug}`} />
       </Head>
 
       <main>

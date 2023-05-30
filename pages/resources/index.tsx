@@ -44,6 +44,8 @@ function ResourcesPage({ resources }: Props) {
         <meta name="twitter:title" content="Browse free and open source ideas to inspire you" />
         <meta name="twitter:description" content="Here you will find the building blocks to create engaging and interactive experiences in Decentraland. Any creator can customize these with complete creative freedom." />
         <meta name="twitter:image" content="https://studios.decentraland.org/images/banner_ideas.png"/>
+        
+        <link rel="canonical" href="https://studios.decentraland.org/resources" />
       </Head>
       <main className={styles.main}>
         <BannerResources />

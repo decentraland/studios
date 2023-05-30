@@ -4,7 +4,6 @@ import 'react-responsive-carousel/lib/styles/carousel.min.css'
 import styles from './ProjectProfile.module.css'
 import { FormattedMessage } from 'react-intl'
 import { Carousel } from 'react-responsive-carousel'
-import { VerifiedPartner } from '../../interfaces/VerifiedPartner'
 import { PartnerProject } from '../../interfaces/PartnerProject'
 import BackButton from '../BackButton/BackButton'
 import { trackLink } from '../utils'
@@ -62,7 +61,7 @@ function ProjectProfile({ project }: Props) {
       }
     })
 
-  const carouselItems = [...images, ...videos] as ReactElement[]
+  const carouselItems = [...videos, ...images] as ReactElement[]
 
   const renderThumbs = (elements: any) => {
     const thumbs = []

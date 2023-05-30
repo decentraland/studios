@@ -108,6 +108,8 @@ function JobsLandingPage() {
                 <meta name="twitter:title" content="Decentraland creative services, on demand" />
                 <meta name="twitter:description" content="Looking to bring your brand to Decentraland? Connect with top-tier studios and professionals to make it happen." />
                 <meta name="twitter:image" content="https://studios.decentraland.org/images/banner_jobs.png"/>
+
+                <link rel="canonical" href="https://studios.decentraland.org/jobs" />
             </Head>
             <main className={globalStyles.main}>
                 <div className={styles.fakeBackground} />

@@ -55,6 +55,8 @@ function Project({ project }: Props) {
         <meta name="twitter:title" content="Let’s build the metaverse together. Find the Right Team for Your Project" />
         <meta name="twitter:description" content={`${project.title} by ${project.profile.name}`} />
         <meta name="twitter:image" content={`${DATA_URL}/assets/${project.image_1}?key=meta-link`}/>
+
+        <link rel="canonical" href={`https://studios.decentraland.org/project/${project.id}`} />
       </Head>
 
       <main>

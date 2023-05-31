@@ -97,6 +97,7 @@ function MetaverseGuide({ landing }: Props) {
         fbqTrackLead()
         linkedinTrackLead()
         plausibleTrackLead()
+        updateIntercom({"name": name, "email": email})
         ctaSuccess()
     }
 
@@ -131,7 +132,9 @@ function MetaverseGuide({ landing }: Props) {
           }, 4000);
     }
 
-    const showIntercom = () => (globalThis as any).Intercom && (window as any).Intercom('show')
+    const showIntercom = () => (globalThis as any).Intercom && (globalThis as any).Intercom('show')
+    
+    const updateIntercom = (userData: object) => (globalThis as any).Intercom && (globalThis as any).Intercom('update', userData)
     
     const fbqTrackLead = () => (globalThis as any).fbq('track', 'Lead')
     
@@ -190,7 +193,7 @@ function MetaverseGuide({ landing }: Props) {
             <link rel="canonical" href={`https://studios.decentraland.org/p/${landing.slug}`} />
         </Head>
         <main>
-            <link  rel="stylesheet" type="text/css" href="/guides.css"/>
+            <link  rel="stylesheet" type="text/css" href="/landings.css"/>
             <div className="section section--hero" 
                 style={hero_background}>
                 <div className="section--hero__container">
@@ -221,14 +224,24 @@ function MetaverseGuide({ landing }: Props) {
                             <h3>{landing.form_success_title}</h3>
                             <p className="base-text cta__base-text">{landing.form_success_text} <strong>{email}</strong>.</p>
                             <div className="cta__form--success__buttons">
-                                <a href={landing.form_success_open_url} target="_blank" rel="noreferrer" className="cta">{landing.form_success_open}</a>
-                                <a onClick={ctaSendAgain} className="inline-link">{landing.form_success_send_again}</a>
+                                {landing.form_success_open_intercom ? 
+                                <>
+                                    <a onClick={showIntercom} className="cta">{landing.form_success_open_intercom}</a>
+                                    <a href={landing.form_success_open_url} target="_blank" rel="noreferrer" className="cta cta-inverted">{landing.form_success_open}</a>
+                                </>
+                                :
+                                <>
+                                    <a href={landing.form_success_open_url} target="_blank" rel="noreferrer" className="cta">{landing.form_success_open}</a>
+                                    <a onClick={ctaSendAgain} className="inline-link">{landing.form_success_send_again}</a>
+                                </>
+                            }
                             </div>
                         </div>
                     </div>
 
                 </div>
             </div>
+            {landing.about_show &&
             <div className="section section--aboutdcl">
                 <div className="section--aboutdcl__description">
                     <h4>{landing.about_intro}</h4>
@@ -242,7 +255,8 @@ function MetaverseGuide({ landing }: Props) {
                     </div>)}
                 </div>
                 <img className="section--aboutdcl__image" src={`${DB_URL}/assets/${landing.about_image}`} alt="" />
-            </div>
+            </div>}
+            {landing.content1_show && 
             <div className="section section--whatsinside">
                 <div className="section--whatsinside__description">
                     <h2>{landing.content1_title}</h2>
@@ -257,7 +271,8 @@ function MetaverseGuide({ landing }: Props) {
                     </div>)}
                 </div>
                 <a onClick={ctaHighlight} href="#section--cta" className="cta section--whatsinside__cta">{landing.content1_button}</a>
-            </div>
+            </div>}
+            {landing.content2_show &&
             <div className="section section--journey" style={{background: `url('${DB_URL}/assets/${landing.content2_background}')`}}>
                 <div className="section--journey__container">
                     <h2>{landing.content2_title}</h2>
@@ -275,7 +290,8 @@ function MetaverseGuide({ landing }: Props) {
                     </div>
 
                 </div>
-            </div>
+            </div>}
+            {landing.faq_show &&
             <div className="section--faq">
                 <div className="section section--faq__container">
                     <div className="section--faq__container__description">
@@ -294,14 +310,16 @@ function MetaverseGuide({ landing }: Props) {
                         </div>)}
                     </div>
                 </div>
-            </div>
+            </div>}
+            {landing.call_show &&
             <div className="section section--deepdive">
                 <div className="section--deepdive__container">
                     <img src={`${DB_URL}/assets/${landing.call_image}`} className="section--deepdive__container__img" alt="" />
                     <h2>{landing.call_title}</h2>
                     <a onClick={ctaHighlight} href="#section--cta" className="cta section--deepdive__container__cta">{landing.call_button}</a>
                 </div>
-            </div>
+            </div>}
+            {landing.reviews_show &&
             <div className="section section--reviews">
                 <h3>{landing.reviews_title}</h3>
                 <div className="section--reviews__container">
@@ -317,18 +335,17 @@ function MetaverseGuide({ landing }: Props) {
                         </div>
                     </div>)}
                 </div>
-            </div>
+            </div>}
+            {landing.contact_show &&
             <div className="section section--contact">
                 <div className="section--contact__container">
                     <div className="section--contact__container__message">
                         <h2>{landing.contact_title} <a onClick={showIntercom} className="chat-link">{landing.contact_action}</a> {landing.contact_close}</h2>
-                        <div className="section--contact__cta">
                             <p className="base-text section--contact__cta__text">{landing.contact_text} <a className="inline-link" href="#section--cta" onClick={ctaHighlight}> {landing.contact_text_close}</a> </p>
-                        </div>
                     </div>
-                    <img src="/images/guide/envelope.webp" alt="" className="section--contact_envelope" />
-            </div>
-            </div>
+                <img src="/images/guide/envelope.webp" alt="" className="section--contact_envelope" />
+                </div>
+            </div>}
             <div className="footer">
                 <div className="footer__container">
                     <img src="/images/guide/DCL_Logo_white.webp" alt="" className="logo" />

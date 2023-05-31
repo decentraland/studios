@@ -357,6 +357,17 @@ h4{
   transform: translateY(-2px);
 }
 
+.cta-inverted{
+  background-color: transparent;
+  color: var(--dclmain);
+  border: 1px solid var(--dclmain);
+}
+
+.cta-inverted:hover{
+  color: var(--dclmain);
+  transform: translateY(-2px);
+}
+
 button{
   border: none;
 }
@@ -1298,7 +1309,7 @@ a.base-text{
 
 /* FONT DECLARATIONS */
 
-@font-face {
+/* @font-face {
   font-family: 'SFProDisplay';
   src: local('SFProDisplay Black'), local('SFProDisplay-Black'),
       url('metaverse-guide/css/fonts/SFProDisplay-Black.woff2') format('woff2'),
@@ -1466,5 +1477,5 @@ a.base-text{
   font-weight: 100;
   font-style: italic;
   font-display: swap;
-}
+} */
 

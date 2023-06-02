@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react"
 import { Filter, FilterGroup } from "../../interfaces/Filters"
 import IconFilter from "../Icons/IconFilter"
 import IconX from "../Icons/IconX"
-import { hideIntercom, showIntercom } from "../utils"
+import { hideIntercomIcon, showIntercomIcon } from "../utils"
 import styles from './LayoutFilteredList.module.css'
 import ServiceTag from "../ServiceTag/ServiceTag"
 
@@ -70,9 +70,9 @@ export default function LayoutFilteredList({ activeFilters, setActiveFilters, fi
 
     useEffect(() => {
         if (showMobileFilters) {
-            hideIntercom()
+            hideIntercomIcon()
         } else {
-            showIntercom()
+            showIntercomIcon()
         }
     }, [showMobileFilters])
 

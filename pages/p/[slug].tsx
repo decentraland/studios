@@ -5,6 +5,7 @@ import { Landing } from "../../interfaces/Landing";
 import { useRouter } from "next/router";
 import Head from "next/head";
 import Script from "next/script";
+import { fbq, linkedinTrackLead, openIntercom, plausibleTrackEvent, updateIntercom } from "../../components/utils";
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
 
@@ -48,19 +49,9 @@ const DB_URL = process.env.NEXT_PUBLIC_PARTNERS_DATA_URL
 function MetaverseGuide({ landing }: Props) {
     const [name, setName] = useState('')
     const [email, setEmail] = useState('')
-    const [ipData, setIpData] = useState({} as VisitData)
 
     const router = useRouter()
     const { utm_source, utm_medium, utm_campaign } = router.query || {}
-
-    useEffect(() => {
-        const fetchIp = async() => {
-            const ipData = (await (await fetch('https://geolocation-db.com/json/')).json())
-            setIpData(ipData)
-        }
-
-        fetchIp()
-    }, [])
 
     useEffect(() => {
         if (landing.fb_pixel){
@@ -79,10 +70,6 @@ function MetaverseGuide({ landing }: Props) {
             utm_source, 
             utm_medium, 
             utm_campaign,
-            ip: ipData.IPv4,
-            country_code: ipData.country_code,
-            country: ipData.country_name,
-            city: ipData.state,
             mobile: !!globalThis?.navigator.userAgent.match(/Mobi/),
             user_agent: globalThis?.navigator.userAgent,
             list_ids: landing.list_ids,
@@ -94,9 +81,17 @@ function MetaverseGuide({ landing }: Props) {
             body: JSON.stringify(body)
         })
 
-        fbqTrackLead()
-        linkedinTrackLead()
-        plausibleTrackLead()
+        globalThis.localStorage.setItem('leadName', name);
+        globalThis.localStorage.setItem('leadEmail', email);
+        globalThis.localStorage.setItem('leadSlug', landing.slug);
+
+        if (landing.track_linkedin?.conversion_id) {
+            globalThis.localStorage.setItem('leadConversionId', landing.track_linkedin.conversion_id);
+        }
+        
+        fbq('track', 'Lead')
+        linkedinTrackLead(landing.track_linkedin?.conversion_id)
+        plausibleTrackEvent('LandingSubmit' , { slug: landing.slug })
         updateIntercom({"name": name, "email": email})
         ctaSuccess()
     }
@@ -131,17 +126,6 @@ function MetaverseGuide({ landing }: Props) {
             ctaContainer && ctaContainer.classList.remove('cta--highlight');
           }, 4000);
     }
-
-    const showIntercom = () => (globalThis as any).Intercom && (globalThis as any).Intercom('show')
-    
-    const updateIntercom = (userData: object) => (globalThis as any).Intercom && (globalThis as any).Intercom('update', userData)
-    
-    const fbqTrackLead = () => (globalThis as any).fbq('track', 'Lead')
-    
-    const linkedinTrackLead = () => (globalThis as any).lintrk && (globalThis as any).lintrk('track', { conversion_id: landing.track_linkedin?.conversion_id })
-   
-    const plausibleTrackLead = () => (globalThis as any).plausible && (globalThis as any).plausible(`LandingSubmit`, { props: { slug: landing.slug } })
-
 
     let hero_background = {}
 
@@ -226,8 +210,8 @@ function MetaverseGuide({ landing }: Props) {
                             <div className="cta__form--success__buttons">
                                 {landing.form_success_open_intercom ? 
                                 <>
-                                    <a onClick={showIntercom} className="cta">{landing.form_success_open_intercom}</a>
-                                    <a href={landing.form_success_open_url} target="_blank" rel="noreferrer" className="cta cta-inverted">{landing.form_success_open}</a>
+                                    <a href={landing.form_success_open_url} { ...landing.form_success_open_url.includes('://') ? { target:"_blank" } : {} } rel="noreferrer" className="cta">{landing.form_success_open}</a>
+                                    <a onClick={openIntercom} className="cta cta-inverted">{landing.form_success_open_intercom}</a>
                                 </>
                                 :
                                 <>
@@ -340,7 +324,7 @@ function MetaverseGuide({ landing }: Props) {
             <div className="section section--contact">
                 <div className="section--contact__container">
                     <div className="section--contact__container__message">
-                        <h2>{landing.contact_title} <a onClick={showIntercom} className="chat-link">{landing.contact_action}</a> {landing.contact_close}</h2>
+                        <h2>{landing.contact_title} <a onClick={openIntercom} className="chat-link">{landing.contact_action}</a> {landing.contact_close}</h2>
                             <p className="base-text section--contact__cta__text">{landing.contact_text} <a className="inline-link" href="#section--cta" onClick={ctaHighlight}> {landing.contact_text_close}</a> </p>
                     </div>
                 <img src="/images/guide/envelope.webp" alt="" className="section--contact_envelope" />

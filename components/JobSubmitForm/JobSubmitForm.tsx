@@ -8,6 +8,8 @@ import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 import IconX from '../Icons/IconX'
 import Link from 'next/link'
 import ErrorScreen from '../ErrorScreen/ErrorScreen'
+import { fbq, linkedinTrackLead, plausibleTrackEvent } from '../utils'
+import Script from 'next/script'
 
 const DESCRIPTION_MAX_LENGTH = 4000
 
@@ -110,7 +112,26 @@ function JobSubmitForm() {
         })
 
         if (jobCreate.ok) {
-            (globalThis as any).plausible && (globalThis as any).plausible('JobsSubmitForm: Step3')
+            //TODO: add tracking here
+            
+            const lead = {
+                name: formData.author_name,
+                email: formData.email,
+                slug: globalThis.localStorage.getItem('leadSlug') || 'jobs',
+                mobile: !!globalThis?.navigator.userAgent.match(/Mobi/),
+                user_agent: globalThis?.navigator.userAgent,
+                list_ids: [ '3d1d6c43-5bd7-436e-a253-f61b6a728ae0' ],
+            }
+            
+            fetch('/api/landing/submit', {
+                method: 'POST',
+                body: JSON.stringify(lead)
+            })
+            
+            fbq('track', 'Lead')
+            linkedinTrackLead(globalThis.localStorage.getItem('leadConversionId') || '13935513') //web3 campaign conversion_id
+            plausibleTrackEvent('JobsSubmitForm: Step3', { slug: lead.slug })
+
             setCurrentStep(3)
             setLoading(false)
         } else {
@@ -163,6 +184,20 @@ function JobSubmitForm() {
         e.preventDefault()
         setSelectedFile(undefined)
     }
+
+    useEffect(() => {
+        const leadName = globalThis.localStorage.getItem('leadName')
+        const leadEmail = globalThis.localStorage.getItem('leadEmail')
+
+        if (leadName && leadEmail){
+            setFormData({...formData, author_name: leadName, email: leadEmail })
+        }
+    })
+
+    useEffect(() => {
+        fbq('init', '1591258994727531');
+        fbq('trackSingle', '1591258994727531', 'PageView');
+    }, [(globalThis as any).fbq])
 
     const ExamplesModal = ({children}: {children: string}) => {
         const [open, setOpen] = useState(false)
@@ -376,6 +411,26 @@ function JobSubmitForm() {
         </form>        
 }
     </div>
+    <footer>
+            <Script id="linkedin-partner_id" strategy="afterInteractive">
+                {`_linkedin_partner_id = "5518009";
+                window._linkedin_data_partner_ids = window._linkedin_data_partner_ids || [];
+                window._linkedin_data_partner_ids.push(_linkedin_partner_id);`}
+            </Script>
+            <Script id="linkedin-tracking" strategy="afterInteractive">
+                {`(function(l) {
+                if (!l){window.lintrk = function(a,b){window.lintrk.q.push([a,b])};
+                window.lintrk.q=[]}
+                var s = document.getElementsByTagName("script")[0];
+                var b = document.createElement("script");
+                b.type = "text/javascript";b.async = true;
+                b.src = "https://snap.licdn.com/li.lms-analytics/insight.min.js";
+                s.parentNode.insertBefore(b, s);})(window.lintrk);`} 
+            </Script>
+            <noscript>
+                <img height="1" width="1" style={{display:"none"}} alt="" src={`https://px.ads.linkedin.com/collect/?pid=5518009&fmt=gif`} />
+            </noscript>
+        </footer>
     </div>
 
 }

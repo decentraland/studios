@@ -11,7 +11,7 @@ export function trackLink(event: string, source: string, url: string) {
   }
 }
 
-export function showIntercom() {
+export function showIntercomIcon() {
   (globalThis as any).Intercom && (globalThis as any).Intercom("update", { "hide_default_launcher": false });
 }
 
@@ -19,9 +19,25 @@ export function openIntercom() {
   (globalThis as any).Intercom && (globalThis as any).Intercom('show');
 }
 
-export function hideIntercom() {
+export function hideIntercomIcon() {
   (globalThis as any).Intercom && (globalThis as any).Intercom("update", { "hide_default_launcher": true });
 }
+
+export function updateIntercom(userData: object) {
+  (globalThis as any).Intercom && (globalThis as any).Intercom('update', userData)
+}
+
+export function linkedinTrackLead(conversion_id?: string) {
+  (globalThis as any).lintrk && (globalThis as any).lintrk('track', { conversion_id: conversion_id })
+}
+
+export function plausibleTrackEvent(eventName: string, props?: object) {
+  (globalThis as any).plausible && (globalThis as any).plausible(eventName, props ? { props: props } : undefined )
+}
+
+export function fbq (...params: string[]) {
+  (globalThis as any).fbq && (globalThis as any).fbq(...params)
+} 
 
 export function timeSince(stringDate: string) {
   const date = (new Date(stringDate)).getTime()

@@ -25,7 +25,7 @@ const Navbar = dynamic(() => import('decentraland-ui/dist/components/Navbar/Navb
 const METABASE_KEY = process.env.NEXT_PUBLIC_METABASE_KEY
 const INTERCOM_APP_ID = process.env.NEXT_PUBLIC_INTERCOM_APP_ID
 
-const tabsContents = [['/jobs', 'Jobs'], ['/studios', 'Studios'],['/projects', 'Projects'], ['/resources', 'Resources']]
+const tabsContents = [['/jobs', 'Jobs'], ['/studios', 'Studios'], ['/projects', 'Projects'], ['/resources', 'Resources']]
 
 
 function App({ Component, pageProps }: AppProps) {
@@ -41,26 +41,26 @@ function App({ Component, pageProps }: AppProps) {
     }
   }, [shortLocale])
 
-  
+
   useEffect(() => {
 
     const handleRouteChange = (url: string) => {
       //sessionStorage for back button behaviour
       let navHist = JSON.parse(globalThis.sessionStorage.navHist || '[]')
-      
-      if (navHist.at(-1) !== url){
+
+      if (navHist.at(-1) !== url) {
         navHist.push(url)
         globalThis.sessionStorage.setItem('navHist', JSON.stringify(navHist));
       }
 
-      
+
       (globalThis as any).fbq('track', 'PageView')
     }
 
     router.events.on('routeChangeStart', handleRouteChange)
 
     //initialize navHist on first pageView
-    if (!globalThis.sessionStorage.navHist){
+    if (!globalThis.sessionStorage.navHist) {
       globalThis.sessionStorage.setItem('navHist', JSON.stringify([router.asPath]));
     }
 
@@ -72,7 +72,7 @@ function App({ Component, pageProps }: AppProps) {
   const isMetaverseGuide = router.asPath.includes('/p/')
   // const showTabs = [...tabsContents, ['/search']].map(tab => tab[0]).includes(router.route)
   const showTabs = !['/p/', '/project/', '/profile/'].includes(router.route)
-  
+
   return (
     <>
       <Head>
@@ -85,19 +85,19 @@ function App({ Component, pageProps }: AppProps) {
         <meta property="twitter:url" content="https://studios.decentraland.org/" />
         <meta property="twitter:domain" content="studios.decentraland.org" />
         <meta name="twitter:card" content="summary" />
-        
+
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
 
         <meta name="google-site-verification" content="GsC7SYvV1UMqj0g5_0rWEMvTcp474fn8vKtSHQaZIm8" />
-        
+
         <noscript>
-          <img height="1" width="1" style={{display:"none"}}
+          <img height="1" width="1" style={{ display: "none" }}
             src={"https://www.facebook.com/tr?id=486890793629175&ev=PageView&noscript=1"}
           />
         </noscript>
       </Head>
 
-      {isMetaverseGuide ? 
+      {isMetaverseGuide ?
         <Component {...pageProps} />
         :
         <IntlProvider locale={shortLocale} messages={messages}>
@@ -123,19 +123,51 @@ function App({ Component, pageProps }: AppProps) {
         {`window.plausible = window.plausible || function() { (window.plausible.q = window.plausible.q || []).push(arguments) }`}
       </Script>
 
-
-      <Script id="intercom" strategy="lazyOnload">
+      <Script id='intercom'>
         {`window.intercomSettings = {
             api_base: "https://api-iam.intercom.io",
             app_id: "${INTERCOM_APP_ID}",
             hide_default_launcher: ${isMetaverseGuide}
         };`}
-        {`(function(){var w=window;var ic=w.Intercom;if(typeof ic==="function"){ic('reattach_activator');ic('update',w.intercomSettings);}else{var d=document;var i=function(){i.c(arguments);};i.q=[];i.c=function(args){i.q.push(args);};w.Intercom=i;var l=function(){var s=d.createElement('script');s.type='text/javascript';s.async=true;s.src='https://widget.intercom.io/widget/ht3lxko9';var x=d.getElementsByTagName('script')[0];x.parentNode.insertBefore(s,x);};if(document.readyState==='complete'){l();}else if(w.attachEvent){w.attachEvent('onload',l);}else{w.addEventListener('load',l,false);}}})();`}
+
+        {`(function () {
+          var w = window;
+          var ic = w.Intercom;
+          if (typeof ic === "function") {
+            ic('reattach_activator');
+            ic('update', w.intercomSettings);
+          } else {
+            var d = document;
+            var i = function () {
+              i.c(arguments);
+            };
+            i.q = [];
+            i.c = function (args) {
+              i.q.push(args);
+            };
+            w.Intercom = i;
+            var l = function () {
+              setTimeout(function () {
+                var s = d.createElement('script');
+                s.type = 'text/javascript';
+                s.async = true;
+                s.src = 'https://widget.intercom.io/widget/${INTERCOM_APP_ID}';
+                var x = d.getElementsByTagName('script')[0];
+                x.parentNode.insertBefore(s, x);
+              }, 5000);
+            };
+
+            if (w.attachEvent) {
+              w.attachEvent('onload', l);
+            } else {
+              w.addEventListener('load', l, false);
+            }
+          }
+        })();`}
       </Script>
-      <Script id="fb-pixel" strategy="afterInteractive"
-        dangerouslySetInnerHTML={{
-          __html:
-            `!function(f,b,e,v,n,t,s)
+
+      <Script id="fb-pixel">
+        {`!function(f,b,e,v,n,t,s)
         {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
         n.callMethod.apply(n,arguments):n.queue.push(arguments)};
         if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
@@ -144,8 +176,8 @@ function App({ Component, pageProps }: AppProps) {
         s.parentNode.insertBefore(t,s)}(window, document,'script',
         'https://connect.facebook.net/en_US/fbevents.js');
         fbq('init', '486890793629175');
-        fbq('track', 'PageView');`}}
-      />
+        fbq('track', 'PageView');`}
+      </Script>
     </>
   )
 }

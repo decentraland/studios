@@ -164,7 +164,7 @@ function JobProfile() {
         <div className={styles.container}>
             <div className={styles.backButton}><BackButton onClick={() => router.push('/jobs/list')} /></div>
             <div className={styles.dataContainer}>
-                <div className={styles.postedBy}>Job created by <b>{jobData.author_name}</b>{jobData.company && <> from <b>{jobData.company}</b></>}</div>
+                <div className={styles.postedBy}>Project created by <b>{jobData.author_name}</b>{jobData.company && <> from <b>{jobData.company}</b></>}</div>
                 <div className={styles.title}>{jobData.title}</div>
                 <div className={styles.infoTitle}>SHORT DESCRIPTION</div>
                 <div className={styles.description}>{jobData.short_description}</div>

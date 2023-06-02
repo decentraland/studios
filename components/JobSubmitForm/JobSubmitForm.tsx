@@ -302,10 +302,10 @@ function JobSubmitForm() {
         return <div className={styles.confirm_container}>
             <img alt='Check your email' src="/images/check_mail.png" />
             <div className={styles.confirm_title}>
-                Confirm your job post
+                Confirm your Project
             </div>
             <div className={styles.confirm_text}>
-                Thank you for creating a job post! Please confirm your publication by clicking on a link we sent you via email to <b>{formData.email}</b>
+                Thank you for creating a project! Please confirm your publication by clicking on a link we sent you via email to <b>{formData.email}</b>
             </div>
         </div>
     }
@@ -316,10 +316,10 @@ function JobSubmitForm() {
         
         <div className={styles.formContainer}>
         <div className={styles.title}>
-            Create a Job post
+            Start your project
         </div>
         <div className={styles.description}>
-            Provide some details about your project and the skills you need. Once you publish it, your job post will be visible to all Decentraland Studios.
+            Provide some details about your project and the skills you need. Once you publish it, verified Decentraland Studios will apply to work with you.
         </div>
 
         {currentStep === 1 ? <form onSubmit={handleSubmitStep1}>
@@ -388,7 +388,7 @@ function JobSubmitForm() {
                 required name="email" 
                 value={formData.email} 
                 onChange={handleInput} />
-            <div className={styles.text_secondary}><IconInfo gray /> Your email will only be visible to studios that apply to your job</div>
+            <div className={styles.text_secondary}><IconInfo gray /> Your email will only be visible to studios that apply to your project.</div>
             
             <label className={styles.label}>What’s your name?</label>
             <input className={styles.input} type="text" 
@@ -406,7 +406,7 @@ function JobSubmitForm() {
                 className={`${styles.submit_btn} ${emptyFieldsStep2 ? styles.submit_btn_disabled : ''}`}
                 disabled={emptyFieldsStep2}
                 type="submit"
-                value="CREATE JOB POST"
+                value="CREATE PROJECT"
             />
         </form>        
 }

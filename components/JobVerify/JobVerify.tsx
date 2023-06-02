@@ -53,7 +53,7 @@ function JobVerify() {
     <img className={styles.image} alt='Your job post is live' src="/images/item_ok.png" />
 
     <div className={styles.title}>
-      Your job post is live!
+      Your project is live!
     </div>
     <div className={styles.subtitle}>
       Your publication is now visible to all Decentraland Studios.
@@ -65,21 +65,21 @@ function JobVerify() {
       <div className={styles.factCard}>
         <img className={styles.factIcon} alt='calendar' src="/images/iconCalendar.png" />
         <div className={styles.factText}>
-          <b>Your job will be available for 30 days after you publish it.</b> If you need to remove it sooner, {reach_out_link} and we will take it down.
+          <b>Your project will be available for 30 days after you publish it.</b> If you need to remove it sooner, {reach_out_link} and we will take it down.
         </div>
       </div>
       <div className={styles.factCard}>
         <img className={styles.factIcon} alt='calendar' src="/images/iconCard.png" />
         <div className={styles.factText}>
-          <b>You will receive email notifications</b> when studios apply to your job post. Follow up with them via email.
+          <b>You will receive email notifications</b> when studios apply to your project. Follow up with them via email.
         </div>
       </div>
     </div>
     <div className={styles.factsHeader}>
-      This is how your job post looks to all Decentraland Studios
+      This is how your project looks to all Decentraland Studios
     </div>
     <div className={styles.jobContainer}>
-      <div className={styles.jobAuthor}>Job created by <b>{jobData.author_name}</b>{jobData.company && <> from <b>{jobData.company}</b></>}</div>
+      <div className={styles.jobAuthor}>Project created by <b>{jobData.author_name}</b>{jobData.company && <> from <b>{jobData.company}</b></>}</div>
       <div className={styles.jobTitle}>{jobData.title}</div>
       <div className={styles.jobSectionTitle}>SHORT DESCRIPTION</div>
       <div className={styles.jobText}>{jobData.short_description}</div>

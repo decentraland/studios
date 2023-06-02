@@ -85,7 +85,7 @@ function JobsLandingPage() {
                         </div>
                     </div>)}
                 
-                <Link href={'/jobs/hire'} legacyBehavior ><div className={styles.hireTalentBtn}>HIRE TALENT</div></Link>
+                <Link href={'/jobs/hire'} legacyBehavior ><div className={styles.hireTalentBtn}>START A PROJECT</div></Link>
             </div>
             <div className={styles.examplesRightPanel}>
                 <div className={styles.examplesImg} style={{backgroundImage: `url(/images/jobs/example_${currentExample}a.png)`}}/>
@@ -118,8 +118,8 @@ function JobsLandingPage() {
                     <div>
                     Looking to bring your brand to Decentraland? Connect with top-tier studios and professionals to make it happen.
                         <div className={styles.buttonsContainer}>
-                            <Link href={'/jobs/hire'} legacyBehavior ><div className='button_primary'>HIRE TALENT</div></Link>
-                            <Link href={'/jobs/list'} legacyBehavior ><div className='button_primary--inverted'>APPLY TO A JOB</div></Link>
+                            <Link href={'/jobs/hire'} legacyBehavior ><div className='button_primary'>START A PROJECT</div></Link>
+                            <Link href={'/jobs/list'} legacyBehavior ><div className='button_primary--inverted'>APPLY TO A PROJECT</div></Link>
                         </div>
                     </div>
                 </div>
@@ -135,24 +135,24 @@ function JobsLandingPage() {
                 <div className={styles.howToTitle}>How do <b>Jobs</b> work?</div>
                 <div className={styles.howToContainer}>
                     <div className={styles.howToCard}>
-                        <div className={styles['howToCard--titleRow']}><span>01</span>Post a job</div>
-                        <div className={styles['howToCard--content']}><Link className={styles.linkText} href="/jobs/hire">Create a job post</Link> detailing the project you want to do in Decentraland, and the skills or collaborators you are looking for.</div>
+                        <div className={styles['howToCard--titleRow']}><span>01</span>Start a project</div>
+                        <div className={styles['howToCard--content']}><Link className={styles.linkText} href="/jobs/hire">Create a post</Link> detailing the project you want to do in Decentraland, and the skills or collaborators you are looking for.</div>
                     </div>
                     <div className={styles.howToCard}>
                         <div className={styles['howToCard--titleRow']}><span>02</span>Review candidates</div>
-                        <div className={styles['howToCard--content']}>Studios will apply to your job post. Review their profile and portfolio, and pick one (or multiple) studios you&apos;d like to work with.</div>
+                        <div className={styles['howToCard--content']}>Studios will apply to your project. Review their profile and portfolio, and assess if they have the skills your need.</div>
                     </div>
                     <div className={styles.howToCard}>
-                        <div className={styles['howToCard--titleRow']}><span>03</span>Chat with them</div>
-                        <div className={styles['howToCard--content']}>Start a conversation with the studios you&apos;d like to work with. Make sure they match the skills you need for your project.</div>
+                        <div className={styles['howToCard--titleRow']}><span>03</span>Chat and assess</div>
+                        <div className={styles['howToCard--content']}>Chat with your candidates and select a studio to work with. Make sure to discuss your project and align expectations.</div>
                     </div>
                     <div className={styles.howToCard}>
-                        <div className={styles['howToCard--titleRow']}><span>04</span>Hire the right people</div>
-                        <div className={styles['howToCard--content']}>Collaborate with a Studio and you will have your project up and running in Decentraland in no time!</div>
+                        <div className={styles['howToCard--titleRow']}><span>04</span>Collaborate</div>
+                        <div className={styles['howToCard--content']}>Begin collaborating with your chosen studio. Work together and enjoy seeing your vision come to fruition!</div>
                     </div>
                 </div>
                 <div className={styles.hireContainer}>
-                    <Link href={'/jobs/hire'} legacyBehavior ><div className={styles.hireTalentBtn}>HIRE TALENT</div></Link>
+                    <Link href={'/jobs/hire'} legacyBehavior ><div className={styles.hireTalentBtn}>START A PROJECT</div></Link>
                 </div>
                 
                 <UsageExamples />
@@ -174,8 +174,8 @@ function JobsLandingPage() {
                 
                 <div className={styles.reviewsContainer}>
                     <div className={styles.reviewCard}>
-                        <div className={styles.reviewsTitle}>Read what clients’ reviews about verified Decentraland Studios</div>
-                        <div className={styles.reviewsSubTitle}>This is what they said after collaborating with different studios</div>
+                        <div className={styles.reviewsTitle}>Read clients’ reviews about verified Decentraland Studios.</div>
+                        {/* <div className={styles.reviewsSubTitle}>This is what they said after collaborating with different studios</div> */}
                     </div>
                     
                     <div className={styles.reviewCard}>
@@ -227,7 +227,7 @@ function JobsLandingPage() {
 
                 <div className={styles.banner}>
                     <div>Ready to take your brand into Decentraland?</div>
-                    <Link href={'/jobs/hire'} legacyBehavior ><div className={styles.hireTalentBtn}>HIRE TALENT</div></Link>
+                    <Link href={'/jobs/hire'} legacyBehavior ><div className={styles.hireTalentBtn}>START A PROJECT</div></Link>
                 </div>
                     
                 <div className={styles.unsureWrapper}>

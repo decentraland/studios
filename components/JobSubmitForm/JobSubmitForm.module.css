@@ -176,7 +176,7 @@ margin-top: 8px;
   max-width: 648px; 
   position: absolute;
   right: 50%;
-  top: 15%;
+  /* top: 15%; */
   transform: translateX(50%);
   z-index: 21;
 }

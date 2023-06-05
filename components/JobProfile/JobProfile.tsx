@@ -59,6 +59,7 @@ function JobProfile() {
             })
                 .then(res => res.ok && res.json())
                 .then((res) => {
+                    if (!res.job) setFetchError('Error: Missing data')
                     res.job && setJobData(res.job)
                     res.message && setSentMessage(res.message)
                 })

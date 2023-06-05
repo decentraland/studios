@@ -202,6 +202,7 @@ function JobSubmitForm() {
     const ExamplesModal = ({children}: {children: string}) => {
         const [open, setOpen] = useState(false)
         const [page, setPage] = useState(1)
+        const [scrollY, setScrollY] = useState('')
 
         useEffect(() => {
             const close = (e: KeyboardEvent) => {
@@ -212,15 +213,21 @@ function JobSubmitForm() {
             window.addEventListener('keydown', close)
           return () => window.removeEventListener('keydown', close)
         },[])
+
+        const handleOpenModal = () => {
+            setScrollY (`calc(${globalThis.scrollY}px + 5vh)`)
+            setOpen(true)
+        }
         
         return <>
             <span className={styles.link}
-            onClick={() => setOpen(true)}>
+            onClick={() => handleOpenModal()}>
             <u>{children}</u>
-            </ span>
+            </span>
             {open && <>
             <div className={styles.modalBackground} onClick={() => setOpen(false)}/>
             <div className={styles.examplesModal}
+                style={{top: scrollY}}
                 onBlur={() => setOpen(false)}>
                     {page === 1 ? 
                         <>

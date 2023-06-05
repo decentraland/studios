@@ -494,7 +494,7 @@
 }
 
 @media (max-width: 768px){
-
+    
     .hireContainer {
         margin-top: 48px;
     }
@@ -533,6 +533,12 @@
     .heroContainer > div:last-of-type{
         font-size: 14px;
         padding-top: 10px;
+    }
+
+    .buttonsContainer > div {
+        font-size: 11px;
+        padding: 6px 12px;
+        margin-right: 10px;
     }
 
     .heroImgContainer {

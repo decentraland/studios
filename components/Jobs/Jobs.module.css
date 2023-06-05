@@ -105,6 +105,12 @@
     display: none;
   }
 
+  .headerText {
+    font-size: 15px;
+    font-weight: 400;
+    vertical-align: text-bottom;
+  }
+
   .titleContainer {
     display: flex;
     flex-direction: column;

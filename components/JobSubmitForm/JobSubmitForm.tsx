@@ -192,7 +192,7 @@ function JobSubmitForm() {
         if (leadName && leadEmail){
             setFormData({...formData, author_name: leadName, email: leadEmail })
         }
-    })
+    }, [])
 
     useEffect(() => {
         fbq('init', '1591258994727531');

@@ -292,7 +292,7 @@
 }
 
 .readContainer {
-    background: url('/images/jobs/read_bg.jpg');
+    background: url('/images/jobs/read_bg.webp');
     background-size: cover;
     width: 100vW;
     left: 0;
@@ -415,7 +415,7 @@
 }
 
 .banner {
-    background-image: url('/images/jobs/banner_bg.png');
+    background-image: url('/images/jobs/banner_bg.webp');
     background-repeat: no-repeat;
     background-position: right bottom;
     background-color: #121E2E;

@@ -30,7 +30,7 @@ const difficulty_levels = [
 	},
 	{
 		key: 'difficulty_level',
-		value: 'Expert'
+		value: 'Hard'
 	}
 ]
 

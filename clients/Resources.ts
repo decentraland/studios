@@ -11,7 +11,7 @@ export default class Resources {
     const resources: Resource[] = []
     while (!isFinished) {
       try {
-        const response = await fetch(`${RESOURCES_URL}?offset=${offset}`)
+        const response = await fetch(`${RESOURCES_URL}?offset=${offset}&sort[]=-date_created`)
         const data = (await response.json()).data as Resource[]
         if (data.length === 0) {
           isFinished = true

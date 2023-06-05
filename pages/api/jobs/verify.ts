@@ -5,13 +5,16 @@ export const config = {
   runtime: 'experimental-edge',
 }
 
+const DB_URL = process.env.NEXT_PUBLIC_PARTNERS_DATA_URL
+const API_TOKEN = process.env.API_ACCESS_TOKEN
+
+const SENDRGRID_URL = process.env.NEXT_PUBLIC_API_SENDGRID
+const SENDGRID_ACCESS_TOKEN = process.env.SENDGRID_ACCESS_TOKEN
+
+const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN
+const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID
+
 export default async function (req: NextRequest) {
-
-  const DB_URL = process.env.NEXT_PUBLIC_PARTNERS_DATA_URL
-  const API_TOKEN = process.env.API_ACCESS_TOKEN
-
-  const SENDRGRID_URL = process.env.NEXT_PUBLIC_API_SENDGRID
-  const SENDGRID_ACCESS_TOKEN = process.env.SENDGRID_ACCESS_TOKEN
 
   const { id } = await req.json()
 
@@ -59,6 +62,25 @@ export default async function (req: NextRequest) {
         template_id: "d-6629f64176d842458785b3e127c687f9"
     })
   })
+
+  await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        chat_id: TELEGRAM_CHAT_ID,
+        text: `👷 New Job created!
+        \nAuthor name: ${verify.author_name}
+        \nemail: ${verify.email}
+        \nCompany: ${verify.company}
+        \nTitle: ${verify.title}
+        \nShort description: ${verify.short_description}
+        \nLong description: ${verify.long_description}
+        \nBudget: ${verify.budget}
+        \nBrief file: ${verify.brief_file}`
+      })
+    })
 
   return new Response(JSON.stringify(verify))
 }

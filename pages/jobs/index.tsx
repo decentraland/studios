@@ -14,10 +14,10 @@ function JobsLandingPage() {
     const HeroSlider = () => {
 
         const images = [
-            ["Vice Media building in Decentraland", "/images/jobs/hero_1.png"],
-            ["LaLiga stadium in Decentraland by Vegas City", "/images/jobs/hero_2.png"],
-            ["Mango store in Decentraland by Metacast", "/images/jobs/hero_3.png"],
-            ["Absolut store in Decentraland by PARCEL PARTY", "/images/jobs/hero_4.png"],
+            ["Vice Media building in Decentraland", "/images/jobs/hero_1.webp"],
+            ["LaLiga stadium in Decentraland by Vegas City", "/images/jobs/hero_2.webp"],
+            ["Mango store in Decentraland by Metacast", "/images/jobs/hero_3.webp"],
+            ["Absolut store in Decentraland by PARCEL PARTY", "/images/jobs/hero_4.webp"],
         ]
         
         return <div className={styles.heroAllocator}>
@@ -39,8 +39,8 @@ function JobsLandingPage() {
             <div className={styles.heroSlider}>
                 <div className={styles.brandsMask}/>
                 <div className={styles['brandsSlider--moving']}>
-                    <img alt="Brands" src="/images/jobs/brand_slider.png" />
-                    <img alt="Brands" src="/images/jobs/brand_slider.png" />
+                    <img alt="Brands" src="/images/jobs/brand_slider.webp" />
+                    <img alt="Brands" src="/images/jobs/brand_slider.webp" />
                 </div>
             </div>
         </div>
@@ -80,7 +80,7 @@ function JobsLandingPage() {
                         {currentExample === i && <IconArrowRight />}{exampleText}
                         </div>
                         <div className={`${styles['examplesImgMobile']} ${currentExample === i ? styles['examplesImgMobile--show'] : ''}`}>
-                            <div className={styles.examplesImg} style={{backgroundImage: `url(/images/jobs/example_${i}b.png)`}}/>
+                            <div className={styles.examplesImg} style={{backgroundImage: `url(/images/jobs/example_${i}b.webp)`}}/>
                             <div className={styles.examplesFooterText}>{footerText}</div>
                         </div>
                     </div>)}
@@ -88,8 +88,8 @@ function JobsLandingPage() {
                 <Link href={'/jobs/hire'} legacyBehavior ><div className={styles.hireTalentBtn}>START A PROJECT</div></Link>
             </div>
             <div className={styles.examplesRightPanel}>
-                <div className={styles.examplesImg} style={{backgroundImage: `url(/images/jobs/example_${currentExample}a.png)`}}/>
-                <div className={styles.examplesImg} style={{backgroundImage: `url(/images/jobs/example_${currentExample}b.png)`}}/>
+                <div className={styles.examplesImg} style={{backgroundImage: `url(/images/jobs/example_${currentExample}a.webp)`}}/>
+                <div className={styles.examplesImg} style={{backgroundImage: `url(/images/jobs/example_${currentExample}b.webp)`}}/>
                 <div className={styles.examplesFooterText}>{examplesData[currentExample][1]}</div>
             </div>
         </div>
@@ -165,9 +165,9 @@ function JobsLandingPage() {
                             <a href={'/p/metaverse-guide'} rel="noreferrer" target="_blank" ><div className={styles.getGuideBtn}>GET THE GUIDE <IconExternal /></div></a>
                         </div>
                         <div className={styles.readRightPanel}>
-                            <img className={styles.readEndImg} alt="metaverse guide" src="/images/jobs/read_1.png" />
-                            <img className={styles.readCenterImg} alt="metaverse guide" src="/images/jobs/read_2.png" />
-                            <img className={styles.readEndImg} alt="metaverse guide" src="/images/jobs/read_3.png" />
+                            <img className={styles.readEndImg} alt="metaverse guide" src="/images/jobs/read_1.webp" />
+                            <img className={styles.readCenterImg} alt="metaverse guide" src="/images/jobs/read_2.webp" />
+                            <img className={styles.readEndImg} alt="metaverse guide" src="/images/jobs/read_3.webp" />
                         </div>
                     </div>
                 </div>
@@ -182,7 +182,7 @@ function JobsLandingPage() {
                         <div className={styles.reviewFrame}>
                             <div className={styles.reviewTitleRow}>
                                 <span>
-                                    <img alt="logo DAPPCRAFT" src="/images/jobs/rev_logo_1.png" /> Review for DAPPCRAFT
+                                    <img alt="logo DAPPCRAFT" src="/images/jobs/rev_logo_1.webp" /> Review for DAPPCRAFT
                                 </span>
                                 <a href="/profile/dappcraft" target="_blank" rel="noreferrer">
                                     <IconExternal red />
@@ -197,7 +197,7 @@ function JobsLandingPage() {
                         <div className={styles.reviewFrame}>
                             <div className={styles.reviewTitleRow}>
                                 <span>
-                                    <img alt="logo KOLLECTIFF" src="/images/jobs/rev_logo_2.png" /> Review for KOLLECTIFF
+                                    <img alt="logo KOLLECTIFF" src="/images/jobs/rev_logo_2.webp" /> Review for KOLLECTIFF
                                 </span> 
                                 <a href="/profile/kollectiff" target="_blank" rel="noreferrer">
                                     <IconExternal red />
@@ -212,7 +212,7 @@ function JobsLandingPage() {
                         <div className={styles.reviewFrame}>
                             <div className={styles.reviewTitleRow}>
                                 <span>
-                                    <img alt="logo Atrovenado" src="/images/jobs/rev_logo_3.png" /> Review for Atrovenado
+                                    <img alt="logo Atrovenado" src="/images/jobs/rev_logo_3.webp" /> Review for Atrovenado
                                 </span> 
                                 <a href="/profile/atrovenado" target="_blank" rel="noreferrer">
                                     <IconExternal red />
@@ -233,7 +233,7 @@ function JobsLandingPage() {
                 <div className={styles.unsureWrapper}>
                     <div className={styles.unsureContainer}>
                         <div className={styles.unsureText}>Unsure about the Metaverse? <span className={styles.linkText} onClick={() => openIntercom()}>Let&apos;s chat.</span> We&apos;d love to help.</div>
-                        <img className={styles.unsureImg} alt='avatars' src='/images/jobs/footer_avatars.png' />
+                        <img className={styles.unsureImg} alt='avatars' src='/images/jobs/footer_avatars.webp' />
                     </div>
                 </div>
             </main>

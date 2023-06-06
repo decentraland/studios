@@ -49,14 +49,28 @@ const DB_URL = process.env.NEXT_PUBLIC_PARTNERS_DATA_URL
 function MetaverseGuide({ landing }: Props) {
     const [name, setName] = useState('')
     const [email, setEmail] = useState('')
+    const [landingData, setLandingData] = useState(landing)
+
+    useEffect(() => {
+		fetch(`/api/get/landing`,
+            {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ slug: landing.slug })
+            }).then(res => res.ok && res.json())
+                .then((data) => setLandingData(data))
+                .catch((err) => console.log(err))
+        }, [])
 
     const router = useRouter()
     const { utm_source, utm_medium, utm_campaign } = router.query || {}
 
     useEffect(() => {
-        if (landing.fb_pixel){
-            (globalThis as any).fbq && (globalThis as any).fbq('init', landing.fb_pixel);
-            (globalThis as any).fbq && (globalThis as any).fbq('trackSingle', landing.fb_pixel, 'PageView');
+        if (landingData.fb_pixel){
+            (globalThis as any).fbq && (globalThis as any).fbq('init', landingData.fb_pixel);
+            (globalThis as any).fbq && (globalThis as any).fbq('trackSingle', landingData.fb_pixel, 'PageView');
         }
     }, [(globalThis as any).fbq])
 
@@ -66,14 +80,14 @@ function MetaverseGuide({ landing }: Props) {
         const body = {
             name,
             email,
-            slug: landing.slug,
+            slug: landingData.slug,
             utm_source, 
             utm_medium, 
             utm_campaign,
             mobile: !!globalThis?.navigator.userAgent.match(/Mobi/),
             user_agent: globalThis?.navigator.userAgent,
-            list_ids: landing.list_ids,
-            custom_fields: landing.custom_fields
+            list_ids: landingData.list_ids,
+            custom_fields: landingData.custom_fields
         }
 
         fetch('/api/landing/submit', {
@@ -83,15 +97,15 @@ function MetaverseGuide({ landing }: Props) {
 
         globalThis.localStorage.setItem('leadName', name);
         globalThis.localStorage.setItem('leadEmail', email);
-        globalThis.localStorage.setItem('leadSlug', landing.slug);
+        globalThis.localStorage.setItem('leadSlug', landingData.slug);
 
-        if (landing.track_linkedin?.conversion_id) {
-            globalThis.localStorage.setItem('leadConversionId', landing.track_linkedin.conversion_id);
+        if (landingData.track_linkedin?.conversion_id) {
+            globalThis.localStorage.setItem('leadConversionId', landingData.track_linkedin.conversion_id);
         }
         
         fbq('track', 'Lead')
-        linkedinTrackLead(landing.track_linkedin?.conversion_id)
-        plausibleTrackEvent('LandingSubmit' , { slug: landing.slug })
+        linkedinTrackLead(landingData.track_linkedin?.conversion_id)
+        plausibleTrackEvent('LandingSubmit' , { slug: landingData.slug })
         updateIntercom({"name": name, "email": email})
         ctaSuccess()
     }
@@ -129,19 +143,19 @@ function MetaverseGuide({ landing }: Props) {
 
     let hero_background = {}
 
-    if (landing.hero_background){
+    if (landingData.hero_background){
         hero_background = {
             backgroundSize: 'cover',
-            backgroundImage: `url("${DB_URL}/assets/${landing.hero_background}")`
+            backgroundImage: `url("${DB_URL}/assets/${landingData.hero_background}")`
         }
     }
 
     let linkedinTracking = null
 
-    if (landing.track_linkedin?.partner_id) {
+    if (landingData.track_linkedin?.partner_id) {
         linkedinTracking = <footer>
             <Script id="linkedin-partner_id" strategy="afterInteractive">
-                {`_linkedin_partner_id = "${landing.track_linkedin.partner_id}";
+                {`_linkedin_partner_id = "${landingData.track_linkedin.partner_id}";
                 window._linkedin_data_partner_ids = window._linkedin_data_partner_ids || [];
                 window._linkedin_data_partner_ids.push(_linkedin_partner_id);`}
             </Script>
@@ -156,25 +170,25 @@ function MetaverseGuide({ landing }: Props) {
                 s.parentNode.insertBefore(b, s);})(window.lintrk);`} 
             </Script>
             <noscript>
-                <img height="1" width="1" style={{display:"none"}} alt="" src={`https://px.ads.linkedin.com/collect/?pid=${landing.track_linkedin.partner_id}&fmt=gif`} />
+                <img height="1" width="1" style={{display:"none"}} alt="" src={`https://px.ads.linkedin.com/collect/?pid=${landingData.track_linkedin.partner_id}&fmt=gif`} />
             </noscript>
         </footer>
     }
 
     return (<>
         <Head>
-            <meta property="og:title" content={landing.hero_title} />
-            <meta property="og:description" content={landing.hero_description} />
-            <meta property="og:image" content={`${DB_URL}/assets/${landing.hero_cover}`} />
+            <meta property="og:title" content={landingData.hero_title} />
+            <meta property="og:description" content={landingData.hero_description} />
+            <meta property="og:image" content={`${DB_URL}/assets/${landingData.hero_cover}`} />
 
-            <meta property="og:url" content={`https://studios.decentraland.org/p/${landing.slug}`} />
+            <meta property="og:url" content={`https://studios.decentraland.org/p/${landingData.slug}`} />
 
-            <meta property="twitter:url" content={`https://studios.decentraland.org/p/${landing.slug}`} />
-            <meta name="twitter:title" content={landing.hero_title} />
-            <meta name="twitter:description" content={landing.hero_description} />
-            <meta name="twitter:image" content={`${DB_URL}/assets/${landing.hero_cover}`} />
+            <meta property="twitter:url" content={`https://studios.decentraland.org/p/${landingData.slug}`} />
+            <meta name="twitter:title" content={landingData.hero_title} />
+            <meta name="twitter:description" content={landingData.hero_description} />
+            <meta name="twitter:image" content={`${DB_URL}/assets/${landingData.hero_cover}`} />
     
-            <link rel="canonical" href={`https://studios.decentraland.org/p/${landing.slug}`} />
+            <link rel="canonical" href={`https://studios.decentraland.org/p/${landingData.slug}`} />
         </Head>
         <main>
             <link  rel="stylesheet" type="text/css" href="/landings.css"/>
@@ -182,41 +196,41 @@ function MetaverseGuide({ landing }: Props) {
                 style={hero_background}>
                 <div className="section--hero__container">
                     <img src="/images/guide/DCL_Logo_dark.webp" alt="" className="section--hero__container__logo" />
-                    <h1>{landing.hero_title}</h1>
-                    <p className="base-text hero__container__base-text">{landing.hero_description}</p>
-                    <a onClick={ctaHighlight} href="#section--cta" className="cta hero__container__cta">{landing.hero_button}</a>
-                    <img className="hero__container__pdf-cover" src={`${DB_URL}/assets/${landing.hero_cover}`} alt="" />
+                    <h1>{landingData.hero_title}</h1>
+                    <p className="base-text hero__container__base-text">{landingData.hero_description}</p>
+                    <a onClick={ctaHighlight} href="#section--cta" className="cta hero__container__cta">{landingData.hero_button}</a>
+                    <img className="hero__container__pdf-cover" src={`${DB_URL}/assets/${landingData.hero_cover}`} alt="" />
                 </div>
             </div>
             <div className="section section--cta" id="section--cta">
                 <div id="cta__container" className="section--cta__container container--enabled">
                     <div className="section--cta__container__content form--enabled">
-                        <img className="cta__image" src={`${DB_URL}/assets/${landing.form_image}`} alt="" />
+                        <img className="cta__image" src={`${DB_URL}/assets/${landingData.form_image}`} alt="" />
                         <div className="cta__form">
-                            <h3>{landing.form_title}</h3>
-                            <p className="base-text cta__base-text">{landing.form_description}</p>
+                            <h3>{landingData.form_title}</h3>
+                            <p className="base-text cta__base-text">{landingData.form_description}</p>
                             <form onSubmit={onFormSubmit}>
-                                <input type="text" name="name" id="name" placeholder={landing.form_name} required value={name} onChange={(newVal) => setName(newVal.target.value)} />
-                                <input type="email" name="email" id="email" placeholder={landing.form_email} required value={email} onChange={(newVal) => setEmail(newVal.target.value)} />
-                                <button className="cta" type="submit">{landing.form_button}</button>
+                                <input type="text" name="name" id="name" placeholder={landingData.form_name} required value={name} onChange={(newVal) => setName(newVal.target.value)} />
+                                <input type="email" name="email" id="email" placeholder={landingData.form_email} required value={email} onChange={(newVal) => setEmail(newVal.target.value)} />
+                                <button className="cta" type="submit">{landingData.form_button}</button>
                             </form>
                         </div>
                     </div>
                     <div className="section--cta__container__content form--success">
                         <img className="cta__image" src="/images/guide/Success-form.webp" alt="" />
                         <div className="cta__form">
-                            <h3>{landing.form_success_title}</h3>
-                            <p className="base-text cta__base-text">{landing.form_success_text} <strong>{email}</strong>.</p>
+                            <h3>{landingData.form_success_title}</h3>
+                            <p className="base-text cta__base-text">{landingData.form_success_text} <strong>{email}</strong>.</p>
                             <div className="cta__form--success__buttons">
-                                {landing.form_success_open_intercom ? 
+                                {landingData.form_success_open_intercom ? 
                                 <>
-                                    <a href={landing.form_success_open_url} { ...landing.form_success_open_url.includes('://') ? { target:"_blank" } : {} } rel="noreferrer" className="cta">{landing.form_success_open}</a>
-                                    <a onClick={openIntercom} className="cta cta-inverted">{landing.form_success_open_intercom}</a>
+                                    <a href={landingData.form_success_open_url} { ...landingData.form_success_open_url.includes('://') ? { target:"_blank" } : {} } rel="noreferrer" className="cta">{landingData.form_success_open}</a>
+                                    <a onClick={openIntercom} className="cta cta-inverted">{landingData.form_success_open_intercom}</a>
                                 </>
                                 :
                                 <>
-                                    <a href={landing.form_success_open_url} target="_blank" rel="noreferrer" className="cta">{landing.form_success_open}</a>
-                                    <a onClick={ctaSendAgain} className="inline-link">{landing.form_success_send_again}</a>
+                                    <a href={landingData.form_success_open_url} target="_blank" rel="noreferrer" className="cta">{landingData.form_success_open}</a>
+                                    <a onClick={ctaSendAgain} className="inline-link">{landingData.form_success_send_again}</a>
                                 </>
                             }
                             </div>
@@ -225,43 +239,43 @@ function MetaverseGuide({ landing }: Props) {
 
                 </div>
             </div>
-            {landing.about_show &&
+            {landingData.about_show &&
             <div className="section section--aboutdcl">
                 <div className="section--aboutdcl__description">
-                    <h4>{landing.about_intro}</h4>
-                    <h2>{landing.about_title}</h2>
+                    <h4>{landingData.about_intro}</h4>
+                    <h2>{landingData.about_title}</h2>
                 </div>
                 <div className="section--aboutdcl__cards">
-                {landing.about_blocks.map(( aboutBlock, i ) => 
+                {landingData.about_blocks.map(( aboutBlock, i ) => 
                     <div key={`about-${i}`} className="card section--aboutdcl__cards__card">
                         <p className="section--aboutdcl__cards__card__title">{aboutBlock.title}</p>
                         <p>{aboutBlock.description}</p>
                     </div>)}
                 </div>
-                <img className="section--aboutdcl__image" src={`${DB_URL}/assets/${landing.about_image}`} alt="" />
+                <img className="section--aboutdcl__image" src={`${DB_URL}/assets/${landingData.about_image}`} alt="" />
             </div>}
-            {landing.content1_show && 
+            {landingData.content1_show && 
             <div className="section section--whatsinside">
                 <div className="section--whatsinside__description">
-                    <h2>{landing.content1_title}</h2>
-                    <div className="section--whatsinside__description__text" dangerouslySetInnerHTML={{__html: landing.content1_description}}/>
+                    <h2>{landingData.content1_title}</h2>
+                    <div className="section--whatsinside__description__text" dangerouslySetInnerHTML={{__html: landingData.content1_description}}/>
                 </div>
                 <div className="section--whatsinside__cards">
-                    {landing.content1_blocks.map(( contentBlock, i ) => 
+                    {landingData.content1_blocks.map(( contentBlock, i ) => 
                     <div key={`content1-${i}`} className="card section--whatsinside__cards__card">
                         <img className="section--whatsinside__cards__card__icon" src={contentBlock.icon} alt="" />
                         <p className="section--whatsinside__cards__card__title">{contentBlock.title}</p>
                         <p className="base-text section--whatsinside__cards__card__text">{contentBlock.description}</p>
                     </div>)}
                 </div>
-                <a onClick={ctaHighlight} href="#section--cta" className="cta section--whatsinside__cta">{landing.content1_button}</a>
+                <a onClick={ctaHighlight} href="#section--cta" className="cta section--whatsinside__cta">{landingData.content1_button}</a>
             </div>}
-            {landing.content2_show &&
-            <div className="section section--journey" style={{background: `url('${DB_URL}/assets/${landing.content2_background}')`}}>
+            {landingData.content2_show &&
+            <div className="section section--journey" style={{background: `url('${DB_URL}/assets/${landingData.content2_background}')`}}>
                 <div className="section--journey__container">
-                    <h2>{landing.content2_title}</h2>
+                    <h2>{landingData.content2_title}</h2>
                     <div className="section--journey__container__cards">
-                        {landing.content2_blocks.map(( contentBlock, i ) => 
+                        {landingData.content2_blocks.map(( contentBlock, i ) => 
                         <div key={`content2-${i}`} className="card section--journey__container__cards__card">
                             <p className="section--journey__container__cards__card__number">{i+1}</p>
                             <p className="section--journey__container__cards__card__title">{contentBlock.title}</p>
@@ -269,21 +283,21 @@ function MetaverseGuide({ landing }: Props) {
                         </div>)}
                     </div>
                     <div className="section--journey__container__cta">
-                        <p className="base-text section--journey__container__cta__text">{landing.content2_description}</p>
-                        <a href="#section--cta" className="cta" onClick={ctaHighlight}>{landing.content2_button}</a>
+                        <p className="base-text section--journey__container__cta__text">{landingData.content2_description}</p>
+                        <a href="#section--cta" className="cta" onClick={ctaHighlight}>{landingData.content2_button}</a>
                     </div>
 
                 </div>
             </div>}
-            {landing.faq_show &&
+            {landingData.faq_show &&
             <div className="section--faq">
                 <div className="section section--faq__container">
                     <div className="section--faq__container__description">
-                        <h3>{landing.faq_title}</h3>
-                        <p className="base-text section--faq__container__description">{landing.faq_description}</p>
+                        <h3>{landingData.faq_title}</h3>
+                        <p className="base-text section--faq__container__description">{landingData.faq_description}</p>
                     </div>
                     <div className="section--faq__container__faqlist">
-                        {landing.faqs.map((faqBlock,i) => 
+                        {landingData.faqs.map((faqBlock,i) => 
                         <div key={`faq-${i}`} id="faq" className="section--faq__container__faqlist__faq faq faq--collapsed" onClick={ctaToggle}>
                             <div className="section--faq__container__faqlist__faq__title">
                                 <p className="section--faq__container__faqlist__faq__title__number">{i+1}</p>
@@ -295,19 +309,19 @@ function MetaverseGuide({ landing }: Props) {
                     </div>
                 </div>
             </div>}
-            {landing.call_show &&
+            {landingData.call_show &&
             <div className="section section--deepdive">
                 <div className="section--deepdive__container">
-                    <img src={`${DB_URL}/assets/${landing.call_image}`} className="section--deepdive__container__img" alt="" />
-                    <h2>{landing.call_title}</h2>
-                    <a onClick={ctaHighlight} href="#section--cta" className="cta section--deepdive__container__cta">{landing.call_button}</a>
+                    <img src={`${DB_URL}/assets/${landingData.call_image}`} className="section--deepdive__container__img" alt="" />
+                    <h2>{landingData.call_title}</h2>
+                    <a onClick={ctaHighlight} href="#section--cta" className="cta section--deepdive__container__cta">{landingData.call_button}</a>
                 </div>
             </div>}
-            {landing.reviews_show &&
+            {landingData.reviews_show &&
             <div className="section section--reviews">
-                <h3>{landing.reviews_title}</h3>
+                <h3>{landingData.reviews_title}</h3>
                 <div className="section--reviews__container">
-                    {landing.reviews.map((reviewBlock, i) => 
+                    {landingData.reviews.map((reviewBlock, i) => 
                     <div key={`rev-${i}`} className="section--reviews__container__review">
                         <p className="base-text section--reviews__container__review__text">{reviewBlock.Review}</p>
                         <div className="section--reviews__container__review__author">
@@ -320,12 +334,12 @@ function MetaverseGuide({ landing }: Props) {
                     </div>)}
                 </div>
             </div>}
-            {landing.contact_show &&
+            {landingData.contact_show &&
             <div className="section section--contact">
                 <div className="section--contact__container">
                     <div className="section--contact__container__message">
-                        <h2>{landing.contact_title} <a onClick={openIntercom} className="chat-link">{landing.contact_action}</a> {landing.contact_close}</h2>
-                            <p className="base-text section--contact__cta__text">{landing.contact_text} <a className="inline-link" href="#section--cta" onClick={ctaHighlight}> {landing.contact_text_close}</a> </p>
+                        <h2>{landingData.contact_title} <a onClick={openIntercom} className="chat-link">{landingData.contact_action}</a> {landingData.contact_close}</h2>
+                            <p className="base-text section--contact__cta__text">{landingData.contact_text} <a className="inline-link" href="#section--cta" onClick={ctaHighlight}> {landingData.contact_text_close}</a> </p>
                     </div>
                 <img src="/images/guide/envelope.webp" alt="" className="section--contact_envelope" />
                 </div>
@@ -333,7 +347,7 @@ function MetaverseGuide({ landing }: Props) {
             <div className="footer">
                 <div className="footer__container">
                     <img src="/images/guide/DCL_Logo_white.webp" alt="" className="logo" />
-                    <a href="mailto:studios@decentraland.org" className="base-text">{landing.contact_us}</a>
+                    <a href="mailto:studios@decentraland.org" className="base-text">{landingData.contact_us}</a>
                 </div>
             </div>
         </main>

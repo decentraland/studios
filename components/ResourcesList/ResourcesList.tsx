@@ -73,8 +73,16 @@ export default function ResourcesList({resources}: Props) {
 	const urlFilters = [...urlSearchParams].map(([keyName, val]) => ({key: keyName, value: val}))
 
 	const [limit, setLimit] = useState(5)
+	const [resourcesList, setResourcesList] = useState(resources)
 	const [filters, setFilters] = useState<Filter[]>(urlFilters.length ? urlFilters : [{key: 'sdk_version', value: 'SDK7'}])
 	
+	useEffect(() => {
+		fetch('/api/get/resources')
+		  .then(res => res.ok && res.json())
+		  .then((data) => setResourcesList(data))
+		  .catch((err) => console.log(err))
+	}, [])
+
 	useEffect(() => {
 		router.replace(
 			{
@@ -96,9 +104,9 @@ export default function ResourcesList({resources}: Props) {
 	let filteredList: Resource[] = []
 
 	if (filters.length){
-		filteredList = resources.filter(resource => filters.every(filter => filterItem(resource, filter)))
+		filteredList = resourcesList.filter(resource => filters.every(filter => filterItem(resource, filter)))
 	} else {
-		filteredList = resources
+		filteredList = resourcesList
 	}
 	
   const renderResources = filteredList.slice(0, limit)

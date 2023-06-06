@@ -1,4 +1,4 @@
-import React, { ReactElement } from 'react'
+import React, { ReactElement, useEffect, useState } from 'react'
 
 import 'react-responsive-carousel/lib/styles/carousel.min.css'
 import styles from './ProjectProfile.module.css'
@@ -21,16 +21,32 @@ const getListId = (video_url: any) => video_url.match(/list=([\w-]*)/)
 
 
 function ProjectProfile({ project }: Props) {
-  const PROJECT_WEBSITE = project.link || ''
-  const PARTNER_PROFILE_URL = `/profile/${project.profile?.slug}`
 
-  const images = [project.image_1, project.image_2, project.image_3, project.image_4, project.image_5]
+  const [ projectData, setProjectData ] = useState<PartnerProject>(project)
+
+  useEffect(() => {
+		fetch(`/api/get/project`,
+    {
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ id: project.id })
+    }).then(res => res.ok && res.json())
+		  .then((data) => setProjectData(data))
+		  .catch((err) => console.log(err))
+	}, [])
+
+  const PROJECT_WEBSITE = projectData.link || ''
+  const PARTNER_PROFILE_URL = `/profile/${projectData.profile?.slug}`
+
+  const images = [projectData.image_1, projectData.image_2, projectData.image_3, projectData.image_4, projectData.image_5]
     .filter((img) => img)
     .map((image) => (
       <img key={image} className={styles.image_img} src={`${DATA_URL}/assets/${image}?key=project-img`} />
     ))
 
-  const videos = [project.video_1, project.video_2]
+  const videos = [projectData.video_1, projectData.video_2]
     .filter((video_url) => video_url && (getVideoId(video_url) || getListId(video_url)))
     .map((video_url) => {
       const videoId = getVideoId(video_url)
@@ -88,7 +104,7 @@ function ProjectProfile({ project }: Props) {
       </div>
       <div className={styles.container__content}>
         <div className={styles.info_panel}>
-          <div className={styles.name}>{project.title}</div>
+          <div className={styles.name}>{projectData.title}</div>
         </div>
         <div className={styles.info_panel}>
           <div className={styles.image_container}>
@@ -108,8 +124,8 @@ function ProjectProfile({ project }: Props) {
               <div className={styles.info_title}>
                 <FormattedMessage id="project.about" />
               </div>
-              <MarkdownDescription className={styles.description} description={project.description} />
-              {project.link && (
+              <MarkdownDescription className={styles.description} description={projectData.description} />
+              {projectData.link && (
                 <div className={styles.info_external_link}>
                   <a
                     href={PROJECT_WEBSITE}
@@ -132,13 +148,13 @@ function ProjectProfile({ project }: Props) {
                   <div
                     className={styles.partner_logo}
                     style={{
-                      background: `url(${DATA_URL}/assets/${project.profile.logo}?key=logo)`,
+                      background: `url(${DATA_URL}/assets/${projectData.profile.logo}?key=logo)`,
                     }}
                   ></div>
                 </a>
 
                 <div className={styles.partner_name}>
-                  <a href={PARTNER_PROFILE_URL}>{project.profile.name}</a>
+                  <a href={PARTNER_PROFILE_URL}>{projectData.profile.name}</a>
                 </div>
               </div>
             </div>

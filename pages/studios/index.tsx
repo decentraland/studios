@@ -29,6 +29,7 @@ interface Props {
 }
 
 function Home({ partners, projectsCount }: Props) {
+
   return (
     <Container className={styles.container}>
       <Head>
@@ -42,7 +43,8 @@ function Home({ partners, projectsCount }: Props) {
         <meta name="twitter:description" content="Find the Right Team for Your Project." />
         <meta name="twitter:image" content="https://studios.decentraland.org/images/banner_studios.png"/>
 
-        <link rel="canonical" href="https://studios.decentraland.org/studios" />
+        <link rel="canonical" href="https://studios.decentraland.org/studios
+        " />
       </Head>
       <main className={styles.main}>
         <BannerStudios studiosCount={partners.length} projectsCount={projectsCount}/>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { VerifiedPartner, Service } from '../../interfaces/VerifiedPartner'
 import ServiceTag from '../ServiceTag/ServiceTag'
 import Discord from '../Icons/Discord'
@@ -38,15 +38,39 @@ const SERVICES = Object.values(Service)
 function PartnerProfile({ partner, projects, reviews }: Props) {
   const [projectsLimit, setProjectsLimit] = useState(6)
   const [reviewsLimit, setReviewsLimit] = useState(4)
+  const [partnerData, setPartnerData] = useState<VerifiedPartner>(partner)
+  const [projectsData, setProjectsData] = useState<PartnerProject[]>(projects)
+  const [reviewsData, setReviewsData] = useState<PartnerReview[]>(reviews)
 
-  const WEBSITE = partner.website || ''
+
+  useEffect(() => {
+		fetch(`/api/get/studio`,
+    {
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ 
+        slug: partner.slug,
+        id: partner.id
+       })
+    }).then(res => res.ok && res.json())
+		  .then((data) => {
+        setPartnerData(data.studio)
+        setProjectsData(data.projects)
+        setReviewsData(data.reviews)
+      })
+		  .catch((err) => console.log(err))
+	}, [])
+
+  const WEBSITE = partnerData.website || ''
   const REPORT_URL = 'https://dclstudios.typeform.com/to/HQpD0z5S'
 
-  const displayServices = partner.services || [].filter((service) => SERVICES.includes(service))
+  const displayServices = partnerData.services || [].filter((service) => SERVICES.includes(service))
 
-  const renderProjects = projects.slice(0, projectsLimit)
+  const renderProjects = projectsData.slice(0, projectsLimit)
   
-  const renderReviews = reviews.slice(0, reviewsLimit)
+  const renderReviews = reviewsData.slice(0, reviewsLimit)
 
   return (
     <div className={styles.container}>
@@ -65,83 +89,83 @@ function PartnerProfile({ partner, projects, reviews }: Props) {
               <div
                 className={styles.image}
                 style={{
-                  background: `url(${DATA_URL}/assets/${partner.logo}?key=logo)`,
+                  background: `url(${DATA_URL}/assets/${partnerData.logo}?key=logo)`,
                 }}
               />
             </a>
             <div className={styles.header_info}>
-              <div className={styles.name}>{partner.name}</div>
+              <div className={styles.name}>{partnerData.name}</div>
               <div className={styles.meta}>
                 <div>
-                  {partner.website && (
+                  {partnerData.website && (
                     <Icon
-                      url={partner.website}
+                      url={partnerData.website}
                       icon={<Website />}
-                      onClick={() => trackLink('Open External Link', 'Click Website', partner.website as string)}
+                      onClick={() => trackLink('Open External Link', 'Click Website', partnerData.website as string)}
                     />
                   )}
-                  {partner.marketplace && (
+                  {partnerData.marketplace && (
                     <Icon
-                      url={partner.marketplace}
+                      url={partnerData.marketplace}
                       icon={<Marketplace />}
                       onClick={() =>
-                        trackLink('Open External Link', 'Click Marketplace', partner.marketplace as string)
+                        trackLink('Open External Link', 'Click Marketplace', partnerData.marketplace as string)
                       }
                     />
                   )}
-                  {partner.email && (
+                  {partnerData.email && (
                     <Icon
-                      url={`mailto:${partner.email}?bcc=studios@decentraland.org&subject=Work Inquiry - Project in Decentraland&body=${
-                        encodeURI(`Hello ${partner.name},
+                      url={`mailto:${partnerData.email}?bcc=studios@decentraland.org&subject=Work Inquiry - Project in Decentraland&body=${
+                        encodeURI(`Hello ${partnerData.name},
                       I am interested in hiring your services for an upcoming Decentraland project. I found your studio listed in the Decentraland Verified Partners Registry and wanted to inquire about a potential collaboration.
                       
                       If you are interested, please get back to me to discuss the details.
                       
                       Thank you!`)}`}
                       icon={<Email />}
-                      onClick={() => trackLink('Open External Link', 'Click Email', partner.email as string)}
+                      onClick={() => trackLink('Open External Link', 'Click Email', partnerData.email as string)}
                     />
                   )}
-                  {partner.discord && (
+                  {partnerData.discord && (
                     <Icon
-                      url={partner.discord}
+                      url={partnerData.discord}
                       icon={<Discord />}
-                      onClick={() => trackLink('Open External Link', 'Click Discord', partner.discord as string)}
+                      onClick={() => trackLink('Open External Link', 'Click Discord', partnerData.discord as string)}
                     />
                   )}
-                  {partner.opensea && (
+                  {partnerData.opensea && (
                     <Icon
-                      url={partner.opensea}
+                      url={partnerData.opensea}
                       icon={<Opensea />}
-                      onClick={() => trackLink('Open External Link', 'Click Opensea', partner.opensea as string)}
+                      onClick={() => trackLink('Open External Link', 'Click Opensea', partnerData.opensea as string)}
                     />
                   )}
-                  {partner.twitter && (
+                  {partnerData.twitter && (
                     <Icon
-                      url={partner.twitter}
+                      url={partnerData.twitter}
                       icon={<Twitter />}
-                      onClick={() => trackLink('Open External Link', 'Click Twitter', partner.twitter as string)}
+                      onClick={() => trackLink('Open External Link', 'Click Twitter', partnerData.twitter as string)}
                     />
                   )}
-                  {partner.instagram && (
+                  {partnerData.instagram && (
                     <Icon
-                      url={partner.instagram}
+                      url={partnerData.instagram}
                       icon={<Instagram />}
-                      onClick={() => trackLink('Open External Link', 'Click Instagram', partner.instagram as string)}
+                      onClick={() => trackLink('Open External Link', 'Click Instagram', partnerData.instagram as string)}
                     />
                   )}
-                  {partner.linkedin && (
+                  {partnerData.linkedin && (
                     <Icon
-                      url={partner.linkedin}
+                      url={partnerData.linkedin}
                       icon={<Linkedin />}
-                      onClick={() => trackLink('Open External Link', 'Click Linkedin', partner.linkedin as string)}
+                      onClick={() => trackLink('Open External Link', 'Click Linkedin', partnerData.linkedin as string)}
                     />
                   )}
-                  {partner.youtube && (
+                  {partnerData.youtube && (
                     <Icon
-                      url={partner.youtube}
+                      url={partnerData.youtube}
                       icon={<Youtube />}
-                      onClick={() => trackLink('Open External Link', 'Click Youtube', partner.youtube as string)}
+                      onClick={() => trackLink('Open External Link', 'Click Youtube', partnerData.youtube as string)}
                     />
                   )}
                 </div>
@@ -164,7 +188,7 @@ function PartnerProfile({ partner, projects, reviews }: Props) {
             <div className={styles.info_title}>
               <FormattedMessage id="about" />
             </div>
-            <MarkdownDescription className={styles.description} description={partner.description} />
+            <MarkdownDescription className={styles.description} description={partnerData.description} />
           </div>
           <div className={styles.table_container}>
             <div className={styles.info_details}>
@@ -173,7 +197,7 @@ function PartnerProfile({ partner, projects, reviews }: Props) {
                   <FormattedMessage id="region" />
                 </div>
                 <div>
-                  <p>{partner.region}</p>
+                  <p>{partnerData.region}</p>
                 </div>
               </div>
               <div>
@@ -181,7 +205,7 @@ function PartnerProfile({ partner, projects, reviews }: Props) {
                   <FormattedMessage id="country" />
                 </div>
                 <div>
-                  <p>{partner.country}</p>
+                  <p>{partnerData.country}</p>
                 </div>
               </div>
             </div>
@@ -191,7 +215,7 @@ function PartnerProfile({ partner, projects, reviews }: Props) {
                   <FormattedMessage id="team_size" />
                 </div>
                 <div>
-                  <p>{partner.team_size}</p>
+                  <p>{partnerData.team_size}</p>
                 </div>
               </div>
               <div>
@@ -199,7 +223,7 @@ function PartnerProfile({ partner, projects, reviews }: Props) {
                   <FormattedMessage id="languages" />
                 </div>
                 <div>
-                  <p>{!!partner.languages && <DetailsList list={partner.languages} />}</p>
+                  <p>{!!partnerData.languages && <DetailsList list={partnerData.languages} />}</p>
                 </div>
               </div>
             </div>
@@ -209,7 +233,7 @@ function PartnerProfile({ partner, projects, reviews }: Props) {
                   <FormattedMessage id="payment_methods" />
                 </div>
                 <div>
-                  <p>{!!partner.payment_methods && <DetailsList list={partner.payment_methods} />}</p>
+                  <p>{!!partnerData.payment_methods && <DetailsList list={partnerData.payment_methods} />}</p>
                 </div>
               </div>
             </div>
@@ -220,14 +244,14 @@ function PartnerProfile({ partner, projects, reviews }: Props) {
           <div className={`${styles.info_title} mt-3r`}>
             <FormattedMessage id="projects" />
           </div>
-          {projects.length ? (
+          {projectsData.length ? (
             <>
               <div className={styles.projects_grid}>
                 {renderProjects.map((project) => (
                   <ProjectCard key={project.id} project={project} />
                 ))}
               </div>
-              {renderProjects.length < projects.length && 
+              {renderProjects.length < projectsData.length && 
                 <div className={styles.load_more_container}>
                   <div className={'button_primary--inverted'} onClick={() => setProjectsLimit(projectsLimit + 6)}>LOAD MORE</div>
                 </div>}
@@ -242,16 +266,16 @@ function PartnerProfile({ partner, projects, reviews }: Props) {
         <div>
           <div className={`${styles.info_title} mt-3r`}>
             <FormattedMessage id="reviews" />
-            <a className='button_basic' href={`/reviews/submit/${partner.slug}`} target="_blank" rel="noreferrer">LEAVE A REVIEW</a>
+            <a className='button_basic' href={`/reviews/submit/${partnerData.slug}`} target="_blank" rel="noreferrer">LEAVE A REVIEW</a>
           </div>
-          {reviews.length ? (
+          {reviewsData.length ? (
             <>
               <div className={styles.reviews_grid}>
                 {renderReviews.map((review) => (
                   <ReviewCard key={review.id} review={review} />
                 ))}
               </div>
-              {renderReviews.length < reviews.length && 
+              {renderReviews.length < reviewsData.length && 
                 <div className={styles.load_more_container}>
                   <div className={'button_primary--inverted'} onClick={() => setReviewsLimit(reviewsLimit + 4)}>LOAD MORE</div>
                 </div>}

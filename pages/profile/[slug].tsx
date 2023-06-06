@@ -3,11 +3,10 @@ import Head from 'next/head'
 import Partners from '../../clients/Partners'
 import { VerifiedPartner } from '../../interfaces/VerifiedPartner'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import PartnerProfile from '../../components/PartnerProfile/PartnerProfile'
 import { PartnerProject } from '../../interfaces/PartnerProject'
 import Projects from '../../clients/Projects'
-import { useIntl } from 'react-intl'
 import { PartnerReview } from '../../interfaces/PartnerReview'
 
 const DATA_URL = process.env.NEXT_PUBLIC_PARTNERS_DATA_URL
@@ -48,24 +47,6 @@ interface Props {
 }
 
 function Partner({ partner, projects, reviews }: Props) {
-  const intl = useIntl()
-  const title = intl.formatMessage({ id: 'title' })
-
-  const [updatedReviews, setUpdatedReviews] = useState(reviews)
-
-  useEffect(() => {
-    if (partner.id){
-
-      fetch(`/api/reviews/get`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ partnerId: partner.id })
-      }).then((response) => response.json()).then((data) => setUpdatedReviews(data))
-    }
-
-  },[partner.id])
   
   return (
     <Container>
@@ -85,7 +66,7 @@ function Partner({ partner, projects, reviews }: Props) {
       </Head>
 
       <main>
-        <PartnerProfile partner={partner} projects={projects} reviews={updatedReviews}/>
+        <PartnerProfile partner={partner} projects={projects} reviews={reviews}/>
       </main>
     </Container>
   )

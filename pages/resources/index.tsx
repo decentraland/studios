@@ -27,12 +27,8 @@ interface Props {
 }
 
 function ResourcesPage({ resources }: Props) {
-  const [limit, setLimit] = useState(5)
-
-  const renderResources = resources.slice(0, limit)
 
   return (
-      
     <Container className={styles.container}>
       <Head>
         <meta property="og:title" content="Browse free and open source ideas to inspire you" />
@@ -52,7 +48,6 @@ function ResourcesPage({ resources }: Props) {
         <ResourcesList resources={resources} />
       </main>
     </Container>
-
   )
 }
 

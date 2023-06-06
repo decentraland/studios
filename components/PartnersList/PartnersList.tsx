@@ -170,9 +170,12 @@ function PartnersList({ partners }: Props) {
   const [limit, setLimit] = useState(parseInt(globalThis?.sessionStorage?.studiosListLimit) || 10)
   const [filteredList, setFilteredList] = useState(sortByServicesCount(sortAlphabeticPartners(partners)))
 
-
   useEffect(() => {
-    setFilteredList(sortByServicesCount(randomizePartners(partners)))
+    // setFilteredList(sortByServicesCount(randomizePartners(partners)))
+    fetch('/api/get/studios')
+      .then(res => res.ok && res.json())
+      .then((data) => setFilteredList(sortByServicesCount(randomizePartners(data))))
+      .catch((err) => console.log(err))
   }, [])
   
   useEffect(() => {

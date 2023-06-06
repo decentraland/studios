@@ -7,8 +7,16 @@ import styles from './ProjectsList.module.css'
 function ProjectsList({ projects }: { projects: PartnerProject[] }) {
 
   const [limit, setLimit] = useState(parseInt(globalThis?.sessionStorage?.projectsListLimit) || 18)
+  const [projectsList, setProjectsList] = useState<PartnerProject[]>(projects)
 
-    const renderProjects = projects.slice(0, limit)
+  useEffect(() => {
+    fetch('/api/get/projects')
+      .then(res => res.ok && res.json())
+      .then((data) => setProjectsList(data))
+      .catch((err) => console.log(err))
+  }, [])
+
+    const renderProjects = projectsList.slice(0, limit)
 
     useEffect(() => {
       globalThis.sessionStorage.setItem('projectsListLimit', limit.toString());
@@ -19,7 +27,7 @@ function ProjectsList({ projects }: { projects: PartnerProject[] }) {
         <div className={styles.projects_grid}>
             {renderProjects.map((project) => <ProjectCard key={project.id} project={project} />)}
         </div>
-        {projects.length >= limit && <div onClick={() => setLimit(current => current + 12)} className='button_primary center'>LOAD MORE</div>}
+        {projectsList.length >= limit && <div onClick={() => setLimit(current => current + 12)} className='button_primary center'>LOAD MORE</div>}
       </>
     )
 

@@ -1,5 +1,7 @@
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
+The CMS backend is running on an instance of Directus. The .env file entry `NEXT_PUBLIC_PARTNERS_DATA_URL` points to it's public endpoint.
+
 ## Getting Started
 
 First, run the development server:
@@ -12,23 +14,38 @@ yarn dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+## Environment variables
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+You will need to create a local .env.local next to .env file containing the following variables:
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+```bash
+NEXT_PUBLIC_METABASE_KEY=
+NEXT_PUBLIC_INTERCOM_APP_ID=
 
-## Learn More
+API_ACCESS_TOKEN=
 
-To learn more about Next.js, take a look at the following resources:
+SENDGRID_ACCESS_TOKEN=
+TELEGRAM_BOT_TOKEN=
+TELEGRAM_CHAT_ID=
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Deploy on Cloudflare Pages
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+This project is optimized for running on a Cloudflare Pages instance by using [@cloudflare/next-on-pages](https://github.com/cloudflare/next-on-pages) library.
 
-## Deploy on Vercel
+Cloudflare build settings:
+```
+Framework preset: none
+Build command: npx @cloudflare/next-on-pages@pre-v1 --experimental-minify
+Build output directory: .vercel/output/static
+```
+Environment variables in addition to the listed before:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+`NODE_VERSION= 14`
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+Functions Compatibility date:
+
+`2022-11-30`
+
+Functions Compatibility flags:
+`nodejs_compat`

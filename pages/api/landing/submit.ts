@@ -56,16 +56,16 @@ export default async function (req: NextRequest) {
       })
     })
 
-    await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        chat_id: TELEGRAM_CHAT_ID,
-        text: `🎉 New lead on ${body.slug}!\n${body.name} ${body.email}`
-      })
-    })
+    // await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+    //   method: 'POST',
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //   },
+    //   body: JSON.stringify({
+    //     chat_id: TELEGRAM_CHAT_ID,
+    //     text: `🎉 New lead on ${body.slug}!\n${body.name} ${body.email}`
+    //   })
+    // })
     
     return new Response(null, { status: 204 })
 

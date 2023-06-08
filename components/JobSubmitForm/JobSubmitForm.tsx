@@ -70,7 +70,7 @@ function JobSubmitForm() {
         e.preventDefault()
 
         if (!emptyFieldsStep1) {
-            (globalThis as any).plausible && (globalThis as any).plausible('JobsSubmitForm: Step2')
+            plausibleTrackEvent('JobsSubmitForm: Step2', { slug: globalThis.localStorage.getItem('leadSlug') || 'jobs' })
             setCurrentStep(2)
         }
     }

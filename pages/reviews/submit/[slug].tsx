@@ -6,11 +6,10 @@ import Partners from '../../../clients/Partners'
 import { VerifiedPartner } from '../../../interfaces/VerifiedPartner'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
 import ReviewSubmitForm from '../../../components/ReviewSubmitForm/ReviewSubmitForm'
-import { useIntl } from 'react-intl'
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   if (params && params.slug) {
-    const partner = await Partners.getPartnerData(`?filter[slug]=${params.slug}`)
+    const partner = await Partners.getPartnerData(`${params.slug}`)
 
     return {
       props: {
@@ -34,8 +33,6 @@ export const getStaticPaths: GetStaticPaths = async () => {
 }
 
 function ReviewForm({ partner }: { partner: VerifiedPartner }) {
-  const intl = useIntl()
-  const title = intl.formatMessage({ id: 'title' })
 
   return (
     <Container>

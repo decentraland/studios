@@ -11,11 +11,11 @@ import Projects from '../../clients/Projects'
 
 export async function getStaticProps() {
   
-  const projects = await Projects.get({basicData: true})
+  const projects = await Projects.get()
   
   return {
     props: {
-      projects: projects.filter(project => project.profile), 
+      projects: projects, 
     },
   }
 }

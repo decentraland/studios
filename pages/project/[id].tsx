@@ -11,7 +11,7 @@ const DATA_URL = process.env.NEXT_PUBLIC_PARTNERS_DATA_URL
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   if (params && params.id) {
-    const project = (await Projects.getProject(`?filter[id]=${params.id}&fields=*,profile.name,profile.slug,profile.logo`))[0]
+    const project = await Projects.getProject(`${params.id}`)
 
     return {
       props: {
@@ -26,7 +26,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const paths = await Projects.getIdsAndProfiles()
+  const paths = await Projects.getAllIds()
 
   return {
     paths,

@@ -7,28 +7,22 @@ import Partners from '../../clients/Partners'
 import React from 'react'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
 import BannerStudios from '../../components/BannerStudios/BannerStudios'
-import Projects from '../../clients/Projects'
-
 
 export async function getStaticProps() {
-  const partners = await Partners.get({basicData: true})
-
-  const projects = await Projects.get({basicData: true})
+  const partners = await Partners.get()
 
   return {
     props: {
       partners: partners,
-      projectsCount: projects.length,
     },
   }
 } 
 
 interface Props {
   partners: VerifiedPartner[]
-  projectsCount: number
 }
 
-function Home({ partners, projectsCount }: Props) {
+function Home({ partners }: Props) {
 
   return (
     <Container className={styles.container}>
@@ -43,11 +37,10 @@ function Home({ partners, projectsCount }: Props) {
         <meta name="twitter:description" content="Find the Right Team for Your Project." />
         <meta name="twitter:image" content="https://studios.decentraland.org/images/banner_studios.png"/>
 
-        <link rel="canonical" href="https://studios.decentraland.org/studios
-        " />
+        <link rel="canonical" href="https://studios.decentraland.org/studios" />
       </Head>
       <main className={styles.main}>
-        <BannerStudios studiosCount={partners.length} projectsCount={projectsCount}/>
+        <BannerStudios />
         <PartnersList partners={partners} />
       </main>
     </Container>

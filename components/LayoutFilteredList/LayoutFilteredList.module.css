@@ -20,8 +20,8 @@
 }
 
 .resultsCount {
-    font-size: 20px;
-    font-weight: 600;
+    font-size: 16px;
+    font-weight: 700;
 }
 
 .filtersButton {
@@ -95,6 +95,7 @@
 @media (max-width: 700px) {
     .filtersButton {
         display: inline-block;
+        vertical-align: sub;
     }
 
     .clearButton {
@@ -157,5 +158,9 @@
 
     .listContainer {
         max-width: 100%;
+    }
+
+    .resultsCount {
+        font-size: 14px;
     }
 }

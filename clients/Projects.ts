@@ -6,11 +6,12 @@ export default class Projects {
 
   static Url = process.env.NEXT_PUBLIC_PARTNERS_DATA_URL || ''
   
-  static async get({basicData, ideas}: {basicData?: boolean, ideas?: boolean}) {
+  static async get() {
     let isFinished = false
     let offset = 0
-    const queryFields = basicData && !ideas ? '&sort[]=-date_created&fields=image_1,id,title,profile.name,profile.slug,profile.logo' : '&fields=*,profile.name,profile.slug,profile.logo'
-    const projects: PartnerProject[] = []
+    const queryFields = '&sort[]=-date_created&fields=image_1,id,title,profile.name,profile.slug,profile.logo'
+    
+    let projects: PartnerProject[] = []
     while (!isFinished) {
       try {
         const response = await fetch(`${PROJECTS_URL}?offset=${offset}${queryFields}`)
@@ -26,15 +27,18 @@ export default class Projects {
       }
     }
 
+    projects = projects.filter(project => project.profile)
+
     return projects
   }
 
-  static async getProject(searchParams: string) {
-    let projects: PartnerProject[] = []
+  static async getProject(id: string) {
+    let projects
 
+    const queryFields = `?filter[id]=${id}&fields=*,profile.name,profile.slug,profile.logo`
     try {
-      const response = await fetch(`${PROJECTS_URL}${searchParams}`)
-      projects = (await response.json()).data as PartnerProject[]
+      const response = await fetch(`${PROJECTS_URL}${queryFields}`)
+      projects = (await response.json()).data[0] as PartnerProject
     } catch (error) {
       console.log('error getting project', error)
     }
@@ -42,13 +46,13 @@ export default class Projects {
     return projects
   }
 
-  static async getIdsAndProfiles() {
-    const projects = (await this.get({})).filter(project => project.profile)
+  static async getAllIds() {
+    const projects = await this.get()
 
     return projects.map((project) => {
       return {
         params: {
-          id: project.id.toString()
+          id: `${project.id}`
         },
       }
     })

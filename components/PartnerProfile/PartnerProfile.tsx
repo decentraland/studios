@@ -28,20 +28,15 @@ import ReviewCard from '../ReviewCard/ReviewCard'
 
 interface Props {
   partner: VerifiedPartner
-  projects: PartnerProject[]
-  reviews: PartnerReview[]
 }
 
 const DATA_URL = process.env.NEXT_PUBLIC_PARTNERS_DATA_URL
 const SERVICES = Object.values(Service)
 
-function PartnerProfile({ partner, projects, reviews }: Props) {
+function PartnerProfile({ partner }: Props) {
   const [projectsLimit, setProjectsLimit] = useState(6)
   const [reviewsLimit, setReviewsLimit] = useState(4)
   const [partnerData, setPartnerData] = useState<VerifiedPartner>(partner)
-  const [projectsData, setProjectsData] = useState<PartnerProject[]>(projects)
-  const [reviewsData, setReviewsData] = useState<PartnerReview[]>(reviews)
-
 
   useEffect(() => {
 		fetch(`/api/get/studio`,
@@ -51,14 +46,11 @@ function PartnerProfile({ partner, projects, reviews }: Props) {
           'Content-Type': 'application/json'
       },
       body: JSON.stringify({ 
-        slug: partner.slug,
-        id: partner.id
+        slug: partner.slug
        })
     }).then(res => res.ok && res.json())
 		  .then((data) => {
-        setPartnerData(data.studio)
-        setProjectsData(data.projects)
-        setReviewsData(data.reviews)
+        setPartnerData(data)
       })
 		  .catch((err) => console.log(err))
 	}, [])
@@ -68,9 +60,9 @@ function PartnerProfile({ partner, projects, reviews }: Props) {
 
   const displayServices = partnerData.services || [].filter((service) => SERVICES.includes(service))
 
-  const renderProjects = projectsData.slice(0, projectsLimit)
+  const renderProjects = partnerData.projects?.slice(0, projectsLimit)
   
-  const renderReviews = reviewsData.slice(0, reviewsLimit)
+  const renderReviews = partnerData.reviews?.slice(0, reviewsLimit)
 
   return (
     <div className={styles.container}>
@@ -244,14 +236,14 @@ function PartnerProfile({ partner, projects, reviews }: Props) {
           <div className={`${styles.info_title} mt-3r`}>
             <FormattedMessage id="projects" />
           </div>
-          {projectsData.length ? (
+          {partnerData.projects?.length ? (
             <>
               <div className={styles.projects_grid}>
                 {renderProjects.map((project) => (
                   <ProjectCard key={project.id} project={project} />
                 ))}
               </div>
-              {renderProjects.length < projectsData.length && 
+              {renderProjects.length < partnerData.projects.length && 
                 <div className={styles.load_more_container}>
                   <div className={'button_primary--inverted'} onClick={() => setProjectsLimit(projectsLimit + 6)}>LOAD MORE</div>
                 </div>}
@@ -268,14 +260,14 @@ function PartnerProfile({ partner, projects, reviews }: Props) {
             <FormattedMessage id="reviews" />
             <a className='button_basic' href={`/reviews/submit/${partnerData.slug}`} target="_blank" rel="noreferrer">LEAVE A REVIEW</a>
           </div>
-          {reviewsData.length ? (
+          {partnerData.reviews?.length ? (
             <>
               <div className={styles.reviews_grid}>
                 {renderReviews.map((review) => (
                   <ReviewCard key={review.id} review={review} />
                 ))}
               </div>
-              {renderReviews.length < reviewsData.length && 
+              {renderReviews.length < partnerData.reviews.length && 
                 <div className={styles.load_more_container}>
                   <div className={'button_primary--inverted'} onClick={() => setReviewsLimit(reviewsLimit + 4)}>LOAD MORE</div>
                 </div>}

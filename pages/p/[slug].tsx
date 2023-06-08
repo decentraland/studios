@@ -10,7 +10,7 @@ import { fbq, linkedinTrackLead, openIntercom, plausibleTrackEvent, updateInterc
 export const getStaticProps: GetStaticProps = async ({ params }) => {
 
     if (params && params.slug) {
-      const landing = await Landings.getLandingData(`?filter[slug]=${params.slug}`)
+      const landing = await Landings.getLandingData(`${params.slug}`)
       return {
         props: {
             landing,
@@ -32,16 +32,8 @@ export const getStaticPaths: GetStaticPaths = async () => {
     }
 }
   
-
 interface Props {
     landing: Landing
-}
-
-interface VisitData {
-    country_code: string
-    country_name: string
-    state: string
-    IPv4: string
 }
 
 const DB_URL = process.env.NEXT_PUBLIC_PARTNERS_DATA_URL

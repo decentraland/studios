@@ -1,3 +1,6 @@
+import { PartnerProject } from "./PartnerProject"
+import { PartnerReview } from "./PartnerReview"
+
 export interface VerifiedPartnerResponse {
   data: VerifiedPartner[]
 }
@@ -29,6 +32,8 @@ export interface VerifiedPartner {
   status: Status
   user: string
   slug: string
+  reviews: PartnerReview[]
+  projects: PartnerProject[]
 }
 
 export enum PaymentMethod {

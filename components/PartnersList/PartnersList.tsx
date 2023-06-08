@@ -9,6 +9,7 @@ import { trackLink } from '../utils'
 import LayoutFilteredList from '../LayoutFilteredList/LayoutFilteredList'
 import { Filter, FilterGroup } from '../../interfaces/Filters'
 import { useRouter } from 'next/router'
+import { Dropdown } from 'decentraland-ui/dist/components/Dropdown/Dropdown'
 
 interface Props {
   partners: VerifiedPartner[]
@@ -139,17 +140,26 @@ const avilableFilters: FilterGroup[] = [
 	}
 ]
 
+const availableSortings = [
+  {
+    displayName: 'MOST SERVICES',
+    sorter: (p1: VerifiedPartner, p2: VerifiedPartner) => (p2.services || []).length - (p1.services || []).length
+  },
+  {
+    displayName: 'MOST REVIEWS',
+    sorter: (p1: VerifiedPartner, p2: VerifiedPartner) => (p2.reviews || []).length - (p1.reviews || []).length
+  },
+  {
+    displayName: 'MOST PROJECTS',
+    sorter: (p1: VerifiedPartner, p2: VerifiedPartner) => (p2.projects || []).length - (p1.projects || []).length
+  }
+]
+
 const randomizePartners = (filteredPartners: VerifiedPartner[]) =>
   [...filteredPartners]
     .map((value) => ({ value, sort: Math.random() }))
     .sort((a, b) => a.sort - b.sort)
     .map(({ value }) => value)
-
-const sortAlphabeticPartners = (filteredPartners: VerifiedPartner[]) =>
-  [...filteredPartners].sort((p1: VerifiedPartner, p2: VerifiedPartner) => p1.slug.localeCompare(p2.slug))
-
-const sortByServicesCount = (partners: VerifiedPartner[]) =>
-  partners.sort((p1: VerifiedPartner, p2: VerifiedPartner) => (p2.services || []).length - (p1.services || []).length)
 
 const filterItem = (partner: any, filter: Filter) => {
   if (['services', 'payment_methods'].includes(filter.key)){
@@ -167,22 +177,22 @@ function PartnersList({ partners }: Props) {
 	const urlFilters = [...urlSearchParams].map(([keyName, val]) => ({key: keyName, value: val}))
 
 	const [filters, setFilters] = useState<Filter[]>(urlFilters.length ? urlFilters : [])
+	const [sorting, setSorting] = useState(availableSortings[0])
   const [limit, setLimit] = useState(parseInt(globalThis?.sessionStorage?.studiosListLimit) || 10)
-  const [filteredList, setFilteredList] = useState(sortByServicesCount(sortAlphabeticPartners(partners)))
+  const [filteredList, setFilteredList] = useState(partners.sort(sorting.sorter))
 
   useEffect(() => {
-    // setFilteredList(sortByServicesCount(randomizePartners(partners)))
     fetch('/api/get/studios')
       .then(res => res.ok && res.json())
-      .then((data) => setFilteredList(sortByServicesCount(randomizePartners(data))))
+      .then((data) => setFilteredList(randomizePartners(data).sort(sorting.sorter)))
       .catch((err) => console.log(err))
   }, [])
   
   useEffect(() => {
     let newList = partners.filter(partner => filters.every(filter => filterItem(partner, filter)))
-    newList = sortByServicesCount(randomizePartners(newList))
+    newList = randomizePartners(newList).sort(sorting.sorter)
     setFilteredList(newList)
-  }, [filters.length])
+  }, [filters.length, sorting])
   
   let renderList = filteredList.slice( 0, limit )
 
@@ -219,6 +229,12 @@ function PartnersList({ partners }: Props) {
 
   const headerBar = <>{filteredList.length} Verified studio{filteredList.length !== 1 ? 's' : ''}</>
 
+  const sortingDropdown = <Dropdown className={styles.dropdown} text={sorting.displayName} direction="left">
+    <Dropdown.Menu>
+      {availableSortings.map(option => <Dropdown.Item key={option.displayName} text={option.displayName} onClick={() => setSorting(option)}/>)}
+    </Dropdown.Menu>
+  </Dropdown>
+
   const emptyPanel = <div className={styles.empty}>
     <Empty />
     <br />
@@ -236,7 +252,7 @@ function PartnersList({ partners }: Props) {
         
         <LayoutFilteredList activeFilters={filters} setActiveFilters={setFilters}
           filtersList={avilableFilters}
-          headerButton={joinButton}
+          headerButton={sortingDropdown}
           headerBar={headerBar}
           listPanel={renderList.length ? listPanel : emptyPanel}
         />

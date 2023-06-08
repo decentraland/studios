@@ -5,23 +5,16 @@ import { VerifiedPartner } from '../../interfaces/VerifiedPartner'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
 import React from 'react'
 import PartnerProfile from '../../components/PartnerProfile/PartnerProfile'
-import { PartnerProject } from '../../interfaces/PartnerProject'
-import Projects from '../../clients/Projects'
-import { PartnerReview } from '../../interfaces/PartnerReview'
 
 const DATA_URL = process.env.NEXT_PUBLIC_PARTNERS_DATA_URL
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   if (params && params.slug) {
-    const partner = await Partners.getPartnerData(`?filter[slug]=${params.slug}`)
-    const projects = await Projects.getProject(`?filter[profile]=${partner.id}&sort[]=-date_created`)
-    const reviews = await Partners.getReviews(partner.id)
+    const partner = await Partners.getPartnerData(`${params.slug}`)
 
     return {
       props: {
-        partner,
-        projects,
-        reviews,
+        partner
       }
     }
   }
@@ -42,11 +35,9 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
 interface Props {
   partner: VerifiedPartner
-  projects: PartnerProject[]
-  reviews: PartnerReview[]
 }
 
-function Partner({ partner, projects, reviews }: Props) {
+function Partner({ partner }: Props) {
   
   return (
     <Container>
@@ -66,7 +57,7 @@ function Partner({ partner, projects, reviews }: Props) {
       </Head>
 
       <main>
-        <PartnerProfile partner={partner} projects={projects} reviews={reviews}/>
+        <PartnerProfile partner={partner}/>
       </main>
     </Container>
   )

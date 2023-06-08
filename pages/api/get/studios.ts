@@ -6,6 +6,6 @@ export const config = {
 }
 
 export default async function (req: NextRequest) {
-  const newData = await Partners.get({basicData: true})
+  const newData = await Partners.get()
   return new Response(JSON.stringify(newData))
 }

@@ -1,23 +1,20 @@
-import { PartnerReview } from '../interfaces/PartnerReview'
 import { VerifiedPartner } from '../interfaces/VerifiedPartner'
 
 const VERIFIED_PARTNERS_URL = `${process.env.NEXT_PUBLIC_PARTNERS_DATA_URL}/items/profile`
-const REVIEWS_URL = `${process.env.NEXT_PUBLIC_PARTNERS_DATA_URL}/items/reviews`
 
 export default class Partners {
   static Url = process.env.NEXT_PUBLIC_PARTNERS_DATA_URL || ''
 
-
-  static async get({slugs, basicData}: {slugs?: boolean, basicData?: boolean}) {
+  static async get() {
     let isFinished = false
     let offset = 0
-    const querySlugs = slugs ? '&fields=slug' : ''
-    const queryBasicData = basicData ? '&fields=name,services,region,slug,country,languages,logo,id,description,team_size,payment_methods' : ''
 
-    const partners: VerifiedPartner[] = []
+    const queryFields = '&fields=name,services,region,slug,country,languages,logo,id,description,team_size,payment_methods,reviews,projects'
+    let partners: VerifiedPartner[] = []
+
     while (!isFinished) {
       try {
-        const response = await fetch(`${VERIFIED_PARTNERS_URL}?offset=${offset}${querySlugs}${queryBasicData}`)
+        const response = await fetch(`${VERIFIED_PARTNERS_URL}?offset=${offset}${queryFields}`)
         const data = (await response.json()).data as VerifiedPartner[]
         if (data.length === 0) {
           isFinished = true
@@ -30,30 +27,30 @@ export default class Partners {
       }
     }
     
-    let responsePartnerts = partners
-    if (basicData){
-      responsePartnerts = partners.map(partner => ({... partner, description: partner.description.substring(0,300)}))
-    }
+    partners = partners.map(partner => ({... partner, description: partner.description.substring(0,300)}))
     
-    return responsePartnerts
+    return partners
   }
 
-  static async getPartnerData(searchParams: string) {
-    let partners: VerifiedPartner[] = []
+  static async getPartnerData(slug: string) {
+    let partner
 
     try {
-      const response = await fetch(`${VERIFIED_PARTNERS_URL}${searchParams}`)
+      const response = await fetch(`${VERIFIED_PARTNERS_URL}?filter[slug]=${slug}&fields=*,reviews.*,projects.image_1,projects.id,projects.title,projects.profile.name,projects.profile.slug,projects.profile.logo`)
 
-      partners = (await response.json()).data as VerifiedPartner[]
+      partner = (await response.json()).data[0] as VerifiedPartner
     } catch (error) {
       console.log('error getting partners', error)
     }
+    if (partner){
+      partner.projects = partner.projects.sort((p1,p2) => p2.id - p1.id)
+    }
 
-    return partners[0]
+    return partner
   }
 
   static async getAllSlugs() {
-    const partners = await this.get({slugs: true})
+    const partners = await this.get()
 
     return partners.map((partner) => {
       return {
@@ -62,41 +59,5 @@ export default class Partners {
         },
       }
     })
-  }
-
-  static async getAllIds() {
-    const partners = await this.get({})
-
-    return partners.map((partner) => {
-      return {
-        params: {
-          id: partner.id,
-        },
-      }
-    })
-  }
-
-  static async getReviews (partnerId: number){
-    let isFinished = false
-    let offset = 0
-    const query = `&filter[profile]=${partnerId}`
-
-    const reviews: PartnerReview[] = []
-    while (!isFinished) {
-      try {
-        const response = await fetch(`${REVIEWS_URL}?offset=${offset}${query}`)
-        const data = (await response.json()).data as PartnerReview[]
-        if (data.length === 0) {
-          isFinished = true
-        } else {
-          offset += data.length
-        }
-        reviews.push(...data)
-      } catch (error) {
-        console.log('error', error)
-      }
-    }
-
-    return reviews
   }
 }

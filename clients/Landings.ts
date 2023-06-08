@@ -4,16 +4,14 @@ const LANDINGS_URL = `${process.env.NEXT_PUBLIC_PARTNERS_DATA_URL}/items/landing
 
 export default class Landings {
 
-  static async get({slugs, basicData}: {slugs?: boolean, basicData?: boolean}) {
+  static async get() {
     let isFinished = false
     let offset = 0
-    const querySlugs = slugs ? '&fields=slug' : ''
-    const queryBasicData = basicData ? '&fields=name,services,region,slug,country,languages,logo,id,description,team_size,payment_methods' : ''
 
     const landings: Landing[] = []
     while (!isFinished) {
       try {
-        const response = await fetch(`${LANDINGS_URL}?offset=${offset}${querySlugs}${queryBasicData}`)
+        const response = await fetch(`${LANDINGS_URL}?offset=${offset}`)
         const data = (await response.json()).data as Landing[]
         if (data.length === 0) {
           isFinished = true
@@ -28,11 +26,11 @@ export default class Landings {
     return landings
   }
 
-  static async getLandingData(searchParams: string) {
+  static async getLandingData(slug: string) {
     let landings: Landing[] = []
 
     try {
-      const response = await fetch(`${LANDINGS_URL}${searchParams}`)
+      const response = await fetch(`${LANDINGS_URL}?filter[slug]=${slug}`)
 
       landings = (await response.json()).data as Landing[]
     } catch (error) {
@@ -42,7 +40,7 @@ export default class Landings {
   }
 
   static async getAllSlugs() {
-    const landings = await this.get({slugs: true})
+    const landings = await this.get()
 
     return landings.map((landing) => {
       return {

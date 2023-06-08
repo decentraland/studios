@@ -179,7 +179,7 @@ function JobProfile() {
                 <div className={styles.description}>{budgetToRanges(jobData.budget)}</div>
 
                 {sentMessage ? <>
-                    <div className={styles.subTitle}>You’ve sent a message to {jobData.author_name}</div>
+                    <div className={styles.subTitle}>You’ve sent a private message to {jobData.author_name}</div>
                     <div className={styles.message}>
                         <div className={styles.partner_info}>
                             <span>
@@ -206,7 +206,7 @@ function JobProfile() {
                 </>
                     :
                     <>
-                        <div className={styles.subTitle}>Interested in this project? Write a private message to {jobData.author_name}</div>
+                        <div className={styles.subTitle}>Interested in this project? Send a private message to {jobData.author_name}</div>
                         <div className={styles.text_primary}>You can only send one message to {jobData.author_name}. Use this message to leave a memorable and impactful impression.</div>
                         <form onSubmit={handleSubmit}>
                             <textarea className={styles.inputText} rows={6}

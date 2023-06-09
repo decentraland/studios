@@ -87,12 +87,12 @@ function MetaverseGuide({ landing }: Props) {
             body: JSON.stringify(body)
         })
 
-        globalThis.localStorage.setItem('leadName', name);
-        globalThis.localStorage.setItem('leadEmail', email);
-        globalThis.localStorage.setItem('leadSlug', landingData.slug);
+        globalThis.sessionStorage.setItem('leadName', name);
+        globalThis.sessionStorage.setItem('leadEmail', email);
+        globalThis.sessionStorage.setItem('leadSlug', landingData.slug);
 
         if (landingData.track_linkedin?.conversion_id) {
-            globalThis.localStorage.setItem('leadConversionId', landingData.track_linkedin.conversion_id);
+            globalThis.sessionStorage.setItem('leadConversionId', landingData.track_linkedin.conversion_id);
         }
         
         fbq('track', 'Lead')

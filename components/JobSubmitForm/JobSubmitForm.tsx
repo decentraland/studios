@@ -33,7 +33,7 @@ const budgetOptions = [
 
 function JobSubmitForm() {
 
-    const initData = {
+    const initData: Job = {
         long_description: '',
         title: '',
         budget: '',
@@ -42,7 +42,7 @@ function JobSubmitForm() {
         date_created: '',
         author_name: '',
         company: '',
-        email: ''
+        email: '',
     }
 
     const [formData, setFormData] = useState<Job>(initData)
@@ -70,7 +70,7 @@ function JobSubmitForm() {
         e.preventDefault()
 
         if (!emptyFieldsStep1) {
-            plausibleTrackEvent('JobsSubmitForm: Step2', { slug: globalThis.localStorage.getItem('leadSlug') || 'jobs' })
+            plausibleTrackEvent('JobsSubmitForm: Step2', { slug: globalThis.sessionStorage.getItem('leadSlug') || 'jobs' })
             setCurrentStep(2)
         }
     }
@@ -117,7 +117,7 @@ function JobSubmitForm() {
             const lead = {
                 name: formData.author_name,
                 email: formData.email,
-                slug: globalThis.localStorage.getItem('leadSlug') || 'jobs',
+                slug: globalThis.sessionStorage.getItem('leadSlug') || 'jobs',
                 mobile: !!globalThis?.navigator.userAgent.match(/Mobi/),
                 user_agent: globalThis?.navigator.userAgent,
                 list_ids: [ '3d1d6c43-5bd7-436e-a253-f61b6a728ae0' ],
@@ -129,7 +129,7 @@ function JobSubmitForm() {
             })
             
             fbq('track', 'Lead')
-            linkedinTrackLead(globalThis.localStorage.getItem('leadConversionId') || '13935513') //web3 campaign conversion_id
+            linkedinTrackLead(globalThis.sessionStorage.getItem('leadConversionId') || '13935513') //web3 campaign conversion_id
             plausibleTrackEvent('JobsSubmitForm: Step3', { slug: lead.slug })
 
             setCurrentStep(3)
@@ -142,14 +142,6 @@ function JobSubmitForm() {
     const handleInput = (e: React.FormEvent) => {
         const element = e.currentTarget as HTMLInputElement
         let newValue: any = element.value
-
-        // if (element.name === 'budget'){
-        //     return setFormData({ 
-        //         ...formData, 
-        //         budget_min: element.value.split(',')[0],
-        //         budget_max: element.value.split(',')[1] 
-        //     })
-        // }
 
         if (element.name === 'short_description') {
             let newShortDescription = formData.short_description || []
@@ -184,14 +176,18 @@ function JobSubmitForm() {
         e.preventDefault()
         setSelectedFile(undefined)
     }
-
+console.log(formData)
     useEffect(() => {
-        const leadName = globalThis.localStorage.getItem('leadName')
-        const leadEmail = globalThis.localStorage.getItem('leadEmail')
+        const leadName = globalThis.sessionStorage.getItem('leadName')
+        const leadEmail = globalThis.sessionStorage.getItem('leadEmail')
+        const landingUrl = JSON.parse(globalThis.sessionStorage.getItem('navHist') || '[]')[0]
+        
+        let extraFields: any = {}
+        leadName && (extraFields['author_name'] = leadName)
+        leadEmail && (extraFields['email'] = leadEmail)
+        landingUrl && (extraFields['landing_url'] = landingUrl)
 
-        if (leadName && leadEmail){
-            setFormData({...formData, author_name: leadName, email: leadEmail })
-        }
+        setFormData({...formData, ...extraFields })
     }, [])
 
     useEffect(() => {

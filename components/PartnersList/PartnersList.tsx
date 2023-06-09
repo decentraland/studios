@@ -190,9 +190,10 @@ function PartnersList({ partners }: Props) {
   
   useEffect(() => {
     let newList = partners.filter(partner => filters.every(filter => filterItem(partner, filter)))
-    newList = randomizePartners(newList).sort(sorting.sorter)
+    newList = randomizePartners(newList)
+    newList = newList.sort(sorting.sorter)
     setFilteredList(newList)
-  }, [filters.length, sorting])
+  }, [filters, sorting])
   
   let renderList = filteredList.slice( 0, limit )
 
@@ -218,14 +219,6 @@ function PartnersList({ partners }: Props) {
   useEffect(() => {
     globalThis.sessionStorage.setItem('studiosListLimit', limit.toString());
   }, [limit])
-
-  const joinButton = <a
-    className={styles.link_join}
-    target={'_blank'}
-    href={JOIN_REGISTRY_URL}
-    rel="noreferrer"
-    onClick={() => trackLink('Open External Link', 'Join Registry', JOIN_REGISTRY_URL)}
-  />
 
   const headerBar = <>{filteredList.length} Verified studio{filteredList.length !== 1 ? 's' : ''}</>
 

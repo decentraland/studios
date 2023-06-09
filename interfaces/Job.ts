@@ -11,6 +11,7 @@ export interface Job {
     long_description:   string;
     email:              string;
     brief_file?:         any;
+    landing_url?:        string;
 }
 
 export interface JobMessage {

@@ -43,6 +43,7 @@ function JobSubmitForm() {
         author_name: '',
         company: '',
         email: '',
+        messages: []
     }
 
     const [formData, setFormData] = useState<Job>(initData)
@@ -176,7 +177,7 @@ function JobSubmitForm() {
         e.preventDefault()
         setSelectedFile(undefined)
     }
-console.log(formData)
+
     useEffect(() => {
         const leadName = globalThis.sessionStorage.getItem('leadName')
         const leadEmail = globalThis.sessionStorage.getItem('leadEmail')

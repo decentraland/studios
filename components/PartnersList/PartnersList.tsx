@@ -220,7 +220,7 @@ function PartnersList({ partners }: Props) {
     globalThis.sessionStorage.setItem('studiosListLimit', limit.toString());
   }, [limit])
 
-  const headerBar = <>{filteredList.length} Verified studio{filteredList.length !== 1 ? 's' : ''}</>
+  const headerBar = <>{filteredList.length} verified studio{filteredList.length !== 1 ? 's' : ''}</>
 
   const sortingDropdown = <Dropdown className={styles.dropdown} text={sorting.displayName} direction="left">
     <Dropdown.Menu>

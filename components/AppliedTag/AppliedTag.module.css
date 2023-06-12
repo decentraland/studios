@@ -1,0 +1,29 @@
+.container {
+    width: fit-content;
+    padding: 4px 12px 4px 8px;
+    background: #F2F7F2;
+    border-radius: 100px;
+
+    font-weight: 600;
+    font-size: 14px;
+    color: #267829;
+    letter-spacing: -0.5px;
+    white-space: nowrap;
+}
+
+.container svg {
+    vertical-align: text-bottom;
+    margin-right: 2px;
+}
+
+@media (max-width: 768px) {
+    
+    .container {
+        font-size: 12px;
+    }
+
+    .container svg {
+        width: 14px;
+        height: 14px;
+    }
+}

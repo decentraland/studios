@@ -11,24 +11,24 @@ export default async function (req: NextRequest) {
 
     const authorization = JSON.parse(user).access_token
 
-    const body = await req.json()
-    const { id } = body;
+    if (req.method === 'POST'){
+        const body = await req.json()
+        const { id } = body;
 
-    const jobData = (await fetch(`${DB_URL}/items/jobs?filter[id]=${id}&fields=*,brief_file.id,brief_file.filename_download`, {
+        return fetch(`${DB_URL}/items/jobs??filter[verified_email]=true&filter[id]=${id}&fields=*,brief_file.id,brief_file.filename_download,messages.*`, {
             headers: { 
                 'Authorization': `Bearer ${authorization}`
             }
-        }).then((res) => res.json())).data[0]
+        })
+    }
+    
+    if (req.method === 'GET'){
 
-        let message = []
+        return fetch(`${DB_URL}/items/jobs??filter[verified_email]=true&fields=*,brief_file.id,brief_file.filename_download,messages.*`, {
+            headers: { 
+                'Authorization': `Bearer ${authorization}`
+            }
+        })
+    }
 
-        if (jobData) {
-            message = (await fetch(`${DB_URL}/items/messages?filter[to_job][id]=${jobData.id}&filter[user_created]=$CURRENT_USER&fields=*,from_profile.name,from_profile.logo,brief_file.id,brief_file.filename_download`, {
-                headers: { 
-                    'Authorization': `Bearer ${authorization}`
-                }
-            }).then((res) => res.json() )).data[0]
-        }
-
-    return new Response(JSON.stringify({job: jobData, message}))
   }

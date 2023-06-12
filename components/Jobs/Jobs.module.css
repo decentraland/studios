@@ -39,35 +39,40 @@
 
 .titleContainer {
   margin-bottom: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
 }
 
 .jobTitle {
   font-weight: 600;
   font-size: 24px;
+  line-height: 24px;
 }
 
-.jobBudget--desktop {
+.jobBudget {
   font-size: 16px;
   color: #736E7D;
   white-space: nowrap;
 }
 
-.jobBudget--desktop b {
+.jobBudget b {
   color: #000000
 }
 
-.jobBudget--mobile {
-  display: none;
-  margin-top: 16px;
+.jobBy{
   font-size: 16px;
-  color: #736E7D;
 }
 
-.jobBy {
+.jobBy  span {
+  font-weight: 600;
+}
+
+.cardFooter {
   margin-top: 16px;
   display: flex;
   justify-content: space-between;
-  font-size: 16px;
 }
 
 .menuContainer {
@@ -112,27 +117,29 @@
   }
 
   .titleContainer {
-    display: flex;
-    flex-direction: column;
+    flex-wrap: wrap;
   }
 
   .jobTitle {
     font-size: 20px;
+    line-height: 20px;
   }
 
-  .jobBudget--desktop{
-    display: none;
-  }
-
-  .jobBudget--mobile {
-    display: block;
-  }
-
-  .jobBudget::before {
-    content: "Budget "
+  .jobBudget {
+    font-size: 14px;
   }
 
   .jobBy {
-    font-size: 12px;
+    font-size: 14px;
+    color: #736E7D;
+  }
+
+  .jobBy span {
+    font-weight: 400;
+  }
+
+  .cardFooter {
+    flex-wrap: wrap-reverse;
+    gap: 16px;
   }
 }

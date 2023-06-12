@@ -12,6 +12,7 @@ export interface Job {
     email:              string;
     brief_file?:         any;
     landing_url?:        string;
+    messages:           JobMessage[];
 }
 
 export interface JobMessage {

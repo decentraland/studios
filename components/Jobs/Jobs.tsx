@@ -13,6 +13,7 @@ import { logout, getLoggedState } from '../sessions'
 import { budgetToRanges, timeSince } from '../utils'
 
 import styles from './Jobs.module.css'
+import AppliedTag from '../AppliedTag/AppliedTag'
 
 const avilableFilters: FilterGroup[] = [
     {
@@ -42,6 +43,21 @@ const avilableFilters: FilterGroup[] = [
                 key: 'budget',
                 value: [50000, Infinity],
                 displayValue: 'More than $50000'
+            }
+        ]
+    },
+    {
+        title: 'APPLICATION STATUS',
+        options: [
+            {
+                key: 'messages',
+                value: true,
+                displayValue: 'Applied'
+            },
+            {
+                key: 'messages',
+                value: false,
+                displayValue: 'Not applied'
             }
         ]
     }
@@ -79,7 +95,7 @@ export default function Jobs() {
 
     const handleFetchJobs = () => {
         if (isLogged) {
-            fetch('/api/jobs/list')
+            fetch('/api/jobs/get')
                 .then(res => res.ok && res.json())
                 .then((res) => res.data && setJobs(res.data))
                 .catch((err) => console.log(err))
@@ -91,12 +107,12 @@ export default function Jobs() {
             <div className={styles.jobContainer} >
                 <div className={styles.titleContainer}>
                     <span className={styles.jobTitle}>{data.title}</span>
-                    <span className={styles['jobBudget--mobile']}>Budget: {budgetToRanges(data.budget)}</span>
+                    {data.messages.length ? <AppliedTag /> : null}
                 </div>
                 <div className={styles.description}>{data.long_description}</div>
-                <div className={styles.jobBy}>
-                    <span>Posted by <b>{data.author_name}</b> {timeSince(data.date_created)} ago</span>
-                    <span className={styles['jobBudget--desktop']}><b>Budget: </b>{budgetToRanges(data.budget)}</span>
+                <div className={styles.cardFooter}>
+                    <span className={styles.jobBy}>Posted by <span>{data.author_name}</span> {timeSince(data.date_created)} ago</span>
+                    <span className={styles.jobBudget}><b>Budget: </b>{budgetToRanges(data.budget)}</span>
                 </div>
             </div>
         </Link>
@@ -124,17 +140,20 @@ export default function Jobs() {
             </ div>
     }
 
-    const filterElements = (items: Job[], filter: Filter) => {
+    const filterElement = (item: any, filter: Filter) => {
         if (filter.key === 'budget') {
-            return items.filter((item: Job) => filter.value[0] <= item.budget && filter.value[1] > item.budget)
+            return filter.value[0] <= item.budget && filter.value[1] > item.budget
         }
-        return items.filter((item: any) => item[filter.key] === filter.value)
+        if (filter.key === 'messages') {
+            return !!item['messages'].length === filter.value
+        }
+        return item[filter.key] === filter.value
     }
 
     let filteredJobs: Job[] = []
 
     if (filters.length) {
-        filters.forEach(filter => filteredJobs = filteredJobs.concat(filterElements(jobs, filter)))
+        filteredJobs = jobs.filter(job => filters.every(filter => filterElement(job, filter)))
     } else {
         filteredJobs = jobs
     }
@@ -147,7 +166,7 @@ export default function Jobs() {
         return <JobProfile />
     }
 
-    const HeaderBar = () => <span className={styles.headerText}>Projects for Decentraland Studios <span className={styles.resultsCount}>{filteredJobs.length} RESULT{filteredJobs.length > 1 ? 'S' : ''}</span></ span>
+    const HeaderBar = () => <span className={styles.headerText}>{filteredJobs.length ? filteredJobs.length : ''} project{filteredJobs.length !== 1 ? 's' : ''}</ span>
 
     const JobsList = () =>{
         if (filteredJobs.length){

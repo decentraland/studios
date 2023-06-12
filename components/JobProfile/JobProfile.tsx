@@ -7,7 +7,7 @@ import MarkdownDescription from '../MarkdownDescription/MarkdownDescription'
 import { useRouter } from 'next/router'
 import { getLoggedState } from '../sessions'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
-import { Job, JobMessage } from '../../interfaces/Job'
+import { Job } from '../../interfaces/Job'
 import IconInfo from '../Icons/IconInfo'
 import IconOk from '../Icons/IconOk'
 import IconFile from '../Icons/IconFile'
@@ -24,7 +24,6 @@ function JobProfile() {
     const jobId = router.query.id
 
     const [jobData, setJobData] = useState<Job>()
-    const [sentMessage, setSentMessage] = useState<JobMessage>()
     const [showSentBadge, setShowSentBadge] = useState(false)
     const [isLogged, setLogged] = useState(false)
     const [loading, setLoading] = useState(false)
@@ -59,9 +58,8 @@ function JobProfile() {
             })
                 .then(res => res.ok && res.json())
                 .then((res) => {
-                    if (!res.job) setFetchError('Error: Missing data')
-                    res.job && setJobData(res.job)
-                    res.message && setSentMessage(res.message)
+                    if (!res.data) setFetchError('Error: Missing data')
+                    setJobData(res.data[0])
                 })
                 .catch((err) => console.log(err))
             setLoading(false)
@@ -178,27 +176,27 @@ function JobProfile() {
                 <div className={styles.infoTitle}>BUDGET</div>
                 <div className={styles.description}>{budgetToRanges(jobData.budget)}</div>
 
-                {sentMessage ? <>
+                {jobData.messages.length ? <>
                     <div className={styles.subTitle}>You’ve sent a private message to {jobData.author_name}</div>
                     <div className={styles.message}>
                         <div className={styles.partner_info}>
                             <span>
                                 <div className={styles.partner_logo}
                                     style={{
-                                        background: `url(${DB_URL}/assets/${sentMessage.from_profile.logo}?key=logo)`,
+                                        background: `url(${DB_URL}/assets/${jobData.messages[0].from_profile.logo}?key=logo)`,
                                     }}
-                                />{sentMessage.from_profile.name}
+                                />{jobData.messages[0].from_profile.name}
                             </span>
                             <span>
-                                {(new Date(sentMessage.date_created)).toLocaleDateString()}&nbsp;
-                                {(new Date(sentMessage.date_created)).toTimeString().slice(0, 5)}
+                                {(new Date(jobData.messages[0].date_created)).toLocaleDateString()}&nbsp;
+                                {(new Date(jobData.messages[0].date_created)).toTimeString().slice(0, 5)}
                             </span>
                         </div>
-                        <div className={styles.text_primary}>{sentMessage.message}</div>
+                        <div className={styles.text_primary}>{jobData.messages[0].message}</div>
                     
-                        {sentMessage.brief_file && <>
+                        {jobData.messages[0].brief_file && <>
                             <div className={styles.infoTitle}>BRIEF FILE</div>
-                            <a className={styles.link} href={`${DB_URL}/assets/${sentMessage.brief_file.id}`} rel="noreferrer" target='_blank'><IconFile red /> {sentMessage.brief_file.filename_download}</a>
+                            <a className={styles.link} href={`${DB_URL}/assets/${jobData.messages[0].brief_file.id}`} rel="noreferrer" target='_blank'><IconFile red /> {jobData.messages[0].brief_file.filename_download}</a>
                         </>}
                     </div>
                     <div className={styles.text_postMessage}>If {jobData.author_name} replies, you will receive an <b>email notification</b></div>

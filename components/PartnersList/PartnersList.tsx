@@ -197,11 +197,11 @@ function PartnersList({ partners }: Props) {
   
   let renderList = filteredList.slice( 0, limit )
 
-  if (!isDevelopment){
-    //prevent dev studios from showing in production
-    const restrictedIds = [353, 358]
-    renderList = renderList.filter(partner => !restrictedIds.includes(partner.id))
-  }
+  // if (!isDevelopment){
+  //   //prevent dev studios from showing in production
+  //   const restrictedIds = [353, 358]
+  //   renderList = renderList.filter(partner => !restrictedIds.includes(partner.id))
+  // }
 
   useEffect(() => {
     let newQuery: any = {}

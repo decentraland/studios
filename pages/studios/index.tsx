@@ -41,7 +41,7 @@ function Home({ partners }: Props) {
       </Head>
       <main className={styles.main}>
         <BannerStudios />
-        <PartnersList partners={partners} />
+        <PartnersList initialPartners={partners} />
       </main>
     </Container>
   )

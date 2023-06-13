@@ -12,7 +12,7 @@ import { useRouter } from 'next/router'
 import { Dropdown } from 'decentraland-ui/dist/components/Dropdown/Dropdown'
 
 interface Props {
-  partners: VerifiedPartner[]
+  initialPartners: VerifiedPartner[]
 }
 
 const isDevelopment = process.env.NODE_ENV === 'development'
@@ -170,13 +170,14 @@ const filterItem = (partner: any, filter: Filter) => {
 
 const JOIN_REGISTRY_URL = 'https://dclstudios.typeform.com/to/NfzmbzXi'
 
-function PartnersList({ partners }: Props) {
+function PartnersList({ initialPartners }: Props) {
 
   const router = useRouter()
 	const urlSearchParams = new URLSearchParams(router.asPath.replace('/studios', ''))
 	const urlFilters = [...urlSearchParams].map(([keyName, val]) => ({key: keyName, value: val}))
 
-	const [filters, setFilters] = useState<Filter[]>(urlFilters.length ? urlFilters : [])
+	const [partners, setPartners] = useState<VerifiedPartner[]>(initialPartners)
+  const [filters, setFilters] = useState<Filter[]>(urlFilters.length ? urlFilters : [])
 	const [sorting, setSorting] = useState(availableSortings[0])
   const [limit, setLimit] = useState(parseInt(globalThis?.sessionStorage?.studiosListLimit) || 10)
   const [filteredList, setFilteredList] = useState(partners.sort(sorting.sorter))
@@ -184,16 +185,20 @@ function PartnersList({ partners }: Props) {
   useEffect(() => {
     fetch('/api/get/studios')
       .then(res => res.ok && res.json())
-      .then((data) => setFilteredList(randomizePartners(data).sort(sorting.sorter)))
+      .then((data) => setPartners(data))
       .catch((err) => console.log(err))
   }, [])
   
   useEffect(() => {
+    filterPartners()
+  }, [filters, sorting, partners])
+
+  const filterPartners = () => {
     let newList = partners.filter(partner => filters.every(filter => filterItem(partner, filter)))
     newList = randomizePartners(newList)
     newList = newList.sort(sorting.sorter)
     setFilteredList(newList)
-  }, [filters, sorting])
+  }
   
   let renderList = filteredList.slice( 0, limit )
 

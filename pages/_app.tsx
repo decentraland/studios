@@ -84,7 +84,7 @@ function App({ Component, pageProps }: AppProps) {
         <meta property="og:url" content="https://studios.decentraland.org" />
         <meta property="twitter:url" content="https://studios.decentraland.org/" />
         <meta property="twitter:domain" content="studios.decentraland.org" />
-        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:card" content="summary_large_image" />
 
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
 

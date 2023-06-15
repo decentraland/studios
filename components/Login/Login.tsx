@@ -13,8 +13,10 @@ export default function Login() {
 
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
-    const [credentialsError, setCredentialsError] = useState(false)
+    const [otp, setOtp] = useState<string>()
+    const [credentialsError, setCredentialsError] = useState<string>()
     const [invalidClass, setInvalidClass] = useState('')
+    const [otpScreen, setOtpScreen] = useState(false)
 
     const router = useRouter()
 
@@ -23,10 +25,13 @@ export default function Login() {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
         setInvalidClass('')
-        login(email, password)
+        login(email, password, otp)
         .then(res => {
-            if (res.error){
-                setCredentialsError(true)
+            if (res.error && res.error === 'missing otp'){
+                setCredentialsError(undefined)
+                setOtpScreen(true)
+            } else if (res.error){
+                setCredentialsError(res.error)
             } else {
                 router.push(router.query?.from ? `${router.query.from}` : '/jobs/list')
             }
@@ -45,7 +50,7 @@ export default function Login() {
         openIntercom()
     }}>contact us</a>
 
-    const credentialsMessage = <div className={styles.credentialsMessage}>{credentialsError ? <><IconInfo />We couldn&apos;t find an account with that email and password. Check your credentials and try again.</> : null}</div>
+    const credentialsMessage = <div className={styles.credentialsMessage}>{credentialsError ? <><IconInfo />{credentialsError}</> : null}</div>
 
     return <div className={styles.container}>
         <BackButton onClick={() => router.push('/jobs')}/>
@@ -58,16 +63,24 @@ export default function Login() {
                 </div>
             </div>
             <form onSubmit={handleSubmit} onInvalid={() => setInvalidClass('input__invalid')}>
+                { !otpScreen ? <>
                 <label className={styles.label}>Email</label>
-                <input className={`${styles.input} ${styles[invalidClass]}`} required type='email' onChange={(e) => setEmail(e.currentTarget.value)} value={email} placeholder="studioname@studio.com"/>
+                <input key="email" className={`${styles.input} ${styles[invalidClass]}`} required type='email' onChange={(e) => setEmail(e.currentTarget.value)} value={email} placeholder="studioname@studio.com"/>
                 <label className={styles.label}>Password</label>
-                <input className={styles.input} required type='password' onChange={(e) => setPassword(e.currentTarget.value)} value={password} placeholder="*******" />
+                <input key="password" className={styles.input} required type='password' onChange={(e) => setPassword(e.currentTarget.value)} value={password} placeholder="*******" />
                 {credentialsMessage}
+                </>
+                :
+                <>
+                <label className={styles.label}>One-time password</label>
+                <input key="otp" className={styles.input} required type='text' onChange={(e) => setOtp(e.currentTarget.value)} value={otp} placeholder="" />
+                {credentialsError ? credentialsMessage : <div className={`${styles.credentialsMessage} ${styles.text_secondary}`}><IconInfo gray /> This is the 2FA code you use to access the back office.</div>}
+                </>}
                 <input
                     className={`${styles.submitBtn} ${emptyFields ? styles.submitBtn_disabled : ''}`}
                     disabled={emptyFields}
                     type="submit"
-                    value="LOGIN"
+                    value="LOG IN"
                 />
             </form>
             <div className={styles.description}>The job board is exclusive for Decentraland Studios. If you want to become one, {join_link}. If you are already part of this community and need help logging in, {contact_link}.</div>

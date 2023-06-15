@@ -15,7 +15,7 @@ const fetcher = async (url: string, body: object) => {
         },
         body: JSON.stringify(body)
     })
-        .then(res => res.ok && res.json())
+        .then(res => res.json())
         .then(body => {
             if (body.data) {
                 body.data.expires_at = Date.now() + body.data.expires
@@ -23,15 +23,24 @@ const fetcher = async (url: string, body: object) => {
                 return body.data as User;
             }
 
-            return { error: 'invalid credentials' } as User
+            if (body.errors && body.errors[0].message === "\"otp\" is required"){
+                return { error: "missing otp"} as User
+            }
+            
+            if (body.errors && body.errors[0].message === "\"otp\" is invalid"){
+                return { error: "The one-time password provided is invalid, please try again."} as User
+            }
+
+            return { error: "We couldn't find an account with that email and password. Check your credentials and try again." } as User
         })
 }
 
-export const login = async (email: string, password: string) => {
+export const login = async (email: string, password: string, otp?: string) => {
 
     return fetcher('/api/login', {
         email: email,
-        password: password
+        password: password,
+        otp: otp
     })
 }
 

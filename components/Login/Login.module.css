@@ -57,6 +57,8 @@
 
   .credentialsMessage svg {
     margin-right: 5px;
+    flex-shrink: 0;
+    place-self: center;
   }
 
   .title {
@@ -75,6 +77,10 @@
   
   .description a {
     color: red;
+  }
+
+  .text_secondary {
+    color: #736E7D;
   }
 
   @media (max-width: 700px){

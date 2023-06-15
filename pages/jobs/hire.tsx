@@ -12,6 +12,13 @@ function JobSubmitPage() {
         <meta property="og:title" content="Creative freelance jobs in Decentraland" />
         <meta property="og:description" content="Find the Right Team for Your Project." />
         <meta property="og:image" content="/images/banner_jobs.png" />
+
+        <meta property="og:url" content="https://studios.decentraland.org/jobs/hire" />
+
+        <meta property="twitter:url" content="https://studios.decentraland.org/jobs/hire" />
+        <meta name="twitter:title" content="Creative freelance jobs in Decentraland" />
+        <meta name="twitter:description" content="Find the Right Team for Your Project." />
+        <meta name="twitter:image" content="/images/banner_jobs.png"/>
       </Head>
       <main className={styles.main}>
         <JobSubmitForm />

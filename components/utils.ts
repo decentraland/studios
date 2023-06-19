@@ -31,6 +31,10 @@ export function linkedinTrackLead(conversion_id?: string) {
   (globalThis as any).lintrk && (globalThis as any).lintrk('track', { conversion_id: conversion_id })
 }
 
+export function googleAdsTrack() {
+  (globalThis as any).gtag && (globalThis as any).gtag('event', 'conversion', {'send_to': 'AW-11226587097/zpgmCOefkK4YENm_oOkp'})
+}
+
 export function plausibleTrackEvent(eventName: string, props?: object) {
   (globalThis as any).plausible && (globalThis as any).plausible(eventName, props ? { props: props } : undefined )
 }

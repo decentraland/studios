@@ -131,7 +131,7 @@ function JobSubmitForm() {
             
             fbq('track', 'Lead')
             linkedinTrackLead(globalThis.sessionStorage.getItem('leadConversionId') || '13935513') //web3 campaign conversion_id
-            plausibleTrackEvent('JobsSubmitForm: Step3', { slug: lead.slug })
+            plausibleTrackEvent('JobsSubmitForm: Step3', { slug: lead.slug, email: formData.email })
 
             setCurrentStep(3)
             setLoading(false)

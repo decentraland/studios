@@ -5,7 +5,7 @@ import { Landing } from "../../interfaces/Landing";
 import { useRouter } from "next/router";
 import Head from "next/head";
 import Script from "next/script";
-import { fbq, linkedinTrackLead, openIntercom, plausibleTrackEvent, updateIntercom } from "../../components/utils";
+import { fbq, googleAdsTrack, linkedinTrackLead, openIntercom, plausibleTrackEvent, updateIntercom } from "../../components/utils";
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
 
@@ -97,7 +97,8 @@ function MetaverseGuide({ landing }: Props) {
         
         fbq('track', 'Lead')
         linkedinTrackLead(landingData.track_linkedin?.conversion_id)
-        plausibleTrackEvent('LandingSubmit' , { slug: landingData.slug })
+        plausibleTrackEvent('LandingSubmit' , { slug: landingData.slug, email: email })
+        googleAdsTrack()
         updateIntercom({"name": name, "email": email})
         ctaSuccess()
     }

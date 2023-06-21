@@ -1,13 +1,10 @@
 import React, { ReactElement, useEffect, useState } from 'react'
 
-import 'react-responsive-carousel/lib/styles/carousel.min.css'
-import styles from './ProjectProfile.module.css'
 import { FormattedMessage } from 'react-intl'
-import { Carousel } from 'react-responsive-carousel'
+import styles from './ProjectProfile.module.css'
 import { PartnerProject } from '../../interfaces/PartnerProject'
 import BackButton from '../BackButton/BackButton'
 import { trackLink } from '../utils'
-import Youtube from '../Icons/Youtube'
 import MarkdownDescription from '../MarkdownDescription/MarkdownDescription'
 
 interface Props {
@@ -40,15 +37,16 @@ function ProjectProfile({ project }: Props) {
   const PROJECT_WEBSITE = projectData.link || ''
   const PARTNER_PROFILE_URL = `/profile/${projectData.profile?.slug}`
 
-  const images = [projectData.image_1, projectData.image_2, projectData.image_3, projectData.image_4, projectData.image_5]
+  const images = [ projectData.image_1, projectData.image_2, projectData.image_3, projectData.image_4, projectData.image_5 ]
     .filter((img) => img)
-    .map((image) => (
-      <img key={image} className={styles.image_img} src={`${DATA_URL}/assets/${image}?key=project-img`} />
+    .map((image, i) => ( <div className={styles.image_container} key={image}>
+        <img className={styles.image} src={`${DATA_URL}/assets/${image}?key=project-img`} alt="Project image" loading={i === 0 ? "eager" : "lazy"}/>
+        </div>
     ))
 
   const videos = [projectData.video_1, projectData.video_2]
     .filter((video_url) => video_url && (getVideoId(video_url) || getListId(video_url)))
-    .map((video_url) => {
+    .map((video_url, i) => {
       const videoId = getVideoId(video_url)
       const listId = getListId(video_url)
 
@@ -56,7 +54,8 @@ function ProjectProfile({ project }: Props) {
         return (
           <iframe
             key={`${videoId}`}
-            height="450"
+            className={styles.video}
+            loading={i === 0 ? "eager" : "lazy"}
             src={`https://www.youtube.com/embed/${videoId[1]}`}
             title="YouTube video player"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -66,7 +65,7 @@ function ProjectProfile({ project }: Props) {
         return (
           <iframe
             key={`${listId}`}
-            height="450"
+            loading={i === 0 ? "eager" : "lazy"}
             src={`https://www.youtube.com/embed/videoseries?list=${listId[1]}`}
             title="YouTube video player"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -79,46 +78,17 @@ function ProjectProfile({ project }: Props) {
 
   const carouselItems = [...videos, ...images] as ReactElement[]
 
-  const renderThumbs = (elements: any) => {
-    const thumbs = []
-    for (const item of elements) {
-      if (item.type === 'img') {
-        thumbs.push(item)
-      } else if (item.type === 'iframe') {
-        const vidId= item.key.split(',')[1]
-        
-        thumbs.push(
-          <div key={item.key} className={styles.youtubeThumb_container}>
-            <img alt='Youtube video' src={`https://img.youtube.com/vi/${vidId}/0.jpg`} />
-            <div className={styles.youtubeThumb_play}><Youtube color={'red'} /></div>
-          </div>)
-      }
-    }
-    return thumbs
-  }
-
   return (
     <div className={styles.container}>
       <div>
         <BackButton />
       </div>
       <div className={styles.container__content}>
+        <div className={styles.title}>{projectData.title}</div>
+
+        {carouselItems[0]}
+
         <div className={styles.info_panel}>
-          <div className={styles.name}>{projectData.title}</div>
-        </div>
-        <div className={styles.info_panel}>
-          <div className={styles.image_container}>
-            <Carousel
-              infiniteLoop
-              showArrows={true}
-              showThumbs={true}
-              showStatus={false}
-              showIndicators={false}
-              renderThumbs={renderThumbs}
-            >
-              {carouselItems}
-            </Carousel>
-          </div>
           <div className={styles.info_about}>
             <div className={styles.project_description}>
               <div className={styles.info_title}>
@@ -160,6 +130,9 @@ function ProjectProfile({ project }: Props) {
             </div>
           </div>
         </div>
+        
+        {carouselItems.slice(1)}
+      
       </div>
     </div>
   )

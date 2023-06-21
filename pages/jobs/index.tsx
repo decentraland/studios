@@ -54,14 +54,16 @@ function JobsLandingPage() {
         const [currentTime, setCurrentTime] = useState(Date.now())
         
         const examplesData = [
-            ['A store, arena, or headquarters for your brand', 'CONSENSYS BUILDING IN DECENTRALAND' ],
-            [ 'A playable experience such as a game or a quest', 'DOMINO’S STORE IN DECENTRALAND' ],
-            [ 'A product launch or conference', 'DORITOS PRODUCT LAUNCH' ],
-            [ 'Digital wearables for sale or giveaways', 'DOLCE&GABANNA AND COCA-COLA WEARABLES' ],
-            [ 'Brand placement such as advertising billboards', 'COCA-COLA ADS IN DECENTRALAND' ],
+            ['A store, arena, or headquarters for your brand', 'VICE BUILDING IN DECENTRALAND',  'https://twitter.com/metameditator/status/1498389760129204225?s=20&t=AKGiAhEFPoBq078BpY7aFA'],
+            [ 'A playable experience such as a game or a quest', 'DOMINO’S STORE IN DECENTRALAND', 'https://twitter.com/AndrewMease/status/1436534991995949062?s=20&t=K24V1bCP9Yeerj0CGeJ6SA' ],
+            [ 'A product launch or conference', 'DORITOS PRODUCT LAUNCH' , 'https://studios.decentraland.org/project/538'],
+            [ 'Digital wearables for sale or giveaways', 'DOLCE&GABANNA AND COCA-COLA WEARABLES', 'https://vimeo.com/654503434'],
+            [ 'Brand placement such as advertising billboards', 'COCA-COLA ADS IN DECENTRALAND', 'https://studios.decentraland.org/project/528' ],
             [ 'Educational material for internal stakeholders', 'CONFERENCE CENTER AND DECENTRALAND UNIVERSITY DISTRICT' ]
         ]
         
+        const externalExample = (link: string) => <a href={link} target="_blank" rel="noreferrer"><IconExternal red /></a>
+
         setTimeout(() => setCurrentTime(Date.now()), 1000)
 
         if (autoPlay && currentTime > lastUpdate + 3000){
@@ -75,13 +77,13 @@ function JobsLandingPage() {
             <div className={styles.examplesLeftPanel}>
                 <div className={styles.examplesTitle}> What can your brand build in Decentraland?</div>
                 
-                {examplesData.map(([exampleText, footerText], i) => <div key={i}><div className={`${styles.examplesText} ${currentExample === i ? '' : styles['examplesText--gray']}`}
+                {examplesData.map(([exampleText, footerText, exampleLink], i) => <div key={i}><div className={`${styles.examplesText} ${currentExample === i ? '' : styles['examplesText--gray']}`}
                                                         onPointerOver={() => setCurrentExample(i)}>
                         {currentExample === i && <IconArrowRight />}{exampleText}
                         </div>
                         <div className={`${styles['examplesImgMobile']} ${currentExample === i ? styles['examplesImgMobile--show'] : ''}`}>
                             <div className={styles.examplesImg} style={{backgroundImage: `url(/images/jobs/example_${i}b.webp)`}}/>
-                            <div className={styles.examplesFooterText}>{footerText}</div>
+                            <div className={styles.examplesFooterText}>{footerText} {exampleLink && externalExample(exampleLink)}</div>
                         </div>
                     </div>)}
                 
@@ -90,7 +92,7 @@ function JobsLandingPage() {
             <div className={styles.examplesRightPanel}>
                 <div className={styles.examplesImg} style={{backgroundImage: `url(/images/jobs/example_${currentExample}a.webp)`}}/>
                 <div className={styles.examplesImg} style={{backgroundImage: `url(/images/jobs/example_${currentExample}b.webp)`}}/>
-                <div className={styles.examplesFooterText}>{examplesData[currentExample][1]}</div>
+                <div className={styles.examplesFooterText}>{examplesData[currentExample][1]} {examplesData[currentExample][2] && externalExample(examplesData[currentExample][2])}</div>
             </div>
         </div>
     }

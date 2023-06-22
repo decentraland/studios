@@ -1,15 +1,21 @@
 import React, { useEffect, useState } from 'react'
 import { FormattedMessage } from 'react-intl'
-import { VerifiedPartner } from '../../interfaces/VerifiedPartner'
-import PartnerCard from '../PartnerCard/PartnerCard'
+import { useRouter } from 'next/router'
+import dynamic from 'next/dynamic'
 
 import styles from './PartnersList.module.css'
-import Empty from '../Icons/Empty'
-import { trackLink } from '../utils'
-import LayoutFilteredList from '../LayoutFilteredList/LayoutFilteredList'
+import { VerifiedPartner } from '../../interfaces/VerifiedPartner'
 import { Filter, FilterGroup } from '../../interfaces/Filters'
-import { useRouter } from 'next/router'
+import { trackLink } from '../utils'
+// import Empty from '../Icons/Empty'
+import PartnerCard from '../PartnerCard/PartnerCard'
+import LayoutFilteredList from '../LayoutFilteredList/LayoutFilteredList'
+
 import { Dropdown } from 'decentraland-ui/dist/components/Dropdown/Dropdown'
+
+const Empty = dynamic(() => import('../Icons/Empty'), {
+  ssr: false,
+})
 
 interface Props {
   initialPartners: VerifiedPartner[]

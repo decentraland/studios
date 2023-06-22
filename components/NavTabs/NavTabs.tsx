@@ -21,7 +21,7 @@ export default function NavTabs ({ tabsContents }: Props) {
                     
                     const isActive = `/${(router.route.split('/')[1]  || 'jobs')}` === tab[0]
 
-                    return <Link key={tab[0]} href={`${tab[0]}`} legacyBehavior>
+                    return <Link key={tab[0]} href={`${tab[0]}`} legacyBehavior prefetch={false}>
                         <div className={`${styles.navTab} ${isActive ? styles['navTab--active']: '' }`}>
                             {`${tab[1]}`}
                             {isActive ? <div className={styles['active-bar']}/> : null}

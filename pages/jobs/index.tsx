@@ -87,7 +87,7 @@ function JobsLandingPage() {
                         </div>
                     </div>)}
                 
-                <Link href={'/jobs/hire'} legacyBehavior ><div className={styles.hireTalentBtn}>START A PROJECT</div></Link>
+                <Link prefetch={false} href={'/jobs/hire'} legacyBehavior ><div className={styles.hireTalentBtn}>START A PROJECT</div></Link>
             </div>
             <div className={styles.examplesRightPanel}>
                 <div className={styles.examplesImg} style={{backgroundImage: `url(/images/jobs/example_${currentExample}a.webp)`}}/>
@@ -120,8 +120,8 @@ function JobsLandingPage() {
                     <div>
                     Looking to bring your brand to Decentraland? Connect with top-tier studios and professionals to make it happen.
                         <div className={styles.buttonsContainer}>
-                            <Link href={'/jobs/hire'} legacyBehavior ><div className='button_primary'>START A PROJECT</div></Link>
-                            <Link href={'/jobs/list'} legacyBehavior ><div className='button_primary--inverted'>APPLY TO A PROJECT</div></Link>
+                            <Link prefetch={false} href={'/jobs/hire'} legacyBehavior ><div className='button_primary'>START A PROJECT</div></Link>
+                            <Link prefetch={false} href={'/jobs/list'} legacyBehavior ><div className='button_primary--inverted'>APPLY TO A PROJECT</div></Link>
                         </div>
                     </div>
                 </div>
@@ -138,7 +138,7 @@ function JobsLandingPage() {
                 <div className={styles.howToContainer}>
                     <div className={styles.howToCard}>
                         <div className={styles['howToCard--titleRow']}><span>01</span>Start a project</div>
-                        <div className={styles['howToCard--content']}><Link className={styles.linkText} href="/jobs/hire">Create a post</Link> detailing the project you want to do in Decentraland, and the skills or collaborators you are looking for.</div>
+                        <div className={styles['howToCard--content']}><Link prefetch={false} className={styles.linkText} href="/jobs/hire">Create a post</Link> detailing the project you want to do in Decentraland, and the skills or collaborators you are looking for.</div>
                     </div>
                     <div className={styles.howToCard}>
                         <div className={styles['howToCard--titleRow']}><span>02</span>Review candidates</div>
@@ -154,7 +154,7 @@ function JobsLandingPage() {
                     </div>
                 </div>
                 <div className={styles.hireContainer}>
-                    <Link href={'/jobs/hire'} legacyBehavior ><div className={styles.hireTalentBtn}>START A PROJECT</div></Link>
+                    <Link prefetch={false} href={'/jobs/hire'} legacyBehavior ><div className={styles.hireTalentBtn}>START A PROJECT</div></Link>
                 </div>
                 
                 <UsageExamples />
@@ -167,9 +167,9 @@ function JobsLandingPage() {
                             <a href={'/p/metaverse-guide'} rel="noreferrer" target="_blank" ><div className={styles.getGuideBtn}>GET THE GUIDE <IconExternal /></div></a>
                         </div>
                         <div className={styles.readRightPanel}>
-                            <img className={styles.readEndImg} alt="metaverse guide" src="/images/jobs/read_1.webp" />
-                            <img className={styles.readCenterImg} alt="metaverse guide" src="/images/jobs/read_2.webp" />
-                            <img className={styles.readEndImg} alt="metaverse guide" src="/images/jobs/read_3.webp" />
+                            <img loading="lazy" className={styles.readEndImg} alt="metaverse guide" src="/images/jobs/read_1.webp" />
+                            <img loading="lazy" className={styles.readCenterImg} alt="metaverse guide" src="/images/jobs/read_2.webp" />
+                            <img loading="lazy" className={styles.readEndImg} alt="metaverse guide" src="/images/jobs/read_3.webp" />
                         </div>
                     </div>
                 </div>
@@ -184,7 +184,7 @@ function JobsLandingPage() {
                         <div className={styles.reviewFrame}>
                             <div className={styles.reviewTitleRow}>
                                 <span>
-                                    <img alt="logo DAPPCRAFT" src="/images/jobs/rev_logo_1.webp" /> Review for DAPPCRAFT
+                                    <img loading="lazy" alt="logo DAPPCRAFT" src="/images/jobs/rev_logo_1.webp" /> Review for DAPPCRAFT
                                 </span>
                                 <a href="/profile/dappcraft" target="_blank" rel="noreferrer">
                                     <IconExternal red />
@@ -199,7 +199,7 @@ function JobsLandingPage() {
                         <div className={styles.reviewFrame}>
                             <div className={styles.reviewTitleRow}>
                                 <span>
-                                    <img alt="logo KOLLECTIFF" src="/images/jobs/rev_logo_2.webp" /> Review for KOLLECTIFF
+                                    <img loading="lazy" alt="logo KOLLECTIFF" src="/images/jobs/rev_logo_2.webp" /> Review for KOLLECTIFF
                                 </span> 
                                 <a href="/profile/kollectiff" target="_blank" rel="noreferrer">
                                     <IconExternal red />
@@ -214,7 +214,7 @@ function JobsLandingPage() {
                         <div className={styles.reviewFrame}>
                             <div className={styles.reviewTitleRow}>
                                 <span>
-                                    <img alt="logo Atrovenado" src="/images/jobs/rev_logo_3.webp" /> Review for Atrovenado
+                                    <img loading="lazy" alt="logo Atrovenado" src="/images/jobs/rev_logo_3.webp" /> Review for Atrovenado
                                 </span> 
                                 <a href="/profile/atrovenado" target="_blank" rel="noreferrer">
                                     <IconExternal red />
@@ -229,13 +229,13 @@ function JobsLandingPage() {
 
                 <div className={styles.banner}>
                     <div>Ready to take your brand into Decentraland?</div>
-                    <Link href={'/jobs/hire'} legacyBehavior ><div className={styles.hireTalentBtn}>START A PROJECT</div></Link>
+                    <Link prefetch={false} href={'/jobs/hire'} legacyBehavior ><div className={styles.hireTalentBtn}>START A PROJECT</div></Link>
                 </div>
                     
                 <div className={styles.unsureWrapper}>
                     <div className={styles.unsureContainer}>
                         <div className={styles.unsureText}>Unsure about the Metaverse? <span className={styles.linkText} onClick={() => openIntercom()}>Let&apos;s chat.</span> We&apos;d love to help.</div>
-                        <img className={styles.unsureImg} alt='avatars' src='/images/jobs/footer_avatars.webp' />
+                        <img loading="lazy" className={styles.unsureImg} alt='avatars' src='/images/jobs/footer_avatars.webp' />
                     </div>
                 </div>
             </main>

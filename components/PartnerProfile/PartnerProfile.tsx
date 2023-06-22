@@ -1,4 +1,7 @@
 import React, { useEffect, useState } from 'react'
+import { FormattedMessage } from 'react-intl'
+import dynamic from 'next/dynamic'
+
 import { VerifiedPartner, Service } from '../../interfaces/VerifiedPartner'
 import ServiceTag from '../ServiceTag/ServiceTag'
 import Discord from '../Icons/Discord'
@@ -8,23 +11,27 @@ import Linkedin from '../Icons/Linkedin'
 import Twitter from '../Icons/Twitter'
 import Youtube from '../Icons/Youtube'
 import Website from '../Icons/Website'
-import BackButton from '../BackButton/BackButton'
-
-// import 'decentraland-ui/lib/styles.css'
-import styles from './PartnerProfile.module.css'
 import Marketplace from '../Icons/Marketplace'
 import Opensea from '../Icons/Opensea'
-import Icon from '../Icon/Icon'
-import { FormattedMessage } from 'react-intl'
-import DetailsList from '../DetailsList/DetailsList'
-import { PartnerProject } from '../../interfaces/PartnerProject'
-import ProjectCard from '../ProjectCard/ProjectCard'
 import Empty from '../Icons/Empty'
+import Icon from '../Icon/Icon'
+
+import styles from './PartnerProfile.module.css'
+import BackButton from '../BackButton/BackButton'
+import DetailsList from '../DetailsList/DetailsList'
+// import ProjectCard from '../ProjectCard/ProjectCard'
+// import ReviewCard from '../ReviewCard/ReviewCard'
+import MarkdownDescription from '../MarkdownDescription/MarkdownDescription'
 
 import { trackLink } from '../utils'
-import MarkdownDescription from '../MarkdownDescription/MarkdownDescription'
-import { PartnerReview } from '../../interfaces/PartnerReview'
-import ReviewCard from '../ReviewCard/ReviewCard'
+
+const ProjectCard = dynamic(() => import('../ProjectCard/ProjectCard'), {
+  ssr: false,
+})
+
+const ReviewCard = dynamic(() => import('../ReviewCard/ReviewCard'), {
+  ssr: false,
+})
 
 interface Props {
   partner: VerifiedPartner

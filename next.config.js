@@ -4,7 +4,7 @@ const { EnvironmentPlugin } = require('webpack');
 /** @type {import('next').NextConfig} */
 
 const nextConfig = {
-
+  
   transpilePackages: ['decentraland-ui'],
   
   reactStrictMode: true,

@@ -1,16 +1,24 @@
-import 'decentraland-ui/lib/styles.css'
+// import 'decentraland-ui/lib/styles.css'
+
+//testing lightweight version of 'decentraland-ui/lib/styles.css'
+import 'semantic-ui-css/semantic.min.css'
+// import 'balloon-css/balloon.min.css'
+import 'decentraland-ui/dist/themes/base-theme.css'
+import 'decentraland-ui/dist/themes/alternative/light-theme.css'
+
 import '../styles/globals.css'
+import React from 'react'
 import type { AppProps } from 'next/app'
 import { useEffect, useMemo } from 'react'
-import English from '../locales/en.json'
-import { IntlProvider } from 'react-intl'
-import React from 'react'
-import { Footer } from 'decentraland-ui/dist/components/Footer/Footer'
+import { useRouter } from 'next/router'
 import dynamic from 'next/dynamic'
 import Script from 'next/script'
 import Head from 'next/head'
-import { useRouter } from 'next/router'
+import { IntlProvider } from 'react-intl'
+
+import English from '../locales/en.json'
 import NavTabs from '../components/NavTabs/NavTabs'
+import { fbq } from '../components/utils'
 
 declare global {
   interface Window {
@@ -19,6 +27,10 @@ declare global {
 }
 
 const Navbar = dynamic(() => import('decentraland-ui/dist/components/Navbar/Navbar').then((module) => module.Navbar), {
+  ssr: false,
+})
+
+const Footer = dynamic(() => import('decentraland-ui/dist/components/Footer/Footer').then((module) => module.Footer), {
   ssr: false,
 })
 
@@ -53,8 +65,7 @@ function App({ Component, pageProps }: AppProps) {
         globalThis.sessionStorage.setItem('navHist', JSON.stringify(navHist));
       }
 
-
-      (globalThis as any).fbq('track', 'PageView')
+      fbq('track', 'PageView')
     }
 
     router.events.on('routeChangeStart', handleRouteChange)
@@ -109,8 +120,7 @@ function App({ Component, pageProps }: AppProps) {
           <Footer />
         </IntlProvider>}
 
-
-      <Script id="google-tag" 
+      <Script id="google-tag"
         src="https://www.googletagmanager.com/gtag/js?id=G-B0CSXD2KZL">
       </Script>
       <Script id="google-tag-init">
@@ -121,12 +131,14 @@ function App({ Component, pageProps }: AppProps) {
         gtag('config', "G-B0CSXD2KZL");
         gtag('config', "AW-11226587097", { "groups": "default" });`}
       </Script>
+      
       <Script id="metabase">
         {`!function(){var analytics=window.analytics=window.analytics||[];if(!analytics.initialize)if(analytics.invoked)window.console&&console.error&&console.error("Segment snippet included twice.");else{analytics.invoked=!0;analytics.methods=["trackSubmit","trackClick","trackLink","trackForm","pageview","identify","reset","group","track","ready","alias","debug","page","once","off","on","addSourceMiddleware","addIntegrationMiddleware","setAnonymousId","addDestinationMiddleware"];analytics.factory=function(e){return function(){var t=Array.prototype.slice.call(arguments);t.unshift(e);analytics.push(t);return analytics}};for(var e=0;e<analytics.methods.length;e++){var key=analytics.methods[e];analytics[key]=analytics.factory(key)}analytics.load=function(key,e){var t=document.createElement("script");t.type="text/javascript";t.async=!0;t.src="https://cdn.segment.com/analytics.js/v1/" + key + "/analytics.min.js";var n=document.getElementsByTagName("script")[0];n.parentNode.insertBefore(t,n);analytics._loadOptions=e};analytics._writeKey="${METABASE_KEY}";;analytics.SNIPPET_VERSION="4.15.3";
           analytics.load("${METABASE_KEY}");
           analytics.page();
           }}();`}
       </Script>
+      
       <Script id="plausible"
         data-domain="studios.decentraland.org"
         src="https://plausible.io/js/script.outbound-links.tagged-events.js">

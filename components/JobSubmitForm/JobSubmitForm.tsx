@@ -48,7 +48,7 @@ function JobSubmitForm() {
 
     const [formData, setFormData] = useState<Job>(initData)
     const [selectedFile, setSelectedFile] = useState<File>()
-    const [fileError, setFileError] = useState(false)
+    const [fileValidationFail, setFileValidationFail] = useState(false)
     const [currentStep, setCurrentStep] = useState(1)
     const [loading, setLoading] = useState(false)
     const [fetchError, setFetchError] = useState<string>('')
@@ -82,12 +82,14 @@ function JobSubmitForm() {
         setLoading(true)
         let postData = {...formData}
 
-        if (fileError){
+        if (fileValidationFail){
             setLoading(false)
            return alert('Please check slected file size.')
         }
-
+        
+        let fileUploaded = true
         if (selectedFile){
+            fileUploaded = false
             await fetch(`/api/upload`, {
                 method: 'POST',
                 headers: {
@@ -101,19 +103,23 @@ function JobSubmitForm() {
                 } else {
                     setFetchError('file upload error')
                 }
-            }).then(({ data }) => postData.brief_file = data.id)
+            }).then((res) => {
+                if (res?.data){
+                    postData.brief_file = res.data.id
+                    fileUploaded = true
+                }
+            })
         }
 
-        const jobCreate = await fetch(`/api/jobs/create`, {
+        const jobCreate = fileUploaded && await fetch(`/api/jobs/create`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ job: postData }),
+            body: JSON.stringify({ job: postData })
         })
 
-        if (jobCreate.ok) {
-            //TODO: add tracking here
+        if ( (jobCreate as any).ok ) {
             
             const lead = {
                 name: formData.author_name,
@@ -159,14 +165,14 @@ function JobSubmitForm() {
     }
 
     const handleFileInput = (e: ChangeEvent<HTMLInputElement>) => {
-        setFileError(false)
+        setFileValidationFail(false)
 
         if (e.target.files?.length){
             if (e.target.files[0].size > 10000000){
-                setFileError(true)
+                setFileValidationFail(true)
             } else {
                 setSelectedFile(e.target.files[0])
-                setFileError(false)
+                setFileValidationFail(false)
             }
         } else {
             setSelectedFile(undefined)
@@ -367,7 +373,7 @@ function JobSubmitForm() {
                 <span className='button_primary--inverted'>SELECT FILE</span>
                 <span className='ml-1'>{selectedFile ? <span>{selectedFile.name} <IconX gray className='ml-1' style={{height: '11px', width: '11px'}} onClick={handleFileRemove}/></span> : 'No file selected.'}</span>
             </label>
-            <div className={styles.text_secondary} style={fileError ? {color: '#FF2D55'} : {}}><IconInfo gray={!fileError} /> PDF files only, maximum size is 10 MB.</div>
+            <div className={styles.text_secondary} style={fileValidationFail ? {color: '#FF2D55'} : {}}><IconInfo gray={!fileValidationFail} /> PDF files only, maximum size is 10 MB.</div>
 
             <label className={styles.label}>What is your budget for this project?</label>
 

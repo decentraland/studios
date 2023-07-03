@@ -29,7 +29,7 @@ function JobProfile() {
     const [loading, setLoading] = useState(false)
     const [newMessage, setNewMessage] = useState<string>()
     const [selectedFile, setSelectedFile] = useState<File>()
-    const [fileError, setFileError] = useState(false)
+    const [fileValidationFail, setFileValidationFail] = useState(false)
     const [fetchError, setFetchError] = useState<string>('')
 
     useEffect(() => {
@@ -67,17 +67,17 @@ function JobProfile() {
     }
 
     const handleFileInput = (e: ChangeEvent<HTMLInputElement>) => {
-        setFileError(false)
 
         if (e.target.files?.length){
             if (e.target.files[0].size > 10000000){
-                setFileError(true)
+                setFileValidationFail(true)
             } else {
                 setSelectedFile(e.target.files[0])
-                setFileError(false)
+                setFileValidationFail(false)
             }
         } else {
             setSelectedFile(undefined)
+            setFileValidationFail(false)
         }
     }
 
@@ -95,12 +95,14 @@ function JobProfile() {
             brief_file: null
         }
 
-        if (fileError){
+        if (fileValidationFail){
             setLoading(false)
            return alert('Please check slected file size.')
         }
-
+        
+        let fileUploaded = true
         if (selectedFile){
+            fileUploaded = false
             await fetch(`/api/upload`, {
                 method: 'POST',
                 headers: {
@@ -110,30 +112,34 @@ function JobProfile() {
                 body: selectedFile,
             })
             .then(res => {
+                console.log(res)
                 if (res.ok){
                     return res.json()
                 } else {
                     setFetchError('file upload error')
                 }
             })
-            .then(({ data }) => {postMessage.brief_file = data})
+            .then(res => { if(res?.data) {
+                    postMessage.brief_file = res.data
+                    fileUploaded = true
+                } 
+            })
         }
 
-        await fetch('/api/jobs/apply', {
+        const submitMessage = fileUploaded && await fetch('/api/jobs/apply', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({ job: jobData, message: postMessage })
         })
-            .then(res => { 
-                if (res.ok) {
-                    fetchData()
-                    setShowSentBadge(true)
-                } else {
-                    setFetchError('message submit error')
-                }
-        })
+
+        if ( (submitMessage as any).ok ) {
+            fetchData()
+            setShowSentBadge(true)
+        } else {
+            setFetchError('message submit error')
+        }
     }
 
     const emptyFields = !newMessage
@@ -222,7 +228,7 @@ function JobProfile() {
                                 <span className='button_primary--inverted'>SELECT FILE</span>
                                 <span className='ml-1'>{selectedFile ? <span>{selectedFile.name} <IconX gray className='ml-1' style={{height: '11px', width: '11px'}} onClick={handleFileRemove}/></span> : 'No file selected.'}</span>
                             </label>
-                            <div className={styles.text_secondary} style={fileError ? {color: '#FF2D55'} : {}}><IconInfo gray={!fileError} /> PDF files only, maximum size is 10 MB.</div>
+                            <div className={styles.text_secondary} style={fileValidationFail ? {color: '#FF2D55'} : {}}><IconInfo gray={!fileValidationFail} /> PDF files only, maximum size is 10 MB.</div>
 
                             
                             <input type="submit" value="SEND MESSAGE"

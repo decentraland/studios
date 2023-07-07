@@ -41,6 +41,25 @@
   border-radius: 6px;
 }
 
+.input_date--Icon {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  /* border: none; */
+  /* outline: none; */
+}
+
+.input_date {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 24px;
+  width: 24px;
+  opacity: 0;
+}
+
 .input_file input {
   display: none;
 }

@@ -11,6 +11,7 @@ export interface Job {
     long_description:   string;
     email:              string;
     brief_file?:         any;
+    deadline_date?:      string;
     landing_url?:        string;
     messages:           JobMessage[];
 }

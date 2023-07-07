@@ -10,6 +10,7 @@ import Link from 'next/link'
 import ErrorScreen from '../ErrorScreen/ErrorScreen'
 import { fbq, linkedinTrackLead, plausibleTrackEvent } from '../utils'
 import Script from 'next/script'
+import IconCalendar from '../Icons/IconCalendar'
 
 const DESCRIPTION_MAX_LENGTH = 4000
 
@@ -43,6 +44,7 @@ function JobSubmitForm() {
         author_name: '',
         company: '',
         email: '',
+        deadline_date: '',
         messages: []
     }
 
@@ -364,7 +366,7 @@ function JobSubmitForm() {
             />
             <div className={styles.text_secondary}>{remainCharsText}</div>
 
-            <label className={styles.label}>Upload a brief (Optional)</label>
+            <label className={styles.label}>Upload a brief (optional)</label>
             <div className={styles.text}>
                 If you already have a document that describes your project upload it here.
             </div>
@@ -384,12 +386,33 @@ function JobSubmitForm() {
                     checked={formData.budget === option.budget} />
                 {option.text}</label></div>)}
 
+            <label className={styles.label}>Indicate your deadline for this project (optional)</label>
+            <div className={styles.text}>
+                Write the date by which you expect to complete this project. If you have no clear deadline, mention a rough estimate.
+            </div>
+            <span style={{position: 'relative'}}>
+                <input className={styles.input} type="text" 
+                    name="deadline_date"
+                    value={formData.deadline_date} 
+                    placeholder="Three months from now"
+                    onChange={handleInput}/>
+
+                <IconCalendar className={styles['input_date--Icon']}/>
+                        
+                <input className={styles.input_date} type="date" 
+                    name="deadline_datePicker"
+                    onChange={(e) => {
+                        setFormData({ ...formData, deadline_date: e.currentTarget.value })
+                    }} />
+            </span>
+
             <input
                 className={`${styles.submit_btn} ${emptyFieldsStep1 ? styles.submit_btn_disabled : ''}`}
                 disabled={emptyFieldsStep1}
                 type="submit"
                 value="NEXT"
             />
+            
         </form> 
         :
         <form onSubmit={handleSubmit}>
@@ -406,7 +429,7 @@ function JobSubmitForm() {
                 value={formData.author_name} 
                 onChange={handleInput} />
             
-            <label className={styles.label}>What’s your company? (Optional)</label>
+            <label className={styles.label}>What’s your company? (optional)</label>
             <input className={styles.input} type="text" 
                 name="company" 
                 value={formData.company} 

@@ -78,7 +78,8 @@ export default async function (req: NextRequest) {
         \nShort description: ${verify.short_description}
         \nLong description: ${verify.long_description}
         \nBudget: ${verify.budget}
-        \nBrief file: [${verify.brief_file.filename_download}](https://admin.dclstudios.org/assets/${verify.brief_file.id})`
+        ${verify.brief_file ? `\nBrief file: [${verify.brief_file.filename_download}](https://admin.dclstudios.org/assets/${verify.brief_file.id})` : ''}
+        ${verify.deadline_date ? `\nDeadline date: ${verify.deadline_date}` : ''}`
       })
     })
 

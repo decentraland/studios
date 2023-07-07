@@ -91,6 +91,10 @@ function JobVerify() {
       </>}
       <div className={styles.jobSectionTitle}>BUDGET</div>
       <div className={styles.jobText}>{budgetToRanges(jobData.budget)}</div>
+      {jobData.deadline_date && <>
+        <div className={styles.jobSectionTitle}>DEADLINE FOR THIS PROJECT</div>
+        <div className={styles.jobText}>{jobData.deadline_date}</div>
+      </>}
     </div>
     <div style={{ textAlign: 'center' }} className={styles.jobAuthor}>
       If you have any questions or need help regarding your listing, don’t hesitate to {reach_out_link}.

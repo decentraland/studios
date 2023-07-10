@@ -6,6 +6,7 @@ import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 import { budgetToRanges, openIntercom } from '../utils'
 import { Job } from '../../interfaces/Job'
 import IconFile from '../Icons/IconFile'
+import MarkdownDescription from '../MarkdownDescription/MarkdownDescription'
 
 const DB_URL = process.env.NEXT_PUBLIC_PARTNERS_DATA_URL
 
@@ -84,7 +85,7 @@ function JobVerify() {
       <div className={styles.jobSectionTitle}>SHORT DESCRIPTION</div>
       <div className={styles.jobText}>{jobData.short_description}</div>
       <div className={styles.jobSectionTitle}>FULL DESCRIPTION</div>
-      <div className={styles.jobText}>{jobData.long_description}</div>
+      <MarkdownDescription className={styles.jobText} description={jobData.long_description} />
       {jobData.brief_file && <>
         <div className={styles.jobSectionTitle}>BRIEF FILE</div>
         <div className={styles.jobText}><a className={styles.link} href={`${DB_URL}/assets/${jobData.brief_file.id}`} rel="noreferrer" target='_blank'><IconFile red /> {jobData.brief_file.filename_download}</a></div>

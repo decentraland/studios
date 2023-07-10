@@ -10,8 +10,8 @@
 
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  padding: 32px;
+  /* justify-content: center; */
+  padding: 40px 48px;
 }
 
 
@@ -77,5 +77,8 @@
   .image{
     display: none;
   }
-  
+
+  .container {
+    justify-content: center;
+  }
 }

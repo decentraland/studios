@@ -91,6 +91,7 @@
 .jobText{
   font-size: 16px;
   color: #36333D;
+  white-space: pre-line;
   margin-top: 8px;
 }
 

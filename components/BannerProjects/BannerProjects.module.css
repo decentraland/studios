@@ -1,23 +1,24 @@
 .container {
   width: 100%;
-  min-height: 214px;
+  padding: 40px 48px;
   margin-bottom: 40px;
+  
   position: relative;
-
-  background: linear-gradient(180deg, #DA58D8 0%, #9CA0D9 100%);
-  color: #ffffff;
-  border-radius: 20px;
-
+  
   display: flex;
   flex-direction: column;
-  /* justify-content: center; */
-  padding: 40px 48px;
+  
+  border-radius: var(--radius-banner-desktop, 32px);
+  
+  color: var(--general-pain-gray, #242129);
+  background: var(--tags-linked-wearables-secondary, #EBEEF6);
+  cursor: default;
 }
 
 
 
 .leftPanel {
-  max-width: 585px;
+  max-width: 490px;
 }
 
 .image {
@@ -42,19 +43,28 @@
 }
 
 .mainText {
-  font-weight: 600;
-  font-size: 28px;
-  line-height: 33px;
-  letter-spacing: -1px;
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 28px;
 }
 
 .smallText {
   margin-top: 16px;
   font-size: 16px;
-  letter-spacing: 0.5px;
-  font-weight: 400;
 
+  /* font-weight: 700; */
+  line-height: 24px;
 }
+
+.smallText a {
+  color: #FF2D55;
+  font-weight: 700;
+}
+
+.smallText a:hover {
+  text-decoration: underline;
+}
+
 
 @media (max-width: 990px){
   .leftPanel{

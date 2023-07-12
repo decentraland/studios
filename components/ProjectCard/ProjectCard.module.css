@@ -175,3 +175,18 @@
   font-weight: 400;
   font-size: 16px;
 }
+
+.new_badge {
+  padding: 8px 12px;
+  position: absolute;
+  right: 16px;
+  top: 16px;
+
+  border-radius: 100px;
+  background: var(--tags-linked-wearables-secondary, #EBEEF6);
+
+  color: var(--tags-linked-wearables, #304C9C);
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 12px;
+}

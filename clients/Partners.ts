@@ -36,7 +36,7 @@ export default class Partners {
     let partner
 
     try {
-      const response = await fetch(`${VERIFIED_PARTNERS_URL}?filter[slug]=${slug}&fields=*,reviews.*,projects.image_1,projects.id,projects.title,projects.profile.name,projects.profile.slug,projects.profile.logo`)
+      const response = await fetch(`${VERIFIED_PARTNERS_URL}?filter[slug]=${slug}&fields=*,reviews.*,projects.image_1,projects.id,projects.title,projects.profile.name,projects.profile.slug,projects.profile.logo,projects.date_created`)
 
       partner = (await response.json()).data[0] as VerifiedPartner
     } catch (error) {

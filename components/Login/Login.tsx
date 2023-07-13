@@ -50,7 +50,7 @@ export default function Login() {
         openIntercom()
     }}>contact us</a>
 
-    const credentialsMessage = <div className={styles.credentialsMessage}>{credentialsError ? <><IconInfo />{credentialsError}</> : null}</div>
+    const credentialsMessage = credentialsError ? <div className={styles.credentialsMessage}> <IconInfo />{credentialsError} </div> : null
 
     return <div className={styles.container}>
         <BackButton onClick={() => router.push('/jobs')}/>
@@ -69,6 +69,7 @@ export default function Login() {
                 <label className={styles.label}>Password</label>
                 <input key="password" className={styles.input} required type='password' onChange={(e) => setPassword(e.currentTarget.value)} value={password} placeholder="*******" />
                 {credentialsMessage}
+                <div className={styles.forgotPassword}><a href="https://admin.dclstudios.org/admin/reset-password" target="_blank" rel="noreferrer">Forgot your password?</a></div>
                 </>
                 :
                 <>

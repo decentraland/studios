@@ -13,6 +13,7 @@ import Script from 'next/script'
 import IconCalendar from '../Icons/IconCalendar'
 
 const DESCRIPTION_MAX_LENGTH = 4000
+const DESCRIPTION_MIN_LENGTH = 120
 
 const descriptionOptions = [
     'Branded environment such as a store, arena, gallery, or headquarters',
@@ -57,7 +58,11 @@ function JobSubmitForm() {
 
     const remainCharsText = `${formData.long_description.length}/${DESCRIPTION_MAX_LENGTH}`
 
-    const emptyFieldsStep1 = formData.title === '' || !formData.short_description.length || formData.long_description === '' || formData.budget === ''
+    const remainCharsColor = formData.long_description.length && formData.long_description.length <= DESCRIPTION_MIN_LENGTH ? "#ff2d55" : ""
+
+    const descriptionOk = formData.long_description !== '' && formData.long_description?.length >= DESCRIPTION_MIN_LENGTH
+
+    const emptyFieldsStep1 = formData.title === '' || !formData.short_description.length || !descriptionOk || formData.budget === ''
     
     const emptyFieldsStep2 = formData.author_name === '' || formData.email === ''
 
@@ -364,7 +369,7 @@ function JobSubmitForm() {
                 onChange={handleInput}
                 placeholder="I’m looking to create a building in Decentraland to promote our brand and highlight our values and mission..."
             />
-            <div className={styles.text_secondary}>{remainCharsText}</div>
+            <div className={styles.text_secondary} style={{ color: remainCharsColor }}>{remainCharsText}</div>
 
             <label className={styles.label}>Upload a brief (optional)</label>
             <div className={styles.text}>
@@ -375,7 +380,7 @@ function JobSubmitForm() {
                 <span className='button_primary--inverted'>SELECT FILE</span>
                 <span className='ml-1'>{selectedFile ? <span>{selectedFile.name} <IconX gray className='ml-1' style={{height: '11px', width: '11px'}} onClick={handleFileRemove}/></span> : 'No file selected.'}</span>
             </label>
-            <div className={styles.text_secondary} style={fileValidationFail ? {color: '#FF2D55'} : {}}><IconInfo gray={!fileValidationFail} /> PDF files only, maximum size is 10 MB.</div>
+            <div className={styles.text_secondary} style={fileValidationFail ? {color: '#B71C1C'} : {}}><IconInfo gray={!fileValidationFail} /> PDF files only, maximum size is 10 MB.</div>
 
             <label className={styles.label}>What is your budget for this project?</label>
 

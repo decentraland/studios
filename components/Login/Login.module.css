@@ -18,6 +18,7 @@
     padding: 12px 10px;
     border: 1px solid rgba(115, 110, 125, 0.32);
     border-radius: 6px;
+    margin-bottom: 10px;
   }
 
   .input__invalid{
@@ -49,9 +50,10 @@
   }
   
   .credentialsMessage {
-    margin-top: 10px;
-    color: #ff2d55;
-    height: 1.5rem;
+    /* margin-top: 10px; */
+    margin-bottom: 28px;
+    color: #B71C1C;
+    height: 1.5rem; 
     display: flex;
   }
 
@@ -59,6 +61,11 @@
     margin-right: 5px;
     flex-shrink: 0;
     place-self: center;
+  }
+  
+  .forgotPassword {
+    margin-top: 8px;
+    color:#FF2D55
   }
 
   .title {

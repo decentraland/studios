@@ -7,7 +7,7 @@ interface Props {
 function IconInfo({ gray, ...otherProps }: Props) {
 
     const style = { verticalAlign: 'text-bottom' }
-    let fillColor = '#FF2D55'
+    let fillColor = '#B71C1C'
     if (gray) fillColor = '#736E7D'
 
     return (

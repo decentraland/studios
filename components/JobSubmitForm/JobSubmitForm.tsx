@@ -369,7 +369,7 @@ function JobSubmitForm() {
                 onChange={handleInput}
                 placeholder="I’m looking to create a building in Decentraland to promote our brand and highlight our values and mission..."
             />
-            <div className={styles.text_secondary} style={{ color: remainCharsColor }}>{remainCharsText}</div>
+            <div className={styles.text_secondary} style={{ color: remainCharsColor }}>{descriptionOk ? remainCharsText : `Write ${120 - formData.long_description.length} more characters`}</div>
 
             <label className={styles.label}>Upload a brief (optional)</label>
             <div className={styles.text}>

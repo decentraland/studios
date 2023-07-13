@@ -7,6 +7,8 @@ import { budgetToRanges, openIntercom } from '../utils'
 import { Job } from '../../interfaces/Job'
 import IconFile from '../Icons/IconFile'
 import MarkdownDescription from '../MarkdownDescription/MarkdownDescription'
+import IconExternal from '../Icons/IconExternal'
+import Link from 'next/link'
 
 const DB_URL = process.env.NEXT_PUBLIC_PARTNERS_DATA_URL
 
@@ -38,6 +40,8 @@ function JobVerify() {
     }
   }, [id])
 
+  const shareUrl = `/jobs/share?id=${id}`
+
   const reach_out_link = <a className={styles.link} href=""
     rel="noreferrer"
     onClick={(e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
@@ -54,13 +58,10 @@ function JobVerify() {
     <img className={styles.image} alt='Your job post is live' src="/images/item_ok.png" />
 
     <div className={styles.title}>
-      Your project is live!
+      You published a new project!
     </div>
     <div className={styles.subtitle}>
-      Your publication is now visible to all Decentraland Studios.
-    </div>
-    <div className={styles.factsHeader}>
-      <b>Here’s some important information about your listing</b>
+      Your <Link href={shareUrl}>project</Link> is now visible to all Decentraland Studios.
     </div>
     <div className={styles.factsContainer}>
       <div className={styles.factCard}>
@@ -76,8 +77,9 @@ function JobVerify() {
         </div>
       </div>
     </div>
-    <div className={styles.factsHeader}>
-      This is how your project looks to all Decentraland Studios
+    <div className={styles.previewText}>
+      <span>Here&apos;s a preview of your project</span>
+      <Link href={shareUrl} ><span className={styles.liveText}>See it live</span><IconExternal red /></Link>
     </div>
     <div className={styles.jobContainer}>
       <div className={styles.jobAuthor}>Project created by <b>{jobData.author_name}</b>{jobData.company && <> from <b>{jobData.company}</b></>}</div>

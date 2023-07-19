@@ -48,7 +48,28 @@ const scene_types = [
 		value: 'Event venue template'
 	}
 ]
+
+const resource_types = [
+	{
+		key: 'resource_type',
+		value: 'Scene'
+	},
+	{
+		key: 'resource_type',
+		value: 'Library'
+	}
+]
+// future resource type
+	//{
+	// 	key: 'resource_type',
+	// 	value: 'Smart Wareable'
+	// },
+
 const avilableFilters: FilterGroup[] = [
+	{
+		title: 'PROJECT TYPE',
+		options: resource_types
+	},
 	{
 		title: 'SDK VERSION',
 		options: sdk_versions
@@ -58,7 +79,7 @@ const avilableFilters: FilterGroup[] = [
 		options: difficulty_levels
 	},
 	{
-		title: 'SCENE TYPE',
+		title: 'INTENTION',
 		options: scene_types
 	},
 ]

@@ -74,7 +74,7 @@ export default function ResourcesList({resources}: Props) {
 
 	const [limit, setLimit] = useState(5)
 	const [resourcesList, setResourcesList] = useState(resources)
-	const [filters, setFilters] = useState<Filter[]>(urlFilters.length ? urlFilters : [{key: 'sdk_version', value: 'SDK7'}])
+	const [filters, setFilters] = useState<Filter[]>(urlFilters.length ? urlFilters : [])
 	
 	useEffect(() => {
 		fetch('/api/get/resources')

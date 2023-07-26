@@ -2,15 +2,6 @@ export function toSnakeCase(str: string) {
   return str ? str.toLowerCase().replace(/\s+/g, '_') : ''
 }
 
-export function trackLink(event: string, source: string, url: string) {
-  if (typeof window !== 'undefined' && window.analytics) {
-    window.analytics.track(event, {
-      source,
-      url,
-    })
-  }
-}
-
 export function showIntercomIcon() {
   (globalThis as any).Intercom && (globalThis as any).Intercom("update", { "hide_default_launcher": false });
 }
@@ -25,6 +16,15 @@ export function hideIntercomIcon() {
 
 export function updateIntercom(userData: object) {
   (globalThis as any).Intercom && (globalThis as any).Intercom('update', userData)
+}
+
+export function trackLink(event: string, source: string, url: string) {
+  if (typeof window !== 'undefined' && window.analytics) {
+    window.analytics.track(event, {
+      source,
+      url,
+    })
+  }
 }
 
 export function linkedinTrackLead(conversion_id?: string) {

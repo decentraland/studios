@@ -78,7 +78,7 @@ export default function Jobs() {
             if (res) {
                 setLogged(res)
             } else {
-                router.push(`/login?from=${router.asPath}`, '/login')
+                router.push('/login')
             }
         })
     }, [])

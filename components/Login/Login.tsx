@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 
 import styles from './Login.module.css'
 import { openIntercom, trackLink } from '../utils'
@@ -22,20 +22,39 @@ export default function Login() {
 
     const emptyFields = !(email && password)
 
+    const goToPrevPage = (logged= false) => {
+
+        let navHist = JSON.parse(globalThis.sessionStorage.navHist || '[]')
+        
+        if (navHist.length > 1){
+            navHist.pop()
+
+            if (!logged) {
+                navHist = navHist.filter((e: string) => !(e.includes('/jobs/list') || e === '/login'))
+            }
+
+            router.push(navHist.pop())
+        } else {
+            router.push('/')
+        }
+    }
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
         setInvalidClass('')
         login(email, password, otp)
-        .then(res => {
-            if (res.error && res.error === 'missing otp'){
-                setCredentialsError(undefined)
-                setOtpScreen(true)
-            } else if (res.error){
-                setCredentialsError(res.error)
-            } else {
-                router.push(router.query?.from ? `${router.query.from}` : '/jobs/list')
-            }
-        })
+            .then(res => {
+                if (res.access_token){
+                    goToPrevPage(true)
+                } else if (res.error && res.error === 'missing otp'){
+                    setCredentialsError(undefined)
+                    setOtpScreen(true)
+                } else if (res.error){
+                    setCredentialsError(res.error)
+                } else {
+                    goToPrevPage()
+                }
+            })
     }
 
     const join_link = <a target={'_blank'}
@@ -53,7 +72,7 @@ export default function Login() {
     const credentialsMessage = credentialsError ? <div className={styles.credentialsMessage}> <IconInfo />{credentialsError} </div> : null
 
     return <div className={styles.container}>
-        <BackButton onClick={() => router.push('/jobs')}/>
+        <BackButton onClick={() => goToPrevPage()}/>
         <div className={styles.formContainer}>
             <div className={styles.header}>
                 <div className={styles.title}>Log in to find your next project</div>

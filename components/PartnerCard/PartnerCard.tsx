@@ -32,7 +32,7 @@ function PartnerCard({ partner }: Props) {
             <div className={styles.pills}>
               {displayServices.map((service, i) => (
                 <span key={`${service}-${i}`} className={styles.services}>
-                  <ServiceTag type={service} active hideText hideTooltip />
+                  <ServiceTag type={service} active hideText />
                 </span>
               ))}
             </div>

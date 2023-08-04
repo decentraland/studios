@@ -51,11 +51,70 @@ export default async function (req: NextRequest) {
       })
     })
 
-    const resResources = (await fetch(`${DB_URL}/items/resources?filter={"_or":[{"title":{"_contains":"${query}"}},{"description":{"_contains":"${query}"}}]}&fields=id,video_1,image_1,title,description,github_link,play_link`).then((res) => res.json())).data
-    
-    const resStudios = (await fetch(`${DB_URL}/items/profile?search=${query}&fields=id,name,description,logo,slug`).then((res) => res.json())).data
-    
-    const resProjects = (await fetch(`${DB_URL}/items/projects?search=${query}&fields=id,image_1,title,description,profile.name,profile.logo`).then((res) => res.json())).data
+    let filterQuery = query.split(' ').map((token: string) => ({
+      "_or": [
+        { title: {
+          "_icontains": token
+        }},
+        { description: {
+          "_icontains": token
+        }}
+      ]}))
+
+      let studiosQuery = query.split(' ').map((token: string) => ({
+      "_or": [
+        { name: {
+          "_icontains": token
+        }},
+        { description: {
+          "_icontains": token
+        }}
+      ]}))
+
+    const resResources = (await fetch(`${DB_URL}/items/resources`, {
+      method: 'SEARCH',
+      headers: { 
+          'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        query: {
+          filter: {
+            "_and": filterQuery
+          },
+          fields: ["id", "video_1", "image_1", "title", "description", "github_link", "play_link"]
+        }
+      })
+    }).then((res) => res.json())).data
+
+    const resStudios = (await fetch(`${DB_URL}/items/profile`, {
+      method: 'SEARCH',
+      headers: { 
+          'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        query: {
+          filter: {
+            "_and": studiosQuery
+          },
+          fields: ["id", "name", "description", "logo", "slug"]
+        }
+      })
+    }).then((res) => res.json())).data
+
+    const resProjects = (await fetch(`${DB_URL}/items/projects`, {
+      method: 'SEARCH',
+      headers: { 
+          'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        query: {
+          filter: {
+            "_and": filterQuery
+          },
+          fields: ["id","image_1", "title", "description", "profile.name", "profile.logo"]
+        }
+      })
+    }).then((res) => res.json())).data
 
     const resource = resResources.sort((a: any , b: any ) => sortResult(a, b, query)).map((resource: Resource) => ({ ...resource, description: sliceAroundQuery(query, resource.description), type: 'resource'}))
     const studio = resStudios.sort((a: any , b: any ) => sortResult(a, b, query)).map((profile: VerifiedPartner) => ( { ...profile, title:profile.name, description: sliceAroundQuery(query, profile.description) , type: 'studio'} ))

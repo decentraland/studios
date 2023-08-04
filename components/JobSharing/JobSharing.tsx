@@ -89,7 +89,7 @@ function JobSharing() {
           Sign in to read all details and apply for this project.
         </div>
         <div className={styles.previewButtons}>
-        <Link prefetch={false} href={'/jobs/list'} legacyBehavior ><div className='button_primary--inverted'>SIGN IN</div></Link> <div className={styles.previewButtonsText}>Not a Decentraland Studio? {join_link}</div>
+        <Link prefetch={false} href={`/jobs/list?id=${id}`} legacyBehavior ><div className='button_primary--inverted'>SIGN IN</div></Link> <div className={styles.previewButtonsText}>Not a Decentraland Studio? {join_link}</div>
         </div>
       </div>
     </div>

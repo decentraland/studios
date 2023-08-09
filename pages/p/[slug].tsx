@@ -6,6 +6,7 @@ import { useRouter } from "next/router";
 import Head from "next/head";
 import Script from "next/script";
 import { fbq, googleAdsTrack, linkedinTrackLead, openIntercom, plausibleTrackEvent, updateIntercom } from "../../components/utils";
+import FooterStudios from "../../components/FooterStudios/FooterStudios";
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
 
@@ -337,11 +338,14 @@ function MetaverseGuide({ landing }: Props) {
                 <img src="/images/guide/envelope.webp" alt="" className="section--contact_envelope" />
                 </div>
             </div>}
-            <div className="footer">
+            {/* <div className="footer">
                 <div className="footer__container">
                     <img src="/images/guide/DCL_Logo_white.webp" alt="" className="logo" />
                     <a href="mailto:studios@decentraland.org" className="base-text">{landingData.contact_us}</a>
                 </div>
+            </div> */}
+            <div style={{backgroundColor: "#FFF", position: "relative", top: "-26px"}}>
+                <FooterStudios />
             </div>
         </main>
         {linkedinTracking}

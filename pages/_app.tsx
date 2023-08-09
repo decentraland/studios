@@ -19,6 +19,7 @@ import { IntlProvider } from 'react-intl'
 import English from '../locales/en.json'
 import NavTabs from '../components/NavTabs/NavTabs'
 import { fbq } from '../components/utils'
+import FooterStudios from '../components/FooterStudios/FooterStudios'
 
 declare global {
   interface Window {
@@ -80,7 +81,7 @@ function App({ Component, pageProps }: AppProps) {
     }
   }, [router.events])
 
-  const isMetaverseGuide = router.asPath.includes('/p/')
+  const isCustomLanding = router.asPath.includes('/p/')
   // const showTabs = [...tabsContents, ['/search']].map(tab => tab[0]).includes(router.route)
   const showTabs = !['/p/', '/project/', '/profile/'].includes(router.route)
 
@@ -108,7 +109,7 @@ function App({ Component, pageProps }: AppProps) {
         </noscript>
       </Head>
 
-      {isMetaverseGuide ?
+      {isCustomLanding ?
         <Component {...pageProps} />
         :
         <IntlProvider locale={shortLocale} messages={messages}>
@@ -117,6 +118,7 @@ function App({ Component, pageProps }: AppProps) {
           </div>
           {showTabs && <NavTabs tabsContents={tabsContents} />}
           <Component {...pageProps} />
+          <FooterStudios />
           <Footer />
         </IntlProvider>}
 
@@ -151,7 +153,7 @@ function App({ Component, pageProps }: AppProps) {
         {`window.intercomSettings = {
             api_base: "https://api-iam.intercom.io",
             app_id: "${INTERCOM_APP_ID}",
-            hide_default_launcher: ${isMetaverseGuide}
+            hide_default_launcher: ${isCustomLanding}
         };`}
 
         {`(function () {

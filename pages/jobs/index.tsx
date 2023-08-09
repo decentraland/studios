@@ -114,7 +114,7 @@ function JobsLandingPage() {
                 <link rel="canonical" href="https://studios.decentraland.org/" />
             </Head>
             <main className={globalStyles.main}>
-                <div className={styles.fakeBackground} />
+                {/* <div className={styles.fakeBackground} /> */}
                 <div className={styles.heroContainer}>
                     <div>Decentraland creative services, on demand</div>
                     <div>

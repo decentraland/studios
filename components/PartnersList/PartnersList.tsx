@@ -263,7 +263,7 @@ function PartnersList({ initialPartners }: Props) {
 
       </div>
       
-      <div className={styles.footer_text_container}>
+      {/* <div className={styles.footer_text_container}>
         <FormattedMessage
           id="footer_message"
           values={{
@@ -294,7 +294,7 @@ function PartnersList({ initialPartners }: Props) {
             ),
           }}
         />
-      </div>
+      </div> */}
     </>
   )
 }

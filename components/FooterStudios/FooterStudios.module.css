@@ -1,6 +1,5 @@
 .superContainer {
     border-top: 1px solid var(--structure-border, #F3F2F5);
-    margin-top: 26px;
     background-color: #FFF;
 }
 
@@ -15,7 +14,7 @@
 .studiosLogo {
     width: 188px;
     height: 44.61px;
-    background: url("/images/footer_desktop.webp") 0% 0% / contain;
+    background: no-repeat url("/images/footer_desktop.webp") 0% 0% / contain;
 }
 
 .links {
@@ -42,7 +41,6 @@
 .rightPanel {
     text-align: right;
     max-width: 304px;
-    margin-top: 48px;
 }
 
 .textSocial {

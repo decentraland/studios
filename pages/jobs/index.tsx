@@ -232,12 +232,12 @@ function JobsLandingPage() {
                     <Link prefetch={false} href={'/jobs/hire'} legacyBehavior ><div className={styles.hireTalentBtn}>START A PROJECT</div></Link>
                 </div>
                     
-                <div className={styles.unsureWrapper}>
+                {/* <div className={styles.unsureWrapper}> */}
                     <div className={styles.unsureContainer}>
                         <div className={styles.unsureText}>Unsure about the Metaverse? <span className={styles.linkText} onClick={() => openIntercom()}>Let&apos;s chat.</span> We&apos;d love to help.</div>
                         <img loading="lazy" className={styles.unsureImg} alt='avatars' src='/images/jobs/footer_avatars.webp' />
                     </div>
-                </div>
+                {/* </div> */}
             </main>
         </Container>
     )

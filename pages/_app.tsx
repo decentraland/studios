@@ -110,7 +110,10 @@ function App({ Component, pageProps }: AppProps) {
       </Head>
 
       {isCustomLanding ?
-        <Component {...pageProps} />
+        <>
+          <Component {...pageProps} />
+          <FooterStudios />
+        </>
         :
         <IntlProvider locale={shortLocale} messages={messages}>
           <div className='allocateNav'>

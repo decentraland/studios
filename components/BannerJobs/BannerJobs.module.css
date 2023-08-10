@@ -39,10 +39,10 @@
 }
 
 .mainText {
-  font-weight: 600;
-  font-size: 28px;
-  line-height: 33px;
-  letter-spacing: -1px;
+  font-weight: 700;
+  font-size: 24px;
+  line-height: 28px;
+  /* letter-spacing: -1px; */
 }
 
 .smallText {
@@ -66,10 +66,10 @@
   .leftPanel{
     max-width: 100%;
   }
-
+  
   .mainText{
     font-size: 22px;
-    line-height: 28px;
+    line-height: 24px;
   }
   .image{
     display: none;

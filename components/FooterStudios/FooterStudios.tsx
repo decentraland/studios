@@ -26,7 +26,7 @@ export default function FooterStudios () {
                 </div>
                 <div className={styles.rightPanel}>
                     <div className={styles.textlight}>
-                        An independent team supported by <a href="https://dao.decentraland.org/" target="_blank" rel="noreferrer">Decentraland&apos;s DAO</a> maintains this project.
+                        An independent team supported by <a href="https://governance.decentraland.org/proposal/?id=5f962e70-22ef-11ee-8ace-3bf098daeebe" target="_blank" rel="noreferrer">Decentraland&apos;s DAO</a> maintains this project.
                     </div>
                     <div className={styles.textSocial}>
                         Follow Decentraland Studios

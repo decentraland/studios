@@ -344,9 +344,6 @@ function MetaverseGuide({ landing }: Props) {
                     <a href="mailto:studios@decentraland.org" className="base-text">{landingData.contact_us}</a>
                 </div>
             </div> */}
-            <div style={{backgroundColor: "#FFF", position: "relative", top: "-26px"}}>
-                <FooterStudios />
-            </div>
         </main>
         {linkedinTracking}
         </>)

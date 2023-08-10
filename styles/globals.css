@@ -94,6 +94,7 @@ a {
 .ui.container.dcl.footer {
   display: flex;
   flex-direction: row;
+  margin-top: 0;
 }
 
 @media (prefers-color-scheme: light) {

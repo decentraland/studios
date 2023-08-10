@@ -37,7 +37,7 @@
 }
 
 .buttonsContainer{
-    margin-top: 24px;
+    margin-top: 16px;
 }
 
 .buttonsContainer > div {
@@ -249,6 +249,7 @@
     align-items: baseline;
     gap: 22px;
     transition: all 0.6s ease-in-out;
+    line-height: initial;
 }
 
 .examplesText--gray {
@@ -456,15 +457,20 @@
     transform: translateY(-2px);
 }
 
-.unsureWrapper {
-    height: 300px;
-    margin-top: 380px;
-}
-
 .unsureContainer {
-    position: absolute;
-    left: 0;
+    margin-top: 380px;
+
+    /* position: absolute; */
+    /* left: 0; */
+    /* width: 100vw; */
     width: 100vw;
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }    
 
 .unsureText {
@@ -477,10 +483,10 @@
 
 .unsureImg{
     height: 28vw;
-    position: absolute;
-    right: 0;
-    top: 0;
-    transform: translateY(-40%);
+    /* position: absolute; */
+    /* right: 0; */
+    /* top: 0; */
+    /* transform: translateY(-40%); */
     z-index: -1;
 }   
 
@@ -693,15 +699,12 @@
         width: auto;
     }
 
-    .unsureWrapper {
-        margin-top: 140px;
-        height: 400px;
-    }
-
     .unsureContainer {
-        display: flex;
+        margin-top: 140px;
+        margin-bottom: 16px;
+
+        /* display: flex; */
         flex-direction: column-reverse;
-        /* overflow: hidden; */
         align-items: flex-end;
     }
 

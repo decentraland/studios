@@ -27,7 +27,7 @@ function ProjectsList({ projects }: { projects: PartnerProject[] }) {
         <div className={styles.projects_grid}>
             {renderProjects.map((project) => <ProjectCard key={project.id} project={project} />)}
         </div>
-        {projectsList.length >= limit && <div onClick={() => setLimit(current => current + 12)} className='button_primary center'>LOAD MORE</div>}
+        {projectsList.length >= limit && <div onClick={() => setLimit(current => current + 12)} className='button_primary center mb-4'>LOAD MORE</div>}
       </>
     )
 

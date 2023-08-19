@@ -234,6 +234,10 @@ button{
   box-shadow: 0px 2px 16px 0px rgba(8, 43, 41, 0.06);
 }
 
+.extraFields{
+  height: 650px;
+}
+
 .section--cta__container::after{
   position: absolute;
   content: "";
@@ -366,7 +370,49 @@ button{
   width: 200px;
 }
 
-@media (max-width: 1064px) {
+.options {
+  display: flex;
+  /* white-space: pre-wrap; */
+  margin-top: 10px;
+}
+
+.options input {
+  margin-right: 12px;
+  flex-shrink: 0;
+  height: unset;
+  width: unset;
+}
+
+.options input[type='checkbox']:checked,
+.options input[type='radio']:checked {
+  accent-color: #ff2d55;
+}
+
+.cta__customFields {
+  margin: 16px 8px;
+  text-align: left;
+}
+
+.cta__customFields label {
+  margin-top: 16px;
+}
+
+.cta__customFields input[type="text"] {
+  margin-top: 8px;
+}
+
+@media (max-width: 1200px) {
+
+  .cta__customFields {
+    margin: 0;
+  }
+
+  .cta__customFields input[type="text"] {
+    width: 100%;
+    margin-top: 16px;
+    margin-bottom: 8px;
+  }
+  
   .section--cta__container{
     flex-direction: column;
     align-items: center;
@@ -375,9 +421,11 @@ button{
     height: calc(850px - 40vw);
     min-height: 650px;
   }
-
   
-
+  .extraFields{
+    height: calc(1200px - 10vw);
+  }
+  
   .section--cta__container__content{
     flex-direction: column;
     padding: initial;
@@ -410,13 +458,11 @@ button{
     margin: 8px 0;
   }
 
-  
-
 }
 
   @media (max-width: 500px) {
     .section--cta__container{
-      width: 95%;
+      width: 100%;
     }
 
     .section--cta{

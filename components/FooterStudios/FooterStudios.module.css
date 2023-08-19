@@ -84,10 +84,8 @@
     text-align: center;
     margin-top: 48px;
   }
-}
-
-@media(max-width: 992px) {
-    .links {
-        gap: 16px;
-    }
+  
+  .links {
+      gap: 16px;
+  }
 }

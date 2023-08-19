@@ -58,10 +58,19 @@ export interface Landing {
   contact_text:            string;
   contact_text_close:      string;
   contact_us:              string;
-  custom_fields:           string;
+  custom_fields:           object;
+  form_custom_fields:      FormCustomField[];
   list_ids:                string;
   fb_pixel:                string;
   track_linkedin:          LinkedinTrackData;
+}
+
+export interface FormCustomField {
+  sg_id: string;
+  label: string;
+  name: string;
+  options: [];
+  value: string
 }
 
 export interface LinkedinTrackData {

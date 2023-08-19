@@ -6,7 +6,7 @@ import { useRouter } from "next/router";
 import Head from "next/head";
 import Script from "next/script";
 import { fbq, googleAdsTrack, linkedinTrackLead, openIntercom, plausibleTrackEvent, updateIntercom } from "../../components/utils";
-import FooterStudios from "../../components/FooterStudios/FooterStudios";
+import { stringify } from "querystring";
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
 
@@ -43,6 +43,7 @@ function MetaverseGuide({ landing }: Props) {
     const [name, setName] = useState('')
     const [email, setEmail] = useState('')
     const [landingData, setLandingData] = useState(landing)
+    const [customFields, setCustomFields] = useState(landing.form_custom_fields)
 
     useEffect(() => {
 		fetch(`/api/get/landing`,
@@ -53,7 +54,10 @@ function MetaverseGuide({ landing }: Props) {
             },
             body: JSON.stringify({ slug: landing.slug })
             }).then(res => res.ok && res.json())
-                .then((data) => setLandingData(data))
+                .then((data) => {
+                    setLandingData(data)
+                    data.form_custom_fields && setCustomFields(data.form_custom_fields)
+                })
                 .catch((err) => console.log(err))
         }, [])
 
@@ -67,8 +71,15 @@ function MetaverseGuide({ landing }: Props) {
         }
     }, [(globalThis as any).fbq])
 
+    
+
     const onFormSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
+
+        let newFields
+        if (customFields?.length){
+            newFields = customFields.reduce((a, v) => ({ ...a, [v.sg_id]: v.value}), {}) 
+        }
 
         const body = {
             name,
@@ -80,7 +91,7 @@ function MetaverseGuide({ landing }: Props) {
             mobile: !!globalThis?.navigator.userAgent.match(/Mobi/),
             user_agent: globalThis?.navigator.userAgent,
             list_ids: landingData.list_ids,
-            custom_fields: landingData.custom_fields
+            custom_fields: {... landingData.custom_fields, ...newFields}
         }
 
         fetch('/api/landing/submit', {
@@ -167,6 +178,58 @@ function MetaverseGuide({ landing }: Props) {
                 <img height="1" width="1" style={{display:"none"}} alt="" src={`https://px.ads.linkedin.com/collect/?pid=${landingData.track_linkedin.partner_id}&fmt=gif`} />
             </noscript>
         </footer>
+
+    }
+
+    const handleCheckbox = (e: React.FormEvent, i: number) => {
+        const element = e.currentTarget as HTMLInputElement
+        
+        let newFieldData = customFields[i].value || ""
+        
+        const index = newFieldData.indexOf(element.value)
+        
+        if ( index === -1) {
+            newFieldData = newFieldData.concat(`${newFieldData.length ? ', ' : '' }"${element.value}"`)
+        } else {
+            let arrayData = [...newFieldData]
+            if (index === 1) {
+                arrayData.splice(0, element.value.length + 4 )
+            } else {
+                arrayData.splice(index - 3, element.value.length + 4 )
+            }
+            newFieldData = arrayData.join("")
+        }
+        
+        let newCustomFields = [ ...customFields ]
+        newCustomFields[i].value = newFieldData
+
+        setCustomFields(newCustomFields)
+    }
+
+    let renderFormCustomFields = null
+    if (customFields?.length) {
+
+        renderFormCustomFields = <div className="cta__customFields">{customFields.map( (field, i) => {
+            if (field.options?.length) {
+                return <>
+                <br/><label>{field.label}</label>
+
+                {field.options.map((text: string) => <div key={text}><label className="options">
+                    <input type="checkbox" name={text}
+                        value={text}
+                        onChange={(e) => handleCheckbox(e, i)}
+                        checked={field.value?.includes(text)} />
+                    {text}</label></div>)}
+                </>
+            }
+
+            return <input key={field.name} type="text" name={field.name} id={field.name} placeholder={field.label} value={field.value} onChange={(newVal) => {
+                let newCustomFields = [...customFields]
+                newCustomFields[i].value = newVal.target.value
+                setCustomFields(newCustomFields)
+            }} />
+
+        })}</div>
     }
 
     return (<>
@@ -197,15 +260,17 @@ function MetaverseGuide({ landing }: Props) {
                 </div>
             </div>
             <div className="section section--cta" id="section--cta">
-                <div id="cta__container" className="section--cta__container container--enabled">
+                <div id="cta__container" className={`section--cta__container container--enabled  ${renderFormCustomFields ? 'extraFields' : ''}`}>
                     <div className="section--cta__container__content form--enabled">
                         <img className="cta__image" src={`${DB_URL}/assets/${landingData.form_image}`} alt="" />
                         <div className="cta__form">
                             <h3>{landingData.form_title}</h3>
                             <p className="base-text cta__base-text">{landingData.form_description}</p>
+                                {renderFormCustomFields}
                             <form onSubmit={onFormSubmit}>
                                 <input type="text" name="name" id="name" placeholder={landingData.form_name} required value={name} onChange={(newVal) => setName(newVal.target.value)} />
                                 <input type="email" name="email" id="email" placeholder={landingData.form_email} required value={email} onChange={(newVal) => setEmail(newVal.target.value)} />
+                                
                                 <button className="cta" type="submit">{landingData.form_button}</button>
                             </form>
                         </div>

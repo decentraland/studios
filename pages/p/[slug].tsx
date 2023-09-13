@@ -6,7 +6,6 @@ import { useRouter } from "next/router";
 import Head from "next/head";
 import Script from "next/script";
 import { fbq, googleAdsTrack, linkedinTrackLead, openIntercom, plausibleTrackEvent, updateIntercom } from "../../components/utils";
-import { stringify } from "querystring";
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
 
@@ -116,17 +115,15 @@ function MetaverseGuide({ landing }: Props) {
     }
 
     const ctaSuccess = () => {
-        const ctaContainer = document.getElementById('cta__container');
-        ctaContainer && ctaContainer.classList.remove('container--enabled');
+        const ctaContainer = document.getElementById('cta__slider');
         ctaContainer && ctaContainer.classList.add('container--success');
     }
 
     const ctaSendAgain = () => {
         setName('')
         setEmail('')
-        const ctaContainer = document.getElementById('cta__container');
+        const ctaContainer = document.getElementById('cta__slider');
         ctaContainer && ctaContainer.classList.remove('container--success');
-        ctaContainer && ctaContainer.classList.add('container--enabled');
       }
 
     const ctaToggle = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
@@ -259,45 +256,7 @@ function MetaverseGuide({ landing }: Props) {
                     <img className="hero__container__pdf-cover" src={`${DB_URL}/assets/${landingData.hero_cover}`} alt="" />
                 </div>
             </div>
-            <div className="section section--cta" id="section--cta">
-                <div id="cta__container" className={`section--cta__container container--enabled  ${renderFormCustomFields ? 'extraFields' : ''}`}>
-                    <div className="section--cta__container__content form--enabled">
-                        <img className="cta__image" src={`${DB_URL}/assets/${landingData.form_image}`} alt="" />
-                        <div className="cta__form">
-                            <h3>{landingData.form_title}</h3>
-                            <p className="base-text cta__base-text">{landingData.form_description}</p>
-                                {renderFormCustomFields}
-                            <form onSubmit={onFormSubmit}>
-                                <input type="text" name="name" id="name" placeholder={landingData.form_name} required value={name} onChange={(newVal) => setName(newVal.target.value)} />
-                                <input type="email" name="email" id="email" placeholder={landingData.form_email} required value={email} onChange={(newVal) => setEmail(newVal.target.value)} />
-                                
-                                <button className="cta" type="submit">{landingData.form_button}</button>
-                            </form>
-                        </div>
-                    </div>
-                    <div className="section--cta__container__content form--success">
-                        <img className="cta__image" src="/images/guide/Success-form.webp" alt="" />
-                        <div className="cta__form">
-                            <h3>{landingData.form_success_title}</h3>
-                            <p className="base-text cta__base-text">{landingData.form_success_text} <strong>{email}</strong>.</p>
-                            <div className="cta__form--success__buttons">
-                                {landingData.form_success_open_intercom ? 
-                                <>
-                                    <a href={landingData.form_success_open_url} { ...landingData.form_success_open_url.includes('://') ? { target:"_blank" } : {} } rel="noreferrer" className="cta">{landingData.form_success_open}</a>
-                                    <a onClick={openIntercom} className="cta cta-inverted">{landingData.form_success_open_intercom}</a>
-                                </>
-                                :
-                                <>
-                                    <a href={landingData.form_success_open_url} target="_blank" rel="noreferrer" className="cta">{landingData.form_success_open}</a>
-                                    <a onClick={ctaSendAgain} className="inline-link">{landingData.form_success_send_again}</a>
-                                </>
-                            }
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
+            
             {landingData.about_show &&
             <div className="section section--aboutdcl">
                 <div className="section--aboutdcl__description">
@@ -393,6 +352,48 @@ function MetaverseGuide({ landing }: Props) {
                     </div>)}
                 </div>
             </div>}
+
+            <div className="section section--cta" id="section--cta">
+                <div id="cta__container" className={`section--cta__container container--enabled`}>
+                    <div id="cta__slider" className="section--cta__container--slider">
+                        <div className="section--cta__container__content">
+                            <img className="cta__image" src={`${DB_URL}/assets/${landingData.form_image}`} alt="" />
+                            <div className="cta__form">
+                                <h3>{landingData.form_title}</h3>
+                                <p className="base-text cta__base-text">{landingData.form_description}</p>
+                                    {renderFormCustomFields}
+                                <form onSubmit={onFormSubmit}>
+                                    <input type="text" name="name" id="name" placeholder={landingData.form_name} required value={name} onChange={(newVal) => setName(newVal.target.value)} />
+                                    <input type="email" name="email" id="email" placeholder={landingData.form_email} required value={email} onChange={(newVal) => setEmail(newVal.target.value)} />
+                                    
+                                    <button className="cta" type="submit">{landingData.form_button}</button>
+                                </form>
+                            </div>
+                        </div>
+                        <div className="section--cta__container__content">
+                            <img className="cta__image" src={`${DB_URL}/assets/${landingData.form_image}`} alt="" />
+                            <div className="cta__form">
+                                <h3>{landingData.form_success_title}</h3>
+                                <p className="base-text cta__base-text">{landingData.form_success_text} <strong>{email}</strong>.</p>
+                                <div className="cta__form--success__buttons">
+                                    {landingData.form_success_open_intercom ? 
+                                    <>
+                                        <a href={landingData.form_success_open_url} { ...landingData.form_success_open_url.includes('://') ? { target:"_blank" } : {} } rel="noreferrer" className="cta">{landingData.form_success_open}</a>
+                                        <a onClick={openIntercom} className="cta cta-inverted">{landingData.form_success_open_intercom}</a>
+                                    </>
+                                    :
+                                    <>
+                                        <a href={landingData.form_success_open_url} target="_blank" rel="noreferrer" className="cta">{landingData.form_success_open}</a>
+                                        {landingData.form_success_send_again && <a onClick={ctaSendAgain} className="inline-link">{landingData.form_success_send_again}</a>}
+                                    </>
+                                }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             {landingData.contact_show &&
             <div className="section section--contact">
                 <div className="section--contact__container">

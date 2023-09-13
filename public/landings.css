@@ -220,22 +220,22 @@ button{
   display: flex;
   justify-content: center;
   padding: 140px 56px;
-  margin-top: 40px;
-  background: var(--whitesand);
+  /* margin-top: 40px; */
+  /* background: var(--whitesand); */
+  background: #FFF;
 }
 
 .section--cta__container{
   overflow: hidden;
   position: relative;
-  width: 1064px;
-  height: 320px;
+  /* width: 1064px; */
+  /* height: 320px; */
   background: white;
   border-radius: 32px;
   box-shadow: 0px 2px 16px 0px rgba(8, 43, 41, 0.06);
-}
 
-.extraFields{
-  height: 650px;
+  text-align: center;
+  max-width: 496px;
 }
 
 .section--cta__container::after{
@@ -262,61 +262,45 @@ button{
   border-radius: calc(2 * var(--border-width));
 }
 
-.section--cta__container__content{
+.section--cta__container--slider {
+  width: 200%;
+  position: relative;
+  transition: .3s ease-in-out;
   display: flex;
+  align-items: center;
+}
+
+.section--cta__container__content{
+  display: inline-flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: 56px 64px 48px 64px;
-  position: absolute;
-  height: fit-content;
-  transition: .3s ease-in-out;
-  width: 100%;
+  /* padding: 56px 64px 48px 64px; */
+  width: 50%;
 }
 
 .section--cta__container__content h3{
   width: 100%;
 }
 
-.container--enabled .form--enabled{
-  right: 0;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  margin: auto;
-}
-
-.container--success .form--enabled{
-  left: 100%;
-  top: 0;
-  bottom: 0;
-  opacity: 0;
-}
-
-.container--enabled .form--success{
-  left: -100%;
-  top: 0;
-  bottom: 0;
-  opacity: 0;
-}
-
-.container--success .form--success{
-  right: 0;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  margin: auto;
-  opacity: 1;
+.container--success {
+  transform: translateX(-50%);
 }
 
 .cta__form--success__buttons{
   margin-top: 32px;
   display: flex;
   align-items: center;
-  justify-content: flex-start;
+  /* justify-content: flex-start; */
+  
+  justify-content: center;
+  flex-direction: column;
 }
 
 .cta__form--success__buttons a{
-  margin: 0 16px 0 0;
+  /* margin: 0 16px 0 0; */
+  margin: 8px 0;
+
 }
 
 .cta__form--success__buttons .inline-link{
@@ -350,16 +334,16 @@ button{
 
 .cta__image{
   width: 200px;
-  margin-right: 48px;
+}
+
+.cta__form{
+  padding: 24px;
 }
 
 .section--cta form{
   display: flex;
   align-items: center;
-}
-
-.section--cta form *{
-  margin: 0 8px;
+  flex-direction: column;
 }
 
 .section--cta input{
@@ -368,6 +352,11 @@ button{
   border: 1px solid lightgray;
   padding: 4px 12px;
   width: 200px;
+}
+
+.section--cta form *{
+  margin: 8px;
+  width: 100%;
 }
 
 .options {
@@ -389,7 +378,9 @@ button{
 }
 
 .cta__customFields {
-  margin: 16px 8px;
+  /* margin: 16px 8px; */
+  
+  margin: 0;
   text-align: left;
 }
 
@@ -398,77 +389,23 @@ button{
 }
 
 .cta__customFields input[type="text"] {
-  margin-top: 8px;
+  /* margin-top: 8px; */
+  
+  margin-top: 16px;
+  margin-bottom: 8px;
+  width: 100%;
 }
 
-@media (max-width: 1200px) {
-
-  .cta__customFields {
-    margin: 0;
-  }
-
-  .cta__customFields input[type="text"] {
-    width: 100%;
-    margin-top: 16px;
-    margin-bottom: 8px;
-  }
-  
+@media (max-width: 500px) {
   .section--cta__container{
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    width: 90%;
-    height: calc(850px - 40vw);
-    min-height: 650px;
-  }
-  
-  .extraFields{
-    height: calc(1200px - 10vw);
-  }
-  
-  .section--cta__container__content{
-    flex-direction: column;
-    padding: initial;
-  }
-
-  .cta__form{
-    padding: 24px;
-  }
-
-  .cta__form form{
-    flex-direction: column;
-  }
-
-  .cta__form form *{
-    margin: 8px;
     width: 100%;
   }
 
-  .cta__image{
-    margin-right: 0;
-    margin-bottom: 32px;
+  .section--cta{
+    /* padding: 80px 16px; */
+    padding: 80px 0;
   }
-
-  .cta__form--success__buttons{
-    justify-content: center;
-    flex-direction: column;
-  }
-
-  .cta__form--success__buttons a{
-    margin: 8px 0;
-  }
-
 }
-
-  @media (max-width: 500px) {
-    .section--cta__container{
-      width: 100%;
-    }
-
-    .section--cta{
-      padding: 80px 16px;
-    }
-  }
 
 /* ABOUT DCL SECTION */
 

@@ -1,3 +1,5 @@
+import { Service } from "./VerifiedPartner"
+
 export interface PartnerProjectResponse {
   data: PartnerProject[]
 }
@@ -19,6 +21,7 @@ export interface PartnerProject {
   image_5: string | null
   video_1: string | null
   video_2: string | null
+  service_tags: Service[]
 }
 
 interface Studio {

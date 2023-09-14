@@ -6,8 +6,6 @@ import dynamic from 'next/dynamic'
 import styles from './PartnersList.module.css'
 import { VerifiedPartner } from '../../interfaces/VerifiedPartner'
 import { Filter, FilterGroup } from '../../interfaces/Filters'
-import { trackLink } from '../utils'
-// import Empty from '../Icons/Empty'
 import PartnerCard from '../PartnerCard/PartnerCard'
 import LayoutFilteredList from '../LayoutFilteredList/LayoutFilteredList'
 
@@ -21,7 +19,7 @@ interface Props {
   initialPartners: VerifiedPartner[]
 }
 
-const isDevelopment = process.env.NODE_ENV === 'development'
+// const isDevelopment = process.env.NODE_ENV === 'development'
 
 const services: Filter[] = [
   {
@@ -174,8 +172,6 @@ const filterItem = (partner: any, filter: Filter) => {
   return  partner[filter.key] === filter.value
 }
 
-const JOIN_REGISTRY_URL = 'https://dclstudios.typeform.com/to/NfzmbzXi'
-
 function PartnersList({ initialPartners }: Props) {
 
   const router = useRouter()
@@ -253,48 +249,13 @@ function PartnersList({ initialPartners }: Props) {
   return (
     <>
       <div className={styles.container}>
-        
         <LayoutFilteredList activeFilters={filters} setActiveFilters={setFilters}
           filtersList={avilableFilters}
           headerButton={sortingDropdown}
           headerBar={headerBar}
           listPanel={renderList.length ? listPanel : emptyPanel}
         />
-
       </div>
-      
-      {/* <div className={styles.footer_text_container}>
-        <FormattedMessage
-          id="footer_message"
-          values={{
-            i: (chunks) => <i>{chunks}</i>,
-            a1: (chunks) => (
-              <a
-                className={styles.link}
-                target={'_blank'}
-                href="https://governance.decentraland.org/"
-                rel="noreferrer"
-                onClick={() =>
-                  trackLink('Open External Link', 'Governance Footer', 'https://governance.decentraland.org/')
-                }
-              >
-                {chunks}
-              </a>
-            ),
-            a2: (chunks) => (
-              <a
-                className={styles.link}
-                target={'_blank'}
-                href={JOIN_REGISTRY_URL}
-                rel="noreferrer"
-                onClick={() => trackLink('Open External Link', 'Join Registry', JOIN_REGISTRY_URL)}
-              >
-                {chunks}
-              </a>
-            ),
-          }}
-        />
-      </div> */}
     </>
   )
 }

@@ -6,6 +6,8 @@ import { PartnerProject } from '../../interfaces/PartnerProject'
 import BackButton from '../BackButton/BackButton'
 import { trackLink } from '../utils'
 import MarkdownDescription from '../MarkdownDescription/MarkdownDescription'
+import ServiceTag from '../ServiceTag/ServiceTag'
+import Link from 'next/link'
 
 interface Props {
   project: PartnerProject
@@ -108,6 +110,18 @@ function ProjectProfile({ project }: Props) {
                   </a>
                 </div>
               )}
+              {projectData.service_tags ? <>
+                <div className={styles.services_panel}>
+                  <FormattedMessage id={'services'} />
+                </div>
+                <div className={styles.pills}>
+                  {projectData.service_tags.map(service => 
+                        <Link key={`${service}`} className={styles.services} href={`/projects?service_tags=${service}`}>
+                        <ServiceTag type={service} active/>
+                        </Link>
+                  )}
+                </div>
+              </> : null}
             </div>
             <div className={styles.info_author}>
               <div className={styles.info_title}>

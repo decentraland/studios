@@ -7,8 +7,27 @@
     margin-bottom: 4rem;
   }
 
+  .empty {
+    margin: auto;
+    margin-top: 10vh;
+    padding: 10px;
+    height: 50%;
+    /* width: 50%; */
+    max-width: 400px;
+    text-align: center;
+    font-size: medium;
+    color: #37333d;
+    opacity: 32%;
+  }
+  
+  .load_more_container{
+    width: 100%;
+    text-align: center;
+    margin-bottom: 40px;
+  }
+  
   @media (max-width: 768px){
     .projects_grid {
         grid-template-columns: repeat(1, 1fr);
       }
-  }
+  } 

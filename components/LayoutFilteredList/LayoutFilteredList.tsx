@@ -46,7 +46,7 @@ export default function LayoutFilteredList({ activeFilters, setActiveFilters, fi
                 {filterGroup.options.map(filter => {
                     const isChecked = activeFilters.findIndex(filt => filt.key === filter.key && filter.value === filt.value) !== -1
                     
-                    if (filter.key === 'services'){
+                    if (['services', 'service_tags'].includes(filter.key)){
                         return <div key={`filt-${filter.value}`}
                             className={`${styles.tag}`}
                             onClick={() => onFilterClick(filter)}>

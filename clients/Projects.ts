@@ -9,7 +9,7 @@ export default class Projects {
   static async get() {
     let isFinished = false
     let offset = 0
-    const queryFields = '&sort[]=-date_created&fields=date_created,image_1,id,title,profile.name,profile.slug,profile.logo'
+    const queryFields = '&sort[]=-date_created&fields=date_created,image_1,id,title,service_tags,profile.name,profile.slug,profile.logo'
     
     let projects: PartnerProject[] = []
     while (!isFinished) {

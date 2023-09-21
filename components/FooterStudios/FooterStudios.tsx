@@ -7,7 +7,7 @@ import Linkedin from '../Icons/Linkedin'
 import Twitter from '../Icons/Twitter'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
 
-
+const JOIN_REGISTRY_URL = process.env.NEXT_PUBLIC_JOIN_REGISTRY_URL
 
 export default function FooterStudios () {
 
@@ -21,7 +21,7 @@ export default function FooterStudios () {
                         <Link className={styles.link} href="/studios">Studios</Link>
                         <Link className={styles.link} href="/projects">Projects</Link>
                         <Link className={styles.link} href="/resources">Resources</Link>
-                        <a className={`button_primary--inverted ${styles.joinLink}`} href="https://dclstudios.typeform.com/to/NfzmbzXi" rel="noreferrer" target="_blank">JOIN OUR REGISTRY</a>
+                        <a className={`button_primary--inverted ${styles.joinLink}`} href={JOIN_REGISTRY_URL} rel="noreferrer" target="_blank">JOIN OUR REGISTRY</a>
                     </div>
                 </div>
                 <div className={styles.rightPanel}>

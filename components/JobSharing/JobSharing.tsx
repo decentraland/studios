@@ -10,8 +10,7 @@ import Link from 'next/link'
 import Empty from '../Icons/Empty'
 import IconEye from '../Icons/IconEye'
 
-const JOIN_REGISTRY_URL = 'https://dclstudios.typeform.com/to/NfzmbzXi'
-
+const JOIN_REGISTRY_URL = process.env.NEXT_PUBLIC_JOIN_REGISTRY_URL
 
 function JobSharing() {
   const [projectOk, setProjectOk] = useState(false)
@@ -48,7 +47,7 @@ function JobSharing() {
   const join_link = <a target={'_blank'}
     href={JOIN_REGISTRY_URL}
     rel="noreferrer"
-    onClick={() => trackLink('Open External Link', 'Join Registry', JOIN_REGISTRY_URL)}>Sign up instead.</a>
+    onClick={() => trackLink('Open External Link', 'Join Registry', `${JOIN_REGISTRY_URL}`)}>Sign up instead.</a>
 
   const ctaHighlight = () => {
     const ctaContainer = document.getElementById('preview_message');

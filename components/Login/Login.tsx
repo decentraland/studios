@@ -7,7 +7,7 @@ import { useRouter } from 'next/router'
 import IconInfo from '../Icons/IconInfo'
 import BackButton from '../BackButton/BackButton'
 
-const JOIN_REGISTRY_URL = 'https://dclstudios.typeform.com/to/NfzmbzXi'
+const JOIN_REGISTRY_URL = process.env.NEXT_PUBLIC_JOIN_REGISTRY_URL
 
 export default function Login() {
 
@@ -60,7 +60,7 @@ export default function Login() {
     const join_link = <a target={'_blank'}
         href={JOIN_REGISTRY_URL}
         rel="noreferrer"
-        onClick={() => trackLink('Open External Link', 'Join Registry', JOIN_REGISTRY_URL)}>register here</a>
+        onClick={() => trackLink('Open External Link', 'Join Registry', `${JOIN_REGISTRY_URL}`)}>register here</a>
 
     const contact_link = <a href=""
     rel="noreferrer"

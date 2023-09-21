@@ -3,7 +3,7 @@ import styles from './BannerStudios.module.css'
 import { trackLink } from '../utils'
 import Link from 'next/link'
 
-const JOIN_REGISTRY_URL = 'https://dclstudios.typeform.com/to/NfzmbzXi'
+const JOIN_REGISTRY_URL = process.env.NEXT_PUBLIC_JOIN_REGISTRY_URL
 
 function BannerStudios() {
 
@@ -22,7 +22,7 @@ function BannerStudios() {
               target={'_blank'}
               href={JOIN_REGISTRY_URL}
               rel="noreferrer"
-              onClick={() => trackLink('Open External Link', 'Join Registry', JOIN_REGISTRY_URL)}>
+              onClick={() => trackLink('Open External Link', 'Join Registry', `${JOIN_REGISTRY_URL}`)}>
               Join our registry.
             </a>
           </div>

@@ -39,6 +39,7 @@ interface Props {
 
 const DATA_URL = process.env.NEXT_PUBLIC_PARTNERS_DATA_URL
 const SERVICES = Object.values(Service)
+const REPORT_URL = process.env.NEXT_PUBLIC_REPORT_URL
 
 function PartnerProfile({ partner }: Props) {
   const [projectsLimit, setProjectsLimit] = useState(6)
@@ -63,7 +64,6 @@ function PartnerProfile({ partner }: Props) {
 	}, [])
 
   const WEBSITE = partnerData.website || ''
-  const REPORT_URL = 'https://dclstudios.typeform.com/to/HQpD0z5S'
 
   const displayServices = partnerData.services || [].filter((service) => SERVICES.includes(service))
 
@@ -290,7 +290,7 @@ function PartnerProfile({ partner }: Props) {
             href={REPORT_URL}
             target="_blank"
             rel="noreferrer"
-            onClick={() => trackLink('Open External Link', 'Report Studio', REPORT_URL)}
+            onClick={() => trackLink('Open External Link', 'Report Studio', `${REPORT_URL}`)}
           >
             Report this studio
           </a>

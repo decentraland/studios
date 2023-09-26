@@ -11,6 +11,9 @@ body {
   --black-300: #dddce0;
   --black-400: #b9b7be;
 
+  --general-pain-gray: #242129;
+
+
   /* Shadows */
   --card_shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
   --card_border: 0px solid hsla(260, 6%, 46%, 0.05);
@@ -200,4 +203,12 @@ a {
 
  .center {
   align-self: center;
+ }
+
+ .text-red {
+  color: var(--primary);
+ }
+
+ .underline {
+  text-decoration: underline;
  }

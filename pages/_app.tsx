@@ -83,7 +83,8 @@ function App({ Component, pageProps }: AppProps) {
 
   const isCustomLanding = router.asPath.includes('/p/')
   // const showTabs = [...tabsContents, ['/search']].map(tab => tab[0]).includes(router.route)
-  const showTabs = !['/p/', '/project/', '/profile/'].includes(router.route)
+  const showTabs = !['/p/', '/project/', '/profile/', '/signup'].includes(router.route)
+  const showFooter = !['/signup'].includes(router.route)
 
   return (
     <>
@@ -121,7 +122,7 @@ function App({ Component, pageProps }: AppProps) {
           </div>
           {showTabs && <NavTabs tabsContents={tabsContents} />}
           <Component {...pageProps} />
-          <FooterStudios />
+          {showFooter && <FooterStudios />}
           <Footer />
         </IntlProvider>}
 

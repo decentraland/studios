@@ -380,7 +380,7 @@ function JobSubmitForm() {
                 <span className='button_primary--inverted'>SELECT FILE</span>
                 <span className='ml-1'>{selectedFile ? <span>{selectedFile.name} <IconX gray className='ml-1' style={{height: '11px', width: '11px'}} onClick={handleFileRemove}/></span> : 'No file selected.'}</span>
             </label>
-            <div className={styles.text_secondary} style={fileValidationFail ? {color: '#B71C1C'} : {}}><IconInfo gray={!fileValidationFail} /> PDF files only, maximum size is 10 MB.</div>
+            <div className={styles.text_secondary} style={fileValidationFail ? {color: '#B71C1C'} : {}}><IconInfo red={fileValidationFail} /> PDF files only, maximum size is 10 MB.</div>
 
             <label className={styles.label}>What is your budget for this project?</label>
 
@@ -426,7 +426,7 @@ function JobSubmitForm() {
                 required name="email" 
                 value={formData.email} 
                 onChange={handleInput} />
-            <div className={styles.text_secondary}><IconInfo gray /> Your email will only be visible to studios that apply to your project.</div>
+            <div className={styles.text_secondary}><IconInfo /> Your email will only be visible to studios that apply to your project.</div>
             
             <label className={styles.label}>What’s your name?</label>
             <input className={styles.input} type="text" 

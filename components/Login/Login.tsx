@@ -69,7 +69,7 @@ export default function Login() {
         openIntercom()
     }}>contact us</a>
 
-    const credentialsMessage = credentialsError ? <div className={styles.credentialsMessage}> <IconInfo />{credentialsError} </div> : null
+    const credentialsMessage = credentialsError ? <div className={styles.credentialsMessage}> <IconInfo red />{credentialsError} </div> : null
 
     return <div className={styles.container}>
         <BackButton onClick={() => goToPrevPage()}/>
@@ -94,7 +94,7 @@ export default function Login() {
                 <>
                 <label className={styles.label}>One-time password</label>
                 <input key="otp" className={styles.input} required type='text' onChange={(e) => setOtp(e.currentTarget.value)} value={otp} placeholder="" />
-                {credentialsError ? credentialsMessage : <div className={`${styles.credentialsMessage} ${styles.text_secondary}`}><IconInfo gray /> This is the 2FA code you use to access the back office.</div>}
+                {credentialsError ? credentialsMessage : <div className={`${styles.credentialsMessage} ${styles.text_secondary}`}><IconInfo /> This is the 2FA code you use to access the back office.</div>}
                 </>}
                 <input
                     className={`${styles.submitBtn} ${emptyFields ? styles.submitBtn_disabled : ''}`}

@@ -3,9 +3,7 @@ import styles from '../../styles/Home.module.css'
 
 import React from 'react'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
-import Login from '../../components/Login/Login'
-import Signup from '../../components/SignupClient/SignupClient'
-
+import Signup from '../../components/Signup/Signup'
 
 function SignupPage() {
   return (

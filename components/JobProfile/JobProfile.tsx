@@ -1,11 +1,10 @@
-import React, { ChangeEvent, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import BackButton from '../BackButton/BackButton'
 
 import styles from './JobProfile.module.css'
 
-import MarkdownDescription from '../MarkdownDescription/MarkdownDescription'
 import { useRouter } from 'next/router'
-import { getLoggedState } from '../sessions'
+import { useUser } from '../../clients/Sessions'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 import { Job } from '../../interfaces/Job'
 import IconInfo from '../Icons/IconInfo'
@@ -14,7 +13,9 @@ import IconFile from '../Icons/IconFile'
 import IconX from '../Icons/IconX'
 import ErrorScreen from '../ErrorScreen/ErrorScreen'
 import Link from 'next/link'
-import { budgetToRanges } from '../utils'
+import JobDetails from '../JobDetails/JobDetails'
+import IconStatus from '../Icons/IconStatus'
+import { formatTimeToNow } from '../utils'
 
 const DB_URL = process.env.NEXT_PUBLIC_PARTNERS_DATA_URL
 
@@ -27,52 +28,57 @@ function JobProfile() {
     const [showSentBadge, setShowSentBadge] = useState(false)
     const [isLogged, setLogged] = useState(false)
     const [loading, setLoading] = useState(false)
-    const [newMessage, setNewMessage] = useState<string>()
+    const [newMessage, setNewMessage] = useState('')
     const [selectedFile, setSelectedFile] = useState<File>()
     const [fileValidationFail, setFileValidationFail] = useState(false)
     const [fetchError, setFetchError] = useState<string>('')
 
-    useEffect(() => {
-        getLoggedState().then(res => {
-            if (res) {
-                setLogged(res)
-            } else {
-                router.push('/login')
-            }
-        })
-    }, [])
+    // useEffect(() => {
+    //     getLoggedState().then(res => {
+    //         if (res) {
+    //             setLogged(res)
+    //         } else {
+    //             router.push('/login')
+    //         }
+    //     })
+    // }, [])
+
+    const { user } = useUser()
+
+    // useEffect(() => {
+    //     if (isLoading) return
+
+    //     if (!user){
+    //         router.push('/login')
+    //     } else if (user.role.name !== 'Studio'){
+    //         router.push('/')
+    //     }
+    // }, [user, isLoading])
 
     useEffect(() => {
         fetchData()
-    }, [isLogged, jobId])
+    }, [user])
 
     const fetchData = async () => {
-        if (isLogged && jobId) {
+        if (user && jobId) {
             setLoading(true)
-            await fetch('/api/jobs/get', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ id: jobId })
-            })
+            await fetch(`/api/jobs/get?id=${jobId}`)
                 .then(res => res.ok && res.json())
-                .then((res) => {
-                    if (!res.data) setFetchError('Error: Missing data')
-                    setJobData(res.data[0])
+                .then((jobData) => {
+                    if (!jobData) setFetchError('Error: Missing data')
+                    setJobData(jobData)
                 })
                 .catch((err) => console.log(err))
             setLoading(false)
         }
     }
+    const handleFileInput = (e: React.FormEvent<HTMLInputElement>) => {
 
-    const handleFileInput = (e: ChangeEvent<HTMLInputElement>) => {
-
-        if (e.target.files?.length){
-            if (e.target.files[0].size > 10000000){
+        if (e.currentTarget.files?.length) {
+            if (e.currentTarget.files[0].size > 10000000) {
                 setFileValidationFail(true)
             } else {
-                setSelectedFile(e.target.files[0])
+                setSelectedFile(e.currentTarget.files[0])
                 setFileValidationFail(false)
             }
         } else {
@@ -90,51 +96,30 @@ function JobProfile() {
         e.preventDefault()
         setLoading(true)
 
-        let postMessage = {
-            message: newMessage,
-            brief_file: null
-        }
-
-        if (fileValidationFail){
+        if (fileValidationFail) {
             setLoading(false)
-           return alert('Please check slected file size.')
+            return alert('Please check slected file size.')
         }
         
-        let fileUploaded = true
-        if (selectedFile){
-            fileUploaded = false
-            await fetch(`/api/upload`, {
-                method: 'POST',
-                headers: {
-                    fileName: selectedFile.name,
-                    folder: '193e00bb-923e-46f0-b350-bf73ba107a80'
-                },
-                body: selectedFile,
-            })
-            .then(res => {
-                if (res.ok){
-                    return res.json()
-                } else {
-                    console.log(res)
-                    setFetchError('File upload error')
-                }
-            })
-            .then(res => { if(res?.data) {
-                    postMessage.brief_file = res.data
-                    fileUploaded = true
-                } 
-            })
+        if(!jobData || !newMessage){
+            return
         }
 
-        const submitMessage = fileUploaded && await fetch('/api/jobs/apply', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ job: jobData, message: postMessage })
-        })
+        const formData = new FormData();
+        formData.append('text', newMessage)
 
-        if ( (submitMessage as any).ok ) {
+        if (selectedFile) {
+            formData.append(`attachment1`, selectedFile)
+            const attachment_info = {attachment1: { filename: selectedFile.name, type: selectedFile.type }}
+            formData.append('attachment-info', JSON.stringify(attachment_info))
+        }
+
+        const submitMessage = await fetch(`/api/jobs/apply?id=${jobData.id}`, {
+            method: 'POST',
+            body: formData
+        }).then(res => res.ok)
+
+        if (submitMessage) {
             fetchData()
             setShowSentBadge(true)
         } else {
@@ -153,44 +138,40 @@ function JobProfile() {
         return null
     }
 
-    if(fetchError){
-        console.log(fetchError)
-        return <><ErrorScreen button={<Link className="button_primary--inverted" href="/jobs">GO TO JOBS</Link>}
-                 onBackClick={() => { 
-                    setFetchError('')
-                    setLoading(false)
-                }} />
-                <div style={{textAlign: 'center', width: '100%'}}>{fetchError}</div>
-                </>
+    const DetailsPanel = ({ jobData }: { jobData: Job }) => {
+
+        const endDate = new Date(jobData.date_created)
+        endDate.setDate(endDate.getDate() + 30)
+
+        return <div className={styles.detailsBox}>
+                <div className={styles.detailsBox_subPanel}>
+                    <div className={styles.detailsBox_title}>Details</div>
+                    {jobData.status === 'published' ? <>
+                        <div><span className={styles.col_1}>Status</span><span className={styles.online}><IconStatus /> Open</span></div>
+                        <div><span className={styles.col_1}>Closes in</span><span>{formatTimeToNow(endDate.toISOString())}</span></div>
+                    </> :
+                        <div>Status <span><IconStatus gray /> Closed</span></div>}
+                </div>
+            </div>
     }
 
-    if (loading || !isLogged || !jobData?.id) {
+    if (fetchError) {
+        console.log(fetchError)
+        return <ErrorScreen button={<Link className="button_primary--inverted" href="/jobs">GO TO JOBS</Link>}
+            onBackClick={() => {
+                setFetchError('')
+                setLoading(false)
+            }} />
+    }
+
+    if (loading || !user || !jobData?.id) {
         return <Loader active>Loading...</Loader>
     }
 
     return (
         <div className={styles.container}>
-            <div className={styles.backButton}><BackButton onClick={() => router.push('/jobs/list')} /></div>
-            <div className={styles.dataContainer}>
-                <div className={styles.postedBy}>Project created by <b>{jobData.author_name}</b>{jobData.company && <> from <b>{jobData.company}</b></>}</div>
-                <div className={styles.title}>{jobData.title}</div>
-                <div className={styles.infoTitle}>SHORT DESCRIPTION</div>
-                <div className={styles.description}>{jobData.short_description}</div>
-                <div className={styles.infoTitle}>FULL DESCRIPTION</div>
-                <MarkdownDescription className={styles.description} description={jobData.long_description} />
-                
-                {jobData.brief_file && <>
-                    <div className={styles.infoTitle}>BRIEF FILE</div>
-                    <a className={styles.link} href={`${DB_URL}/assets/${jobData.brief_file.id}`} rel="noreferrer" target='_blank'><IconFile red /> {jobData.brief_file.filename_download}</a>
-                </>}
-                
-                <div className={styles.infoTitle}>BUDGET</div>
-                <div className={styles.description}>{budgetToRanges(jobData.budget)}</div>
-                
-                {jobData.deadline_date && <>
-                    <div className={styles.infoTitle}>DEADLINE FOR THIS PROJECT</div>
-                    <div className={styles.description}>{jobData.deadline_date}</div>
-                </>}
+            <div className={styles.backButton}><BackButton small onClick={() => router.back()} /></div>
+            <JobDetails jobData={jobData}>
 
                 {jobData.messages.length ? <>
                     <div className={styles.subTitle}>You’ve sent a private message to {jobData.author_name}</div>
@@ -209,7 +190,7 @@ function JobProfile() {
                             </span>
                         </div>
                         <div className={styles.text_primary}>{jobData.messages[0].message}</div>
-                    
+
                         {jobData.messages[0].brief_file && <>
                             <div className={styles.infoTitle}>BRIEF FILE</div>
                             <a className={styles.link} href={`${DB_URL}/assets/${jobData.messages[0].brief_file.id}`} rel="noreferrer" target='_blank'><IconFile red /> {jobData.messages[0].brief_file.filename_download}</a>
@@ -228,25 +209,26 @@ function JobProfile() {
                                 value={newMessage}
                                 onChange={val => setNewMessage(val.target.value)} />
                             <div className={styles.text_secondary}><IconInfo /> This will be sent to {jobData.author_name} via email, along with your portfolio in Decentraland Studios.</div>
-                            
+
                             <div className={styles.label_file}>Upload a file (Optional)</div>
                             <div className={styles.text_primary}>
                                 If you already have a presentation of your team or a proposal for this project, upload it here.
                             </div>
                             <label className={styles.input_file}>
-                                <input type='file' name="brief_file" accept=".pdf" onChange={handleFileInput} onClick={(event: React.MouseEvent<HTMLInputElement>)  => event.currentTarget.value = ''}/>
+                                <input type='file' accept=".pdf" onChange={handleFileInput} onClick={(event: React.MouseEvent<HTMLInputElement>) => event.currentTarget.value = ''} />
                                 <span className='button_primary--inverted'>SELECT FILE</span>
-                                <span className='ml-1'>{selectedFile ? <span>{selectedFile.name} <IconX gray className='ml-1' style={{height: '11px', width: '11px'}} onClick={handleFileRemove}/></span> : 'No file selected.'}</span>
+                                <span className='ml-1'>{selectedFile ? <span>{selectedFile.name} <IconX gray className='ml-1' style={{ height: '11px', width: '11px' }} onClick={handleFileRemove} /></span> : 'No file selected.'}</span>
                             </label>
-                            <div className={styles.text_secondary} style={fileValidationFail ? {color: '#FF2D55'} : {}}><IconInfo red={fileValidationFail} /> PDF files only, maximum size is 10 MB.</div>
+                            <div className={styles.text_secondary} style={fileValidationFail ? { color: '#FF2D55' } : {}}><IconInfo red={fileValidationFail} /> PDF files only, maximum size is 10 MB.</div>
 
-                            
+
                             <input type="submit" value="SEND MESSAGE"
                                 className={`${styles.submitBtn} ${emptyFields ? styles.submitBtn_disabled : ''}`}
                                 disabled={emptyFields} />
                         </form>
                     </>}
-            </div>
+            </JobDetails>
+            <DetailsPanel jobData={jobData} />
         </div>
     )
 }

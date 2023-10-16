@@ -10,8 +10,8 @@ const DB_URL = process.env.NEXT_PUBLIC_PARTNERS_DATA_URL
 const SENDRGRID_URL = process.env.NEXT_PUBLIC_API_SENDGRID
 const SENDGRID_ACCESS_TOKEN = process.env.SENDGRID_ACCESS_TOKEN
 
-function getUserId (email: string) {
-// console.log(`${DB_URL}/users?filter[email]=${email}`)
+function getUserId(email: string) {
+  // console.log(`${DB_URL}/users?filter[email]=${email}`)
   return fetch(`${DB_URL}/users?filter[email]=${encodeURIComponent(email)}`, {
     method: 'GET',
     headers: {
@@ -25,7 +25,8 @@ function getUserId (email: string) {
 
 export default async function (req: NextRequest) {
   const reqBody = await req.json()
-
+  const { email_verification, ...userData } = reqBody
+  
   let createUser = await fetch(`${DB_URL}/users`, {
     method: 'POST',
     headers: {
@@ -33,7 +34,7 @@ export default async function (req: NextRequest) {
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({
-      ...reqBody,
+      ...userData,
       geo: req.geo
     })
   })
@@ -42,6 +43,8 @@ export default async function (req: NextRequest) {
       if (body.data) return body.data
       if (body.errors && body.errors[0].extensions.code === "RECORD_NOT_UNIQUE") return getUserId(reqBody.email)
     })
+
+  if (!email_verification && createUser.id) return new Response(JSON.stringify(createUser))
 
   const sendMailVerifications = createUser.id && await fetch(`${SENDRGRID_URL}/mail/send`, {
     method: 'POST',
@@ -66,7 +69,7 @@ export default async function (req: NextRequest) {
     })
   })
 
-  if (sendMailVerifications.ok) return new Response()
+  if (sendMailVerifications.ok) return new Response(JSON.stringify(createUser))
 
   return new Response(null, { status: 400 })
 

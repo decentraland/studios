@@ -1,6 +1,7 @@
 .container {
   width: 100%;
   min-height: 214px;
+  margin-top: 32px;
   margin-bottom: 40px;
   position: relative;
 

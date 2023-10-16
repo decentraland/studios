@@ -13,6 +13,20 @@ body {
 
   --general-pain-gray: #242129;
 
+  --structure-color-background: #FFFFFF;
+  --structure-color-generic-border: #F0EEEE;
+  --text-color-text-h-1: #050505;
+  --text-color-text-h-2: #332F31;
+  --text-color-text-base: #4C4749;
+  --text-color-text-base-highlight: #332F31;
+  --text-color-text-textinput-placeholder: #989395;
+  --primitives-color-white: #FFF;
+  --primitives-grey-color-grey-50: #FCFAFA;
+  --primitives-grey-color-grey-100: #F0EEEE;
+  --primitives-grey-color-grey-200: #E3E1E2;
+  --desktop-dashboard-project-card-color-dashboard-project-title-default: #1A1819;
+  --desktop-dashboard-project-card-color-dashboard-project-background-default: #FFF;
+  --desktop-dashboard-project-card-color-dashboard-project-submissions-number-default: #B1ADAE;
 
   /* Shadows */
   --card_shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
@@ -145,15 +159,23 @@ a {
   padding: 9px 16px;
   border-radius: 5px;
   font-size: 13px;
+  line-height: 18px;
   display: inline-block;
   cursor: pointer;
   background-color: transparent;
   color: var(--primary);
   border: 1px solid var(--primary);
+  white-space: nowrap;
 }
 
 .button_primary--inverted:hover{
   transform: translateY(-2px);
+}
+
+.button_primary--small {
+  padding: 6px 12px;
+  font-size: 9px;
+  font-weight: 590;
 }
 
 .button_basic {
@@ -174,6 +196,13 @@ a {
   .button--small {
     padding: 3px 11px;
     font-size: 9px;
+  }
+
+  .button_primary,
+  .button_primary--inverted {
+    font-size: 9px;
+    padding: 6px 12px;
+    line-height: 13px;
   }
 }
 
@@ -199,6 +228,10 @@ a {
 
  .ml-1 {
   margin-left: 10px;
+ }
+ 
+ .ml-16 {
+  margin-left: 16px;
  }
 
  .center {

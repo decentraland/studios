@@ -34,6 +34,7 @@ export interface VerifiedPartner {
   slug: string
   reviews: PartnerReview[]
   projects: PartnerProject[]
+  profile_header?: string
 }
 
 export enum PaymentMethod {

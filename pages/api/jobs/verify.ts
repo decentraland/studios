@@ -21,67 +21,87 @@ export default async function (req: NextRequest) {
   const currentJob = await fetch(`${DB_URL}/items/jobs/${id}?fields=*,brief_file.id,brief_file.filename_download`, {
     method: 'GET',
     headers: {
-    'Authorization': `Bearer ${API_TOKEN}`
+      'Authorization': `Bearer ${API_TOKEN}`
     }
   }).then(res => res.ok && res.json()).then(res => res.data && res.data)
 
-  if (currentJob.verified_email){
+  if (currentJob.verified_email) {
     return new Response(JSON.stringify(currentJob))
   }
 
-  const verify = await fetch(`${DB_URL}/items/jobs/${id}?fields=*,brief_file.id,brief_file.filename_download`, {
-      method: 'PATCH',
-      headers: {
+  const verifyJob = await fetch(`${DB_URL}/items/jobs/${id}?fields=*,brief_file.id,brief_file.filename_download`, {
+    method: 'PATCH',
+    headers: {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${API_TOKEN}`
-      },
-      body: JSON.stringify({
-        verified_email: true
-      })
-  }).then(res => res.ok && res.json()).then(res => res.data && res.data)
-
-  verify && await fetch(`${SENDRGRID_URL}/mail/send`, {
-    method: 'POST',
-    headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${SENDGRID_ACCESS_TOKEN}`
     },
     body: JSON.stringify({
-        from: {
-            email: "studios@decentraland.org", name: "Decentraland Studios"
-        },
-        personalizations: [ {
-          to: [
-              { email: verify.email, name: verify.author_name }
-          ],
-          dynamic_template_data: {
-              ...verify,
-              budget: budgetToRanges(verify.budget)
-          }
-      } ],
-        template_id: "d-6629f64176d842458785b3e127c687f9"
+      verified_email: true
+    })
+  }).then(res => res.ok && res.json()).then(res => res.data && res.data)
+
+  const user = await fetch(`${DB_URL}/users?filter[email]=${encodeURIComponent(verifyJob.email)}`, {
+    method: "GET",
+    headers: {
+      'Authorization': `Bearer ${API_TOKEN}`
+    }
+  })
+    .then(res => res.ok && res.json())
+    .then(body => body.data[0])
+
+  const verifyUser = user && await fetch(`${DB_URL}/users/${user.id}`, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${API_TOKEN}`
+    },
+    body: JSON.stringify({
+      status: "active"
+    })
+  }).then(res => res.ok && res.json()).then(res => res.data && res.data)
+
+  verifyUser && await fetch(`${SENDRGRID_URL}/mail/send`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${SENDGRID_ACCESS_TOKEN}`
+    },
+    body: JSON.stringify({
+      from: {
+        email: "studios@decentraland.org", name: "Decentraland Studios"
+      },
+      personalizations: [{
+        to: [
+          { email: verifyJob.email, name: verifyJob.author_name }
+        ],
+        dynamic_template_data: {
+          ...verifyJob,
+          budget: budgetToRanges(verifyJob.budget)
+        }
+      }],
+      template_id: "d-6629f64176d842458785b3e127c687f9"
     })
   })
 
   await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        chat_id: TELEGRAM_CHAT_ID,
-        text: `👷 New Job created!
-        \nAuthor name: ${verify.author_name}
-        \nemail: ${verify.email}
-        \nCompany: ${verify.company}
-        \nTitle: ${verify.title}
-        \nShort description: ${verify.short_description}
-        \nLong description: ${verify.long_description}
-        \nBudget: ${verify.budget}
-        ${verify.brief_file ? `\nBrief file: [${verify.brief_file.filename_download}](https://admin.dclstudios.org/assets/${verify.brief_file.id})` : ''}
-        ${verify.deadline_date ? `\nDeadline date: ${verify.deadline_date}` : ''}`
-      })
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      chat_id: TELEGRAM_CHAT_ID,
+      text: `👷 New Job created!
+        \nAuthor name: ${verifyJob.author_name}
+        \nemail: ${verifyJob.email}
+        \nCompany: ${verifyJob.company}
+        \nTitle: ${verifyJob.title}
+        \nShort description: ${verifyJob.short_description}
+        \nLong description: ${verifyJob.long_description}
+        \nBudget: ${verifyJob.budget}
+        ${verifyJob.brief_file ? `\nBrief file: [${verifyJob.brief_file.filename_download}](https://admin.dclstudios.org/assets/${verifyJob.brief_file.id})` : ''}
+        ${verifyJob.deadline_date ? `\nDeadline date: ${verifyJob.deadline_date}` : ''}`
     })
+  })
 
-  return new Response(JSON.stringify(verify))
+  return new Response(JSON.stringify(verifyJob))
 }

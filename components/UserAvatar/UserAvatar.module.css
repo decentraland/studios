@@ -1,0 +1,72 @@
+.avatarContainer {
+    width: 34px;
+    height: 34px;
+
+    border-radius: 18px;
+    background-size: contain !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+    
+    /* padding: 6px; */
+    /* text-align: center; */
+    /* display: inline-block; */
+    /* line-height: 24px; */
+    /* vertical-align: middle; */
+    
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    
+    font-size: 14px;
+    cursor: default;
+    position: relative;
+}
+
+.avatarContainer--small {
+    width: 24px;
+    height: 24px;
+    /* line-height: 14px; */
+    font-size: 12px;
+}
+
+.avatarContainer--xsmall {
+    width: 20px;
+    height: 20px;
+    /* line-height: 5px; */
+    font-size: 12px;
+}
+
+.menuContainer {
+    background: #FFFFFF;
+    position: absolute;
+    /* left: -110.5px; */
+    /* bottom: -96px; */
+    right: 16px;
+    top: 40px;
+    
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    border-radius: 4px;
+    border: 1px solid var(--structure-color-generic-border, #F0EEEE);
+    text-align: left;
+
+    z-index: 10;
+}
+
+.menuItem {
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 24px;
+    color: #16141A;
+    padding: 12px 16px;
+    white-space: nowrap;
+}
+
+.menuItem:hover {
+    /* background-color: #FFEBEE; */
+    /* color: #16141A; */
+
+    color: #FF2D55;
+
+}

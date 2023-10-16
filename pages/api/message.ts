@@ -1,73 +1,27 @@
 import type { NextRequest } from 'next/server'
+import Messages from '../../clients/Messages'
 
 export const config = {
     runtime: 'experimental-edge',
+    unstable_allowDynamic: [
+        '/node_modules/lodash/_root.js',
+        '/node_modules/lodash/_cloneBuffer.js',
+        '/node_modules/lodash/_baseClone.js',
+        '/node_modules/lodash/cloneDeep.js',
+        '/node_modules/node-email-reply-parser/lib/Email.js',
+        '/node_modules/node-email-reply-parser/lib/Parser.js',
+        '/node_modules/node-email-reply-parser/index.js'
+    ],
 }
-
-const DB_URL = process.env.NEXT_PUBLIC_PARTNERS_DATA_URL
-const API_TOKEN = process.env.API_ACCESS_TOKEN
 
 export default async function (req: NextRequest) {
     
-    const formData = await req.formData()
+    if (req.method === 'POST') {
+        const formData = await req.formData()
 
-    // let paramsData = {
-    //     "headers": "",
-    //     "dkim": "",
-    //     "content-ids": "",
-    //     "to": "",
-    //     "text": "",
-    //     "html": "",
-    //     "from": "",
-    //     "sender_ip": "",
-    //     "spam_report": "",
-    //     "envelope": "",
-    //     "attachments": "",
-    //     "subject": "",
-    //     "spam_score": "",
-    //     "attachment-info": "",
-    //     "charsets": "",
-    //     "SPF": "",
-    // }
-    
-    // Object.keys(paramsData).forEach((param: string) =>
-    //     paramsData = {
-    //         ...paramsData, [param]: formData.get(param)
-    //     })
-    
-    const paramsList = [
-        "headers",
-        "dkim",
-        "content-ids",
-        "to",
-        "text",
-        "html",
-        "from",
-        "sender_ip",
-        "spam_report",
-        "envelope",
-        "attachments",
-        "subject",
-        "spam_score",
-        "attachment-info",
-        "charsets",
-        "SPF",
-    ]
-    
-    const parsedData: any = {}
-    paramsList.forEach((param) => parsedData[param] = formData.get(param))
+        await Messages.processIncommingMessage(formData)
 
-    fetch(`${DB_URL}/items/test_messages`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${API_TOKEN}`,
-        },
-        body: JSON.stringify({ message: parsedData }),
-    })
-        .then(res => res.json())
-        // .then(body => console.log(body))
-        .catch(e => console.log(e))
+        return new Response()
+    }
 
-    return new Response()
 }

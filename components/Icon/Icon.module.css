@@ -1,7 +1,15 @@
-.icon {
+.icon svg {
   display: inline-block;
-  line-height: 16px;
-  margin-right: 4px;
-  text-align: center;
+  line-height: 24px;
+  /* margin-right: 4px; */
+  /* text-align: center; */
   vertical-align: middle;
+}
+
+
+@media (max-width: 768px) {
+  .icon svg {
+    width: 20px;
+    height: 20px;
+  }
 }

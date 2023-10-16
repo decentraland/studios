@@ -1,7 +1,3 @@
-.backButton{
-  position: absolute;
-}
-
 .link {
   color: #ff2d55;
 }
@@ -19,7 +15,7 @@
   margin-bottom: 32px;
 }
 
-.subTitle{
+.subTitle {
   font-size: 24px;
   font-weight: 500;
   line-height: 28px;
@@ -76,7 +72,7 @@
   font-weight: 400;
   color: #736E7D
 }
-  
+
 .partner_logo {
   width: 24px;
   height: 24px;
@@ -104,7 +100,7 @@
   padding: 16px;
   width: fit-content;
   white-space: nowrap;
-  
+
   background: #263238;
   box-shadow: 0px 2px 2px rgba(8, 43, 41, 0.04), 0px 2px 16px rgba(8, 43, 41, 0.06);
   border-radius: 8px;
@@ -122,8 +118,11 @@
 .container {
   display: flex;
   /* flex-wrap: wrap; */
-  flex-direction: column;
+  flex-direction: row;
   width: 100%;
+  gap: 16px;
+  margin-top: 32px;
+  margin-bottom: 40px;
 }
 
 .dataContainer {
@@ -160,7 +159,7 @@
   margin-bottom: 8px;
 }
 
-.submitBtn{
+.submitBtn {
   width: 100%;
   margin-top: 32px;
   padding: 9px 17px;
@@ -176,14 +175,61 @@
   cursor: default;
 }
 
+.detailsBox {
+  display: flex;
+  width: 280px;
+  flex-direction: column;
+  align-items: flex-start;
+  align-self: flex-start;
+
+  border-radius: 16px;
+  border: 1px solid var(--structure-color-generic-border, #F0EEEE);
+  background: var(--structure-color-background, #FFF);
+  /* overflow: hidden; */
+  flex-shrink: 0;
+}
+
+.detailsBox_subPanel {
+  border-bottom: 1px solid var(--structure-color-generic-border, #F0EEEE);
+
+  display: flex;
+  padding: 28px 24px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 16px;
+  align-self: stretch;
+}
+
+.detailsBox_subPanel:last-of-type {
+  border-bottom: none;
+}
+
+.detailsBox_title {
+  color: var(--text-color-text-base, #4C4749);
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 20px;
+}
+
+.col_1 {
+  display: inline-block;
+  width: 80px;
+}
+
+.online {
+  color: #008706 !important;
+  font-weight: 400;
+}
 
 @media (max-width: 768px) {
-  .backButton{
-    position: relative;
+  .container {
+    flex-direction: column;
   }
+
   .postedBy {
     margin-top: 16px;
   }
+
   .postedBy b {
     font-weight: 400;
   }
@@ -192,17 +238,21 @@
     font-size: 24px;
   }
 
-  .subTitle{
+  .subTitle {
     font-size: 20px;
   }
-  
+
   .infoTitle {
     margin-top: 30px;
   }
-  
+
   .text_postMessage,
   .partner_info,
   .text_primary {
     font-size: 14px;
+  }
+
+  .detailsBox {
+    display: none;
   }
 }

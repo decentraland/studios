@@ -8,7 +8,7 @@ const nextConfig = {
   transpilePackages: ['decentraland-ui'],
   
   reactStrictMode: true,
-
+  
   images: {
     remotePatterns: [
       {
@@ -22,12 +22,12 @@ const nextConfig = {
   
   webpack(config) {
     config.plugins.push(new EnvironmentPlugin(['API_ACCESS_TOKEN', 'SENDGRID_ACCESS_TOKEN', 'TELEGRAM_BOT_TOKEN', 'TELEGRAM_CHAT_ID']))
-
+    
     require('./clients/sitemap')
     
     return config
   },
-
+  
   experimental: {
     scrollRestoration: true,
   },

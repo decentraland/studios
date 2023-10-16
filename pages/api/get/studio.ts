@@ -8,9 +8,8 @@ export const config = {
 
 export default async function (req: NextRequest) {
     const body = await req.json()
-    const { slug } = body;
 
-    const studio = await Partners.getPartnerData(slug)
+    const studio = await Partners.getPartnerData(body)
 
-    return new Response(JSON.stringify(studio))
+    return new Response(JSON.stringify(studio || {}))
 }

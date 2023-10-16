@@ -46,6 +46,10 @@
   margin-top: 8px;
 }
 
+.input--invalid {
+  background-color: rgba(255, 45, 85, 0.32);
+}
+
 .input_date--Icon {
   position: absolute;
   right: 12px;
@@ -115,6 +119,12 @@
   cursor: pointer;
 }
 
+.submit_btn--inverted {
+  background-color: transparent;
+  color: var(--primary);
+  border: 1px solid var(--primary);
+}
+
 .submit_btn_disabled {
   background: rgba(255, 45, 85, 0.32);
   cursor: default;
@@ -135,8 +145,10 @@
 
   color: var(--general-pain-gray);
   font-size: 16px;
-  font-weight: 400;
+  /* font-weight: 400; */
   line-height: 24px;
+  font-weight: 700;
+  color: #332F31;
 }
 
 .text {
@@ -352,5 +364,9 @@
   .examplesContents {
     margin-top: 24px;
     font-size: 14px;
+  }
+
+  .credentialsMessage {
+    font-size: 13px;
   }
 }

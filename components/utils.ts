@@ -1,3 +1,5 @@
+import { useState, useEffect } from 'react';
+
 export function toSnakeCase(str: string) {
   return str ? str.toLowerCase().replace(/\s+/g, '_') : ''
 }
@@ -43,10 +45,12 @@ export function fbq (...params: string[]) {
   (globalThis as any).fbq && (globalThis as any).fbq(...params)
 } 
 
-export function timeSince(stringDate: string) {
+export function formatTimeToNow(stringDate: string) {
   const date = (new Date(stringDate)).getTime()
 
-  const seconds = Math.floor((Date.now() - date) / 1000);
+  let seconds = Math.floor((Date.now() - date) / 1000);
+
+  if (seconds < 0) seconds = seconds * -1
 
   let interval = seconds / 31536000;
 
@@ -101,4 +105,28 @@ export function budgetToRanges(budget: string) {
       return range.displayValue
     }
   }
+}
+
+
+function getWindowDimensions() {
+  const { innerWidth: width, innerHeight: height } = globalThis;
+  return {
+    width,
+    height
+  };
+}
+
+export default function useWindowDimensions() {
+  const [windowDimensions, setWindowDimensions] = useState(getWindowDimensions());
+
+  useEffect(() => {
+    function handleResize() {
+      setWindowDimensions(getWindowDimensions());
+    }
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  return windowDimensions;
 }

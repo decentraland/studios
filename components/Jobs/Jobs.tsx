@@ -6,14 +6,16 @@ import { Filter, FilterGroup } from '../../interfaces/Filters'
 import { Job } from '../../interfaces/Job'
 import BannerJobs from '../BannerJobs/BannerJobs'
 import Empty from '../Icons/Empty'
-import IconMenu from '../Icons/IconMenu'
 import JobProfile from '../JobProfile/JobProfile'
 import LayoutFilteredList from '../LayoutFilteredList/LayoutFilteredList'
-import { logout, getLoggedState } from '../sessions'
-import { budgetToRanges, timeSince } from '../utils'
+import { useUser } from '../../clients/Sessions'
+import { budgetToRanges, formatTimeToNow } from '../utils'
 
 import styles from './Jobs.module.css'
 import AppliedTag from '../AppliedTag/AppliedTag'
+import IconExternal from '../Icons/IconExternal'
+
+const JOIN_REGISTRY_URL = process.env.NEXT_PUBLIC_JOIN_REGISTRY_URL
 
 const avilableFilters: FilterGroup[] = [
     {
@@ -66,35 +68,28 @@ const avilableFilters: FilterGroup[] = [
 export default function Jobs() {
 
     const router = useRouter()
+    const { user, userLoading } = useUser()
 
+    useEffect(() => {
+        if (userLoading) return
+
+        if (!user) {
+            router.push('/login')
+            // } else if (user.role.name !== 'Studio'){
+            //     router.push('/')
+        }
+    }, [user, userLoading])
 
     const [jobs, setJobs] = useState([])
-    const [isLogged, setLogged] = useState(false)
     const [filters, setFilters] = useState([] as Filter[])
     const [limit, setLimit] = useState(5)
 
     useEffect(() => {
-        getLoggedState().then(res => {
-            if (res) {
-                setLogged(res)
-            } else {
-                router.push('/login')
-            }
-        })
-    }, [])
-
-    useEffect(() => {
         handleFetchJobs()
-    }, [isLogged])
-
-    const handleLogout = () => {
-
-        logout().then(() => router.push("/login"))
-        .catch((e) => alert(e));
-    }
+    }, [user])
 
     const handleFetchJobs = () => {
-        if (isLogged) {
+        if (user && user.role.name !== "Client") {
             fetch('/api/jobs/get')
                 .then(res => res.ok && res.json())
                 .then((res) => res.data && setJobs(res.data))
@@ -103,7 +98,7 @@ export default function Jobs() {
     }
 
     const jobCard = (data: Job) => {
-        return <Link href={`/jobs/list?id=${data.id}`} key={data.id} legacyBehavior>
+        return <Link href={`/jobs?id=${data.id}`} key={data.id} legacyBehavior>
             <div className={styles.jobContainer} >
                 <div className={styles.titleContainer}>
                     <span className={styles.jobTitle}>{data.title}</span>
@@ -111,7 +106,7 @@ export default function Jobs() {
                 </div>
                 <div className={styles.description}>{data.long_description}</div>
                 <div className={styles.cardFooter}>
-                    <span className={styles.jobBy}>Posted by <span>{data.author_name}</span> {timeSince(data.date_created)} ago</span>
+                    <span className={styles.jobBy}>Posted by <span>{data.author_name}</span> {formatTimeToNow(data.date_created)} ago</span>
                     <span className={styles.jobBudget}><b>Budget: </b>{budgetToRanges(data.budget)}</span>
                 </div>
             </div>
@@ -124,21 +119,6 @@ export default function Jobs() {
         {filters.length ? "Sorry, we couldn't find any jobs that match your search criteria." : "There are no jobs available right now"}
     </div>
 
-
-    const UserMenu = () => {
-        const [open, setOpen] = useState(false)
-        
-        return <div tabIndex={0} className={styles.menuContainer}
-            onFocus={() => setOpen(true)} 
-            onBlur={() => setOpen(false)}
-            >
-            <IconMenu />
-            {open && <div className={`button_primary--inverted ${styles.menuItem}`}
-                onClick={handleLogout}>
-                    Log out
-                </div>}
-            </ div>
-    }
 
     const filterElement = (item: any, filter: Filter) => {
         if (filter.key === 'budget') {
@@ -158,30 +138,47 @@ export default function Jobs() {
         filteredJobs = jobs
     }
 
-    if (!isLogged) {
+    if (!user) {
         return <><Loader active>Loading...</Loader></>
     }
 
-    if (router.query.id){
+    if (router.query.id) {
         return <JobProfile />
     }
 
     const HeaderBar = () => <span className={styles.headerText}>{filteredJobs.length ? filteredJobs.length : ''} project{filteredJobs.length !== 1 ? 's' : ''}</ span>
 
-    const JobsList = () =>{
-        if (filteredJobs.length){
+    const JobsList = () => {
+        if (filteredJobs.length) {
             const dateToMilis = (stringDate: string) => (new Date(stringDate)).getTime()
             const sortedByDateJobs = filteredJobs.sort((j1, j2) => dateToMilis(j2.date_created) - dateToMilis(j1.date_created))
             return <>
                 {sortedByDateJobs.slice(0, limit).map(job => jobCard(job))}
-                {sortedByDateJobs.length > limit ? <div style={{textAlign: 'center'}}>
-                        <div className='button_primary--inverted mb-4' onClick={() => setLimit(limit + 10)}>
-                            SHOW MORE
-                        </div>
-                    </div> : null}
+                {sortedByDateJobs.length > limit ? <div style={{ textAlign: 'center' }}>
+                    <div className='button_primary--inverted mb-4' onClick={() => setLimit(limit + 10)}>
+                        SHOW MORE
+                    </div>
+                </div> : null}
             </>
         }
         return <EmptyPanel />
+    }
+    const BrandsMessage = () => {
+        return <div className={styles.brandsState}>
+            <img src='/images/empty_jobs_desktop.webp' />
+            <div className={styles['brandsState--modal']}>
+                <div className={styles['brandsState--title']}>Welcome to our job board!</div>
+                <div className={styles['brandsState--text']}>To access job opportunities in Decentraland, we require users to <b>register as a Studio.</b> This verification process helps us ensure the quality and legitimacy of our community while providing the best experience for both employers and job seekers.</div>
+                <a className={styles['brandsState--button']}
+                    href={JOIN_REGISTRY_URL} rel="noreferrer" target="_blank">
+                    REGISTER AS A STUDIO <IconExternal />
+                </a>
+            </div>
+        </div>
+    }
+
+    if (user.role.name === "Client") {
+        return <BrandsMessage />
     }
 
     return <>
@@ -189,7 +186,6 @@ export default function Jobs() {
         <LayoutFilteredList activeFilters={filters} setActiveFilters={setFilters}
             filtersList={avilableFilters}
             listPanel={<JobsList />}
-            headerBar={<HeaderBar />}
-            headerButton={<UserMenu />} />
+            headerBar={<HeaderBar />} />
     </>
 }

@@ -112,11 +112,11 @@ function JobProfile() {
                 body: selectedFile,
             })
             .then(res => {
-                console.log(res)
                 if (res.ok){
                     return res.json()
                 } else {
-                    setFetchError('file upload error')
+                    console.log(res)
+                    setFetchError('File upload error')
                 }
             })
             .then(res => { if(res?.data) {
@@ -138,7 +138,8 @@ function JobProfile() {
             fetchData()
             setShowSentBadge(true)
         } else {
-            setFetchError('message submit error')
+            console.log(submitMessage)
+            setFetchError('Message submit error')
         }
     }
 
@@ -154,11 +155,13 @@ function JobProfile() {
 
     if(fetchError){
         console.log(fetchError)
-        return <ErrorScreen button={<Link className="button_primary--inverted" href="/jobs">GO TO JOBS</Link>}
+        return <><ErrorScreen button={<Link className="button_primary--inverted" href="/jobs">GO TO JOBS</Link>}
                  onBackClick={() => { 
                     setFetchError('')
                     setLoading(false)
                 }} />
+                <div style={{textAlign: 'center', width: '100%'}}>{fetchError}</div>
+                </>
     }
 
     if (loading || !isLogged || !jobData?.id) {

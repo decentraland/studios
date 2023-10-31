@@ -16,6 +16,8 @@ export default async function (req: NextRequest) {
 
   const body = await req.json()
 
+  if (body.email.includes('testing@example.com')) return new Response(null, { status: 401 })
+
   try {
     await fetch(`${DB_URL}/items/leads`, {
       method: 'POST',
@@ -66,11 +68,10 @@ export default async function (req: NextRequest) {
     //     text: `🎉 New lead on ${body.slug}!\n${body.name} ${body.email}`
     //   })
     // })
-    
+
     return new Response(null, { status: 204 })
 
   } catch (error) {
-    console.log('Mailing list submit error: ', error)
     return new Response(null, { status: 400 })
   }
 }

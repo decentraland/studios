@@ -1,5 +1,5 @@
 const { EnvironmentPlugin } = require('webpack');
-
+const headers = require('./headers');
 
 /** @type {import('next').NextConfig} */
 
@@ -32,6 +32,14 @@ const nextConfig = {
     scrollRestoration: true,
   },
     
+  async headers() {
+    return [
+      {
+        source: '/(.*)',
+        headers,
+      },
+    ];
+  },
 }
 
 module.exports = nextConfig

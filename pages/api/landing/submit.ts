@@ -1,18 +1,23 @@
-import type { NextRequest } from 'next/server'
+import { userAgent, type NextRequest } from 'next/server'
 
 export const config = {
   runtime: 'experimental-edge',
 }
 
+const DB_URL = process.env.NEXT_PUBLIC_PARTNERS_DATA_URL
+const API_TOKEN = process.env.API_ACCESS_TOKEN
+
+const SENDRGRID_URL = process.env.NEXT_PUBLIC_API_SENDGRID
+const SENDGRID_ACCESS_TOKEN = process.env.SENDGRID_ACCESS_TOKEN
+const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN
+const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID
+
 export default async function (req: NextRequest) {
 
-  const DB_URL = process.env.NEXT_PUBLIC_PARTNERS_DATA_URL
-  const API_TOKEN = process.env.API_ACCESS_TOKEN
+  const { ua } = userAgent(req)
 
-  const SENDRGRID_URL = process.env.NEXT_PUBLIC_API_SENDGRID
-  const SENDGRID_ACCESS_TOKEN = process.env.SENDGRID_ACCESS_TOKEN
-  const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN
-  const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID
+  if (ua.includes('Acunetix')) return new Response(null, { status: 401 })
+
 
   const body = await req.json()
 

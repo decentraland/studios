@@ -9,5 +9,5 @@ export function middleware(req: NextRequest) {
 
   if (ua.includes('Acunetix')) return new Response(null, { status: 401 })
 
-  return NextResponse.rewrite(req.nextUrl)
+  return NextResponse.next()
 }

@@ -19,8 +19,8 @@ export default function NavTabs() {
         {path: '/studios', label: 'Studios'}, 
         {path: '/projects', label: 'Projects'}, 
         {path: '/resources', label: 'Resources'}, 
-        {path: '/dashboard', label: 'Dashboard', roles: ['Client', 'Studio']}, 
-        {path: '/jobs', label: 'Jobs', roles: ['Client', 'Studio']},
+        {path: '/dashboard', label: 'Dashboard', roles: ['Client', 'Studio', 'Resources Editor']}, 
+        {path: '/jobs', label: 'Jobs', roles: ['Client', 'Studio', 'Resources Editor']},
     ]
 
     useEffect(() => {

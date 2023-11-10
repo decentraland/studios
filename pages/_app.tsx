@@ -7,7 +7,7 @@ import 'decentraland-ui/dist/themes/base-theme.css'
 import 'decentraland-ui/dist/themes/alternative/light-theme.css'
 
 import '../styles/globals.css'
-import React from 'react'
+import React, { useState } from 'react'
 import type { AppProps } from 'next/app'
 import { useEffect, useMemo } from 'react'
 import { useRouter } from 'next/router'
@@ -20,6 +20,8 @@ import English from '../locales/en.json'
 import NavTabs from '../components/NavTabs/NavTabs'
 import { fbq } from '../components/utils'
 import FooterStudios from '../components/FooterStudios/FooterStudios'
+import Cookies from 'js-cookie'
+import { User } from '../interfaces/User'
 
 declare global {
   interface Window {
@@ -38,9 +40,6 @@ const Footer = dynamic(() => import('decentraland-ui/dist/components/Footer/Foot
 const METABASE_KEY = process.env.NEXT_PUBLIC_METABASE_KEY
 const INTERCOM_APP_ID = process.env.NEXT_PUBLIC_INTERCOM_APP_ID
 
-const tabsContents = [['/jobs', 'Jobs'], ['/studios', 'Studios'], ['/projects', 'Projects'], ['/resources', 'Resources']]
-
-
 function App({ Component, pageProps }: AppProps) {
 
   const router = useRouter()
@@ -53,7 +52,6 @@ function App({ Component, pageProps }: AppProps) {
         return English
     }
   }, [shortLocale])
-
 
   useEffect(() => {
 
@@ -82,8 +80,8 @@ function App({ Component, pageProps }: AppProps) {
   }, [router.events])
 
   const isCustomLanding = router.asPath.includes('/p/')
-  // const showTabs = [...tabsContents, ['/search']].map(tab => tab[0]).includes(router.route)
-  const showTabs = !['/p/', '/project/', '/profile/'].includes(router.route)
+  const showTabs = !['/p/', '/project/', '/profile/', '/signup', '/jobs/verify'].includes(router.route)
+  const showFooter = !['/signup', '/jobs/verify'].includes(router.route)
 
   return (
     <>
@@ -119,9 +117,9 @@ function App({ Component, pageProps }: AppProps) {
           <div className='allocateNav'>
             <Navbar isFullscreen={showTabs} />
           </div>
-          {showTabs && <NavTabs tabsContents={tabsContents} />}
+          {showTabs && <NavTabs />}
           <Component {...pageProps} />
-          <FooterStudios />
+          {showFooter && <FooterStudios />}
           <Footer />
         </IntlProvider>}
 
@@ -136,14 +134,14 @@ function App({ Component, pageProps }: AppProps) {
         gtag('config', "G-B0CSXD2KZL");
         gtag('config', "AW-11226587097", { "groups": "default" });`}
       </Script>
-      
+
       <Script id="metabase">
         {`!function(){var analytics=window.analytics=window.analytics||[];if(!analytics.initialize)if(analytics.invoked)window.console&&console.error&&console.error("Segment snippet included twice.");else{analytics.invoked=!0;analytics.methods=["trackSubmit","trackClick","trackLink","trackForm","pageview","identify","reset","group","track","ready","alias","debug","page","once","off","on","addSourceMiddleware","addIntegrationMiddleware","setAnonymousId","addDestinationMiddleware"];analytics.factory=function(e){return function(){var t=Array.prototype.slice.call(arguments);t.unshift(e);analytics.push(t);return analytics}};for(var e=0;e<analytics.methods.length;e++){var key=analytics.methods[e];analytics[key]=analytics.factory(key)}analytics.load=function(key,e){var t=document.createElement("script");t.type="text/javascript";t.async=!0;t.src="https://cdn.segment.com/analytics.js/v1/" + key + "/analytics.min.js";var n=document.getElementsByTagName("script")[0];n.parentNode.insertBefore(t,n);analytics._loadOptions=e};analytics._writeKey="${METABASE_KEY}";;analytics.SNIPPET_VERSION="4.15.3";
           analytics.load("${METABASE_KEY}");
           analytics.page();
           }}();`}
       </Script>
-      
+
       <Script id="plausible"
         data-domain="studios.decentraland.org"
         src="https://plausible.io/js/script.outbound-links.tagged-events.js">

@@ -1,7 +1,7 @@
 .searchContainer {
-    position: absolute;
-    right: 0;
-    bottom: 6px;
+    position: relative;
+    /* right: 0; */
+    /* bottom: 6px; */
 }
 
 .searchInput {
@@ -17,6 +17,7 @@
     border-radius: 18px;
 
     transition: all .15s ease-in-out;
+    /* position: relative; */
 }
 
 .searchInput::placeholder {
@@ -47,11 +48,15 @@
 
 
 @media(max-width: 768px) {
-    .searchContainer{
+    /* .searchContainer{
         bottom: -6px;
-    }
+    } */
 
     .searchInput--open {
-        width: calc(100vw - 32px);
+        width: calc(100vw - 92px);
+    }
+    
+    .searchInput--openAvatar {
+        width: calc(100vw - 72px);
     }
 }

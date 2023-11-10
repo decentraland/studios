@@ -32,17 +32,21 @@ export default class Partners {
     return partners
   }
 
-  static async getPartnerData(slug: string) {
+  static async getPartnerData(partnerData: any, fields?: string) {
+    const query = Object.entries(partnerData).map(entry => `filter[${entry[0]}]=${entry[1]}`).join('&')
+    let fieldsFilter = '*,reviews.*,projects.image_1,projects.id,projects.title,projects.profile.name,projects.profile.slug,projects.profile.logo,projects.date_created'
+    
+    if (fields) fieldsFilter = fields
+
     let partner
-
     try {
-      const response = await fetch(`${VERIFIED_PARTNERS_URL}?filter[slug]=${slug}&fields=*,reviews.*,projects.image_1,projects.id,projects.title,projects.profile.name,projects.profile.slug,projects.profile.logo,projects.date_created`)
+      const data = await fetch(`${VERIFIED_PARTNERS_URL}?${query}&fields=${fieldsFilter}`).then(res => res.ok && res.json()).then(body => body.data)
 
-      partner = (await response.json()).data[0] as VerifiedPartner
+      partner = data[0] as VerifiedPartner
     } catch (error) {
       console.log('error getting partners', error)
     }
-    if (partner){
+    if (partner && partner.projects){
       partner.projects = partner.projects.sort((p1,p2) => p2.id - p1.id)
     }
 

@@ -51,7 +51,7 @@ function ReviewSubmitForm({ partner }: Props) {
 
     setFormData({
       ...formData,
-      [element.name]: element.value,
+      [element.id]: element.value,
     })
   }
 
@@ -98,13 +98,13 @@ function ReviewSubmitForm({ partner }: Props) {
     </div>
     <form onSubmit={handleSubmit}>
       <label className={styles.label}>Your name</label>
-      <input className={styles.input} type="text" required name="name" value={formData.name} onChange={handleInput} />
+      <input className={styles.input} type="text" required id="name" value={formData.name} onChange={handleInput} />
       <label className={styles.label}>Your company</label>
       <input
         className={styles.input}
         type="text"
         required
-        name="company"
+        id="company"
         value={formData.company}
         onChange={handleInput}
       />
@@ -113,7 +113,7 @@ function ReviewSubmitForm({ partner }: Props) {
         className={styles.input}
         type="email"
         required
-        name="email"
+        id="email"
         value={formData.email}
         onChange={handleInput}
       />
@@ -127,7 +127,7 @@ function ReviewSubmitForm({ partner }: Props) {
         className={styles.input_long}
         required
         maxLength={REVIEW_MAX_LENGTH}
-        name="review"
+        id="review"
         value={formData.review}
         onChange={handleInput}
         placeholder="Your comments go here"

@@ -9,7 +9,7 @@ import ReviewSubmitForm from '../../../components/ReviewSubmitForm/ReviewSubmitF
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   if (params && params.slug) {
-    const partner = await Partners.getPartnerData(`${params.slug}`)
+    const partner = await Partners.getPartnerData({ slug: params.slug })
 
     return {
       props: {

@@ -98,9 +98,9 @@ function MetaverseGuide({ landing }: Props) {
             body: JSON.stringify(body)
         })
 
-        globalThis.sessionStorage.setItem('leadName', name);
-        globalThis.sessionStorage.setItem('leadEmail', email);
-        globalThis.sessionStorage.setItem('leadSlug', landingData.slug);
+        globalThis.localStorage.setItem('leadName', name);
+        globalThis.localStorage.setItem('leadEmail', email);
+        globalThis.localStorage.setItem('leadSlug', landingData.slug);
 
         if (landingData.track_linkedin?.conversion_id) {
             globalThis.sessionStorage.setItem('leadConversionId', landingData.track_linkedin.conversion_id);
@@ -212,7 +212,7 @@ function MetaverseGuide({ landing }: Props) {
                 <br/><label>{field.label}</label>
 
                 {field.options.map((text: string) => <div key={text}><label className="options">
-                    <input type="checkbox" name={text}
+                    <input type="checkbox" id={text}
                         value={text}
                         onChange={(e) => handleCheckbox(e, i)}
                         checked={field.value?.includes(text)} />
@@ -220,7 +220,7 @@ function MetaverseGuide({ landing }: Props) {
                 </>
             }
 
-            return <input key={field.name} type="text" name={field.name} id={field.name} placeholder={field.label} value={field.value} onChange={(newVal) => {
+            return <input key={field.name} type="text" id={field.name} placeholder={field.label} value={field.value} onChange={(newVal) => {
                 let newCustomFields = [...customFields]
                 newCustomFields[i].value = newVal.target.value
                 setCustomFields(newCustomFields)
@@ -363,8 +363,8 @@ function MetaverseGuide({ landing }: Props) {
                                 <p className="base-text cta__base-text">{landingData.form_description}</p>
                                     {renderFormCustomFields}
                                 <form onSubmit={onFormSubmit}>
-                                    <input type="text" name="name" id="name" placeholder={landingData.form_name} required value={name} onChange={(newVal) => setName(newVal.target.value)} />
-                                    <input type="email" name="email" id="email" placeholder={landingData.form_email} required value={email} onChange={(newVal) => setEmail(newVal.target.value)} />
+                                    <input type="text" id="name" placeholder={landingData.form_name} required value={name} onChange={(newVal) => setName(newVal.target.value)} />
+                                    <input type="email" id="email" placeholder={landingData.form_email} required value={email} onChange={(newVal) => setEmail(newVal.target.value)} />
                                     
                                     <button className="cta" type="submit">{landingData.form_button}</button>
                                 </form>

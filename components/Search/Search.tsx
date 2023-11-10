@@ -18,7 +18,7 @@ const listGroups: Filter[] = [
 			color: '#5688E7',
 			background: '#E3ECFA',
 			border: '1px solid #E3ECFA',
-		  }
+		}
 	},
 	{
 		key: 'type',
@@ -28,7 +28,7 @@ const listGroups: Filter[] = [
 			color: '#C72B32',
 			background: '#F6DFE3',
 			border: '1px solid #F6DFE3'
-		  }
+		}
 	},
 	{
 		key: 'type',
@@ -38,7 +38,7 @@ const listGroups: Filter[] = [
 			color: '#382AAC',
 			background: '#EEEDF8',
 			border: '1px solid #EEEDF8'
-		  }
+		}
 	}
 ]
 const avilableFilters: FilterGroup[] = [
@@ -78,35 +78,37 @@ export default function Search() {
 
 	}, [query])
 
-	
+
 	const filterElements = (items: SearchResult[], filter: Filter) => {
-		return  items.filter((item: any) => item[filter.key] === filter.value)
+		return items.filter((item: any) => item[filter.key] === filter.value)
 	}
-	
+
 	let filteredList: SearchResult[] = []
 
-	if (filters.length){
-		filters.forEach(filter => filteredList = filteredList.concat(filterElements(results, filter)))	
+	if (filters.length) {
+		filters.forEach(filter => filteredList = filteredList.concat(filterElements(results, filter)))
 	} else {
 		filteredList = results
 	}
-	
+
 	const GroupedList = () => {
 		const renderGroups = listGroups.filter(group => filteredList.some((item: any) => item[group.key] === group.value))
-		
-		if (!renderGroups.length){
+
+		if (!renderGroups.length) {
 			return <EmptyPanel message="There are no results for the selected filter" />
 		}
 
 		return <>{renderGroups.map(group => {
 			const groupItems = filterElements(filteredList, group)
 			return <div key={`result-${group.value}`}>
-		<div className={`${styles.tag} ${styles[`tag_${group.value}--active`]}`}>{group.value.toUpperCase()}</div>
-		{groupItems.slice(0,5).map(result => <div key={`${result.type}${result.id}`}>
-			<SearchResultCard data={result} query={query} />
-		</div>)}
-		{groupItems.length > 5 && !filters.length && <div className='button_primary--inverted mb-4' onClick={() => setFilters([group])}>SHOW ALL {group.value.toUpperCase()} RESULTS</div>}
-	</div>})}</>}
+				<div className={`${styles.tag} ${styles[`tag_${group.value}--active`]}`}>{group.value.toUpperCase()}</div>
+				{groupItems.slice(0, 5).map(result => <div key={`${result.type}${result.id}`}>
+					<SearchResultCard data={result} query={query} />
+				</div>)}
+				{groupItems.length > 5 && !filters.length && <div className='button_primary--inverted mb-4' onClick={() => setFilters([group])}>SHOW ALL {group.value.toUpperCase()} RESULTS</div>}
+			</div>
+		})}</>
+	}
 
 	const EmptyPanel = ({ message }: { message?: string }) => <div className={styles.empty}>
 		<Empty />
@@ -118,8 +120,10 @@ export default function Search() {
 
 	if (loading) return <><Loader active>Searching...</Loader></>
 
-	return <LayoutFilteredList activeFilters={filters} setActiveFilters={setFilters}
+	return <div className={styles.container}>
+		<LayoutFilteredList activeFilters={filters} setActiveFilters={setFilters}
 			filtersList={avilableFilters}
 			listPanel={results.length ? <GroupedList /> : <EmptyPanel />}
 			headerBar={<HeaderBar />} />
+	</div>
 }

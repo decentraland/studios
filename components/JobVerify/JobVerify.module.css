@@ -10,9 +10,10 @@
 .container {
   display: flex;
   flex-direction: column;
-  /* align-items: center; */
+  align-items: center;
   max-width: 680px;
   margin: auto;
+  margin-bottom: 72px;
 }
 
 .title {
@@ -27,6 +28,7 @@
   font-size: 16px;
   text-align: center;
   width: 100%;
+  margin-bottom: 16px;
 }
 
 .subtitle a {

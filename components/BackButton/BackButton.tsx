@@ -3,7 +3,11 @@ import styles from './BackButton.module.css'
 import ArrowRight from '../Icons/ArrowRight'
 import { useRouter } from 'next/router'
 
-function BackButton({ ...otherProps }) {
+interface Props extends React.HTMLAttributes<HTMLOrSVGElement> {
+  small?: boolean
+}
+
+function BackButton({ small, ...otherProps }: Props) {
   const router = useRouter()
 
   const onClickHandler = () => {
@@ -19,8 +23,11 @@ function BackButton({ ...otherProps }) {
     }
   }
   
+  let classNames = [styles.arrowRight]
+  if (small) classNames.push(styles['arrowRight--small'])
+
   return (
-    <div onClick={onClickHandler} className={styles.arrowright} {...otherProps}>
+    <div onClick={onClickHandler} className={classNames.join(' ')} {...otherProps}>
       <ArrowRight />
     </div>
   )

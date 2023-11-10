@@ -5,7 +5,13 @@ import styles from './SearchInputNav.module.css'
 import IconSearch from '../Icons/IconSearch'
 import IconX from '../Icons/IconX'
 
-export default function SearchInputNav () {
+//TODO: improve input width when open on mobile depending if showing user Avatar or not
+
+interface Props {
+    avatar?: boolean;
+}
+
+export default function SearchInputNav ({avatar}: Props) {
     const router = useRouter()
 
     const [ open, setOpen ] = useState(false)
@@ -40,7 +46,7 @@ export default function SearchInputNav () {
         setOpen(true)
         inputRef.current?.setSelectionRange(0, inputRef.current?.value.length)
     }
-
+    
     useEffect(() => {
 
         const handleRouteChange = (url: string) => {
@@ -48,6 +54,7 @@ export default function SearchInputNav () {
                 setOpen(false)
                 setSearchText('')
             }
+
         }
     
         router.events.on('routeChangeStart', handleRouteChange)
@@ -59,7 +66,7 @@ export default function SearchInputNav () {
     
     return <div className={styles.searchContainer}>
         <IconSearch className={styles.searchBtn} onClick={handleSearchClick} />
-        <input className={`${styles['searchInput']} ${open ? styles['searchInput--open'] : ''}`} 
+        <input className={`${styles['searchInput']} ${open ? styles['searchInput--open'] : ''} ${open && avatar ? styles['searchInput--openAvatar'] : ''}`}
             type='text'
             placeholder='Search...'
             ref={inputRef}
@@ -69,9 +76,5 @@ export default function SearchInputNav () {
             onChange={(e) => setSearchText(e.target.value)}
             onKeyUp={handleSubmit} />
         {searchText && open && <IconX gray className={styles.clearBtn} onClick={handleClearBtn} />}
-        {/* {open && <div style={{position: 'absolute'}}>
-            <div onClick={() => setSearchText('results')}>results</div>
-            <div>option2</div>
-        </div>} */}
     </div>
 }

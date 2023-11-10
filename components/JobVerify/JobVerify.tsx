@@ -41,6 +41,7 @@ function JobVerify() {
   }, [id])
 
   const shareUrl = `/jobs/share?id=${id}`
+  const projectUrl = `/dashboard?id=${id}`
 
   const reach_out_link = <a className={styles.link} href=""
     rel="noreferrer"
@@ -61,23 +62,24 @@ function JobVerify() {
       You published a new project!
     </div>
     <div className={styles.subtitle}>
-      Your <Link href={shareUrl}>project</Link> is now visible to all Decentraland Studios.
+      Your project is now visible to all Decentraland Studios.
     </div>
+    <Link href={`/dashboard?id=${jobData.id}`}><div className='button_primary'>MANAGE YOUR PROJECT</div></Link>
     <div className={styles.factsContainer}>
       <div className={styles.factCard}>
         <img className={styles.factIcon} alt='calendar' src="/images/iconCalendar.png" />
         <div className={styles.factText}>
-          <b>Your project will be available for 30 days after you publish it.</b> If you need to remove it sooner, {reach_out_link} and we will take it down.
+          <b>Your project will be available for 30 days after you publish it.</b> If you need to remove it sooner, you can close it on your <Link href={projectUrl} className={styles.link}>project profile</Link>.
         </div>
       </div>
       <div className={styles.factCard}>
         <img className={styles.factIcon} alt='calendar' src="/images/iconCard.png" />
         <div className={styles.factText}>
-          <b>You will receive email notifications</b> when studios apply to your project. Follow up with them via email.
+          <b>You will receive email notifications</b> when studios apply to your project. Talk to them through <Link href="/dashboard" className={styles.link}>your dashboard.</Link>
         </div>
       </div>
     </div>
-    <div className={styles.previewText}>
+    {/* <div className={styles.previewText}>
       <span>Here&apos;s a preview of your project</span>
       <Link href={shareUrl} ><span className={styles.liveText}>See it live</span><IconExternal red /></Link>
     </div>
@@ -101,7 +103,7 @@ function JobVerify() {
     </div>
     <div style={{ textAlign: 'center' }} className={styles.jobAuthor}>
       If you have any questions or need help regarding your listing, don’t hesitate to {reach_out_link}.
-    </div>
+    </div> */}
   </div>
 }
 

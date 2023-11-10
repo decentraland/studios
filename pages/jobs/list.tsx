@@ -1,11 +1,18 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import Head from 'next/head'
 
 import styles from '../../styles/Home.module.css'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
 import Jobs from '../../components/Jobs/Jobs'
+import router from 'next/router'
+import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 
 function JobsListPage() {
+
+  useEffect(() => {
+    router.replace({pathname: '/jobs', query: router.query})
+  }, [])
+
   return (
     <Container className={styles.container}>
       <Head>
@@ -14,7 +21,8 @@ function JobsListPage() {
         <meta property="og:image" content="/images/banner_jobs.png" />
       </Head>
       <main className={styles.main}>
-        <Jobs />
+        {/* <Jobs /> */}
+        <Loader active>Loading...</Loader>
       </main>
     </Container>
   )

@@ -36,13 +36,13 @@
 
   "filter": "Filter",
   "filter.noResults": "None of the studios match the selected filters",
-  "noProjects": "No projects yet",
+  "noProjects": "This studio has no projects yet.",
   "noReviews": "No reviews yet",
 
   "services": "Services",
   "region": "Region",
   "country": "Country",
-  "team_size": "Team Size",
+  "team_size": "Studio Size",
   "languages": "Languages",
   "payment_methods": "Payment Methods",
   "show_more": "Show more",

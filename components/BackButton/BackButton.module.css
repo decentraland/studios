@@ -6,10 +6,21 @@
   vertical-align: middle;
 }
 
-.arrowright:hover rect {
+.arrowRight {
+  height: fit-content;
+}
+.arrowRight:hover rect {
   stroke: #16141a;
 }
 
-.arrowright svg {
+.arrowRight svg {
   margin-top: 4px;
 }
+
+.arrowRight--small svg {
+  margin: 0;
+  width: 24px;
+  height: 24px;
+  vertical-align: middle;
+}
+

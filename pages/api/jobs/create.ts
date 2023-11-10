@@ -14,10 +14,10 @@ export default async function (req: NextRequest) {
   const SENDRGRID_URL = process.env.NEXT_PUBLIC_API_SENDGRID
   const SENDGRID_ACCESS_TOKEN = process.env.SENDGRID_ACCESS_TOKEN
   
-  const { job } = await req.json()
+  const { job, verified_email } = await req.json()
 
   try{
-    const createJob = await fetch(`${DB_URL}/items/jobs?fields=*,brief_file.id,brief_file.filename_download`, {
+     const createJob = await fetch(`${DB_URL}/items/jobs?fields=*,brief_file.id,brief_file.filename_download`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -26,11 +26,15 @@ export default async function (req: NextRequest) {
       body: JSON.stringify( { 
         ...job, 
         short_description: job.short_description.join('\n'),
-        verified_email : false,
+        verified_email : verified_email,
         geo: req.geo
       } )
-    }).then(res => res.ok && res.json()).then(res => res.data && res.data)
+    })
+    .then((res) => res.ok && res.json())
+    .then(body => body.data)
 
+    if (createJob && verified_email) return new Response(JSON.stringify(createJob))
+    
     const sendMail = createJob && await fetch(`${SENDRGRID_URL}/mail/send`, {
       method: 'POST',
       headers: {
@@ -55,7 +59,7 @@ export default async function (req: NextRequest) {
       })
     })
 
-    if (sendMail.ok) return new Response()
+    if (sendMail.ok) return new Response(JSON.stringify(createJob))
 
     return new Response(null, { status: 400 })
 

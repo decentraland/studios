@@ -177,7 +177,7 @@ export default function Jobs() {
         </div>
     }
 
-    if (user.role.name === "Client") {
+    if (user.role.name !== "Studio") {
         return <BrandsMessage />
     }
 

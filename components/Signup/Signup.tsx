@@ -5,6 +5,7 @@ import { useRouter } from 'next/router'
 import Form from '../Form/Form'
 import Link from 'next/link'
 import { User } from '../../interfaces/User'
+import ErrorScreen from '../ErrorScreen/ErrorScreen'
 
 const CLIENT_ROLE = '525f6b3a-0379-4636-ad16-4c719283c2b5'
 const JOIN_REGISTRY_URL = process.env.NEXT_PUBLIC_JOIN_REGISTRY_URL
@@ -25,6 +26,7 @@ export default function Signup({ customStepOffset = 0, customStepCount, customNa
 
     const [currentStep, setCurrentStep] = useState(customStepStart)
     const [email, setEmail] = useState('')
+    const [userExists, setUserExists] = useState(false)
     const [password, setPassword] = useState('')
     const [passwordConfirm, setPasswordConfirm] = useState('')
     const [firstName, setFirstName] = useState('')
@@ -42,7 +44,7 @@ export default function Signup({ customStepOffset = 0, customStepCount, customNa
     })
 
     IconCLients.displayName = 'IconClients'
-    
+
     const IconStudios = React.memo(() => {
         return <svg xmlns="http://www.w3.org/2000/svg" width="22" height="20" viewBox="0 0 22 20" fill="none">
             <g clipPath="url(#clip0_6441_34873)">
@@ -55,7 +57,7 @@ export default function Signup({ customStepOffset = 0, customStepCount, customNa
             </defs>
         </svg>
     })
-    
+
     IconStudios.displayName = 'IconStudios'
 
     const goToPrevPage = (logged = false) => {
@@ -92,12 +94,41 @@ export default function Signup({ customStepOffset = 0, customStepCount, customNa
                 user_agent: globalThis?.navigator.userAgent,
                 email_verification: email_verification
             })
-        }).then((res) => res.ok && res.json())
-            .then((user: User) => {
+        })
+            .then((res) => {
+                if (res.ok) {
+                    return res.json()
+                } else {
+                    // goToStep(4)
+                    console.log(res)
+                }
+            })
+            .then((user) => {
+                if (!user) return
                 if (onSuccess) {
                     onSuccess(user)
                 } else {
                     goToStep(3)
+                }
+            })
+    }
+
+    const handleSubmitStep1 = async (e: React.FormEvent) => {
+        e.preventDefault()
+        fetch('/api/user/exists', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                email,
+            })
+        })
+            .then((res) => {
+                if (res.ok) {
+                    setUserExists(true)
+                } else {
+                    goToStep(2)
                 }
             })
     }
@@ -120,7 +151,7 @@ export default function Signup({ customStepOffset = 0, customStepCount, customNa
         return <div className={styles.container}>
             <Form onBack={() => goToStep(0)}
                 logo={logo}
-                onSubmit={(e) => goToStep(2, e)}
+                onSubmit={(e) => handleSubmitStep1(e)}
                 stepNumber={customStepOffset + 1}
                 stepsCount={customStepCount || '3'}
                 name={customName || 'SIGNUP'}
@@ -132,6 +163,9 @@ export default function Signup({ customStepOffset = 0, customStepCount, customNa
                     value={email}
                     placeholder="studioname@studio.com"
                     onChange={(e) => setEmail(e.currentTarget.value)} />
+                <Form.FieldMessage message={userExists ? `Email already used` : ""}
+                    icon={userExists ? "info" : ""}
+                    red />
 
                 <Form.Label>Create a password</Form.Label>
                 <Form.InputText required
@@ -209,6 +243,12 @@ export default function Signup({ customStepOffset = 0, customStepCount, customNa
                     Please confirm your account by clicking on a link we sent you via email to <b>{email}</b>. If you haven&apos;t received an email in 5 minutes, check your spam, <a className='text-red underline' onClick={handleSubmit}>resend</a>, or <a className='text-red underline' onClick={() => goToStep(1)}>try a different email</a>.
                 </Form.Label>
             </Form>
+        </div>
+    }
+
+    if (currentStep === 4) {
+        return <div className={styles.container}>
+            <ErrorScreen/>
         </div>
     }
 

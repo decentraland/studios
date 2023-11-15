@@ -30,7 +30,7 @@ const fetchConversations = async (url: string) => {
 }
 
 export const useMessages = () => {
-    const { data, isLoading, error } = useSWR('/api/conversations/get', fetchConversations, { refreshInterval: 1 * 60 * 1000, errorRetryInterval: 2000 })
+    const { data, isLoading, error } = useSWR('/api/conversations/get', fetchConversations, { refreshInterval: 1 * 60 * 1000, errorRetryInterval: 500 })
 
     return { data, isLoading, error }
 }

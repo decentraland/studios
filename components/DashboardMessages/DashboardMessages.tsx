@@ -75,21 +75,6 @@ export default function MessagesDashboard() {
         :
         conversations
 
-    const sendMessage = async (event: React.FormEvent, message: string) => {
-        event.preventDefault()
-
-        const formData = new FormData();
-        formData.append('text', message)
-        formData.append('envelope', JSON.stringify({ to: [`${currentConversationId}@reply.studios.decentraland.org`] }))
-        formData.append('from', `<${user.email}>`)
-
-        const postMessage = await fetch('/api/message', {
-            method: "POST",
-            body: formData
-        })
-        postMessage?.ok && mutate('/api/conversations/get')
-    }
-
     const dateToMilis = (stringDate: string) => (new Date(stringDate)).getTime()
 
     const formatDate = (dateString: string) => {
@@ -269,6 +254,7 @@ export default function MessagesDashboard() {
         const [messagesLimit, setMessagesLimit] = useState(10)
         const [inputRows, setInputRows] = useState(1)
         const [disabled, setDisabled] = useState(true)
+        const [loading, setLoading] = useState(false)
         const [message, setMessage] = useState('')
 
 
@@ -301,6 +287,23 @@ export default function MessagesDashboard() {
 
             setMessage(inputText)
             setDisabled(inputText.length === 0)
+        }
+        
+        const sendMessage = async (event: React.FormEvent, message: string) => {
+            event.preventDefault()
+            
+            setLoading(true)
+            const formData = new FormData();
+            formData.append('text', message)
+            formData.append('envelope', JSON.stringify({ to: [`${currentConversationId}@reply.studios.decentraland.org`] }))
+            formData.append('from', `<${user.email}>`)
+
+            const postMessage = await fetch('/api/message', {
+                method: "POST",
+                body: formData
+            })
+            postMessage?.ok && await mutate('/api/conversations/get')
+            setLoading(false)
         }
 
         const onEnterKey = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -342,8 +345,12 @@ export default function MessagesDashboard() {
                                     </div>
                                 </div> : null}
                             </div>
+
                             <form onSubmit={(e) => sendMessage(e, message)} className={styles['chat_write']}>
-                                <textarea placeholder='Write a message' name="text" rows={inputRows} onChange={onTextInput} onKeyDown={onEnterKey} value={message} />
+                            {loading && <div className={styles.disabled}>
+                                <Loader active/>
+                            </div>}
+                                <textarea placeholder='Write a message' name="text" rows={inputRows} onChange={onTextInput} onKeyDown={onEnterKey} value={message} disabled={loading}/>
                                 <label>
                                     <input type="submit" disabled={disabled} />
                                     <IconSend gray={disabled} />

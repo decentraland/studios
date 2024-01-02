@@ -246,7 +246,7 @@ function PartnerProfile({ partner }: Props) {
                     onClick={() => trackLink('Open External Link', 'Click Youtube', partnerData.youtube as string)}
                   />
                 )}
-                <div className='button_primary button_primary--small' onClick={() => setShowContactModal(true)}>CONTACT {partnerData?.name?.toUpperCase()}</div>
+                <div className='button_primary button_primary--small' onClick={() => setShowContactModal(true)}>CONTACT</div>
               </div>
 
             </div>

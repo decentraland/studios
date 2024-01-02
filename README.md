@@ -41,7 +41,7 @@ Build output directory: .vercel/output/static
 ```
 Environment variables in addition to the listed before:
 
-`NODE_VERSION= 14`
+`NODE_VERSION= 16`
 
 Functions Compatibility date:
 

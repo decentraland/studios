@@ -1,8 +1,6 @@
 import replyParser from 'node-email-reply-parser'
 
 import Files from './Files'
-import useSWR from 'swr'
-import studio from '../pages/api/get/studio'
 
 export const config = {
     runtime: 'experimental-edge',
@@ -38,7 +36,6 @@ export default class Messages {
 
         const conversationEmail = JSON.parse(parsedData.envelope).to[0]
         const conversationId = conversationEmail.split('@')[0]
-        // const fromEmail = JSON.parse(parsedData.envelope).from
         const fromEmail = parsedData.from.match(/<(.*)>/)[1]
 
         const conversation = await fetch(`${DB_URL}/items/conversations/${conversationId}?fields=*,user_created.email,user_created.id,related_job.email,related_job.managers`, {
@@ -159,8 +156,6 @@ export default class Messages {
                 template_id: "d-c7ff3cf874c449ecbed9783bf3f1be51"
             })
         }).then(res => res)))
-        
-        // return saveMessage
         
         return new Response(JSON.stringify(saveMessage))
     }

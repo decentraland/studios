@@ -34,8 +34,11 @@ export default class Partners {
 
   static async getPartnerData(partnerData: any, fields?: string) {
     const query = Object.entries(partnerData).map(entry => `filter[${entry[0]}]=${entry[1]}`).join('&')
-    let fieldsFilter = '*,reviews.*,projects.image_1,projects.id,projects.title,projects.profile.name,projects.profile.slug,projects.profile.logo,projects.date_created'
     
+    const basicFields = 'services,projects,reviews,email,name,profile_header,logo,website,marketplace,discord,opensea,twitter,instagram,linkedin,youtube,description,region,country,team_size,languages,payment_methods,slug' 
+    const extraFields  = 'reviews.*,projects.image_1,projects.id,projects.title,projects.profile.name,projects.profile.slug,projects.profile.logo,projects.date_created'
+    let fieldsFilter = [basicFields, extraFields].join(',')
+
     if (fields) fieldsFilter = fields
 
     let partner

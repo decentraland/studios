@@ -8,11 +8,16 @@ const API_TOKEN = process.env.API_ACCESS_TOKEN
 const DB_URL = process.env.NEXT_PUBLIC_PARTNERS_DATA_URL
 const SENDRGRID_URL = process.env.NEXT_PUBLIC_API_SENDGRID
 const SENDGRID_ACCESS_TOKEN = process.env.SENDGRID_ACCESS_TOKEN
+const CLIENT_ROLE = '525f6b3a-0379-4636-ad16-4c719283c2b5'
 
 export default async function (req: NextRequest) {
   const reqBody = await req.json()
   const { email_verification, ...userData } = reqBody
 
+  userData.status = 'draft'
+  userData.role = CLIENT_ROLE
+
+  
   let createUser = await fetch(`${DB_URL}/users`, {
     method: 'POST',
     headers: {

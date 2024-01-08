@@ -11,18 +11,7 @@ export default async function (req: NextRequest) {
 
   const { id } = await req.json()
 
-//   const currentJob = await fetch(`${DB_URL}/items/jobs/${id}?fields=*,brief_file.id,brief_file.filename_download`, {
-//     method: 'GET',
-//     headers: {
-//     'Authorization': `Bearer ${API_TOKEN}`
-//     }
-//   }).then(res => res.ok && res.json()).then(res => res.data && res.data)
-
-//   if (currentJob.verified_email){
-//     return new Response(JSON.stringify(currentJob))
-//   }
-
-  return fetch(`${DB_URL}/users/${id}`, {
+  const userData = await fetch(`${DB_URL}/users/${id}`, {
       method: 'PATCH',
       headers: {
       'Content-Type': 'application/json',
@@ -33,5 +22,5 @@ export default async function (req: NextRequest) {
       })
   })
 
-//   return new Response(JSON.stringify(verify))
+  return new Response(null, {status: userData.ok ? 204 : 400})
 }

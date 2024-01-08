@@ -7,7 +7,6 @@ import Link from 'next/link'
 import { User } from '../../interfaces/User'
 import ErrorScreen from '../ErrorScreen/ErrorScreen'
 
-const CLIENT_ROLE = '525f6b3a-0379-4636-ad16-4c719283c2b5'
 const JOIN_REGISTRY_URL = process.env.NEXT_PUBLIC_JOIN_REGISTRY_URL
 
 interface Props {
@@ -89,8 +88,6 @@ export default function Signup({ customStepOffset = 0, customStepCount, customNa
                 first_name: firstName,
                 last_name: lastName,
                 company,
-                role: CLIENT_ROLE,
-                status: 'draft',
                 user_agent: globalThis?.navigator.userAgent,
                 email_verification: email_verification
             })

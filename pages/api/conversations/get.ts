@@ -1,9 +1,7 @@
 import type { NextRequest } from 'next/server'
 import Partners from '../../../clients/Partners'
-import { Conversation } from '../../../interfaces/Conversation'
 import { User } from '../../../interfaces/User'
 import { Job } from '../../../interfaces/Job'
-import manage from '../jobs/manage'
 
 export const config = {
     runtime: 'experimental-edge',
@@ -79,14 +77,14 @@ export default async function (req: NextRequest) {
                 }).then(res => res.ok && res.json()).then(body => body.data[0].id)
                 
                 job.author_id = jobAuthorId
-                
+
                 job.managers = JSON.parse((job.managers as any) || "[]")
 
                 const managers = [] as User[]
                 for (const manager of job.managers){
                     managers.push(await fetch(`${DB_URL}/users/${manager.id}?fields=id,email,first_name,last_name`, {
                         headers: {
-                            'Authorization': `Bearer ${authorization}`
+                            'Authorization': `Bearer ${API_TOKEN}`
                         }
                     }).then(res => res.ok && res.json()).then(body => body.data))
                 }

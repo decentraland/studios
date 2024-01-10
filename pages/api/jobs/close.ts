@@ -1,5 +1,6 @@
 import type { NextRequest } from 'next/server'
 import { budgetToRanges } from '../../../components/utils'
+import { User } from '../../../interfaces/User'
 
 export const config = {
   runtime: 'experimental-edge',
@@ -36,10 +37,23 @@ export default async function (req: NextRequest) {
 
     if (!jobData) return new Response(null, { status: 400 })
 
-    const jobManagers = [ ...JSON.parse(jobData.managers || '[]').map((manager: any) => manager.email), jobData.email ]
 
-    if (!jobManagers.includes(currentUser.email)){
-        return new Response(null, { status: 400 })
+    jobData.managers = JSON.parse((jobData.managers as any) || "[]")
+
+    const managers = [] as User[]
+
+    for (const manager of jobData.managers) {
+      managers.push(await fetch(`${DB_URL}/users/${manager.id}?fields=email`, {
+        headers: {
+          'Authorization': `Bearer ${API_TOKEN}`
+        }
+      }).then(res => res.ok && res.json()).then(body => body.data.email))
+    }
+
+    const jobManagersEmails = [...managers, jobData.email]
+    
+    if (!jobManagersEmails.includes(currentUser.email)) {
+      return new Response(null, { status: 400 })
     }
 
     const jobUpdate = jobData && await fetch(`${DB_URL}/items/jobs/${job_id}`, {

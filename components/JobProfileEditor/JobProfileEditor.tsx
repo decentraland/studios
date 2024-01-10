@@ -96,7 +96,7 @@ function JobProfileEditor() {
     const CloseProject = () => {
         const [selectedOption, setSelectedOption] = useState('')
         const [text, setText] = useState('')
-        const [step, setStep] = useState(0)
+        const [step, setStep] = useState(jobData?.status === 'archived' ? 1 : 0)
 
         const disabled = !selectedOption || (selectedOption === "Other" && !text)
         const options = [
@@ -153,7 +153,7 @@ function JobProfileEditor() {
                 {step === 1 && <>
                     <div className={styles.modalTitle}><span>Your project is now closed</span><span><IconX gray onClick={closeModal} /></span></div>
                     <div>You closed your project. You will now stop receiving submissions from Decentraland studios.
-                        <Link href="/dashboard"><Form.ButtonSubmit inverted value="GO TO DASHBOARD" disabled={disabled} /></Link>
+                        <Link href="/dashboard"><Form.ButtonSubmit inverted value="GO TO DASHBOARD" disabled={false} /></Link>
                     </div>
                 </>}
             </div>}

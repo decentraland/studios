@@ -33,7 +33,12 @@ export default async function (req: NextRequest) {
 
   if (createUser.errors) return new Response(JSON.stringify(createUser.error), { status: 400 })
 
-  if (!email_verification && createUser.data.id) return new Response(JSON.stringify(createUser.data))
+  if (!email_verification && createUser.data.id) return new Response(JSON.stringify({
+    first_name: createUser.data.first_name, 
+    last_name: createUser.data.last_name, 
+    company: createUser.data.company,
+    email: createUser.data.email
+  }))
 
   const sendMailVerifications = createUser.data.id && await fetch(`${SENDRGRID_URL}/mail/send`, {
     method: 'POST',
@@ -58,7 +63,12 @@ export default async function (req: NextRequest) {
     })
   })
 
-  if (sendMailVerifications.ok) return new Response(JSON.stringify(createUser.data))
+  if (sendMailVerifications.ok) return new Response(JSON.stringify({
+    first_name: createUser.data.first_name, 
+    last_name: createUser.data.last_name, 
+    company: createUser.data.company,
+    email: createUser.data.email
+  }))
 
   return new Response(null, { status: 400 })
 

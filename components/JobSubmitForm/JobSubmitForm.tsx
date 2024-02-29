@@ -540,7 +540,7 @@ function JobSubmitForm() {
             />
             <Form.FieldMessage red={!!remainCharsColor} message={descriptionOk ? remainCharsText : `Write ${120 - formData.long_description.length} more characters`} />
 
-            <Form.Label>Upload a brief (optional)</Form.Label>
+            {/* <Form.Label>Upload a brief (optional)</Form.Label>
             <div className={styles.text}>
                 If you already have a document that describes your project upload it here.
             </div>
@@ -549,7 +549,7 @@ function JobSubmitForm() {
                 <span className='button_primary--inverted'>SELECT FILE</span>
                 <span className='ml-1'>{selectedFile ? <>{selectedFile.name} <IconX gray className='ml-1' style={{ height: '11px', width: '11px' }} onClick={handleFileRemove} /></> : 'No file selected.'}</span>
             </label>
-            <Form.FieldMessage red={fileValidationFail} icon="info" message="PDF files only, maximum size is 10 MB." />
+            <Form.FieldMessage red={fileValidationFail} icon="info" message="PDF files only, maximum size is 10 MB." /> */}
 
             <Form.Label>What is your budget for this project?</Form.Label>
 

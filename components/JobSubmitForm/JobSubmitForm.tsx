@@ -368,10 +368,12 @@ function JobSubmitForm() {
         const loadPendingProject = () => {
             const author_name = user ? `${user.first_name} ${user.last_name}` : ''
             const company = user ? user.company : ''
+            const email = user ? user.email : ''
             setFormData({
                 ...pendingJob,
                 author_name,
-                company
+                company,
+                email
             })
             setCurrentStep('projectDraft')
             setShowPendingModal(false)

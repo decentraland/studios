@@ -5,9 +5,6 @@ export const config = {
   runtime: 'experimental-edge',
 }
 
-const DB_URL = process.env.NEXT_PUBLIC_PARTNERS_DATA_URL
-const API_TOKEN = process.env.API_ACCESS_TOKEN
-
 export default async function (req: NextRequest) {
 
   const folder = req.headers.get('folder')

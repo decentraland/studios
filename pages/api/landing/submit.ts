@@ -1,4 +1,4 @@
-import { userAgent, type NextRequest } from 'next/server'
+import { type NextRequest } from 'next/server'
 
 export const config = {
   runtime: 'experimental-edge',
@@ -14,14 +14,10 @@ const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID
 
 export default async function (req: NextRequest) {
 
-  const { ua } = userAgent(req)
-
-  if (ua.includes('Acunetix')) return new Response(null, { status: 401 })
-
-
   const body = await req.json()
-
+  
   if (body.email.includes('testing@example.com')) return new Response(null, { status: 401 })
+  if (body.user_agent.includes('Acunetix')) return new Response(null, { status: 401 })
 
   try {
     await fetch(`${DB_URL}/items/leads`, {

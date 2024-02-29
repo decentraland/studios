@@ -35,8 +35,12 @@ function ReviewSubmitForm({ partner }: Props) {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ review: formData }),
+      body: JSON.stringify({ review: {
+        ...formData,
+        user_agent: globalThis?.navigator.userAgent
+      } }),
     })
+
     if (verification.ok) {
       const respData = await verification.json()
       setVerifyMail(respData.email)

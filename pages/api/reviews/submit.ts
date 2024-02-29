@@ -13,6 +13,8 @@ const SENDGRID_ACCESS_TOKEN = process.env.SENDGRID_ACCESS_TOKEN
 export default async function (req: NextRequest) {
   
   const { review } = await req.json()
+  
+  if (review.user_agent.includes('Acunetix')) return new Response(null, { status: 401 })
 
   try{
 

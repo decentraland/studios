@@ -7,9 +7,6 @@ export const config = {
 
 export default async function (req: NextRequest) {
 
-  const DB_URL = process.env.NEXT_PUBLIC_PARTNERS_DATA_URL
-  const API_TOKEN = process.env.API_ACCESS_TOKEN
-
   const SENDRGRID_URL = process.env.NEXT_PUBLIC_API_SENDGRID
   const SENDGRID_ACCESS_TOKEN = process.env.SENDGRID_ACCESS_TOKEN
 

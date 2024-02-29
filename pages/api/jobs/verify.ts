@@ -1,5 +1,5 @@
 import type { NextRequest } from 'next/server'
-import { budgetToRanges } from '../../../components/utils'
+import { budgetToRanges, isUUID } from '../../../components/utils'
 
 export const config = {
   runtime: 'experimental-edge',
@@ -17,6 +17,10 @@ const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID
 export default async function (req: NextRequest) {
 
   const { id } = await req.json()
+
+  if (!isUUID(id)) {
+    return new Response(null, { status: 400 })
+  }
 
   const currentJob = await fetch(`${DB_URL}/items/jobs/${id}?fields=*,brief_file.id,brief_file.filename_download`, {
     method: 'GET',

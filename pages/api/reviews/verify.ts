@@ -1,5 +1,6 @@
 import type { NextRequest } from 'next/server'
 import { PartnerReview } from '../../../interfaces/PartnerReview'
+import { isUUID } from '../../../components/utils'
 
 export const config = {
   runtime: 'experimental-edge',
@@ -16,6 +17,10 @@ export default async function (req: NextRequest) {
   const { uuid  } = await req.json()
 
   try {
+
+    if (!isUUID(uuid)) {
+      return new Response(null, { status: 400 })
+    }
 
     const review = await fetch(`${DB_URL}/items/reviews?filter[uuid]=${uuid}&fields=*,profile.email,profile.name,profile.slug`, {
       method: 'GET',

@@ -40,6 +40,25 @@ export default async function (req: NextRequest) {
 
     if (!currentUser || !jobData) return new Response(null, { status: 400 })
 
+    const allowedEmails = [jobData.email]
+
+    const managers = JSON.parse(jobData.managers || "[]")
+
+    for (const manager of managers) {
+      const userMail = await fetch(`${DB_URL}/users/${manager.id}?fields=email`, {
+        headers: {
+          'Authorization': `Bearer ${API_TOKEN}`
+        }
+      })
+        .then(res => res.ok && res.json())
+        .then(res => res.data.email)
+      allowedEmails.push(userMail)
+    }
+
+    if (!allowedEmails.includes(currentUser.email)) {
+      return new Response(null, { status: 403 })
+    }
+
     const jobUpdate = jobData && await fetch(`${DB_URL}/items/jobs/${job_id}`, {
       method: 'PATCH',
       headers: {

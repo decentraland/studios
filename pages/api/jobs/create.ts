@@ -1,5 +1,6 @@
 import type { NextRequest } from 'next/server'
 import { budgetToRanges } from '../../../components/utils'
+import { User } from '../../../interfaces/User'
 
 export const config = {
   runtime: 'experimental-edge',
@@ -16,10 +17,23 @@ export default async function (req: NextRequest) {
 
   const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN
   const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID
-
+  
+  const user = req.cookies.get("auth")?.value
+  if (!user) return new Response(null, { status: 401 })
+  
+  const authorization = JSON.parse(user).access_token
   const { job, verified_email } = await req.json()
-
+  
   try {
+    
+    const currentUser: User = await fetch(`${DB_URL}/users/me?fields=id,email,first_name,last_name,company,role.name`, {
+      headers: {
+        'Authorization': `Bearer ${authorization}`
+      }
+    }).then(res => res.ok && res.json()).then(res => res.data && res.data)
+
+    if (currentUser.role.name !== "Client") return new Response(null, { status: 401 })
+
     const createJob = await fetch(`${DB_URL}/items/jobs?fields=*,brief_file.id,brief_file.filename_download`, {
       method: 'POST',
       headers: {
@@ -28,6 +42,9 @@ export default async function (req: NextRequest) {
       },
       body: JSON.stringify({
         ...job,
+        email: currentUser.email,
+        author_name: `${currentUser.first_name} ${currentUser.last_name}`,
+        company: currentUser.company,
         short_description: job.short_description.join('\n'),
         verified_email: verified_email,
         geo: req.geo

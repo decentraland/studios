@@ -38,12 +38,14 @@ export default async function (req: NextRequest) {
     }).then(res => res.ok && res.json()).then(res => res.data.length && res.data[0])
 
 
-    const currentUser = await fetch(`${DB_URL}/users/me?fields=id,email`, {
+    const currentUser = await fetch(`${DB_URL}/users/me?fields=id,email,role.name`, {
         headers: {
             'Authorization': `Bearer ${authorization}`
         }
     }).then(res => res.ok && res.json()).then(res => res.data && res.data)
 
+    if (currentUser.role.name !== 'Studio') return new Response(null, { status: 400 })
+    
     const createConversation = await fetch(`${DB_URL}/items/conversations?fields=id`, {
         method: 'POST',
         headers: {

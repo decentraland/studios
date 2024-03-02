@@ -40,7 +40,7 @@ export default async function (req: NextRequest) {
         let managers = JSON.parse(jobData.managers || '[]')
 
         if (!managers_invites.includes(currentUser.email)) {
-            return new Response(null, { status: 400 })
+            return new Response(null, { status: 403 })
         }
 
         managers_invites = managers_invites.filter((email: string) => email != currentUser.email)

@@ -57,7 +57,7 @@ export default class Messages {
         const studioData = await fetch(`${DB_URL}/items/profile?filter[user]=${conversation.user_created.id}&fields=name`, {
             headers: {
                 'Authorization': `Bearer ${API_TOKEN}`
-            }
+            } 
         })
             .then(res => res.ok && res.json())
             .then(res => res.data[0])
@@ -99,24 +99,25 @@ export default class Messages {
             message: lastMessage
         }
 
-        if (parsedData['attachment-info']) {
+        //Temporary disabled files uploads
+        // if (parsedData['attachment-info']) {
 
-            parsedData['attachment-info'] = JSON.parse(parsedData['attachment-info'])
+        //     parsedData['attachment-info'] = JSON.parse(parsedData['attachment-info'])
 
-            for (const key in parsedData['attachment-info']) {
+        //     for (const key in parsedData['attachment-info']) {
 
-                const file = formData.get(key) as File
-                const arrayBuffer = await file.arrayBuffer()
-                const blob = new Blob([arrayBuffer], { type: file.type })
+        //         const file = formData.get(key) as File
+        //         const arrayBuffer = await file.arrayBuffer()
+        //         const blob = new Blob([arrayBuffer], { type: file.type })
 
-                const uploadedFileId = await Files.upload(blob, file.name, FILES_FOLDER)
-                    .then(res => res.ok && res.json())
-                    .then(body => body.data.id)
+        //         const uploadedFileId = await Files.upload(blob, file.name, FILES_FOLDER)
+        //             .then(res => res.ok && res.json())
+        //             .then(body => body.data.id)
 
-                parsedData['attachment-info'][key].file_id = uploadedFileId
-                newMessage.attachments = [...newMessage.attachments || [], { "directus_files_id": uploadedFileId }]
-            }
-        }
+        //         parsedData['attachment-info'][key].file_id = uploadedFileId
+        //         newMessage.attachments = [...newMessage.attachments || [], { "directus_files_id": uploadedFileId }]
+        //     }
+        // }
 
         const saveMessage = await fetch(`${DB_URL}/items/messages_dashboard`, {
             method: 'POST',

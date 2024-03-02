@@ -36,9 +36,15 @@ export default async function (req: NextRequest) {
 
         if (!currentUser || !jobData) return new Response(null, { status: 400 })
 
-        if (currentUser.email !== jobData.email) return new Response(null, { status: 400 })
-
         let managers = JSON.parse(jobData.managers || '[]')
+
+        const currentUserIsOwner = currentUser.email === jobData.email
+        const currentUserIsManager = managers.filter((manager: User) => manager.id === currentUser.id).length !== 0
+
+        if (!(currentUserIsOwner || currentUserIsManager)) return new Response(null, { status: 400 })
+
+        if (managers.filter((manager: User) => manager.id === currentUser.id).length === 0) return new Response(null, { status: 400 })
+
 
         if (!managers.filter((manager: User) => manager.id === manager_id)) return new Response(null, { status: 400 })
 

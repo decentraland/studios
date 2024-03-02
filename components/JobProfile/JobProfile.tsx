@@ -210,7 +210,7 @@ function JobProfile() {
                                 onChange={val => setNewMessage(val.target.value)} />
                             <div className={styles.text_secondary}><IconInfo /> This will be sent to {jobData.author_name} via email, along with your portfolio in Decentraland Studios.</div>
 
-                            <div className={styles.label_file}>Upload a file (Optional)</div>
+                            {/*<div className={styles.label_file}>Upload a file (Optional)</div>
                             <div className={styles.text_primary}>
                                 If you already have a presentation of your team or a proposal for this project, upload it here.
                             </div>
@@ -219,7 +219,7 @@ function JobProfile() {
                                 <span className='button_primary--inverted'>SELECT FILE</span>
                                 <span className='ml-1'>{selectedFile ? <span>{selectedFile.name} <IconX gray className='ml-1' style={{ height: '11px', width: '11px' }} onClick={handleFileRemove} /></span> : 'No file selected.'}</span>
                             </label>
-                            <div className={styles.text_secondary} style={fileValidationFail ? { color: '#FF2D55' } : {}}><IconInfo red={fileValidationFail} /> PDF files only, maximum size is 10 MB.</div>
+                        <div className={styles.text_secondary} style={fileValidationFail ? { color: '#FF2D55' } : {}}><IconInfo red={fileValidationFail} /> PDF files only, maximum size is 10 MB.</div>*/}
 
 
                             <input type="submit" value="SEND MESSAGE"

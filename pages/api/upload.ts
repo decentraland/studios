@@ -7,32 +7,18 @@ export const config = {
 
 export default async function (req: NextRequest) {
 
-  const folder = req.headers.get('folder')
-  const fileName = req.headers.get('fileName')
+  return new Response(null, {status: 403})
 
-  const blob = await req.blob()
-  const arrayBuffer = await blob.arrayBuffer()
-  const newBlob = new Blob([arrayBuffer], { type: blob.type })
+  // const folder = req.headers.get('folder')
+  // const fileName = req.headers.get('fileName')
 
-  if (!folder || !fileName){
-    return new Response(null, { status: 400 })
-  }
+  // const blob = await req.blob()
+  // const arrayBuffer = await blob.arrayBuffer()
+  // const newBlob = new Blob([arrayBuffer], { type: blob.type })
+
+  // if (!folder || !fileName){
+  //   return new Response(null, { status: 400 })
+  // }
   
-  return Files.upload(newBlob, fileName, folder)
-  
-  //TODO: check auth for uploading from dashboard
-
-  // const formData = new FormData()
-
-  // formData.append('folder', folder)
-
-  // formData.append('file', blob, fileName)
-
-  // return fetch(`${DB_URL}/files`, {
-  //           method: 'POST',
-  //           headers: { 
-  //               'Authorization': `Bearer ${API_TOKEN}`,
-  //           },
-  //           body: formData,
-  //       })
+  // return Files.upload(newBlob, fileName, folder)
   }

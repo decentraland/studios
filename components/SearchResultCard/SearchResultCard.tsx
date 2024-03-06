@@ -1,8 +1,8 @@
 import React, { ReactElement } from 'react'
-import Link from 'next/link';
+import Link from 'next/link'
 import Image from 'next/image'
 import rehypeRaw from 'rehype-raw'
-
+import DOMPurify from "dompurify"
 
 import styles from './SearchResultCard.module.css'
 import MarkdownDescription from '../MarkdownDescription/MarkdownDescription'
@@ -55,7 +55,7 @@ function ResultCard({ data, query }: Props) {
                 )}
             <div className={styles.infoContainer}>
                 <div className={styles.name}>
-                    <div dangerouslySetInnerHTML={{ __html: title.replace(new RegExp('(' + query + ')', 'gi'), '<mark>$1</mark>') }} />
+                    <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(title.replace(new RegExp('(' + query + ')', 'gi'), '<mark>$1</mark>')) }} />
                     {data.profile ? <span className={styles.partner_info}>by
                         <div
                             className={styles.logoMini}

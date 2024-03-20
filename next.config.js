@@ -21,7 +21,7 @@ const nextConfig = {
   },
   
   webpack(config) {
-    config.plugins.push(new EnvironmentPlugin(['API_ACCESS_TOKEN', 'SENDGRID_ACCESS_TOKEN', 'TELEGRAM_BOT_TOKEN', 'TELEGRAM_CHAT_ID']))
+    config.plugins.push(new EnvironmentPlugin(['API_ACCESS_TOKEN', 'SENDGRID_ACCESS_TOKEN', 'SENDGRID_INBOUND_TOKEN', 'TELEGRAM_BOT_TOKEN', 'TELEGRAM_CHAT_ID']))
     
     require('./clients/sitemap')
     

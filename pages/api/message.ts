@@ -14,8 +14,17 @@ export const config = {
     ],
 }
 
+const SENDGRID_INBOUND_TOKEN = process.env.SENDGRID_INBOUND_TOKEN
+
+
 export default async function (req: NextRequest) {
+
+    const accessToken = req.nextUrl.searchParams.get('access_token')
     
+    if (accessToken !== SENDGRID_INBOUND_TOKEN) {
+        return new Response(null, {status: 401})
+    }
+
     if (req.method === 'POST') {
         const formData = await req.formData()
 

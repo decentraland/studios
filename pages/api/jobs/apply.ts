@@ -1,5 +1,6 @@
 import type { NextRequest } from 'next/server'
 import Messages from '../../../clients/Messages'
+import { isUUID } from '../../../components/utils'
 
 export const config = {
     runtime: 'experimental-edge',
@@ -27,6 +28,10 @@ export default async function (req: NextRequest) {
 
     if (req.method !== 'POST' || !user || !jobId) return new Response(null, { status: 400 })
 
+    if (!isUUID(jobId)) {
+        return new Response(null, { status: 400 })
+    }
+
     const formData = await req.formData()
 
     const authorization = JSON.parse(user).access_token
@@ -45,7 +50,7 @@ export default async function (req: NextRequest) {
     }).then(res => res.ok && res.json()).then(res => res.data && res.data)
 
     if (currentUser.role.name !== 'Studio') return new Response(null, { status: 400 })
-    
+
     const createConversation = await fetch(`${DB_URL}/items/conversations?fields=id`, {
         method: 'POST',
         headers: {

@@ -32,7 +32,7 @@ export default class Projects {
     return projects
   }
 
-  static async getProject(id: string) {
+  static async getProject(id: number) {
     let projects
 
     const queryFields = `?filter[id]=${id}&fields=*,profile.name,profile.slug,profile.logo`

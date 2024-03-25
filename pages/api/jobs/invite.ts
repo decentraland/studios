@@ -1,5 +1,5 @@
 import type { NextRequest } from 'next/server'
-import { budgetToRanges } from '../../../components/utils'
+import { budgetToRanges, isUUID } from '../../../components/utils'
 
 export const config = {
   runtime: 'experimental-edge',
@@ -20,6 +20,10 @@ export default async function (req: NextRequest) {
   const authorization = JSON.parse(user).access_token
 
   const { email, job_id } = await req.json()
+
+  if (!isUUID(job_id)) {
+    return new Response(null, { status: 400 })
+  }
 
   try {
 

@@ -1,5 +1,5 @@
 import type { NextRequest } from 'next/server'
-import { budgetToRanges } from '../../../components/utils'
+import { budgetToRanges, isUUID } from '../../../components/utils'
 
 export const config = {
     runtime: 'experimental-edge',
@@ -17,6 +17,10 @@ export default async function (req: NextRequest) {
     const authorization = JSON.parse(user).access_token
 
     const { job_id } = await req.json()
+
+    if (!isUUID(job_id)) {
+        return new Response(null, { status: 400 })
+    }
 
     try {
 
@@ -44,7 +48,7 @@ export default async function (req: NextRequest) {
         }
 
         managers_invites = managers_invites.filter((email: string) => email != currentUser.email)
-        managers.push({id: currentUser.id})
+        managers.push({ id: currentUser.id })
 
         const jobUpdate = jobData && await fetch(`${DB_URL}/items/jobs/${job_id}`, {
             method: 'PATCH',

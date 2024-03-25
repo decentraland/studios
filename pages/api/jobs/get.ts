@@ -1,4 +1,5 @@
 import type { NextRequest } from 'next/server'
+import { isUUID } from '../../../components/utils'
 
 export const config = {
     runtime: 'experimental-edge',
@@ -16,8 +17,13 @@ export default async function (req: NextRequest) {
 
     if (!authorization || req.method !== 'GET') return new Response(null, { status: 400 })
 
+
     if (jobId) {
 
+        if (!isUUID(jobId)) {
+            return new Response(null, { status: 400 })
+        }
+        
         // if (client) {
 
         //     const jobData = await fetch(`${DB_URL}/items/jobs?filter[email]=true&filter[id]=${jobId}&fields=*,brief_file.id,brief_file.filename_download,messages.*`, {

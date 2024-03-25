@@ -9,6 +9,10 @@ export default async function (req: NextRequest) {
     const body = await req.json()
     const { id } = body;
 
+    if (typeof(id) !== 'number') {
+      return new Response(null, { status: 400 })
+  }
+
     const newData = await Projects.getProject(id)
     
     return new Response(JSON.stringify(newData))

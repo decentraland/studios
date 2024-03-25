@@ -1,5 +1,5 @@
 import type { NextRequest } from 'next/server'
-import { budgetToRanges } from '../../../components/utils'
+import { budgetToRanges, isUUID } from '../../../components/utils'
 import { User } from '../../../interfaces/User'
 
 export const config = {
@@ -18,6 +18,10 @@ export default async function (req: NextRequest) {
   const authorization = JSON.parse(user).access_token
 
   const { closed_poll, job_id } = await req.json()
+
+  if (!isUUID(job_id)) {
+    return new Response(null, { status: 400 })
+  }
 
   try {
 
@@ -51,7 +55,7 @@ export default async function (req: NextRequest) {
     }
 
     const jobManagersEmails = [...managers, jobData.email]
-    
+
     if (!jobManagersEmails.includes(currentUser.email)) {
       return new Response(null, { status: 400 })
     }

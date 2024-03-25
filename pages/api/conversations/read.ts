@@ -1,5 +1,6 @@
 import type { NextRequest } from 'next/server'
 import { User } from '../../../interfaces/User'
+import { isUUID } from '../../../components/utils'
 
 export const config = {
     runtime: 'experimental-edge',
@@ -18,6 +19,10 @@ export default async function (req: NextRequest) {
 
         const conversation_id = req.nextUrl.searchParams.get('conversation_id')
         const messageId = req.nextUrl.searchParams.get('message')
+
+        if (!isUUID(conversation_id || '')) {
+            return new Response(null, { status: 400 })
+        }
 
         const currentUser = await fetch(`${DB_URL}/users/me?fields=id`, {
             headers: {
@@ -62,7 +67,7 @@ export default async function (req: NextRequest) {
                 directus_users_id: currentUser.id
             })
         })
-        
+
         return new Response()
     }
 

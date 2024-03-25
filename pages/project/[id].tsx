@@ -11,7 +11,7 @@ const DATA_URL = process.env.NEXT_PUBLIC_PARTNERS_DATA_URL
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   if (params && params.id) {
-    const project = await Projects.getProject(`${params.id}`)
+    const project = await Projects.getProject(parseInt(params.id as string))
 
     return {
       props: {

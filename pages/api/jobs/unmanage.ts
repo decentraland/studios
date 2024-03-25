@@ -1,5 +1,6 @@
 import type { NextRequest } from 'next/server'
 import { User } from '../../../interfaces/User'
+import { isUUID } from '../../../components/utils'
 
 export const config = {
     runtime: 'experimental-edge',
@@ -17,6 +18,10 @@ export default async function (req: NextRequest) {
     const authorization = JSON.parse(user).access_token
 
     const { job_id, manager_id } = await req.json()
+
+    if (!isUUID(job_id)) {
+        return new Response(null, { status: 400 })
+    }
 
     try {
 

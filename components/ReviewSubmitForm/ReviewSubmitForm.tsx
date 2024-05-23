@@ -13,7 +13,7 @@ const REVIEW_MAX_LENGTH = 400
 
 function ReviewSubmitForm({ partner }: Props) {
   const initData = {
-    profile: partner.id,
+    profile: partner.slug,
     name: '',
     company: '',
     email: '',
@@ -35,10 +35,12 @@ function ReviewSubmitForm({ partner }: Props) {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ review: {
-        ...formData,
-        user_agent: globalThis?.navigator.userAgent
-      } }),
+      body: JSON.stringify({
+        review: {
+          ...formData,
+          user_agent: globalThis?.navigator.userAgent
+        }
+      }),
     })
 
     if (verification.ok) {

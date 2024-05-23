@@ -11,12 +11,16 @@ const SENDRGRID_URL = process.env.NEXT_PUBLIC_API_SENDGRID
 const SENDGRID_ACCESS_TOKEN = process.env.SENDGRID_ACCESS_TOKEN
 
 export default async function (req: NextRequest) {
-  
+
   const { review } = await req.json()
-  
+
   if (review.user_agent.includes('Acunetix')) return new Response(null, { status: 401 })
 
-  try{
+  try {
+
+    const partnerData = await fetch(`${DB_URL}/items/profile?filter[slug]=${review.profile}&fields=id`)
+      .then(res => res.ok && res.json())
+      .then(res => res.data && res.data[0])
 
     const submitReview = await fetch(`${DB_URL}/items/reviews?fields=*,profile.name`, {
       method: 'POST',
@@ -24,41 +28,44 @@ export default async function (req: NextRequest) {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${API_TOKEN}`
       },
-      body: JSON.stringify(review)
+      body: JSON.stringify({
+        ...review,
+        profile: partnerData.id
+      })
     }).then(res => res.ok && res.json()).then(res => res.data && res.data)
 
     const sendMail = submitReview && await fetch(`${SENDRGRID_URL}/mail/send`, {
       method: 'POST',
       headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${SENDGRID_ACCESS_TOKEN}`
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${SENDGRID_ACCESS_TOKEN}`
       },
       body: JSON.stringify({
-          from: {
-              email: "studios@decentraland.org", name: "Decentraland Studios"
-          },
-          personalizations: [ {
-            to: [
-                { email: submitReview.email, name: submitReview.name }
-            ],
-            dynamic_template_data: {
-              studioName: submitReview.profile.name, 
-              reviewerName: submitReview.name,
-              confirmUrl: `https://studios.decentraland.org/reviews/verify?uuid=${submitReview.uuid}`
-                }
-        } ],
-          template_id: "d-8967311aea8f46a29471ae1049b2dcdc"
+        from: {
+          email: "studios@decentraland.org", name: "Decentraland Studios"
+        },
+        personalizations: [{
+          to: [
+            { email: submitReview.email, name: submitReview.name }
+          ],
+          dynamic_template_data: {
+            studioName: submitReview.profile.name,
+            reviewerName: submitReview.name,
+            confirmUrl: `https://studios.decentraland.org/reviews/verify?uuid=${submitReview.uuid}`
+          }
+        }],
+        template_id: "d-8967311aea8f46a29471ae1049b2dcdc"
       })
     })
 
-    if (sendMail.ok){
+    if (sendMail.ok) {
       return new Response(JSON.stringify(submitReview))
     }
 
     return new Response(null, { status: 400 })
 
   } catch (error) {
-    console.log('API Review Submit error: ', error )
+    console.log('API Review Submit error: ', error)
     return new Response(null, { status: 400 })
   }
 }

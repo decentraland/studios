@@ -9,7 +9,7 @@ export default class Partners {
     let isFinished = false
     let offset = 0
 
-    const queryFields = '&fields=name,services,region,slug,country,languages,logo,id,description,team_size,payment_methods,reviews,projects'
+    const queryFields = '&fields=name,services,region,slug,country,languages,logo,id,description,team_size,payment_methods,reviews.name,reviews.company,reviews.review,projects'
     let partners: VerifiedPartner[] = []
 
     while (!isFinished) {
@@ -36,7 +36,7 @@ export default class Partners {
     const query = Object.entries(partnerData).map(entry => `filter[${entry[0]}]=${entry[1]}`).join('&')
     
     const basicFields = 'services,projects,reviews,email,name,profile_header,logo,website,marketplace,discord,opensea,twitter,instagram,linkedin,youtube,description,region,country,team_size,languages,payment_methods,slug' 
-    const extraFields  = 'reviews.*,projects.image_1,projects.id,projects.title,projects.profile.name,projects.profile.slug,projects.profile.logo,projects.date_created'
+    const extraFields  = 'reviews.name,reviews.company,reviews.review,projects.image_1,projects.id,projects.title,projects.profile.name,projects.profile.slug,projects.profile.logo,projects.date_created'
     let fieldsFilter = [basicFields, extraFields].join(',')
 
     if (fields) fieldsFilter = fields

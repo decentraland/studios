@@ -22,7 +22,7 @@ export default async function (req: NextRequest) {
       return new Response(null, { status: 400 })
     }
 
-    const review = await fetch(`${DB_URL}/items/reviews?filter[uuid]=${uuid}&fields=name,company,review,verified_mail,profile.email,profile.name,profile.slug`, {
+    const review = await fetch(`${DB_URL}/items/reviews?filter[uuid]=${uuid}&fields=id,name,company,review,verified_mail,profile.email,profile.name,profile.slug`, {
       method: 'GET',
       headers: {
       'Content-Type': 'application/json',
@@ -34,7 +34,7 @@ export default async function (req: NextRequest) {
       return new Response(JSON.stringify(review))
     }
 
-    const verify = await fetch(`${DB_URL}/items/reviews/${review.id}?fields=*,profile.email,profile.name,profile.slug`, {
+    const verify = await fetch(`${DB_URL}/items/reviews/${review.id}?fields=id,name,company,review,profile.email,profile.name,profile.slug`, {
       method: 'PATCH',
       headers: {
       'Content-Type': 'application/json',

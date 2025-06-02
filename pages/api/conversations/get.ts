@@ -114,6 +114,11 @@ export default async function (req: NextRequest) {
                                             "_nnull": true
                                         }
                                     },
+                                    {
+                                        "status": {
+                                            "_eq": "published"
+                                        }
+                                    },
                                 ]
 
                         },

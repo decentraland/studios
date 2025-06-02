@@ -39,7 +39,7 @@ export default async function (req: NextRequest) {
             }
         }).then(res => res.ok && res.json()).then(body => body.data[0])
 
-        const conversation = jobData && await fetch(`${DB_URL}/items/conversations?filter[related_job]=${jobData.id}&fields=id,title,related_job,user_created,messages.id,messages.date_created,messages.message,messages.attachments.directus_files_id.id,messages.attachments.directus_files_id.filename_download,messages.author.id`, {
+        const conversation = jobData && await fetch(`${DB_URL}/items/conversations?filter[related_job]=${jobData.id}&filter[status]=active&fields=id,title,related_job,user_created,messages.id,messages.date_created,messages.message,messages.attachments.directus_files_id.id,messages.attachments.directus_files_id.filename_download,messages.author.id`, {
             method: "GET",
             headers: {
                 'Authorization': `Bearer ${authorization}`

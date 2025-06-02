@@ -28,14 +28,14 @@ export default function FooterStudios () {
                     <div className={styles.textlight}>
                         An independent team supported by <a href="https://governance.decentraland.org/proposal/?id=5f962e70-22ef-11ee-8ace-3bf098daeebe" target="_blank" rel="noreferrer">Decentraland&apos;s DAO</a> maintains this project.
                     </div>
-                    <div className={styles.textSocial}>
+                    {/* <div className={styles.textSocial}>
                         Follow Decentraland Studios
                     </div>
                     <div className={styles.linksSocial}>
                         <a href="https://twitter.com/dcl_studios" rel="noreferrer" target="_blank"><Twitter /></a>
                         <a href="https://www.instagram.com/decentraland_studios/" rel="noreferrer" target="_blank"><Instagram /></a>
                         <a href="https://www.linkedin.com/company/decentraland-studios/" rel="noreferrer" target="_blank"><Linkedin /></a>
-                    </div>
+                    </div> */}
                 </div>
             </div>
         </Container>

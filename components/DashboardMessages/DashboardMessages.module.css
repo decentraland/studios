@@ -95,6 +95,8 @@
   background: var(--primitives-grey-color-grey-100);
   position: relative;
   overflow: hidden;
+  overflow-y: scroll;
+  scrollbar-width: none;
 }
 
 .column_contents--jobs {

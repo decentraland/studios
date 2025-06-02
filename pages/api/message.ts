@@ -15,15 +15,34 @@ export const config = {
 }
 
 const SENDGRID_INBOUND_TOKEN = process.env.SENDGRID_INBOUND_TOKEN
-
+const DB_URL = process.env.NEXT_PUBLIC_PARTNERS_DATA_URL
 
 export default async function (req: NextRequest) {
 
-    const accessToken = req.nextUrl.searchParams.get('access_token')
-    
-    if (accessToken !== SENDGRID_INBOUND_TOKEN) {
-        return new Response(null, {status: 401})
+    const apiAccessToken = req.nextUrl.searchParams.get('access_token')
+    if (apiAccessToken) {
+        if (apiAccessToken !== SENDGRID_INBOUND_TOKEN) {
+            return new Response(null, { status: 401 })
+        }
     }
+
+    const user = req.cookies.get("auth")?.value
+    if (user) {
+        const userAuthorization = JSON.parse(user).access_token
+
+        const currentUser = await fetch(`${DB_URL}/users/me?fields=status`, {
+            headers: {
+                'Authorization': `Bearer ${userAuthorization}`
+            }
+        }).then(res => res.ok && res.json()).then(res => res.data && res.data)
+
+        if (!currentUser || currentUser.status !== 'active') return new Response(null, { status: 401 })
+    }
+
+    if (!(apiAccessToken || user)) {
+        return new Response(null, { status: 401 })
+    }
+
 
     if (req.method === 'POST') {
         const formData = await req.formData()

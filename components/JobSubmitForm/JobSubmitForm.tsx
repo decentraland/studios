@@ -152,6 +152,8 @@ function JobSubmitForm() {
         if (element.id === 'short_description') {
             let newShortDescription = formData.short_description || []
             if (element.checked) {
+                //prevent avoiding 255 chars max chars
+                if (newShortDescription.length >= 4) return
                 newShortDescription.push(newValue)
             } else {
                 newShortDescription.splice(newShortDescription.indexOf(newValue), 1)
@@ -517,7 +519,9 @@ function JobSubmitForm() {
                 onChange={handleInput} />
 
             <Form.Label>Which of the following best describes your project?</Form.Label>
-
+            <div className={styles.text}>
+                maximun 4 options
+            </div>
             {descriptionOptions.map(text => <div key={text}><label className={styles.options}>
                 <input type="checkbox" id="short_description"
                     value={text}

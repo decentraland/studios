@@ -72,8 +72,11 @@ export default async function (req: NextRequest) {
       .then(readJsonResponse)
       .then(body => body?.data)
 
-    if (createJob && verified_email) {
+    if (!createJob) return new Response(null, { status: 400 })
 
+    if (verified_email) {
+
+      // Best-effort: the job already exists, so a failed notification must not change the response
       await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
         method: 'POST',
         headers: {
@@ -92,12 +95,15 @@ export default async function (req: NextRequest) {
         ${createJob.brief_file ? `\nBrief file: [${createJob.brief_file.filename_download}](https://admin.dclstudios.org/assets/${createJob.brief_file.id})` : ''}
         ${createJob.deadline_date ? `\nDeadline date: ${createJob.deadline_date}` : ''}`
         })
-      }).then(discardResponse)
+      })
+        .then(discardResponse)
+        .then(res => !res.ok && console.log('API Job Create: Telegram notification failed, status ', res.status))
+        .catch(error => console.log('API Job Create: Telegram notification failed ', error))
 
       return new Response(JSON.stringify(createJob))
     }
 
-    const sendMail = createJob && await fetch(`${SENDRGRID_URL}/mail/send`, {
+    const sendMail = await fetch(`${SENDRGRID_URL}/mail/send`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -121,7 +127,7 @@ export default async function (req: NextRequest) {
       })
     }).then(discardResponse)
 
-    if (sendMail && sendMail.ok) return new Response(JSON.stringify(createJob))
+    if (sendMail.ok) return new Response(JSON.stringify(createJob))
 
     return new Response(null, { status: 400 })
 

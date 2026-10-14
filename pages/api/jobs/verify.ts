@@ -97,6 +97,7 @@ export default async function (req: NextRequest) {
     })
   }).then(discardResponse)
 
+  // Best-effort: the job is already verified, so a failed notification must not change the response
   await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
     method: 'POST',
     headers: {
@@ -115,7 +116,10 @@ export default async function (req: NextRequest) {
         ${verifyJob.brief_file ? `\nBrief file: [${verifyJob.brief_file.filename_download}](https://admin.dclstudios.org/assets/${verifyJob.brief_file.id})` : ''}
         ${verifyJob.deadline_date ? `\nDeadline date: ${verifyJob.deadline_date}` : ''}`
     })
-  }).then(discardResponse)
+  })
+    .then(discardResponse)
+    .then(res => !res.ok && console.log('API Job Verify: Telegram notification failed, status ', res.status))
+    .catch(error => console.log('API Job Verify: Telegram notification failed ', error))
 
   return new Response(JSON.stringify(pick(verifyJob, PUBLIC_JOB_FIELDS)))
 }

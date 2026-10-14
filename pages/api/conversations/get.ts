@@ -2,7 +2,7 @@ import type { NextRequest } from 'next/server'
 import Partners from '../../../clients/Partners'
 import { User } from '../../../interfaces/User'
 import { Job } from '../../../interfaces/Job'
-import { getAccessToken } from '../../../lib/security'
+import { getAccessToken, readJsonResponse } from '../../../lib/security'
 
 export const config = {
     runtime: 'experimental-edge',
@@ -23,7 +23,7 @@ export default async function (req: NextRequest) {
             headers: {
                 'Authorization': `Bearer ${authorization}`
             }
-        }).then(res => res.ok && res.json()).then(res => res.data && res.data)
+        }).then(readJsonResponse).then(res => res?.data)
 
         if (!currentUser || currentUser.status !== 'active') return new Response(null, { status: 401 })
 
@@ -61,8 +61,8 @@ export default async function (req: NextRequest) {
             }
             )
         })
-            .then(res => res.ok && res.json())
-            .then((res) => res.data as Job[])
+            .then(readJsonResponse)
+            .then((res) => (res?.data || []) as Job[])
 
             let conversations = []
 
@@ -73,7 +73,7 @@ export default async function (req: NextRequest) {
                     headers: {
                         'Authorization': `Bearer ${API_TOKEN}`
                     }
-                }).then(res => res.ok && res.json()).then(body => body.data[0].id)
+                }).then(readJsonResponse).then(body => body?.data?.[0]?.id)
                 
                 job.author_id = jobAuthorId
 
@@ -81,11 +81,13 @@ export default async function (req: NextRequest) {
 
                 const managers = [] as User[]
                 for (const manager of job.managers){
-                    managers.push(await fetch(`${DB_URL}/users/${manager.id}?fields=id,email,first_name,last_name`, {
+                    const managerData = await fetch(`${DB_URL}/users/${manager.id}?fields=id,email,first_name,last_name`, {
                         headers: {
                             'Authorization': `Bearer ${API_TOKEN}`
                         }
-                    }).then(res => res.ok && res.json()).then(body => body.data))
+                    }).then(readJsonResponse).then(body => body?.data)
+                    // Deleted managers are skipped
+                    if (managerData) managers.push(managerData)
                 }
                 
                 job.managers = managers
@@ -142,13 +144,13 @@ export default async function (req: NextRequest) {
 
                 )
             })
-                .then(res => res.ok && res.json())
-                .then(body => body.data)
+                .then(readJsonResponse)
+                .then(body => body?.data || [])
             for (const conversation of conversations) {
                 const query = { user: conversation.user_created }
                 conversation.studio_data = await Partners.getPartnerData(query, 'name,logo,user,slug')
 
-                if (conversation.conversations_users.length) {
+                if (conversation.conversations_users?.length) {
                     conversation.last_read_message = conversation.conversations_users.find((item: any) => item.directus_users_id === currentUser.id)?.last_read_message
                 }
             }

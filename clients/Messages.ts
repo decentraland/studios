@@ -2,6 +2,7 @@ import replyParser from 'node-email-reply-parser'
 
 import Files from './Files'
 import { isUUID } from '../components/utils'
+import { discardResponse, isSameEmail, normalizeEmail, readJsonResponse } from '../lib/security'
 
 export const config = {
     runtime: 'experimental-edge',
@@ -26,9 +27,50 @@ const MESSAGE_MAX_LENGTH = 100000
 
 const FILES_FOLDER = "e6038421-dec4-4977-a23d-b31865053ecb"
 
+const REPLY_DOMAIN = 'reply.studios.decentraland.org'
+
+/**
+ * Returns the conversation id of a `<conversation id>@reply.studios.decentraland.org` address, or undefined.
+ */
+export function getConversationId(address: unknown) {
+    if (typeof address !== 'string') return undefined
+    const separator = address.lastIndexOf('@')
+    if (separator <= 0) return undefined
+    const localPart = address.slice(0, separator)
+    const domain = address.slice(separator + 1).toLowerCase()
+    return domain === REPLY_DOMAIN && isUUID(localPart) ? localPart : undefined
+}
+
+export function getReplyAddress(conversationId: string) {
+    return `${conversationId}@${REPLY_DOMAIN}`
+}
+
+// Drops empty values and addresses that only differ in case
+const uniqueEmails = (emails: unknown[]) => {
+    const seen = new Set<string>()
+    const unique: string[] = []
+    for (const email of emails) {
+        const key = normalizeEmail(email)
+        if (!key || seen.has(key)) continue
+        seen.add(key)
+        unique.push(email as string)
+    }
+    return unique
+}
+
 export default class Messages {
 
     static async processIncommingMessage(formData: FormData) {
+        // Never throws, so an unexpected Directus answer can't fail the inbound email webhook
+        try {
+            return await Messages.processMessage(formData)
+        } catch (error) {
+            console.log('Messages: error processing message: ', error)
+            return new Response(null, { status: 500 })
+        }
+    }
+
+    private static async processMessage(formData: FormData) {
 
         const parsedData: any = {}
 
@@ -39,42 +81,42 @@ export default class Messages {
 
         const lastMessage = replyParser(parsedData.text).getVisibleText()
 
-        let conversationEmail: string
+        let conversationEmail: unknown
         try {
             conversationEmail = JSON.parse(parsedData.envelope).to[0]
         } catch {
             return new Response(null, { status: 400 })
         }
-        const conversationId = typeof conversationEmail === 'string' && conversationEmail.split('@')[0]
+        const conversationId = getConversationId(conversationEmail)
         const fromEmail = typeof parsedData.from === 'string' && parsedData.from.match(/<(.*)>/)?.[1]
 
-        if (!conversationId || !isUUID(conversationId) || !fromEmail) return new Response(null, { status: 400 })
+        if (!conversationId || !fromEmail) return new Response(null, { status: 400 })
 
         const conversation = await fetch(`${DB_URL}/items/conversations/${conversationId}?fields=*,user_created.email,user_created.id,related_job.email,related_job.managers`, {
             headers: {
                 'Authorization': `Bearer ${API_TOKEN}`
             }
         })
-            .then(res => res.ok && res.json())
-            .then(res => res.data)
+            .then(readJsonResponse)
+            .then(res => res?.data)
 
         if (!conversation) return new Response(null, { status: 400 })
 
-        const participants = [...new Set([
-            conversation.user_created.email,
-            conversation.related_job.email,
-        ])]
+        const participants: unknown[] = [
+            conversation.user_created?.email,
+            conversation.related_job?.email,
+        ]
 
 
-        const studioData = await fetch(`${DB_URL}/items/profile?filter[user]=${conversation.user_created.id}&fields=name`, {
+        const studioData = conversation.user_created?.id && await fetch(`${DB_URL}/items/profile?filter[user]=${conversation.user_created.id}&fields=name`, {
             headers: {
                 'Authorization': `Bearer ${API_TOKEN}`
-            } 
+            }
         })
-            .then(res => res.ok && res.json())
-            .then(res => res.data[0])
+            .then(readJsonResponse)
+            .then(res => res?.data?.[0])
 
-        const managers = JSON.parse(conversation.related_job.managers || "[]")
+        const managers = JSON.parse(conversation.related_job?.managers || "[]")
 
         for (const manager of managers) {
             const userMail = await fetch(`${DB_URL}/users/${manager.id}?fields=email`, {
@@ -82,26 +124,35 @@ export default class Messages {
                     'Authorization': `Bearer ${API_TOKEN}`
                 }
             })
-                .then(res => res.ok && res.json())
-                .then(res => res.data.email)
-                participants.push(userMail)
+                .then(readJsonResponse)
+                .then(res => res?.data?.email)
+            // Deleted managers are skipped
+            if (userMail) participants.push(userMail)
         }
 
-        if (!participants.includes(fromEmail)) return new Response(null, { status: 400 })
-        
-        const recipientsEmail = participants.filter(address => address !== fromEmail)
+        const knownParticipants = uniqueEmails(participants)
+        const authorEmail = knownParticipants.find(address => isSameEmail(address, fromEmail))
 
-        const author = await fetch(`${DB_URL}/users?filter[email]=${encodeURIComponent(fromEmail)}&fields=*,role.name`, {
-            headers: {
-                'Authorization': `Bearer ${API_TOKEN}`
-            }
-        })
-            .then(res => res.ok && res.json())
-            .then(res => res.data.length && res.data[0])
+        if (!authorEmail) return new Response(null, { status: 400 })
+
+        const recipientsEmail = knownParticipants.filter(address => !isSameEmail(address, fromEmail))
+
+        // Directus filters are case-sensitive, so the stored address is tried before the one the sender used
+        let author: any
+        for (const email of authorEmail === fromEmail ? [authorEmail] : [authorEmail, fromEmail]) {
+            author = await fetch(`${DB_URL}/users?filter[email]=${encodeURIComponent(email)}&fields=*,role.name`, {
+                headers: {
+                    'Authorization': `Bearer ${API_TOKEN}`
+                }
+            })
+                .then(readJsonResponse)
+                .then(res => res?.data?.[0])
+            if (author) break
+        }
 
         if (!author) return new Response(null, { status: 400 })
 
-        if (author.role.name === 'Studio' && studioData){
+        if (author.role?.name === 'Studio' && studioData){
             author.first_name = studioData.name
             author.last_name = ""
         }
@@ -141,9 +192,10 @@ export default class Messages {
             },
             body: JSON.stringify(newMessage),
         })
+            .then(discardResponse)
             .then(res => res.ok)
 
-        const sendEmails = saveMessage && await Promise.all( recipientsEmail.map(async recipientEmail => await fetch(`${SENDRGRID_URL}/mail/send`, {
+        saveMessage && await Promise.all(recipientsEmail.map(recipientEmail => fetch(`${SENDRGRID_URL}/mail/send`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -154,7 +206,7 @@ export default class Messages {
                     email: "studios@decentraland.org", name: "Decentraland Studios"
                 },
                 reply_to: {
-                    email: conversationEmail, name: 'Decentraland Studios Inbox'
+                    email: getReplyAddress(conversation.id), name: 'Decentraland Studios Inbox'
                 },
                 personalizations: [{
                     to: [
@@ -170,11 +222,13 @@ export default class Messages {
                 }],
                 template_id: "d-c7ff3cf874c449ecbed9783bf3f1be51"
             })
-        }).then(res => res)))
-        
+        })
+            .then(discardResponse)
+            .catch(error => console.log('Messages: error sending notification: ', error))))
+
         return new Response(JSON.stringify(saveMessage), { status: saveMessage ? 200 : 400 })
     }
-    
+
 }
 
 

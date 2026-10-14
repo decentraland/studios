@@ -1,6 +1,6 @@
 import { type NextRequest } from 'next/server'
 import Landings from '../../../clients/Landings'
-import { isBoundedString, isEmail, pick, readJson } from '../../../lib/security'
+import { discardResponse, isBoundedString, isEmail, pick, readJson } from '../../../lib/security'
 
 export const config = {
   runtime: 'experimental-edge',
@@ -46,7 +46,7 @@ export default async function (req: NextRequest) {
   const customFields: Record<string, unknown> = { ...clientFields, ...(landing.custom_fields || {}) }
 
   try {
-    await fetch(`${DB_URL}/items/leads`, {
+    const storeLead = await fetch(`${DB_URL}/items/leads`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -59,7 +59,13 @@ export default async function (req: NextRequest) {
         ip: req.ip,
         geo: req.geo
       })
-    })
+    }).then(discardResponse)
+
+    // The client only fires conversion pixels when the lead was stored
+    if (!storeLead.ok) {
+      console.log('API Landing Submit: lead not stored, status ', storeLead.status)
+      return new Response(null, { status: 502 })
+    }
 
     //get custom fields definitions
     // console.log(await (await fetch(`${SENDRGRID_URL}/marketing/field_definitions`, {
@@ -69,6 +75,7 @@ export default async function (req: NextRequest) {
     //     'Authorization': `Bearer ${SENDGRID_ACCESS_TOKEN}`
     //   }})).json())
 
+    // Subscribing to the marketing lists is best effort once the lead is stored
     await fetch(`${SENDRGRID_URL}/marketing/contacts`, {
       method: 'PUT',
       headers: {
@@ -86,6 +93,9 @@ export default async function (req: NextRequest) {
         ]
       })
     })
+      .then(discardResponse)
+      .then(res => !res.ok && console.log('API Landing Submit: contact not added to marketing lists, status ', res.status))
+      .catch(error => console.log('API Landing Submit: contact not added to marketing lists ', error))
 
     // await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
     //   method: 'POST',
@@ -101,6 +111,7 @@ export default async function (req: NextRequest) {
     return new Response(null, { status: 204 })
 
   } catch (error) {
-    return new Response(null, { status: 400 })
+    console.log('API Landing Submit error: ', error)
+    return new Response(null, { status: 502 })
   }
 }

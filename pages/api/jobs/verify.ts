@@ -74,6 +74,7 @@ export default async function (req: NextRequest) {
     })
   }).then(readJsonResponse).then(res => res?.data) : user?.status === 'active' && user
 
+  // Best-effort like the Telegram notification below: the job is already verified at this point
   verifyUser && await fetch(`${SENDRGRID_URL}/mail/send`, {
     method: 'POST',
     headers: {
@@ -95,7 +96,10 @@ export default async function (req: NextRequest) {
       }],
       template_id: "d-6629f64176d842458785b3e127c687f9"
     })
-  }).then(discardResponse)
+  })
+    .then(discardResponse)
+    .then(res => !res.ok && console.log('API Job Verify: confirmation email failed, status ', res.status))
+    .catch(error => console.log('API Job Verify: confirmation email failed ', error))
 
   // Best-effort: the job is already verified, so a failed notification must not change the response
   await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {

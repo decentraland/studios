@@ -1,18 +1,32 @@
 import type { NextRequest } from 'next/server'
+import Partners from '../../clients/Partners'
+import { isBoundedString, isEmail, readJson } from '../../lib/security'
 
 export const config = {
   runtime: 'experimental-edge',
 }
 
+const MESSAGE_MAX_LENGTH = 5000
 
 export default async function (req: NextRequest) {
 
   const SENDRGRID_URL = process.env.NEXT_PUBLIC_API_SENDGRID
   const SENDGRID_ACCESS_TOKEN = process.env.SENDGRID_ACCESS_TOKEN
 
-  const { partnerEmail, senderEmail, message } = await req.json()
+  if (req.method !== 'POST') return new Response(null, { status: 400 })
+
+  const { slug, senderEmail, message } = await readJson(req)
+
+  if (!isBoundedString(slug, 256) || !slug || !isEmail(senderEmail) || !isBoundedString(message, MESSAGE_MAX_LENGTH) || !message.trim()) {
+    return new Response(null, { status: 400 })
+  }
 
   try {
+
+    // The recipient is always the studio's registered email, never an address supplied by the caller
+    const partner = await Partners.getPartnerData({ slug }, 'email')
+
+    if (!isEmail(partner?.email)) return new Response(null, { status: 400 })
 
     const sendMail = await fetch(`${SENDRGRID_URL}/mail/send`, {
       method: 'POST',
@@ -29,7 +43,7 @@ export default async function (req: NextRequest) {
         },
         personalizations: [{
           to: [
-            { email: partnerEmail }
+            { email: partner?.email }
           ],
           dynamic_template_data: {
             email: senderEmail,

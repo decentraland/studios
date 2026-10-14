@@ -22,7 +22,7 @@ const headers = [
     },
     {
       key: 'X-XSS-Protection',
-      value: '1; mode=block',
+      value: '0', // the legacy XSS auditor is deprecated and can introduce leaks; CSP replaces it
     },
     {
       key: 'Referrer-Policy',
@@ -30,7 +30,13 @@ const headers = [
     },
     {
       key: 'Permissions-Policy',
-      value: 'geolocation=*', // allow specified policies here
+      value: 'geolocation=(), camera=(), microphone=(), payment=()',
+    },
+    {
+      // Scripts aren't restricted yet because of the third party trackers loaded in _app.tsx,
+      // but plugins, <base> hijacking and framing by other sites are blocked.
+      key: 'Content-Security-Policy',
+      value: "object-src 'none'; base-uri 'self'; frame-ancestors 'self'",
     },
   ];
   

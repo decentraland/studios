@@ -29,8 +29,10 @@ export default class Landings {
   static async getLandingData(slug: string) {
     let landings: Landing[] = []
 
+    if (typeof slug !== 'string' || !slug) return undefined
+
     try {
-      const response = await fetch(`${LANDINGS_URL}?filter[slug]=${slug}`)
+      const response = await fetch(`${LANDINGS_URL}?filter[slug][_eq]=${encodeURIComponent(slug)}`)
 
       landings = (await response.json()).data as Landing[]
     } catch (error) {

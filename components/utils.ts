@@ -135,3 +135,54 @@ export function isUUID (str: string) {
   const regex = new RegExp(/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i)
   return regex.test(str)
 }
+
+export function escapeRegExp(text: string) {
+  return text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+}
+
+/**
+ * Returns the url only when it uses http(s), so CMS or user supplied links can't run `javascript:` code.
+ */
+export function safeUrl(url?: string | null) {
+  if (!url) return undefined
+  try {
+    const { protocol } = new URL(url, 'https://studios.decentraland.org')
+    return protocol === 'http:' || protocol === 'https:' ? url : undefined
+  } catch {
+    return undefined
+  }
+}
+
+interface HastNode {
+  type: string
+  value?: string
+  tagName?: string
+  properties?: object
+  children?: HastNode[]
+}
+
+/**
+ * Rehype plugin that wraps the text matching `query` in <mark> elements without parsing raw HTML.
+ */
+export function rehypeHighlight(query: string) {
+  const tokens = query.split(' ').filter(Boolean).map(escapeRegExp)
+  const regex = tokens.length ? new RegExp(`(${tokens.join('|')})`, 'gi') : undefined
+
+  const highlight = (node: HastNode) => {
+    if (!regex || !node.children) return
+    node.children = node.children.flatMap((child) => {
+      if (child.type !== 'text' || !child.value) {
+        highlight(child)
+        return [child]
+      }
+      // split() with a capturing group puts the matched text at odd indexes
+      return child.value.split(regex)
+        .map((part, index): HastNode => index % 2
+          ? { type: 'element', tagName: 'mark', properties: {}, children: [{ type: 'text', value: part }] }
+          : { type: 'text', value: part })
+        .filter(part => part.type === 'element' || part.value)
+    })
+  }
+
+  return () => (tree: HastNode) => highlight(tree)
+}

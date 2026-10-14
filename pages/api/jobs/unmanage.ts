@@ -1,4 +1,5 @@
 import type { NextRequest } from 'next/server'
+import { getAccessToken, isSameOrigin, readJson } from '../../../lib/security'
 import { User } from '../../../interfaces/User'
 import { isUUID } from '../../../components/utils'
 
@@ -12,12 +13,11 @@ export default async function (req: NextRequest) {
     const DB_URL = process.env.NEXT_PUBLIC_PARTNERS_DATA_URL
     const API_TOKEN = process.env.API_ACCESS_TOKEN
 
-    const user = req.cookies.get("auth")?.value
-    if (!user) return new Response(null, { status: 401 })
+    const authorization = getAccessToken(req)
+    if (!authorization) return new Response(null, { status: 401 })
+    if (req.method !== 'POST' || !isSameOrigin(req)) return new Response(null, { status: 400 })
 
-    const authorization = JSON.parse(user).access_token
-
-    const { job_id, manager_id } = await req.json()
+    const { job_id, manager_id } = await readJson(req)
 
     if (!isUUID(job_id)) {
         return new Response(null, { status: 400 })
@@ -46,12 +46,9 @@ export default async function (req: NextRequest) {
         const currentUserIsOwner = currentUser.email === jobData.email
         const currentUserIsManager = managers.filter((manager: User) => manager.id === currentUser.id).length !== 0
 
-        if (!(currentUserIsOwner || currentUserIsManager)) return new Response(null, { status: 400 })
+        if (!(currentUserIsOwner || currentUserIsManager)) return new Response(null, { status: 403 })
 
-        if (managers.filter((manager: User) => manager.id === currentUser.id).length === 0) return new Response(null, { status: 400 })
-
-
-        if (!managers.filter((manager: User) => manager.id === manager_id)) return new Response(null, { status: 400 })
+        if (!managers.some((manager: User) => manager.id === manager_id)) return new Response(null, { status: 400 })
 
         managers = managers.filter((manager: User) => manager.id !== manager_id)
 

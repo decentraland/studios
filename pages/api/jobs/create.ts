@@ -1,11 +1,14 @@
 import type { NextRequest } from 'next/server'
 import { budgetToRanges } from '../../../components/utils'
 import { User } from '../../../interfaces/User'
+import { createVerificationToken, getAccessToken, isBoundedString, isSameOrigin, pick, readJson } from '../../../lib/security'
 
 export const config = {
   runtime: 'experimental-edge',
 }
 
+
+const JOB_FIELDS = ['title', 'budget', 'short_description', 'long_description', 'deadline_date', 'landing_url'] as const
 
 export default async function (req: NextRequest) {
 
@@ -18,21 +21,36 @@ export default async function (req: NextRequest) {
   const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN
   const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID
   
-  const user = req.cookies.get("auth")?.value
-  if (!user) return new Response(null, { status: 401 })
-  
-  const authorization = JSON.parse(user).access_token
-  const { job, verified_email } = await req.json()
-  
+  const authorization = getAccessToken(req)
+  if (!authorization) return new Response(null, { status: 401 })
+  if (req.method !== 'POST' || !isSameOrigin(req)) return new Response(null, { status: 400 })
+
+  const { job: rawJob } = await readJson(req)
+  const job = pick(rawJob || {}, JOB_FIELDS)
+
+  if (
+    !isBoundedString(job.title, 256) || !job.title ||
+    !isBoundedString(job.budget, 64) || !job.budget ||
+    !isBoundedString(job.long_description, 10000) || !job.long_description ||
+    !Array.isArray(job.short_description) || job.short_description.length > 10 || !job.short_description.every(item => isBoundedString(item, 256)) ||
+    (job.deadline_date !== undefined && job.deadline_date !== null && job.deadline_date !== '' && !isBoundedString(job.deadline_date, 64)) ||
+    (job.landing_url !== undefined && job.landing_url !== null && !isBoundedString(job.landing_url, 2048))
+  ) {
+    return new Response(null, { status: 400 })
+  }
+
   try {
     
-    const currentUser: User = await fetch(`${DB_URL}/users/me?fields=id,email,first_name,last_name,company,role.name`, {
+    const currentUser: User & { status: string } = await fetch(`${DB_URL}/users/me?fields=id,email,first_name,last_name,company,role.name,status`, {
       headers: {
         'Authorization': `Bearer ${authorization}`
       }
     }).then(res => res.ok && res.json()).then(res => res.data && res.data)
 
-    if (currentUser.role.name !== "Client") return new Response(null, { status: 401 })
+    if (!currentUser || currentUser.role.name !== "Client") return new Response(null, { status: 401 })
+
+    // Only an account that already proved ownership of its email can publish without the verification step
+    const verified_email = currentUser.status === 'active'
 
     const createJob = await fetch(`${DB_URL}/items/jobs?fields=*,brief_file.id,brief_file.filename_download`, {
       method: 'POST',
@@ -45,7 +63,8 @@ export default async function (req: NextRequest) {
         email: currentUser.email,
         author_name: `${currentUser.first_name} ${currentUser.last_name}`,
         company: currentUser.company,
-        short_description: job.short_description.join('\n'),
+        short_description: (job.short_description as string[]).join('\n'),
+        deadline_date: job.deadline_date || null,
         verified_email: verified_email,
         geo: req.geo
       })
@@ -95,7 +114,7 @@ export default async function (req: NextRequest) {
           dynamic_template_data: {
             ...createJob,
             budget: budgetToRanges(createJob.budget),
-            verify_url: `https://studios.decentraland.org/jobs/verify?id=${createJob.id}`,
+            verify_url: `https://studios.decentraland.org/jobs/verify?id=${createJob.id}#token=${await createVerificationToken('job', createJob.id)}`,
           }
         }],
         template_id: "d-0dd32315fc5241c89e78783713c66934"

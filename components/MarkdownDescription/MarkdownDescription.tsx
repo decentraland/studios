@@ -1,6 +1,6 @@
 import React from "react";
 import ReactMarkdown from "react-markdown";
-import { trackLink } from "../utils";
+import { safeUrl, trackLink } from "../utils";
 
 const customComponents: object = {
     a({ href, children }: { href: string; children: string }) {
@@ -22,7 +22,7 @@ const customComponents: object = {
       return <ul style={{ display: 'table', tableLayout: 'fixed', width: '100%'}}>{children}</ul>
     },
     img({ src }: { src: string }){
-      return <img alt='' src={src} style={{maxWidth: '100%'}} />
+      return <img alt='' src={safeUrl(src)} style={{maxWidth: '100%'}} />
     }
   }
 

@@ -58,7 +58,7 @@ export default function Search() {
 
 	const handleSearch = async (query: string) => {
 		setLoading(true)
-		const response = await fetch(`/api/search?query=${query}`, {
+		const response = await fetch(`/api/search?query=${encodeURIComponent(query)}`, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',

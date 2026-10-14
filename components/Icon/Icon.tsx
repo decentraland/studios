@@ -1,5 +1,6 @@
 import React from 'react'
 import styles from './Icon.module.css'
+import { safeUrl } from '../utils'
 
 interface Props {
   url: string
@@ -9,7 +10,7 @@ interface Props {
 
 function Icon({ url, icon, onClick }: Props) {
   return (
-    <a href={url} className={styles.icon} target="_blank" rel="noreferrer" onClick={onClick}>
+    <a href={safeUrl(url)} className={styles.icon} target="_blank" rel="noreferrer" onClick={onClick}>
       {icon}
     </a>
   )

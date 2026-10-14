@@ -108,7 +108,7 @@ function MetaverseGuide({ landing }: Props) {
         
         fbq('track', 'Lead')
         linkedinTrackLead(landingData.track_linkedin?.conversion_id)
-        plausibleTrackEvent('LandingSubmit' , { slug: landingData.slug, email: email })
+        plausibleTrackEvent('LandingSubmit' , { slug: landingData.slug })
         googleAdsTrack()
         updateIntercom({"name": name, "email": email})
         ctaSuccess()
@@ -154,7 +154,8 @@ function MetaverseGuide({ landing }: Props) {
 
     let linkedinTracking = null
 
-    if (landingData.track_linkedin?.partner_id) {
+    // The partner id is interpolated into an inline script, so only plain numeric ids are accepted
+    if (/^\d+$/.test(`${landingData.track_linkedin?.partner_id || ''}`)) {
         linkedinTracking = <footer>
             <Script id="linkedin-partner_id" strategy="afterInteractive">
                 {`_linkedin_partner_id = "${landingData.track_linkedin.partner_id}";

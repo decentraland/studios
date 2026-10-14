@@ -1,4 +1,5 @@
 import type { NextRequest } from 'next/server'
+import { createVerificationToken, isBoundedString, isEmail, pick, readJson } from '../../../lib/security'
 
 export const config = {
   runtime: 'experimental-edge',
@@ -10,19 +11,38 @@ const DB_URL = process.env.NEXT_PUBLIC_PARTNERS_DATA_URL
 const SENDRGRID_URL = process.env.NEXT_PUBLIC_API_SENDGRID
 const SENDGRID_ACCESS_TOKEN = process.env.SENDGRID_ACCESS_TOKEN
 
+const REVIEW_FIELDS = ['name', 'company', 'review', 'email', 'user_agent'] as const
+
 export default async function (req: NextRequest) {
 
-  const { review } = await req.json()
+  if (req.method !== 'POST') return new Response(null, { status: 400 })
 
-  if (review.user_agent.includes('Acunetix')) return new Response(null, { status: 401 })
+  const { review: rawReview } = await readJson(req)
+  const review = pick(rawReview || {}, REVIEW_FIELDS)
+  const profileSlug = rawReview?.profile
+
+  if (
+    !isEmail(review.email) ||
+    !isBoundedString(profileSlug, 256) || !profileSlug ||
+    !isBoundedString(review.name, 256) || !review.name ||
+    !isBoundedString(review.company, 256) ||
+    !isBoundedString(review.review, 2000) || !review.review ||
+    (review.user_agent !== undefined && !isBoundedString(review.user_agent, 512))
+  ) {
+    return new Response(null, { status: 400 })
+  }
+
+  if ((review.user_agent as string | undefined)?.includes('Acunetix')) return new Response(null, { status: 401 })
 
   try {
 
-    const partnerData = await fetch(`${DB_URL}/items/profile?filter[slug]=${review.profile}&fields=id`)
+    const partnerData = await fetch(`${DB_URL}/items/profile?filter[slug][_eq]=${encodeURIComponent(profileSlug)}&fields=id`)
       .then(res => res.ok && res.json())
       .then(res => res.data && res.data[0])
 
-    const submitReview = await fetch(`${DB_URL}/items/reviews?fields=*,profile.name`, {
+    if (!partnerData) return new Response(null, { status: 400 })
+
+    const submitReview = await fetch(`${DB_URL}/items/reviews?fields=id,uuid,name,email,profile.name`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -34,7 +54,11 @@ export default async function (req: NextRequest) {
       })
     }).then(res => res.ok && res.json()).then(res => res.data && res.data)
 
-    const sendMail = submitReview && await fetch(`${SENDRGRID_URL}/mail/send`, {
+    if (!submitReview?.uuid) return new Response(null, { status: 400 })
+
+    const token = await createVerificationToken('review', submitReview.uuid)
+
+    const sendMail = await fetch(`${SENDRGRID_URL}/mail/send`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -51,7 +75,7 @@ export default async function (req: NextRequest) {
           dynamic_template_data: {
             studioName: submitReview.profile.name,
             reviewerName: submitReview.name,
-            confirmUrl: `https://studios.decentraland.org/reviews/verify?uuid=${submitReview.uuid}`
+            confirmUrl: `https://studios.decentraland.org/reviews/verify?uuid=${submitReview.uuid}#token=${token}`
           }
         }],
         template_id: "d-8967311aea8f46a29471ae1049b2dcdc"
@@ -59,7 +83,8 @@ export default async function (req: NextRequest) {
     })
 
     if (sendMail.ok) {
-      return new Response(JSON.stringify(submitReview))
+      // Only echo what the form needs: the review uuid must reach the reviewer by email only
+      return new Response(JSON.stringify({ email: submitReview.email }))
     }
 
     return new Response(null, { status: 400 })

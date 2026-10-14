@@ -2,6 +2,7 @@ import type { NextRequest } from 'next/server'
 import Partners from '../../../clients/Partners'
 import { User } from '../../../interfaces/User'
 import { Job } from '../../../interfaces/Job'
+import { getAccessToken } from '../../../lib/security'
 
 export const config = {
     runtime: 'experimental-edge',
@@ -11,11 +12,9 @@ const DB_URL = process.env.NEXT_PUBLIC_PARTNERS_DATA_URL
 const API_TOKEN = process.env.API_ACCESS_TOKEN
 
 export default async function (req: NextRequest) {
-    const user = req.cookies.get("auth")?.value
+    const authorization = getAccessToken(req)
 
-    if (!user) return new Response(null, { status: 401 })
-
-    const authorization = JSON.parse(user).access_token
+    if (!authorization) return new Response(null, { status: 401 })
 
 
     if (req.method === 'GET') {
@@ -157,4 +156,6 @@ export default async function (req: NextRequest) {
 
         return new Response(JSON.stringify({ jobs, conversations }))
     }
+
+    return new Response(null, { status: 400 })
 }

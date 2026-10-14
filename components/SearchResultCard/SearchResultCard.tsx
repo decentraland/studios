@@ -1,12 +1,12 @@
 import React, { ReactElement } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import rehypeRaw from 'rehype-raw'
 import DOMPurify from "dompurify"
 
 import styles from './SearchResultCard.module.css'
 import MarkdownDescription from '../MarkdownDescription/MarkdownDescription'
 import { SearchResult } from '../../interfaces/SearchResult';
+import { escapeRegExp, rehypeHighlight, safeUrl } from '../utils'
 
 interface Props {
     data: SearchResult
@@ -55,7 +55,7 @@ function ResultCard({ data, query }: Props) {
                 )}
             <div className={styles.infoContainer}>
                 <div className={styles.name}>
-                    <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(title.replace(new RegExp('(' + query + ')', 'gi'), '<mark>$1</mark>')) }} />
+                    <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(title.replace(new RegExp('(' + escapeRegExp(query) + ')', 'gi'), '<mark>$1</mark>')) }} />
                     {data.profile ? <span className={styles.partner_info}>by
                         <div
                             className={styles.logoMini}
@@ -71,11 +71,11 @@ function ResultCard({ data, query }: Props) {
                 </div>
 
                 <div className={styles.description_container}>
-                    <MarkdownDescription className={`${styles.description} ${data.type === 'resource' ? styles['description--resource'] : ''}`} description={data.description.replace(new RegExp('(' + query + ')', 'gi'), '<mark>$1</mark>')} inPartnersList rehypePlugins={[rehypeRaw]} />
+                    <MarkdownDescription className={`${styles.description} ${data.type === 'resource' ? styles['description--resource'] : ''}`} description={data.description} inPartnersList rehypePlugins={[rehypeHighlight(query)]} />
                 </div>
                 {data.type === 'resource' && <div className={styles.buttons}>
-                    {data.play_link && <a className='button_primary--inverted button--small' href={data.play_link} target='_blank' rel="noreferrer">TRY IT NOW</a>}
-                    {data.github_link && <a className='button_basic button--small' href={data.github_link} target='_blank' rel="noreferrer">VIEW CODE</a>}
+                    {data.play_link && <a className='button_primary--inverted button--small' href={safeUrl(data.play_link)} target='_blank' rel="noreferrer">TRY IT NOW</a>}
+                    {data.github_link && <a className='button_basic button--small' href={safeUrl(data.github_link)} target='_blank' rel="noreferrer">VIEW CODE</a>}
                 </div>}
             </div>
         </div>)

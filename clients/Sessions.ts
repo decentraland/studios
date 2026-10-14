@@ -4,8 +4,6 @@ import useSWR, { mutate } from "swr";
 
 export interface AuthData {
     expires_at: number
-    access_token: string
-    refresh_token: string
     error: string
 }
 
@@ -35,38 +33,32 @@ export const useMessages = () => {
     return { data, isLoading, error }
 }
 
-const fetcher = async (url: string, body: object) => fetch(url, {
+const fetcher = async (url: string, body?: object) => fetch(url, {
     method: 'POST',
     headers: {
         'Content-Type': 'application/json'
     },
-    body: JSON.stringify(body)
+    body: JSON.stringify(body || {})
 })
-    .then(res => res.json())
+    .then(res => res.json().catch(() => ({})))
     .then(body => {
         if (body.data) {
-            body.data.expires_at = Date.now() + body.data.expires
-            Cookies.set("auth", JSON.stringify(body.data))
-            // Cookies.set("auth", JSON.stringify(body.data), { sameSite: 'strict', secure: true })
             return mutate(`/api/user/me`).then(() => body.data as AuthData)
-            // return body.data as AuthData;
         }
 
-        if (body.errors && body.errors[0].message === "\"otp\" is required") {
+        if (body.errors && body.errors[0]?.message === "\"otp\" is required") {
             return { error: "missing otp" } as AuthData
         }
 
-        if (body.errors && body.errors[0].message === "\"otp\" is invalid") {
+        if (body.errors && body.errors[0]?.message === "\"otp\" is invalid") {
             return { error: "The one-time password provided is invalid, please try again." } as AuthData
         }
 
         return { error: "We couldn't find an account with that email and password. Check your credentials and try again." } as AuthData
     })
 
-const refreshLogin = async (user: AuthData) => {
-    return fetcher('/api/user/refresh', {
-        refresh_token: user.refresh_token
-    })
+const refreshLogin = async () => {
+    return fetcher('/api/user/refresh')
 }
 
 export const login = async (email: string, password: string, otp?: string) => {
@@ -78,22 +70,22 @@ export const login = async (email: string, password: string, otp?: string) => {
 }
 
 export const logout = async () => {
-    await fetch('/api/user/logout')
-    Cookies.remove("auth")
+    await fetch('/api/user/logout', { method: 'POST' })
+    Cookies.remove("auth_expires")
     mutate('/api/user/me', null)
     mutate('/api/conversations/get', null)
 }
 
+// The session tokens live in an HttpOnly cookie; only their expiration time is readable here.
 export const getLoggedState = async () => {
-    const auth: AuthData = JSON.parse(Cookies.get("auth") || '{}')
-    if (auth.access_token) {
-        if (Date.now() > auth.expires_at) {
-            const newUser = await refreshLogin(auth)
+    const expiresAt = Number(Cookies.get("auth_expires"))
+    if (expiresAt) {
+        if (Date.now() > expiresAt) {
+            const newUser = await refreshLogin()
             if (!newUser.error) {
                 return true
             }
         } else {
-            // console.log('token not expired', Date.now())
             return true
         }
     }

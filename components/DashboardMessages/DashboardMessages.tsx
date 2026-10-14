@@ -175,7 +175,7 @@ export default function MessagesDashboard() {
             } else {
                 setCurrentConversationId(conversation.id)
                 setHighlightedJob(jobs.find(job => job.id === conversation.related_job))
-                await fetch(`/api/conversations/read?conversation_id=${conversation.id}&message=${lastMessage?.id}`)
+                await fetch(`/api/conversations/read?conversation_id=${conversation.id}&message=${lastMessage?.id}`, { method: 'POST' })
                 mutate('/api/conversations/get')
             }
         }

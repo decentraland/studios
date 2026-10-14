@@ -1,6 +1,7 @@
 import type { NextRequest } from 'next/server'
 import { User } from '../../../interfaces/User'
 import { isUUID } from '../../../components/utils'
+import { getAccessToken, isSameOrigin } from '../../../lib/security'
 
 export const config = {
     runtime: 'experimental-edge',
@@ -10,27 +11,45 @@ const DB_URL = process.env.NEXT_PUBLIC_PARTNERS_DATA_URL
 const API_TOKEN = process.env.API_ACCESS_TOKEN
 
 
+const isParticipant = async (conversationId: string, user: User) => {
+    const conversation = await fetch(`${DB_URL}/items/conversations/${conversationId}?fields=user_created,related_job.email,related_job.managers`, {
+        headers: {
+            'Authorization': `Bearer ${API_TOKEN}`
+        }
+    })
+        .then(res => res.ok && res.json())
+        .then(body => body && body.data)
+
+    if (!conversation) return false
+    if (conversation.user_created === user.id || conversation.related_job?.email === user.email) return true
+
+    const managers = JSON.parse(conversation.related_job?.managers || '[]') as User[]
+    return managers.some(manager => manager.id === user.id)
+}
+
 export default async function (req: NextRequest) {
-    const user = req.cookies.get("auth")?.value || ''
+    const authorization = getAccessToken(req)
 
-    const authorization = JSON.parse(user).access_token
+    if (!authorization) return new Response(null, { status: 401 })
 
-    if (req.method === 'GET') {
+    if (req.method === 'POST' && isSameOrigin(req)) {
 
         const conversation_id = req.nextUrl.searchParams.get('conversation_id')
         const messageId = req.nextUrl.searchParams.get('message')
 
-        if (!isUUID(conversation_id || '')) {
+        if (!isUUID(conversation_id || '') || !messageId || !/^[\w-]{1,64}$/.test(messageId)) {
             return new Response(null, { status: 400 })
         }
 
-        const currentUser = await fetch(`${DB_URL}/users/me?fields=id`, {
+        const currentUser = await fetch(`${DB_URL}/users/me?fields=id,email`, {
             headers: {
                 'Authorization': `Bearer ${authorization}`
             }
         })
             .then(res => res.ok && res.json())
-            .then(body => body.data) as User
+            .then(body => body && body.data) as User
+
+        if (!currentUser || !(await isParticipant(conversation_id as string, currentUser))) return new Response(null, { status: 403 })
 
         const updateItem = await fetch(`${DB_URL}/items/conversations_directus_users`, {
             method: 'PATCH',
@@ -71,4 +90,5 @@ export default async function (req: NextRequest) {
         return new Response()
     }
 
+    return new Response(null, { status: 400 })
 }

@@ -1,5 +1,6 @@
 import type { NextRequest } from 'next/server'
 import { isUUID } from '../../../components/utils'
+import { getAccessToken } from '../../../lib/security'
 
 export const config = {
     runtime: 'experimental-edge',
@@ -9,9 +10,7 @@ const DB_URL = process.env.NEXT_PUBLIC_PARTNERS_DATA_URL
 const API_TOKEN = process.env.API_ACCESS_TOKEN
 
 export default async function (req: NextRequest) {
-    const user = req.cookies.get("auth")?.value || ''
-
-    const authorization = JSON.parse(user).access_token
+    const authorization = getAccessToken(req)
     const jobId = req.nextUrl.searchParams.get('id')
     // const client = req.nextUrl.searchParams.get('client')
 

@@ -23,16 +23,17 @@ function JobVerify() {
   useEffect(() => {
     if (id) {
       setLoading(true)
+      const token = new URLSearchParams(window.location.hash.slice(1)).get('token')
       fetch(`/api/jobs/verify`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ id: id })
+        body: JSON.stringify({ id: id, token })
       })
         .then((res) => {
           setVerifyOk(res.ok)
-          return res.json()
+          return res.ok ? res.json() : {} as Job
         }).then((data) => {
           setJobData(data)
           setLoading(false)

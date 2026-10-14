@@ -1,6 +1,7 @@
 import replyParser from 'node-email-reply-parser'
 
 import Files from './Files'
+import { isUUID } from '../components/utils'
 
 export const config = {
     runtime: 'experimental-edge',
@@ -21,6 +22,8 @@ const DB_URL = process.env.NEXT_PUBLIC_PARTNERS_DATA_URL
 const SENDRGRID_URL = process.env.NEXT_PUBLIC_API_SENDGRID
 const SENDGRID_ACCESS_TOKEN = process.env.SENDGRID_ACCESS_TOKEN
 
+const MESSAGE_MAX_LENGTH = 100000
+
 const FILES_FOLDER = "e6038421-dec4-4977-a23d-b31865053ecb"
 
 export default class Messages {
@@ -32,11 +35,20 @@ export default class Messages {
         for (const [k, v] of formData.entries()) {
             parsedData[k] = v
         }
+        if (typeof parsedData.text !== 'string' || parsedData.text.length > MESSAGE_MAX_LENGTH) return new Response(null, { status: 400 })
+
         const lastMessage = replyParser(parsedData.text).getVisibleText()
 
-        const conversationEmail = JSON.parse(parsedData.envelope).to[0]
-        const conversationId = conversationEmail.split('@')[0]
-        const fromEmail = parsedData.from.match(/<(.*)>/)[1]
+        let conversationEmail: string
+        try {
+            conversationEmail = JSON.parse(parsedData.envelope).to[0]
+        } catch {
+            return new Response(null, { status: 400 })
+        }
+        const conversationId = typeof conversationEmail === 'string' && conversationEmail.split('@')[0]
+        const fromEmail = typeof parsedData.from === 'string' && parsedData.from.match(/<(.*)>/)?.[1]
+
+        if (!conversationId || !isUUID(conversationId) || !fromEmail) return new Response(null, { status: 400 })
 
         const conversation = await fetch(`${DB_URL}/items/conversations/${conversationId}?fields=*,user_created.email,user_created.id,related_job.email,related_job.managers`, {
             headers: {
@@ -87,7 +99,9 @@ export default class Messages {
             .then(res => res.ok && res.json())
             .then(res => res.data.length && res.data[0])
 
-        if (author.role.name === 'Studio'){
+        if (!author) return new Response(null, { status: 400 })
+
+        if (author.role.name === 'Studio' && studioData){
             author.first_name = studioData.name
             author.last_name = ""
         }
@@ -158,7 +172,7 @@ export default class Messages {
             })
         }).then(res => res)))
         
-        return new Response(JSON.stringify(saveMessage))
+        return new Response(JSON.stringify(saveMessage), { status: saveMessage ? 200 : 400 })
     }
     
 }

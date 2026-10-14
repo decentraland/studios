@@ -1,6 +1,7 @@
 import type { NextRequest } from 'next/server'
 import { PartnerReview } from '../../../interfaces/PartnerReview'
 import { isUUID } from '../../../components/utils'
+import { isValidVerificationToken, readJson } from '../../../lib/security'
 
 export const config = {
   runtime: 'experimental-edge',
@@ -14,11 +15,13 @@ const SENDGRID_ACCESS_TOKEN = process.env.SENDGRID_ACCESS_TOKEN
 
 export default async function (req: NextRequest) {
 
-  const { uuid  } = await req.json()
+  if (req.method !== 'POST') return new Response(null, { status: 400 })
+
+  const { uuid, token } = await readJson(req)
 
   try {
 
-    if (!isUUID(uuid)) {
+    if (typeof uuid !== 'string' || !isUUID(uuid) || !(await isValidVerificationToken('review', uuid, token))) {
       return new Response(null, { status: 400 })
     }
 
@@ -29,6 +32,8 @@ export default async function (req: NextRequest) {
       'Authorization': `Bearer ${API_TOKEN}`
       },
       }).then(res => res.ok && res.json()).then(res => res.data && res.data[0]) as PartnerReview
+
+    if (!review) return new Response(null, { status: 400 })
 
     if (review.verified_mail){
       return new Response(JSON.stringify(review))
@@ -74,6 +79,8 @@ export default async function (req: NextRequest) {
   if (sendMail.ok){
       return new Response(JSON.stringify(review))
     }
+
+    return new Response(null, { status: 400 })
 
   } catch (error){
     console.log('API Review Verify error: ', error )

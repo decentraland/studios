@@ -1,5 +1,6 @@
 import type { NextRequest } from 'next/server'
 import { budgetToRanges, isUUID } from '../../../components/utils'
+import { isValidVerificationToken, pick, readJson } from '../../../lib/security'
 
 export const config = {
   runtime: 'experimental-edge',
@@ -14,11 +15,15 @@ const SENDGRID_ACCESS_TOKEN = process.env.SENDGRID_ACCESS_TOKEN
 const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN
 const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID
 
+const PUBLIC_JOB_FIELDS = ['id', 'title', 'author_name', 'company', 'short_description', 'long_description', 'budget', 'deadline_date', 'brief_file', 'verified_email'] as const
+
 export default async function (req: NextRequest) {
 
-  const { id } = await req.json()
+  if (req.method !== 'POST') return new Response(null, { status: 400 })
 
-  if (!isUUID(id)) {
+  const { id, token } = await readJson(req)
+
+  if (typeof id !== 'string' || !isUUID(id) || !(await isValidVerificationToken('job', id, token))) {
     return new Response(null, { status: 400 })
   }
 
@@ -29,8 +34,10 @@ export default async function (req: NextRequest) {
     }
   }).then(res => res.ok && res.json()).then(res => res.data && res.data)
 
+  if (!currentJob) return new Response(null, { status: 400 })
+
   if (currentJob.verified_email) {
-    return new Response(JSON.stringify(currentJob))
+    return new Response(JSON.stringify(pick(currentJob, PUBLIC_JOB_FIELDS)))
   }
 
   const verifyJob = await fetch(`${DB_URL}/items/jobs/${id}?fields=*,brief_file.id,brief_file.filename_download`, {
@@ -44,7 +51,9 @@ export default async function (req: NextRequest) {
     })
   }).then(res => res.ok && res.json()).then(res => res.data && res.data)
 
-  const user = await fetch(`${DB_URL}/users?filter[email]=${encodeURIComponent(verifyJob.email)}`, {
+  if (!verifyJob) return new Response(null, { status: 400 })
+
+  const user = await fetch(`${DB_URL}/users?filter[email][_eq]=${encodeURIComponent(verifyJob.email)}&fields=id,status`, {
     method: "GET",
     headers: {
       'Authorization': `Bearer ${API_TOKEN}`
@@ -53,7 +62,8 @@ export default async function (req: NextRequest) {
     .then(res => res.ok && res.json())
     .then(body => body.data[0])
 
-  const verifyUser = user && await fetch(`${DB_URL}/users/${user.id}`, {
+  // Only pending sign ups can be activated: suspended or archived accounts must stay that way
+  const verifyUser = user?.status === 'draft' ? await fetch(`${DB_URL}/users/${user.id}`, {
     method: 'PATCH',
     headers: {
       'Content-Type': 'application/json',
@@ -62,7 +72,7 @@ export default async function (req: NextRequest) {
     body: JSON.stringify({
       status: "active"
     })
-  }).then(res => res.ok && res.json()).then(res => res.data && res.data)
+  }).then(res => res.ok && res.json()).then(res => res.data && res.data) : user?.status === 'active' && user
 
   verifyUser && await fetch(`${SENDRGRID_URL}/mail/send`, {
     method: 'POST',
@@ -107,5 +117,5 @@ export default async function (req: NextRequest) {
     })
   })
 
-  return new Response(JSON.stringify(verifyJob))
+  return new Response(JSON.stringify(pick(verifyJob, PUBLIC_JOB_FIELDS)))
 }

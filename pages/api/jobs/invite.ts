@@ -1,10 +1,13 @@
 import type { NextRequest } from 'next/server'
+import { getAccessToken, isEmail, isSameOrigin, readJson } from '../../../lib/security'
 import { budgetToRanges, isUUID } from '../../../components/utils'
 
 export const config = {
   runtime: 'experimental-edge',
 }
 
+
+const MAX_PENDING_INVITES = 10
 
 export default async function (req: NextRequest) {
 
@@ -14,14 +17,13 @@ export default async function (req: NextRequest) {
   const SENDRGRID_URL = process.env.NEXT_PUBLIC_API_SENDGRID
   const SENDGRID_ACCESS_TOKEN = process.env.SENDGRID_ACCESS_TOKEN
 
-  const user = req.cookies.get("auth")?.value
-  if (!user) return new Response(null, { status: 401 })
+  const authorization = getAccessToken(req)
+  if (!authorization) return new Response(null, { status: 401 })
+  if (req.method !== 'POST' || !isSameOrigin(req)) return new Response(null, { status: 400 })
 
-  const authorization = JSON.parse(user).access_token
+  const { email, job_id } = await readJson(req)
 
-  const { email, job_id } = await req.json()
-
-  if (!isUUID(job_id)) {
+  if (!isUUID(job_id) || !isEmail(email)) {
     return new Response(null, { status: 400 })
   }
 
@@ -63,6 +65,11 @@ export default async function (req: NextRequest) {
       return new Response(null, { status: 403 })
     }
 
+    const managersInvites: string[] = JSON.parse(jobData.managers_invites || '[]')
+
+    if (managersInvites.includes(email)) return new Response(null, { status: 400 })
+    if (managersInvites.length >= MAX_PENDING_INVITES) return new Response(null, { status: 429 })
+
     const jobUpdate = jobData && await fetch(`${DB_URL}/items/jobs/${job_id}`, {
       method: 'PATCH',
       headers: {
@@ -70,7 +77,7 @@ export default async function (req: NextRequest) {
         'Authorization': `Bearer ${API_TOKEN}`
       },
       body: JSON.stringify({
-        managers_invites: JSON.parse(jobData.managers_invites || '[]').concat(email)
+        managers_invites: managersInvites.concat(email)
       })
     }).then(res => res.ok && res.json()).then(body => body.data)
 

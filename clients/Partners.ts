@@ -32,8 +32,14 @@ export default class Partners {
     return partners
   }
 
-  static async getPartnerData(partnerData: any, fields?: string) {
-    const query = Object.entries(partnerData).map(entry => `filter[${entry[0]}]=${entry[1]}`).join('&')
+  static async getPartnerData(partnerData: { slug?: unknown, user?: unknown }, fields?: string) {
+    const filters = (['slug', 'user'] as const)
+      .filter(key => typeof partnerData?.[key] === 'string' && partnerData[key])
+      .map(key => `filter[${key}][_eq]=${encodeURIComponent(partnerData[key] as string)}`)
+
+    if (!filters.length) return undefined
+
+    const query = filters.join('&')
     
     const basicFields = 'services,projects,reviews,email,name,profile_header,logo,website,marketplace,discord,opensea,twitter,instagram,linkedin,youtube,description,region,country,team_size,languages,payment_methods,slug' 
     const extraFields  = 'reviews.name,reviews.company,reviews.review,projects.image_1,projects.id,projects.title,projects.profile.name,projects.profile.slug,projects.profile.logo,projects.date_created'

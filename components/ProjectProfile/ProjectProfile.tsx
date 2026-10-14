@@ -4,7 +4,7 @@ import { FormattedMessage } from 'react-intl'
 import styles from './ProjectProfile.module.css'
 import { PartnerProject } from '../../interfaces/PartnerProject'
 import BackButton from '../BackButton/BackButton'
-import { trackLink } from '../utils'
+import { safeUrl, trackLink } from '../utils'
 import MarkdownDescription from '../MarkdownDescription/MarkdownDescription'
 import ServiceTag from '../ServiceTag/ServiceTag'
 import Link from 'next/link'
@@ -36,7 +36,7 @@ function ProjectProfile({ project }: Props) {
 		  .catch((err) => console.log(err))
 	}, [])
 
-  const PROJECT_WEBSITE = projectData.link || ''
+  const PROJECT_WEBSITE = safeUrl(projectData.link)
   const PARTNER_PROFILE_URL = `/profile/${projectData.profile?.slug}`
 
   const images = [ projectData.image_1, projectData.image_2, projectData.image_3, projectData.image_4, projectData.image_5 ]
@@ -103,7 +103,7 @@ function ProjectProfile({ project }: Props) {
                     href={PROJECT_WEBSITE}
                     target="_blank"
                     rel="noreferrer"
-                    onClick={() => trackLink('Open External Link', 'Project Link', PROJECT_WEBSITE)}
+                    onClick={() => trackLink('Open External Link', 'Project Link', PROJECT_WEBSITE || '')}
                   >
                     <FormattedMessage id={'external_link'} />
                     &nbsp; &gt;

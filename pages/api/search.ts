@@ -2,6 +2,7 @@ import type { NextRequest } from 'next/server'
 import { PartnerProject } from '../../interfaces/PartnerProject'
 import { Resource } from '../../interfaces/Resource'
 import { VerifiedPartner } from '../../interfaces/VerifiedPartner'
+import { readJson } from '../../lib/security'
 
 export const config = {
   runtime: 'experimental-edge',
@@ -23,8 +24,13 @@ const sliceAroundQuery = (query: string, description: string) => {
     return `${slicedStart ? '...' : ''}${(description || '').substring(sliceRange[0], sliceRange[1]).trim()}...`
 }
 
+const QUERY_MAX_LENGTH = 100
+const QUERY_MAX_TOKENS = 8
+
+const escapeRegExp = (text: string) => text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+
 const getSearchScore = (text: string, query: string) => {
-  return (text || '').match(new RegExp(query, 'gi'))?.length || 0
+  return (text || '').match(new RegExp(escapeRegExp(query), 'gi'))?.length || 0
 }
 
 const sortResult = (item1: any, item2: any, query: string) => {
@@ -35,8 +41,16 @@ const sortResult = (item1: any, item2: any, query: string) => {
 }
 
 export default async function (req: NextRequest) {
-    const body = await req.json()
-    const { query } = body;
+    if (req.method !== 'POST') return new Response(null, { status: 400 })
+
+    const { query: rawQuery } = await readJson(req)
+
+    if (typeof rawQuery !== 'string') return new Response(null, { status: 400 })
+
+    const query = rawQuery.trim().slice(0, QUERY_MAX_LENGTH)
+    const tokens = query.split(' ').filter(Boolean).slice(0, QUERY_MAX_TOKENS)
+
+    if (!tokens.length) return new Response(JSON.stringify({ results: [] }))
 
     await fetch(`${DB_URL}/items/search_queries`, {
       method: 'POST',
@@ -51,7 +65,7 @@ export default async function (req: NextRequest) {
       })
     })
 
-    let filterQuery = query.split(' ').map((token: string) => ({
+    let filterQuery = tokens.map((token: string) => ({
       "_or": [
         { title: {
           "_icontains": token
@@ -61,7 +75,7 @@ export default async function (req: NextRequest) {
         }}
       ]}))
 
-      let studiosQuery = query.split(' ').map((token: string) => ({
+      let studiosQuery = tokens.map((token: string) => ({
       "_or": [
         { name: {
           "_icontains": token

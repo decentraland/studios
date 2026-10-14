@@ -114,7 +114,7 @@ export const logout = async () => {
 // The session tokens live in an HttpOnly cookie; only their expiration time is readable here.
 export const getLoggedState = async () => {
     const expiresAt = Number(Cookies.get("auth_expires"))
-    // The current `auth` cookie is HttpOnly, so a readable one is a legacy session with exposed tokens
+    // The session cookie (`__Host-auth`) is HttpOnly, so a readable `auth` one is a legacy session with exposed tokens
     if (!expiresAt && Cookies.get("auth")) {
         Cookies.remove("auth")
         return false

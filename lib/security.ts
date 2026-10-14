@@ -67,14 +67,14 @@ export async function discardResponse(res: Response) {
 }
 
 export const AUTH_COOKIE = '__Host-auth'
+// Only expired by the server: a sibling subdomain can plant an `auth` cookie for the parent domain, so it is never read
 export const LEGACY_AUTH_COOKIE = 'auth'
 
 /**
- * Returns the session stored in the `__Host-auth` cookie (or the legacy `auth` one),
- * or undefined when it is missing or malformed.
+ * Returns the session stored in the `__Host-auth` cookie, or undefined when it is missing or malformed.
  */
 export function getSession(req: NextRequest): { access_token?: string, refresh_token?: string } | undefined {
-  const value = req.cookies.get(AUTH_COOKIE)?.value || req.cookies.get(LEGACY_AUTH_COOKIE)?.value
+  const value = req.cookies.get(AUTH_COOKIE)?.value
   if (!value) return undefined
   try {
     const session = JSON.parse(value)

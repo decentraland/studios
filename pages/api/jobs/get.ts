@@ -56,7 +56,7 @@ export default async function (req: NextRequest) {
             .then(readJsonResponse)
             .then(body => body?.data?.[0])
 
-        if (conversation) {
+        if (conversation?.messages?.length) {
             jobData.messages = conversation.messages
             jobData.messages[0].from_profile = studioData
         }

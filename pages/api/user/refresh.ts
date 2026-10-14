@@ -23,10 +23,12 @@ export default async function (req: NextRequest) {
     body: JSON.stringify({ refresh_token }),
   })
 
-  // A rejected refresh token can't recover, so the cookies are cleared to stop the client from retrying
+  // A rejected refresh token can't recover, so the cookies are cleared to stop the client from retrying.
+  // Server errors keep the session so a Directus outage doesn't log everyone out.
   if (!refreshResponse.ok) {
     await refreshResponse.body?.cancel()
-    return new Response(null, { status: 401, headers: clearSessionHeaders() })
+    const rejected = refreshResponse.status >= 400 && refreshResponse.status < 500
+    return new Response(null, { status: rejected ? 401 : 503, headers: rejected ? clearSessionHeaders() : undefined })
   }
 
   return sessionResponse(refreshResponse)

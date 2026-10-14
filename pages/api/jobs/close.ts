@@ -19,7 +19,7 @@ export default async function (req: NextRequest) {
 
   const { closed_poll, job_id } = await readJson(req)
 
-  const isValidPoll = closed_poll === undefined || closed_poll === null || isBoundedString(closed_poll, 2000)
+  const isValidPoll = closed_poll === undefined || closed_poll === null || isBoundedString(closed_poll, 10000)
 
   if (!isUUID(job_id) || !isValidPoll) {
     return new Response(null, { status: 400 })

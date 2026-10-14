@@ -98,6 +98,10 @@ function toBase64Url(buffer: ArrayBuffer) {
   return btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '')
 }
 
+export function isVerificationTokenConfigured() {
+  return !!VERIFICATION_TOKEN_SECRET
+}
+
 async function hmac(message: string) {
   if (!VERIFICATION_TOKEN_SECRET) throw new Error('VERIFICATION_TOKEN_SECRET is not configured')
   const encoder = new TextEncoder()

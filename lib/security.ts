@@ -34,6 +34,22 @@ export async function readJson(req: NextRequest) {
 }
 
 /**
+ * Returns the parsed body of an OK response, or undefined otherwise. The body is always consumed
+ * so unread responses don't keep the connection busy on the edge runtime.
+ */
+export async function readJsonResponse(res: Response) {
+  if (!res.ok) {
+    await res.body?.cancel()
+    return undefined
+  }
+  try {
+    return await res.json()
+  } catch {
+    return undefined
+  }
+}
+
+/**
  * Returns the session stored in the `auth` cookie, or undefined when it is missing or malformed.
  */
 export function getSession(req: NextRequest): { access_token?: string, refresh_token?: string } | undefined {
@@ -57,7 +73,7 @@ export function getAccessToken(req: NextRequest) {
  * points to a different host than the one serving the request.
  */
 export function isSameOrigin(req: NextRequest) {
-  const host = req.headers.get('x-forwarded-host') || req.headers.get('host')
+  const host = req.headers.get('host')
   const source = req.headers.get('origin') || req.headers.get('referer')
   if (!source) return req.method === 'GET' || req.method === 'HEAD'
   try {

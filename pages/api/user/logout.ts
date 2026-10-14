@@ -14,14 +14,20 @@ export default async function (req: NextRequest) {
   const session = getSession(req)
 
   if (session?.access_token && session.refresh_token) {
-    await fetch(`${DB_URL}/auth/logout`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${session.access_token}`
-      },
-      body: JSON.stringify({ refresh_token: session.refresh_token }),
-    })
+    // The local session is cleared even when Directus can't revoke the refresh token
+    try {
+      const res = await fetch(`${DB_URL}/auth/logout`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${session.access_token}`
+        },
+        body: JSON.stringify({ refresh_token: session.refresh_token }),
+      })
+      await res.body?.cancel()
+    } catch (error) {
+      console.log('API Logout error: ', error)
+    }
   }
 
   return new Response(null, { status: 204, headers: clearSessionHeaders() })

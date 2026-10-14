@@ -36,12 +36,14 @@ export default async function (req: NextRequest) {
   const landing = await Landings.getLandingData(lead.slug)
   if (!landing) return new Response(null, { status: 400 })
 
-  const customFields: Record<string, unknown> = { ...(landing.custom_fields || {}) }
+  const clientFields: Record<string, unknown> = {}
   if (body.custom_fields && typeof body.custom_fields === 'object') {
     for (const [key, value] of Object.entries(body.custom_fields)) {
-      if (/^[\w-]{1,64}$/.test(key) && (isBoundedString(value, 512) || Number.isFinite(value))) customFields[key] = value
+      if (/^[\w-]{1,64}$/.test(key) && (isBoundedString(value, 512) || Number.isFinite(value))) clientFields[key] = value
     }
   }
+  // The landing's own fields can't be overridden by the client
+  const customFields: Record<string, unknown> = { ...clientFields, ...(landing.custom_fields || {}) }
 
   try {
     await fetch(`${DB_URL}/items/leads`, {

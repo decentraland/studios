@@ -1,6 +1,6 @@
 import type { NextRequest } from 'next/server'
 import { isUUID } from '../../../components/utils'
-import { isValidVerificationToken, readJson } from '../../../lib/security'
+import { isValidVerificationToken, readJson, readJsonResponse } from '../../../lib/security'
 
 export const config = {
   runtime: 'experimental-edge',
@@ -22,7 +22,7 @@ export default async function (req: NextRequest) {
     headers: {
       'Authorization': `Bearer ${API_TOKEN}`
     }
-  }).then(res => res.ok && res.json()).then(res => res && res.data)
+  }).then(readJsonResponse).then(res => res && res.data)
 
   if (user?.status === 'active') return new Response(null, { status: 204 })
 
@@ -39,6 +39,7 @@ export default async function (req: NextRequest) {
         status: "active"
       })
   })
+  await userData.body?.cancel()
 
   return new Response(null, {status: userData.ok ? 204 : 400})
 }

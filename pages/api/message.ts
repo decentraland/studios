@@ -1,6 +1,6 @@
 import type { NextRequest } from 'next/server'
 import Messages from '../../clients/Messages'
-import { getAccessToken, isSameOrigin, timingSafeEqual } from '../../lib/security'
+import { getAccessToken, isSameOrigin, readJsonResponse, timingSafeEqual } from '../../lib/security'
 
 export const config = {
     runtime: 'experimental-edge',
@@ -20,18 +20,31 @@ const DB_URL = process.env.NEXT_PUBLIC_PARTNERS_DATA_URL
 
 const getDomain = (address: string) => address.split('@').pop()?.toLowerCase()
 
+const getFromDomain = (formData: FormData) => getDomain(String(formData.get('from') || '').match(/<(.*)>/)?.[1] || '')
+
+/**
+ * Relaxed DKIM alignment, as in DMARC: a passing signature counts when its domain is the From domain
+ * or a parent of it. SendGrid reports results like `{@example.com : pass, @other.com : fail}`.
+ */
+const isDkimAligned = (dkim: string, fromDomain: string) => {
+    for (const [, domain, result] of Array.from(dkim.toLowerCase().matchAll(/@([a-z0-9.-]+)\s*:\s*([a-z]+)/g))) {
+        const labels = domain.split('.')
+        if (result !== 'pass' || labels.length < 2 || labels.some(label => !label)) continue
+        if (fromDomain === domain || fromDomain.endsWith(`.${domain}`)) return true
+    }
+    return false
+}
+
 /**
  * SendGrid's inbound parse reports SPF and DKIM results but forwards every email regardless.
- * The From header is only trusted when a DKIM signature for its domain passed, or when SPF passed
+ * The From header is only trusted when a DKIM signature aligned with its domain passed, or when SPF passed
  * for an envelope sender on that same domain.
  */
 const isAuthenticatedEmail = (formData: FormData) => {
-    const from = String(formData.get('from') || '').match(/<(.*)>/)?.[1] || ''
-    const fromDomain = getDomain(from)
+    const fromDomain = getFromDomain(formData)
     if (!fromDomain) return false
 
-    const dkim = String(formData.get('dkim') || '').toLowerCase()
-    const dkimPass = dkim.includes(`@${fromDomain} : pass`)
+    const dkimPass = isDkimAligned(String(formData.get('dkim') || ''), fromDomain)
 
     let envelopeFrom = ''
     try {
@@ -57,7 +70,7 @@ export default async function (req: NextRequest) {
 
         // Always acknowledge the webhook, otherwise SendGrid keeps retrying emails that were rejected on purpose
         if (!isAuthenticatedEmail(formData)) {
-            console.log('API Message: dropped inbound email that failed SPF/DKIM checks')
+            console.log(`API Message: dropped inbound email from ${getFromDomain(formData)} that failed SPF/DKIM checks`)
             return new Response()
         }
 
@@ -73,7 +86,7 @@ export default async function (req: NextRequest) {
         headers: {
             'Authorization': `Bearer ${userAuthorization}`
         }
-    }).then(res => res.ok && res.json()).then(res => res.data && res.data)
+    }).then(readJsonResponse).then(res => res?.data)
 
     if (!currentUser || currentUser.status !== 'active') return new Response(null, { status: 401 })
 

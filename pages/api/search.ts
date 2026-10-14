@@ -3,6 +3,7 @@ import { PartnerProject } from '../../interfaces/PartnerProject'
 import { Resource } from '../../interfaces/Resource'
 import { VerifiedPartner } from '../../interfaces/VerifiedPartner'
 import { readJson } from '../../lib/security'
+import { escapeRegExp } from '../../components/utils'
 
 export const config = {
   runtime: 'experimental-edge',
@@ -26,8 +27,6 @@ const sliceAroundQuery = (query: string, description: string) => {
 
 const QUERY_MAX_LENGTH = 100
 const QUERY_MAX_TOKENS = 8
-
-const escapeRegExp = (text: string) => text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 
 const getSearchScore = (text: string, query: string) => {
   return (text || '').match(new RegExp(escapeRegExp(query), 'gi'))?.length || 0

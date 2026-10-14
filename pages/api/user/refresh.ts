@@ -23,5 +23,11 @@ export default async function (req: NextRequest) {
     body: JSON.stringify({ refresh_token }),
   })
 
+  // A rejected refresh token can't recover, so the cookies are cleared to stop the client from retrying
+  if (!refreshResponse.ok) {
+    await refreshResponse.body?.cancel()
+    return new Response(null, { status: 401, headers: clearSessionHeaders() })
+  }
+
   return sessionResponse(refreshResponse)
 }

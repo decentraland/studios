@@ -1,7 +1,7 @@
 import type { NextRequest } from 'next/server'
 import { User } from '../../../interfaces/User'
 import { isUUID } from '../../../components/utils'
-import { getAccessToken, isSameOrigin } from '../../../lib/security'
+import { getAccessToken, isSameOrigin, readJsonResponse } from '../../../lib/security'
 
 export const config = {
     runtime: 'experimental-edge',
@@ -17,7 +17,7 @@ const isParticipant = async (conversationId: string, user: User) => {
             'Authorization': `Bearer ${API_TOKEN}`
         }
     })
-        .then(res => res.ok && res.json())
+        .then(readJsonResponse)
         .then(body => body && body.data)
 
     if (!conversation) return false
@@ -46,7 +46,7 @@ export default async function (req: NextRequest) {
                 'Authorization': `Bearer ${authorization}`
             }
         })
-            .then(res => res.ok && res.json())
+            .then(readJsonResponse)
             .then(body => body && body.data) as User
 
         if (!currentUser || !(await isParticipant(conversation_id as string, currentUser))) return new Response(null, { status: 403 })
@@ -71,8 +71,8 @@ export default async function (req: NextRequest) {
                 }
             })
         })
-            .then(res => res.json())
-            .then(body => body.data)
+            .then(readJsonResponse)
+            .then(body => body?.data)
 
         !updateItem.length && await fetch(`${DB_URL}/items/conversations_directus_users`, {
             method: 'POST',
@@ -85,7 +85,7 @@ export default async function (req: NextRequest) {
                 conversations_id: conversation_id,
                 directus_users_id: currentUser.id
             })
-        })
+        }).then(res => res.body?.cancel())
 
         return new Response()
     }

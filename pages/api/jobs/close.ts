@@ -1,5 +1,5 @@
 import type { NextRequest } from 'next/server'
-import { getAccessToken, isSameOrigin, readJson } from '../../../lib/security'
+import { getAccessToken, isBoundedString, isSameOrigin, readJson } from '../../../lib/security'
 import { budgetToRanges, isUUID } from '../../../components/utils'
 import { User } from '../../../interfaces/User'
 
@@ -19,7 +19,9 @@ export default async function (req: NextRequest) {
 
   const { closed_poll, job_id } = await readJson(req)
 
-  if (!isUUID(job_id)) {
+  const isValidPoll = closed_poll === undefined || closed_poll === null || isBoundedString(closed_poll, 2000)
+
+  if (!isUUID(job_id) || !isValidPoll) {
     return new Response(null, { status: 400 })
   }
 

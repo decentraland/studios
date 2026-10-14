@@ -27,6 +27,11 @@ export default async function (req: NextRequest) {
     if (userData[field] !== undefined && !isBoundedString(userData[field], 512)) return new Response(null, { status: 400 })
   }
 
+  // The id is generated here so the token is signed before the user exists: a misconfigured secret
+  // then fails the request without leaving a draft user behind
+  const id = crypto.randomUUID()
+  const token = reqBody.email_verification ? await createVerificationToken('user', id) : undefined
+
   let createUser = await fetch(`${DB_URL}/users`, {
     method: 'POST',
     headers: {
@@ -35,6 +40,7 @@ export default async function (req: NextRequest) {
     },
     body: JSON.stringify({
       ...userData,
+      id,
       status: 'draft',
       role: CLIENT_ROLE,
       geo: req.geo
@@ -42,7 +48,7 @@ export default async function (req: NextRequest) {
   })
     .then(res => res.json())
 
-  if (createUser.errors || !createUser.data?.id) return new Response(null, { status: 400 })
+  if (createUser.errors || createUser.data?.id !== id) return new Response(null, { status: 400 })
 
   const createdUser = {
     first_name: createUser.data.first_name,
@@ -51,9 +57,7 @@ export default async function (req: NextRequest) {
     email: createUser.data.email
   }
 
-  if (!reqBody.email_verification) return new Response(JSON.stringify(createdUser))
-
-  const token = await createVerificationToken('user', createUser.data.id)
+  if (!token) return new Response(JSON.stringify(createdUser))
 
   const sendMailVerifications = await fetch(`${SENDRGRID_URL}/mail/send`, {
     method: 'POST',
@@ -71,12 +75,13 @@ export default async function (req: NextRequest) {
         ],
         dynamic_template_data: {
           ...createdUser,
-          verify_url: `https://studios.decentraland.org/user/verify?id=${createUser.data.id}#token=${token}`,
+          verify_url: `https://studios.decentraland.org/user/verify?id=${id}#token=${token}`,
         }
       }],
       template_id: "d-6e4af1c34f6d432bb18b09bf778cae3e"
     })
   })
+  await sendMailVerifications.body?.cancel()
 
   if (sendMailVerifications.ok) return new Response(JSON.stringify(createdUser))
 

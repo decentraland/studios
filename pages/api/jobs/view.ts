@@ -1,6 +1,6 @@
 import type { NextRequest } from 'next/server'
 import { isUUID } from '../../../components/utils'
-import { readJsonResponse } from '../../../lib/security'
+import { readJson, readJsonResponse } from '../../../lib/security'
 
 export const config = {
   runtime: 'experimental-edge',
@@ -11,9 +11,9 @@ const API_TOKEN = process.env.API_ACCESS_TOKEN
 
 export default async function (req: NextRequest) {
 
-  const { id } = await req.json()
+  const { id } = await readJson(req)
 
-  if (!isUUID(id)) {
+  if (typeof id !== 'string' || !isUUID(id)) {
     return new Response(null, { status: 400 })
   }
 

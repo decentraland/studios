@@ -103,33 +103,39 @@ export default async function (req: NextRequest) {
       return new Response(JSON.stringify(createJob))
     }
 
-    const sendMail = await fetch(`${SENDRGRID_URL}/mail/send`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${SENDGRID_ACCESS_TOKEN}`
-      },
-      body: JSON.stringify({
-        from: {
-          email: "studios@decentraland.org", name: "Decentraland Studios"
+    // Best-effort: building the verification link or sending the email can fail after the job exists,
+    // and answering with an error would make a client retry create a duplicate job
+    try {
+      const sendMail = await fetch(`${SENDRGRID_URL}/mail/send`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${SENDGRID_ACCESS_TOKEN}`
         },
-        personalizations: [{
-          to: [
-            { email: createJob.email, name: createJob.author_name }
-          ],
-          dynamic_template_data: {
-            ...createJob,
-            budget: budgetToRanges(createJob.budget),
-            verify_url: `https://studios.decentraland.org/jobs/verify?id=${createJob.id}#token=${await createVerificationToken('job', createJob.id)}`,
-          }
-        }],
-        template_id: "d-0dd32315fc5241c89e78783713c66934"
-      })
-    }).then(discardResponse)
+        body: JSON.stringify({
+          from: {
+            email: "studios@decentraland.org", name: "Decentraland Studios"
+          },
+          personalizations: [{
+            to: [
+              { email: createJob.email, name: createJob.author_name }
+            ],
+            dynamic_template_data: {
+              ...createJob,
+              budget: budgetToRanges(createJob.budget),
+              verify_url: `https://studios.decentraland.org/jobs/verify?id=${createJob.id}#token=${await createVerificationToken('job', createJob.id)}`,
+            }
+          }],
+          template_id: "d-0dd32315fc5241c89e78783713c66934"
+        })
+      }).then(discardResponse)
 
-    if (sendMail.ok) return new Response(JSON.stringify(createJob))
+      if (!sendMail.ok) console.log('API Job Create: verification email failed, status ', sendMail.status)
+    } catch (error) {
+      console.log('API Job Create: verification email failed ', error)
+    }
 
-    return new Response(null, { status: 400 })
+    return new Response(JSON.stringify(createJob))
 
   } catch (error) {
     console.log('API Review Submit error: ', error)

@@ -1,5 +1,5 @@
 import type { NextRequest } from 'next/server'
-import { getAccessToken, isSameOrigin, readJson } from '../../../lib/security'
+import { getAccessToken, isSameOrigin, isSameEmail, readJson, readJsonResponse } from '../../../lib/security'
 import { User } from '../../../interfaces/User'
 import { isUUID } from '../../../components/utils'
 
@@ -29,21 +29,21 @@ export default async function (req: NextRequest) {
             headers: {
                 'Authorization': `Bearer ${authorization}`
             }
-        }).then(res => res.ok && res.json()).then(res => res.data && res.data)
+        }).then(readJsonResponse).then(res => res?.data)
 
         const jobData = currentUser && await fetch(`${DB_URL}/items/jobs/${job_id}`, {
             headers: {
                 'Authorization': `Bearer ${API_TOKEN}`
             }
         })
-            .then(res => res.ok && res.json())
-            .then(body => body.data)
+            .then(readJsonResponse)
+            .then(body => body?.data)
 
         if (!currentUser || !jobData) return new Response(null, { status: 400 })
 
         let managers = JSON.parse(jobData.managers || '[]')
 
-        const currentUserIsOwner = currentUser.email === jobData.email
+        const currentUserIsOwner = isSameEmail(currentUser.email, jobData.email)
         const currentUserIsManager = managers.filter((manager: User) => manager.id === currentUser.id).length !== 0
 
         if (!(currentUserIsOwner || currentUserIsManager)) return new Response(null, { status: 403 })
@@ -61,7 +61,7 @@ export default async function (req: NextRequest) {
             body: JSON.stringify({
                 managers
             })
-        }).then(res => res.ok && res.json()).then(body => body.data)
+        }).then(readJsonResponse).then(body => body?.data)
 
         if (jobUpdate) return new Response(null, { status: 204 })
 

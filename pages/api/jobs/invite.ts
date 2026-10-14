@@ -1,5 +1,5 @@
 import type { NextRequest } from 'next/server'
-import { getAccessToken, isEmail, isSameOrigin, readJson } from '../../../lib/security'
+import { discardResponse, getAccessToken, isEmail, isSameEmail, isSameOrigin, normalizeEmail, readJson, readJsonResponse } from '../../../lib/security'
 import { budgetToRanges, isUUID } from '../../../components/utils'
 
 export const config = {
@@ -7,7 +7,13 @@ export const config = {
 }
 
 
-const MAX_PENDING_INVITES = 10
+const MAX_PENDING_INVITES = 20
+
+// When the cap is reached the oldest pending invite is dropped, so unanswered invites can't block a job
+const addPendingInvite = (invites: string[], email: string) => {
+  const pending = invites.filter(invite => normalizeEmail(invite) !== email)
+  return pending.slice(Math.max(0, pending.length - MAX_PENDING_INVITES + 1)).concat(email)
+}
 
 export default async function (req: NextRequest) {
 
@@ -21,11 +27,13 @@ export default async function (req: NextRequest) {
   if (!authorization) return new Response(null, { status: 401 })
   if (req.method !== 'POST' || !isSameOrigin(req)) return new Response(null, { status: 400 })
 
-  const { email, job_id } = await readJson(req)
+  const { email: rawEmail, job_id } = await readJson(req)
 
-  if (!isUUID(job_id) || !isEmail(email)) {
+  if (!isUUID(job_id) || !isEmail(rawEmail)) {
     return new Response(null, { status: 400 })
   }
+
+  const email = normalizeEmail(rawEmail)
 
   try {
 
@@ -33,15 +41,15 @@ export default async function (req: NextRequest) {
       headers: {
         'Authorization': `Bearer ${authorization}`
       }
-    }).then(res => res.ok && res.json()).then(res => res.data && res.data)
+    }).then(readJsonResponse).then(res => res?.data)
 
     const jobData = currentUser && await fetch(`${DB_URL}/items/jobs/${job_id}`, {
       headers: {
         'Authorization': `Bearer ${API_TOKEN}`
       }
     })
-      .then(res => res.ok && res.json())
-      .then(body => body.data)
+      .then(readJsonResponse)
+      .then(body => body?.data)
 
 
     if (!currentUser || !jobData) return new Response(null, { status: 400 })
@@ -56,19 +64,19 @@ export default async function (req: NextRequest) {
           'Authorization': `Bearer ${API_TOKEN}`
         }
       })
-        .then(res => res.ok && res.json())
-        .then(res => res.data.email)
-      allowedEmails.push(userMail)
+        .then(readJsonResponse)
+        .then(res => res?.data?.email)
+      // Deleted managers are skipped
+      if (userMail) allowedEmails.push(userMail)
     }
 
-    if (!allowedEmails.includes(currentUser.email)) {
+    if (!allowedEmails.some(allowedEmail => isSameEmail(allowedEmail, currentUser.email))) {
       return new Response(null, { status: 403 })
     }
 
     const managersInvites: string[] = JSON.parse(jobData.managers_invites || '[]')
 
-    if (managersInvites.includes(email)) return new Response(null, { status: 400 })
-    if (managersInvites.length >= MAX_PENDING_INVITES) return new Response(null, { status: 429 })
+    if (managersInvites.some(invite => normalizeEmail(invite) === email)) return new Response(null, { status: 400 })
 
     const jobUpdate = jobData && await fetch(`${DB_URL}/items/jobs/${job_id}`, {
       method: 'PATCH',
@@ -77,9 +85,9 @@ export default async function (req: NextRequest) {
         'Authorization': `Bearer ${API_TOKEN}`
       },
       body: JSON.stringify({
-        managers_invites: managersInvites.concat(email)
+        managers_invites: addPendingInvite(managersInvites, email)
       })
-    }).then(res => res.ok && res.json()).then(body => body.data)
+    }).then(readJsonResponse).then(body => body?.data)
 
     const sendMail = jobUpdate && await fetch(`${SENDRGRID_URL}/mail/send`, {
       method: 'POST',
@@ -103,9 +111,9 @@ export default async function (req: NextRequest) {
         }],
         template_id: "d-230079c83bf64f6187debd8f3126de3f"
       })
-    })
+    }).then(discardResponse)
 
-    if (sendMail.ok) return new Response(JSON.stringify(email))
+    if (sendMail && sendMail.ok) return new Response(JSON.stringify(email))
 
     return new Response(null, { status: 400 })
 

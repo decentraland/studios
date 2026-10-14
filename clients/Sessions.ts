@@ -3,6 +3,7 @@ import router from "next/router";
 import useSWR, { mutate } from "swr";
 
 export interface AuthData {
+    expires?: number
     expires_at: number
     error: string
 }
@@ -33,16 +34,17 @@ export const useMessages = () => {
     return { data, isLoading, error }
 }
 
-const fetcher = async (url: string, body?: object) => fetch(url, {
-    method: 'POST',
-    headers: {
-        'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(body || {})
-})
-    .then(res => res.json().catch(() => ({})))
+// The expiration is computed on the client clock from the token TTL, so server clock skew doesn't matter
+const storeExpiration = (data: { expires?: number, expires_at?: number }) => {
+    if (typeof data.expires !== 'number') return
+    data.expires_at = Date.now() + data.expires
+    Cookies.set("auth_expires", String(data.expires_at), { secure: true, sameSite: 'lax', path: '/' })
+}
+
+const parseAuthResponse = (res: Response) => res.json().catch(() => ({}))
     .then(body => {
         if (body.data) {
+            storeExpiration(body.data)
             return mutate(`/api/user/me`).then(() => body.data as AuthData)
         }
 
@@ -57,8 +59,41 @@ const fetcher = async (url: string, body?: object) => fetch(url, {
         return { error: "We couldn't find an account with that email and password. Check your credentials and try again." } as AuthData
     })
 
+const post = (url: string, body?: object) => fetch(url, {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(body || {})
+})
+
+const fetcher = async (url: string, body?: object) => post(url, body).then(parseAuthResponse)
+
+/**
+ * Directus rotates refresh tokens, so when two tabs refresh at once one of them is rejected.
+ * A rejected refresh only logs out when no other tab stored a newer session meanwhile.
+ */
 const refreshLogin = async () => {
-    return fetcher('/api/user/refresh')
+    const previousExpiresAt = Cookies.get("auth_expires")
+    const res = await post('/api/user/refresh').catch(() => undefined)
+
+    if (res?.ok) {
+        const data = await parseAuthResponse(res)
+        if (!data.error) return true
+    } else {
+        await res?.body?.cancel()
+    }
+
+    const currentExpiresAt = Cookies.get("auth_expires")
+    if (currentExpiresAt !== previousExpiresAt && Number(currentExpiresAt) > Date.now()) {
+        return true
+    }
+
+    // Only a rejected refresh token ends the session, outages keep it so the refresh is retried later
+    if (res?.status === 401 && currentExpiresAt === previousExpiresAt) {
+        Cookies.remove("auth_expires")
+    }
+    return false
 }
 
 export const login = async (email: string, password: string, otp?: string) => {
@@ -86,10 +121,7 @@ export const getLoggedState = async () => {
     }
     if (expiresAt) {
         if (Date.now() > expiresAt) {
-            const newUser = await refreshLogin()
-            if (!newUser.error) {
-                return true
-            }
+            return refreshLogin()
         } else {
             return true
         }

@@ -13,14 +13,14 @@ export default async function (req: NextRequest) {
 
   const session = getSession(req)
 
-  if (session?.access_token && session.refresh_token) {
-    // The local session is cleared even when Directus can't revoke the refresh token
+  if (session?.refresh_token) {
+    // The local session is cleared even when Directus can't revoke the refresh token.
+    // No Authorization header: an expired access token would make Directus reject the revocation.
     try {
       const res = await fetch(`${DB_URL}/auth/logout`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${session.access_token}`
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({ refresh_token: session.refresh_token }),
       })

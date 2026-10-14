@@ -1,6 +1,6 @@
 import type { NextRequest } from 'next/server'
 import { getSession, isSameOrigin } from '../../../lib/security'
-import { clearSessionHeaders, sessionResponse } from '../../../lib/session'
+import { clearSessionHeaders, refreshFailureStatus, sessionResponse } from '../../../lib/session'
 
 export const config = {
   runtime: 'experimental-edge',
@@ -15,20 +15,25 @@ export default async function (req: NextRequest) {
 
   if (!refresh_token) return new Response(null, { status: 401, headers: clearSessionHeaders() })
 
-  const refreshResponse = await fetch(`${DB_URL}/auth/refresh`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({ refresh_token }),
-  })
+  let refreshResponse: Response
+  try {
+    refreshResponse = await fetch(`${DB_URL}/auth/refresh`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ refresh_token }),
+    })
+  } catch (error) {
+    console.log('API Refresh error: ', error)
+    return new Response(null, { status: 503 })
+  }
 
-  // A rejected refresh token can't recover, so the cookies are cleared to stop the client from retrying.
-  // Server errors keep the session so a Directus outage doesn't log everyone out.
+  // Cookies are kept even when the token is rejected: Directus rotates refresh tokens, so another tab
+  // may have just refreshed and stored a newer session. The client decides whether it is logged out.
   if (!refreshResponse.ok) {
     await refreshResponse.body?.cancel()
-    const rejected = refreshResponse.status >= 400 && refreshResponse.status < 500
-    return new Response(null, { status: rejected ? 401 : 503, headers: rejected ? clearSessionHeaders() : undefined })
+    return new Response(null, { status: refreshFailureStatus(refreshResponse.status) })
   }
 
   return sessionResponse(refreshResponse)

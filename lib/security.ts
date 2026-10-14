@@ -10,6 +10,15 @@ export function isEmail(value: unknown): value is string {
   return typeof value === 'string' && value.length <= 254 && EMAIL_REGEX.test(value)
 }
 
+export function normalizeEmail(value: unknown) {
+  return typeof value === 'string' ? value.trim().toLowerCase() : ''
+}
+
+export function isSameEmail(a: unknown, b: unknown) {
+  const normalized = normalizeEmail(a)
+  return !!normalized && normalized === normalizeEmail(b)
+}
+
 export function isBoundedString(value: unknown, maxLength: number): value is string {
   return typeof value === 'string' && value.length <= maxLength
 }
@@ -50,10 +59,22 @@ export async function readJsonResponse(res: Response) {
 }
 
 /**
- * Returns the session stored in the `auth` cookie, or undefined when it is missing or malformed.
+ * Consumes a response whose body isn't needed, so it doesn't keep the connection busy on the edge runtime.
+ */
+export async function discardResponse(res: Response) {
+  await res.body?.cancel()
+  return res
+}
+
+export const AUTH_COOKIE = '__Host-auth'
+export const LEGACY_AUTH_COOKIE = 'auth'
+
+/**
+ * Returns the session stored in the `__Host-auth` cookie (or the legacy `auth` one),
+ * or undefined when it is missing or malformed.
  */
 export function getSession(req: NextRequest): { access_token?: string, refresh_token?: string } | undefined {
-  const value = req.cookies.get('auth')?.value
+  const value = req.cookies.get(AUTH_COOKIE)?.value || req.cookies.get(LEGACY_AUTH_COOKIE)?.value
   if (!value) return undefined
   try {
     const session = JSON.parse(value)

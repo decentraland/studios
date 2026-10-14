@@ -1,6 +1,6 @@
 import type { NextRequest } from 'next/server'
 import Partners from '../../clients/Partners'
-import { isBoundedString, isEmail, readJson } from '../../lib/security'
+import { discardResponse, isBoundedString, isEmail, readJson } from '../../lib/security'
 
 export const config = {
   runtime: 'experimental-edge',
@@ -52,7 +52,7 @@ export default async function (req: NextRequest) {
         }],
         template_id: "d-28527382ba9d4313ba271ae91eede3a6"
       })
-    })
+    }).then(discardResponse)
 
     if (sendMail.ok) return new Response(null, {status: 204})
 

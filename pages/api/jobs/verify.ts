@@ -1,6 +1,6 @@
 import type { NextRequest } from 'next/server'
 import { budgetToRanges, isUUID } from '../../../components/utils'
-import { isValidVerificationToken, pick, readJson } from '../../../lib/security'
+import { discardResponse, isValidVerificationToken, pick, readJson, readJsonResponse } from '../../../lib/security'
 
 export const config = {
   runtime: 'experimental-edge',
@@ -32,7 +32,7 @@ export default async function (req: NextRequest) {
     headers: {
       'Authorization': `Bearer ${API_TOKEN}`
     }
-  }).then(res => res.ok && res.json()).then(res => res.data && res.data)
+  }).then(readJsonResponse).then(res => res?.data)
 
   if (!currentJob) return new Response(null, { status: 400 })
 
@@ -49,7 +49,7 @@ export default async function (req: NextRequest) {
     body: JSON.stringify({
       verified_email: true
     })
-  }).then(res => res.ok && res.json()).then(res => res.data && res.data)
+  }).then(readJsonResponse).then(res => res?.data)
 
   if (!verifyJob) return new Response(null, { status: 400 })
 
@@ -59,8 +59,8 @@ export default async function (req: NextRequest) {
       'Authorization': `Bearer ${API_TOKEN}`
     }
   })
-    .then(res => res.ok && res.json())
-    .then(body => body.data[0])
+    .then(readJsonResponse)
+    .then(body => body?.data?.[0])
 
   // Only pending sign ups can be activated: suspended or archived accounts must stay that way
   const verifyUser = user?.status === 'draft' ? await fetch(`${DB_URL}/users/${user.id}`, {
@@ -72,7 +72,7 @@ export default async function (req: NextRequest) {
     body: JSON.stringify({
       status: "active"
     })
-  }).then(res => res.ok && res.json()).then(res => res.data && res.data) : user?.status === 'active' && user
+  }).then(readJsonResponse).then(res => res?.data) : user?.status === 'active' && user
 
   verifyUser && await fetch(`${SENDRGRID_URL}/mail/send`, {
     method: 'POST',
@@ -95,7 +95,7 @@ export default async function (req: NextRequest) {
       }],
       template_id: "d-6629f64176d842458785b3e127c687f9"
     })
-  })
+  }).then(discardResponse)
 
   await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
     method: 'POST',
@@ -115,7 +115,7 @@ export default async function (req: NextRequest) {
         ${verifyJob.brief_file ? `\nBrief file: [${verifyJob.brief_file.filename_download}](https://admin.dclstudios.org/assets/${verifyJob.brief_file.id})` : ''}
         ${verifyJob.deadline_date ? `\nDeadline date: ${verifyJob.deadline_date}` : ''}`
     })
-  })
+  }).then(discardResponse)
 
   return new Response(JSON.stringify(pick(verifyJob, PUBLIC_JOB_FIELDS)))
 }

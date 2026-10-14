@@ -1,5 +1,5 @@
 import type { NextRequest } from 'next/server'
-import { createVerificationToken, isBoundedString, isEmail, pick, readJson } from '../../../lib/security'
+import { createVerificationToken, discardResponse, isBoundedString, isEmail, pick, readJson, readJsonResponse } from '../../../lib/security'
 
 export const config = {
   runtime: 'experimental-edge',
@@ -37,8 +37,8 @@ export default async function (req: NextRequest) {
   try {
 
     const partnerData = await fetch(`${DB_URL}/items/profile?filter[slug][_eq]=${encodeURIComponent(profileSlug)}&fields=id`)
-      .then(res => res.ok && res.json())
-      .then(res => res.data && res.data[0])
+      .then(readJsonResponse)
+      .then(res => res?.data?.[0])
 
     if (!partnerData) return new Response(null, { status: 400 })
 
@@ -52,7 +52,7 @@ export default async function (req: NextRequest) {
         ...review,
         profile: partnerData.id
       })
-    }).then(res => res.ok && res.json()).then(res => res.data && res.data)
+    }).then(readJsonResponse).then(res => res?.data)
 
     if (!submitReview?.uuid) return new Response(null, { status: 400 })
 
@@ -80,7 +80,7 @@ export default async function (req: NextRequest) {
         }],
         template_id: "d-8967311aea8f46a29471ae1049b2dcdc"
       })
-    })
+    }).then(discardResponse)
 
     if (sendMail.ok) {
       // Only echo what the form needs: the review uuid must reach the reviewer by email only

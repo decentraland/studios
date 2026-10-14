@@ -1,7 +1,7 @@
 import type { NextRequest } from 'next/server'
 import { PartnerReview } from '../../../interfaces/PartnerReview'
 import { isUUID } from '../../../components/utils'
-import { isValidVerificationToken, readJson } from '../../../lib/security'
+import { discardResponse, isValidVerificationToken, readJson, readJsonResponse } from '../../../lib/security'
 
 export const config = {
   runtime: 'experimental-edge',
@@ -31,7 +31,7 @@ export default async function (req: NextRequest) {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${API_TOKEN}`
       },
-      }).then(res => res.ok && res.json()).then(res => res.data && res.data[0]) as PartnerReview
+      }).then(readJsonResponse).then(res => res?.data?.[0]) as PartnerReview
 
     if (!review) return new Response(null, { status: 400 })
 
@@ -48,7 +48,7 @@ export default async function (req: NextRequest) {
       body: JSON.stringify({
         verified_mail: true
       })
-    }).then(res => res.ok && res.json()).then(res => res.data && res.data) as PartnerReview
+    }).then(readJsonResponse).then(res => res?.data) as PartnerReview
 
     const sendMail = verify && await fetch(`${SENDRGRID_URL}/mail/send`, {
     method: 'POST',
@@ -74,9 +74,9 @@ export default async function (req: NextRequest) {
       } ],
         template_id: "d-0b9b647fcd9748448f7bbd79527e89a9"
     })
-  })
+  }).then(discardResponse)
 
-  if (sendMail.ok){
+  if (sendMail && sendMail.ok){
       return new Response(JSON.stringify(review))
     }
 

@@ -1,4 +1,5 @@
 import { Landing } from "../interfaces/Landing"
+import { readJsonResponse } from "../lib/security"
 
 const LANDINGS_URL = `${process.env.NEXT_PUBLIC_PARTNERS_DATA_URL}/items/landings`
 
@@ -12,7 +13,7 @@ export default class Landings {
     while (!isFinished) {
       try {
         const response = await fetch(`${LANDINGS_URL}?offset=${offset}`)
-        const data = (await response.json()).data as Landing[]
+        const data = (await readJsonResponse(response)).data as Landing[]
         if (data.length === 0) {
           isFinished = true
         } else {
@@ -34,7 +35,7 @@ export default class Landings {
     try {
       const response = await fetch(`${LANDINGS_URL}?filter[slug][_eq]=${encodeURIComponent(slug)}`)
 
-      landings = (await response.json()).data as Landing[]
+      landings = (await readJsonResponse(response))?.data || []
     } catch (error) {
       console.log('error getting landing data', error)
     }

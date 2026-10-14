@@ -2,7 +2,7 @@ import type { NextRequest } from 'next/server'
 import { PartnerProject } from '../../interfaces/PartnerProject'
 import { Resource } from '../../interfaces/Resource'
 import { VerifiedPartner } from '../../interfaces/VerifiedPartner'
-import { readJson } from '../../lib/security'
+import { discardResponse, readJson, readJsonResponse } from '../../lib/security'
 import { escapeRegExp } from '../../components/utils'
 
 export const config = {
@@ -62,7 +62,7 @@ export default async function (req: NextRequest) {
         geo: req.geo, 
         ip: req.ip
       })
-    })
+    }).then(discardResponse)
 
     let filterQuery = tokens.map((token: string) => ({
       "_or": [
@@ -97,7 +97,7 @@ export default async function (req: NextRequest) {
           fields: ["id", "video_1", "image_1", "title", "description", "github_link", "play_link"]
         }
       })
-    }).then((res) => res.json())).data
+    }).then(readJsonResponse))?.data || []
 
     const resStudios = (await fetch(`${DB_URL}/items/profile`, {
       method: 'SEARCH',
@@ -112,7 +112,7 @@ export default async function (req: NextRequest) {
           fields: ["id", "name", "description", "logo", "slug"]
         }
       })
-    }).then((res) => res.json())).data
+    }).then(readJsonResponse))?.data || []
 
     const resProjects = (await fetch(`${DB_URL}/items/projects`, {
       method: 'SEARCH',
@@ -127,7 +127,7 @@ export default async function (req: NextRequest) {
           fields: ["id","image_1", "title", "description", "profile.name", "profile.logo"]
         }
       })
-    }).then((res) => res.json())).data
+    }).then(readJsonResponse))?.data || []
 
     const resource = resResources.sort((a: any , b: any ) => sortResult(a, b, query)).map((resource: Resource) => ({ ...resource, description: sliceAroundQuery(query, resource.description), type: 'resource'}))
     const studio = resStudios.sort((a: any , b: any ) => sortResult(a, b, query)).map((profile: VerifiedPartner) => ( { ...profile, title:profile.name, description: sliceAroundQuery(query, profile.description) , type: 'studio'} ))

@@ -1,4 +1,5 @@
 import { PartnerProject } from '../interfaces/PartnerProject'
+import { readJsonResponse } from '../lib/security'
 
 const PROJECTS_URL = `${process.env.NEXT_PUBLIC_PARTNERS_DATA_URL}/items/projects`
 
@@ -15,7 +16,7 @@ export default class Projects {
     while (!isFinished) {
       try {
         const response = await fetch(`${PROJECTS_URL}?offset=${offset}${queryFields}`)
-        const data = (await response.json()).data as PartnerProject[]
+        const data = (await readJsonResponse(response)).data as PartnerProject[]
         if (data.length === 0) {
           isFinished = true
         } else {
@@ -38,7 +39,7 @@ export default class Projects {
     const queryFields = `?filter[id]=${id}&fields=*,profile.name,profile.slug,profile.logo`
     try {
       const response = await fetch(`${PROJECTS_URL}${queryFields}`)
-      projects = (await response.json()).data[0] as PartnerProject
+      projects = (await readJsonResponse(response))?.data?.[0] as PartnerProject
     } catch (error) {
       console.log('error getting project', error)
     }

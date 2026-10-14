@@ -1,7 +1,7 @@
 import type { NextRequest } from 'next/server'
 import { budgetToRanges } from '../../../components/utils'
 import { User } from '../../../interfaces/User'
-import { createVerificationToken, getAccessToken, isBoundedString, isSameOrigin, pick, readJson } from '../../../lib/security'
+import { createVerificationToken, getAccessToken, isBoundedString, isSameOrigin, pick, readJson, readJsonResponse, discardResponse } from '../../../lib/security'
 
 export const config = {
   runtime: 'experimental-edge',
@@ -45,7 +45,7 @@ export default async function (req: NextRequest) {
       headers: {
         'Authorization': `Bearer ${authorization}`
       }
-    }).then(res => res.ok && res.json()).then(res => res.data && res.data)
+    }).then(readJsonResponse).then(res => res?.data)
 
     if (!currentUser || currentUser.role.name !== "Client") return new Response(null, { status: 401 })
 
@@ -69,8 +69,8 @@ export default async function (req: NextRequest) {
         geo: req.geo
       })
     })
-      .then((res) => res.ok && res.json())
-      .then(body => body.data)
+      .then(readJsonResponse)
+      .then(body => body?.data)
 
     if (createJob && verified_email) {
 
@@ -92,7 +92,7 @@ export default async function (req: NextRequest) {
         ${createJob.brief_file ? `\nBrief file: [${createJob.brief_file.filename_download}](https://admin.dclstudios.org/assets/${createJob.brief_file.id})` : ''}
         ${createJob.deadline_date ? `\nDeadline date: ${createJob.deadline_date}` : ''}`
         })
-      })
+      }).then(discardResponse)
 
       return new Response(JSON.stringify(createJob))
     }
@@ -119,9 +119,9 @@ export default async function (req: NextRequest) {
         }],
         template_id: "d-0dd32315fc5241c89e78783713c66934"
       })
-    })
+    }).then(discardResponse)
 
-    if (sendMail.ok) return new Response(JSON.stringify(createJob))
+    if (sendMail && sendMail.ok) return new Response(JSON.stringify(createJob))
 
     return new Response(null, { status: 400 })
 

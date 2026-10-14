@@ -1,6 +1,6 @@
 import type { NextRequest } from 'next/server'
 import { isUUID } from '../../../components/utils'
-import { getAccessToken } from '../../../lib/security'
+import { getAccessToken, readJsonResponse } from '../../../lib/security'
 
 export const config = {
     runtime: 'experimental-edge',
@@ -36,7 +36,7 @@ export default async function (req: NextRequest) {
             headers: {
                 'Authorization': `Bearer ${authorization}`
             }
-        }).then(res => res.ok && res.json()).then(body => body.data[0])
+        }).then(readJsonResponse).then(body => body?.data?.[0])
 
         const conversation = jobData && await fetch(`${DB_URL}/items/conversations?filter[related_job]=${jobData.id}&filter[status]=published&fields=id,title,related_job,user_created,messages.id,messages.date_created,messages.message,messages.attachments.directus_files_id.id,messages.attachments.directus_files_id.filename_download,messages.author.id`, {
             method: "GET",
@@ -44,8 +44,8 @@ export default async function (req: NextRequest) {
                 'Authorization': `Bearer ${authorization}`
             }
         })
-            .then(res => res.ok && res.json())
-            .then(body => body.data[0])
+            .then(readJsonResponse)
+            .then(body => body?.data?.[0])
 
         const studioData = jobData && await fetch(`${DB_URL}/items/profile?filter[user]=$CURRENT_USER&fields=id,logo,name`, {
             method: "GET",
@@ -53,8 +53,8 @@ export default async function (req: NextRequest) {
                 'Authorization': `Bearer ${authorization}`
             }
         })
-            .then(res => res.ok && res.json())
-            .then(body => body.data[0])
+            .then(readJsonResponse)
+            .then(body => body?.data?.[0])
 
         if (conversation) {
             jobData.messages = conversation.messages

@@ -1,7 +1,7 @@
 import type { NextRequest } from 'next/server'
 import Messages from '../../../clients/Messages'
 import { isUUID } from '../../../components/utils'
-import { getAccessToken, isSameOrigin } from '../../../lib/security'
+import { discardResponse, getAccessToken, isSameOrigin, readJsonResponse } from '../../../lib/security'
 
 export const config = {
     runtime: 'experimental-edge',
@@ -40,16 +40,16 @@ export default async function (req: NextRequest) {
         headers: {
             'Authorization': `Bearer ${API_TOKEN}`
         }
-    }).then(res => res.ok && res.json()).then(res => res.data.length && res.data[0])
+    }).then(readJsonResponse).then(res => res?.data?.[0])
 
 
     const currentUser = await fetch(`${DB_URL}/users/me?fields=id,email,role.name`, {
         headers: {
             'Authorization': `Bearer ${authorization}`
         }
-    }).then(res => res.ok && res.json()).then(res => res.data && res.data)
+    }).then(readJsonResponse).then(res => res?.data)
 
-    if (!currentUser || currentUser.role.name !== 'Studio') return new Response(null, { status: 400 })
+    if (!currentUser || currentUser.role?.name !== 'Studio') return new Response(null, { status: 400 })
 
     if (!currentJob || !currentJob.verified_email || currentJob.status === 'archived') return new Response(null, { status: 400 })
 
@@ -63,7 +63,7 @@ export default async function (req: NextRequest) {
             title: currentJob.title,
             related_job: currentJob.id
         })
-    }).then(res => res.ok && res.json()).then(body => body.data)
+    }).then(readJsonResponse).then(body => body?.data)
 
     if (!createConversation?.id) return new Response(null, { status: 400 })
 
@@ -77,7 +77,7 @@ export default async function (req: NextRequest) {
         headers: {
             'Authorization': `Bearer ${authorization}`
         }
-    }).then(res => res.ok && res.json()).then(res => res.data.length && res.data[0])
+    }).then(readJsonResponse).then(res => res?.data?.[0])
 
     // const mailToAuthor = currentStudio && await fetch(`${SENDRGRID_URL}/mail/send`, {
     //     method: 'POST',
@@ -137,7 +137,7 @@ export default async function (req: NextRequest) {
             }],
             template_id: "d-0f855e4fdc154093bd51fea886cdb2d2"
         })
-    })
+    }).then(discardResponse)
 
 
     // const createMessage = mailToAuthor && await fetch(`${DB_URL}/items/messages?fields=*,brief_file.id,brief_file.filename_download`, {

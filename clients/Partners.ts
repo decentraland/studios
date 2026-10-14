@@ -1,4 +1,5 @@
 import { VerifiedPartner } from '../interfaces/VerifiedPartner'
+import { readJsonResponse } from '../lib/security'
 
 const VERIFIED_PARTNERS_URL = `${process.env.NEXT_PUBLIC_PARTNERS_DATA_URL}/items/profile`
 
@@ -15,7 +16,7 @@ export default class Partners {
     while (!isFinished) {
       try {
         const response = await fetch(`${VERIFIED_PARTNERS_URL}?offset=${offset}${queryFields}`)
-        const data = (await response.json()).data as VerifiedPartner[]
+        const data = (await readJsonResponse(response)).data as VerifiedPartner[]
         if (data.length === 0) {
           isFinished = true
         } else {
@@ -49,9 +50,9 @@ export default class Partners {
 
     let partner
     try {
-      const data = await fetch(`${VERIFIED_PARTNERS_URL}?${query}&fields=${fieldsFilter}`).then(res => res.ok && res.json()).then(body => body.data)
+      const data = await fetch(`${VERIFIED_PARTNERS_URL}?${query}&fields=${fieldsFilter}`).then(readJsonResponse).then(body => body?.data)
 
-      partner = data[0] as VerifiedPartner
+      partner = data?.[0] as VerifiedPartner
     } catch (error) {
       console.log('error getting partners', error)
     }

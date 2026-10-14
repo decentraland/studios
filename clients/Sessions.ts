@@ -10,8 +10,8 @@ export interface AuthData {
 
 const getUserData = async (url: string) => {
     return getLoggedState().then((logged) => logged && fetch(url)
-        .then(res => res.ok && res.json())
-        .then(body => body.data))
+        .then(res => res.ok ? res.json() : res.body?.cancel())
+        .then(body => body?.data))
 }
 
 export const useUser = () => {

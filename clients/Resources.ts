@@ -1,4 +1,5 @@
 import { Resource } from "../interfaces/Resource"
+import { readJsonResponse } from "../lib/security"
 
 const RESOURCES_URL = `${process.env.NEXT_PUBLIC_PARTNERS_DATA_URL}/items/resources`
 
@@ -12,7 +13,7 @@ export default class Resources {
     while (!isFinished) {
       try {
         const response = await fetch(`${RESOURCES_URL}?offset=${offset}&sort[]=-date_created`)
-        const data = (await response.json()).data as Resource[]
+        const data = (await readJsonResponse(response)).data as Resource[]
         if (data.length === 0) {
           isFinished = true
         } else {

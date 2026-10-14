@@ -74,6 +74,8 @@ export default async function (req: NextRequest) {
             .then(readJsonResponse)
             .then(body => body?.data)
 
+        if (!Array.isArray(updateItem)) return new Response(null, { status: 502 })
+
         !updateItem.length && await fetch(`${DB_URL}/items/conversations_directus_users`, {
             method: 'POST',
             headers: {

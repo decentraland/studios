@@ -55,15 +55,39 @@ const isAuthenticatedEmail = (formData: FormData) => {
     return dkimPass || spfPass
 }
 
+/**
+ * Returns the password sent with HTTP Basic auth. SendGrid's Inbound Parse sends the credentials embedded in
+ * its destination URL (https://user:password@host/path) this way.
+ */
+const getBasicAuthPassword = (req: NextRequest) => {
+    const [scheme, encoded] = (req.headers.get('authorization') || '').split(' ')
+    if (scheme?.toLowerCase() !== 'basic' || !encoded) return undefined
+    try {
+        // atob returns one char per byte, decode them as UTF-8 so non-ASCII passwords match
+        const credentials = new TextDecoder().decode(Uint8Array.from(atob(encoded), c => c.charCodeAt(0)))
+        const separator = credentials.indexOf(':')
+        return separator === -1 ? undefined : credentials.slice(separator + 1)
+    } catch {
+        return undefined
+    }
+}
+
 export default async function (req: NextRequest) {
 
     if (req.method !== 'POST') return new Response(null, { status: 400 })
 
+    const inboundPassword = getBasicAuthPassword(req)
+    // TODO: remove in the first release after the Inbound Parse URL is switched to basic auth (see README). The token in the query string ends up in logs.
     const apiAccessToken = req.nextUrl.searchParams.get('access_token')
+    const inboundToken = inboundPassword ?? apiAccessToken
 
-    if (apiAccessToken) {
-        if (!SENDGRID_INBOUND_TOKEN || !timingSafeEqual(apiAccessToken, SENDGRID_INBOUND_TOKEN)) {
+    if (inboundToken) {
+        if (!SENDGRID_INBOUND_TOKEN || !timingSafeEqual(inboundToken, SENDGRID_INBOUND_TOKEN)) {
             return new Response(null, { status: 401 })
+        }
+
+        if (inboundPassword === undefined) {
+            console.log('API Message: inbound email authenticated with the deprecated access_token query param, switch the Inbound Parse URL to basic auth')
         }
 
         const formData = await req.formData()

@@ -1,5 +1,6 @@
 import { VerifiedPartner } from '../interfaces/VerifiedPartner'
 import { readJsonResponse } from '../lib/security'
+import { chunk, uniqueStrings } from '../lib/users'
 
 const VERIFIED_PARTNERS_URL = `${process.env.NEXT_PUBLIC_PARTNERS_DATA_URL}/items/profile`
 
@@ -61,6 +62,33 @@ export default class Partners {
     }
 
     return partner
+  }
+
+  /**
+   * Returns the studio profile of each user, keyed by user id, with one request per chunk of users
+   * instead of one per user. Like `getPartnerData`, the first profile of a user wins.
+   * `fields` must include `user`.
+   */
+  static async getPartnersByUsers(users: unknown[], fields: string) {
+    const partners = new Map<string, VerifiedPartner>()
+
+    const results = await Promise.all(chunk(uniqueStrings(users)).map(async group => {
+      const filter = encodeURIComponent(JSON.stringify({ user: { _in: group } }))
+      try {
+        const data = await fetch(`${VERIFIED_PARTNERS_URL}?filter=${filter}&fields=${fields}&limit=-1`).then(readJsonResponse).then(body => body?.data)
+        return (Array.isArray(data) ? data : []) as VerifiedPartner[]
+      } catch (error) {
+        console.log('error getting partners', error)
+        return []
+      }
+    }))
+
+    for (const partner of results.flat()) {
+      const user = (partner as VerifiedPartner & { user?: unknown }).user
+      if (typeof user === 'string' && !partners.has(user)) partners.set(user, partner)
+    }
+
+    return partners
   }
 
   static async getAllSlugs() {

@@ -2,7 +2,8 @@ import type { NextRequest } from 'next/server'
 import Partners from '../../../clients/Partners'
 import { User } from '../../../interfaces/User'
 import { Job } from '../../../interfaces/Job'
-import { getAccessToken, readJsonResponse } from '../../../lib/security'
+import { getAccessToken, normalizeEmail, readJsonResponse } from '../../../lib/security'
+import { getUsersBy } from '../../../lib/users'
 
 export const config = {
     runtime: 'experimental-edge',
@@ -69,29 +70,32 @@ export default async function (req: NextRequest) {
         if (jobs.length) {
 
             for (const job of jobs) {
-                const jobAuthorId = await fetch(`${DB_URL}/users?filter[email]=${encodeURIComponent(job.email)}&fields=id`, {
-                    headers: {
-                        'Authorization': `Bearer ${API_TOKEN}`
-                    }
-                }).then(readJsonResponse).then(body => body?.data?.[0]?.id)
-                
-                job.author_id = jobAuthorId
-
                 job.managers = JSON.parse((job.managers as any) || "[]")
+            }
 
-                const managers = [] as User[]
-                for (const manager of job.managers){
-                    const managerData = await fetch(`${DB_URL}/users/${manager.id}?fields=id,email,first_name,last_name`, {
-                        headers: {
-                            'Authorization': `Bearer ${API_TOKEN}`
-                        }
-                    }).then(readJsonResponse).then(body => body?.data)
-                    // Deleted managers are skipped
-                    if (managerData) managers.push(managerData)
-                }
-                
-                job.managers = managers
+            // One lookup per batch of users instead of one per job and per manager, to stay under the subrequest limit.
+            // Directus filters are case-sensitive, so the normalized job email is looked up next to the stored one.
+            const jobEmails = jobs.map(job => job.email).filter(email => typeof email === 'string')
+            const [authors, managersData] = await Promise.all([
+                getUsersBy('email', [...jobEmails, ...jobEmails.map(normalizeEmail)], 'id,email', API_TOKEN),
+                getUsersBy('id', jobs.flatMap(job => (job.managers as unknown[]).map((manager: any) => manager?.id)), 'id,email,first_name,last_name', API_TOKEN)
+            ])
 
+            const authorIdsByEmail = new Map<string, string>()
+            const authorIdsByNormalizedEmail = new Map<string, string>()
+            for (const author of authors) {
+                if (!authorIdsByEmail.has(author.email)) authorIdsByEmail.set(author.email, author.id)
+                if (!authorIdsByNormalizedEmail.has(normalizeEmail(author.email))) authorIdsByNormalizedEmail.set(normalizeEmail(author.email), author.id)
+            }
+            const managersById = new Map(managersData.map(manager => [manager.id, manager as User]))
+
+            for (const job of jobs) {
+                job.author_id = authorIdsByEmail.get(job.email) || (normalizeEmail(job.email) ? authorIdsByNormalizedEmail.get(normalizeEmail(job.email)) : undefined)
+
+                // Deleted managers are skipped
+                job.managers = job.managers
+                    .map((manager: any) => managersById.get(manager?.id))
+                    .filter((manager): manager is User => !!manager)
             }
 
             conversations = await fetch(`${DB_URL}/items/conversations`, {
@@ -146,9 +150,10 @@ export default async function (req: NextRequest) {
             })
                 .then(readJsonResponse)
                 .then(body => body?.data || [])
+            const studios = await Partners.getPartnersByUsers(conversations.map((conversation: any) => conversation.user_created), 'name,logo,user,slug')
+
             for (const conversation of conversations) {
-                const query = { user: conversation.user_created }
-                conversation.studio_data = await Partners.getPartnerData(query, 'name,logo,user,slug')
+                conversation.studio_data = studios.get(conversation.user_created)
 
                 if (conversation.conversations_users?.length) {
                     conversation.last_read_message = conversation.conversations_users.find((item: any) => item.directus_users_id === currentUser.id)?.last_read_message

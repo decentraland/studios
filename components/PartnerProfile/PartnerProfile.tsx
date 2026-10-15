@@ -28,6 +28,8 @@ import IconX from '../Icons/IconX'
 import Form from '../Form/Form'
 import IconInfo from '../Icons/IconInfo'
 import { useUser } from '../../clients/Sessions'
+import { User } from '../../interfaces/User'
+import Turnstile, { isTurnstileRejection, useTurnstile } from '../Turnstile/Turnstile'
 
 const ProjectCard = dynamic(() => import('../ProjectCard/ProjectCard'), {
   ssr: false,
@@ -44,6 +46,96 @@ interface Props {
 const DATA_URL = process.env.NEXT_PUBLIC_PARTNERS_DATA_URL
 const SERVICES = Object.values(Service)
 const REPORT_URL = process.env.NEXT_PUBLIC_REPORT_URL
+const CAPTCHA_ERROR = 'Security check failed, please try again.'
+const CONTACT_ERROR = "We couldn't send your message, please try again."
+
+interface ContactModalProps {
+  partnerName: string
+  partnerSlug: string
+  user?: User
+  onClose: () => void
+}
+
+function ContactModal({ partnerName, partnerSlug, user, onClose }: ContactModalProps) {
+  const [email, setEmail] = useState('')
+  const [message, setMessage] = useState('')
+  const [step, setStep] = useState(0)
+  const [sendError, setSendError] = useState<string>()
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const turnstile = useTurnstile('contact')
+
+  const disabled = !user && !email || !message || !turnstile.token || isSubmitting
+
+  const handleSubmit = async () => {
+    if (isSubmitting) return
+    const turnstileToken = turnstile.take()
+    if (!turnstileToken) return
+
+    const senderEmail = user ? user.email : email
+
+    setEmail(senderEmail)
+    setSendError(undefined)
+    setIsSubmitting(true)
+
+    await fetch(`/api/contact`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        slug: partnerSlug,
+        senderEmail,
+        message: message,
+        turnstileToken
+      })
+    }).then(async res => {
+      if (res.ok) return setStep(1)
+      setSendError(await isTurnstileRejection(res) ? CAPTCHA_ERROR : CONTACT_ERROR)
+      setIsSubmitting(false)
+    }).catch(() => {
+      setSendError(CONTACT_ERROR)
+      setIsSubmitting(false)
+    })
+  }
+
+  return <>
+    {step === 0 && <><div className={styles.modalOverlay} onClick={onClose} />
+      <div className={styles.modalContainer}>
+        <div className={styles.modalTitle}>Contact {partnerName}<IconX gray onClick={onClose} /></div>
+        <div>Write a message for {partnerName} detailing what you’re looking for. When they reply, you will receive an email notification.</div>
+        {!user && <div>
+          <div className={styles.modalSubtitle}>Your email</div>
+          <Form.InputText type="email" placeholder="example@email.com" value={email} onChange={(e) => setEmail(e.currentTarget.value)} />
+          <Form.FieldMessage message={`Your email will be shared with ${partnerName}`} icon="info" />
+        </div>}
+        <div>
+          <div className={styles.modalSubtitle}>Message</div>
+          <textarea
+            className={styles.input_long}
+            required
+            maxLength={400}
+            id="message"
+            value={message}
+            onChange={(e) => setMessage(e.currentTarget.value)}
+            placeholder="Example message"
+          />
+          <Turnstile ref={turnstile.ref} action={turnstile.action} onToken={turnstile.onToken} />
+          <Form.ButtonSubmit value="SEND" disabled={disabled} onClick={handleSubmit} />
+          {sendError && <Form.FieldMessage icon="info" red message={sendError} />}
+        </div>
+      </div></>}
+
+    {step === 1 && <><div className={styles.modalOverlay} onClick={onClose} />
+      <div className={styles.modalContainer}>
+        <div className={styles.modalTitle}><span></span><IconX gray onClick={onClose} /></div>
+        <div className={styles.modalSucces}>
+          <img className={styles.modalImage} alt='Welcome to Decentraland Studios!' src="/images/done_circle.webp" />
+          <div className={styles.modalSubtitle}>Message sent!</div>
+          You will receive an email notification to <b>{email}</b> when {partnerName} reply.
+        </div>
+      </div></>}
+  </>
+}
 
 function PartnerProfile({ partner }: Props) {
   const [currentTab, setCurrentTab] = useState('work')
@@ -77,76 +169,6 @@ function PartnerProfile({ partner }: Props) {
 
   const renderReviews = partnerData.reviews?.slice(0, reviewsLimit)
 
-  const ContactModal = () => {
-    const [email, setEmail] = useState('')
-    const [message, setMessage] = useState('')
-    const [step, setStep] = useState(0)
-
-    const disabled = !user && !email || !message
-
-    const closeModal = () => {
-      setShowContactModal(false)
-      setEmail('')
-      setMessage('')
-      setStep(0)
-    }
-
-    const handleSubmit = async () => {
-
-      const senderEmail = user ? user.email : email
-
-      setEmail(senderEmail)
-
-      await fetch(`/api/contact`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          slug: partnerData.slug,
-          senderEmail,
-          message: message
-        })
-      }).then(res => res.ok && setStep(1))
-    }
-
-    return <>
-      {step === 0 && <><div className={styles.modalOverlay} onClick={closeModal} />
-        <div className={styles.modalContainer}>
-          <div className={styles.modalTitle}>Contact {partnerData.name}<IconX gray onClick={closeModal} /></div>
-          <div>Write a message for {partnerData.name} detailing what you’re looking for. When they reply, you will receive an email notification.</div>
-          {!user && <div>
-            <div className={styles.modalSubtitle}>Your email</div>
-            <Form.InputText type="email" placeholder="example@email.com" value={email} onChange={(e) => setEmail(e.currentTarget.value)} />
-            <Form.FieldMessage message={`Your email will be shared with ${partnerData.name}`} icon="info" />
-          </div>}
-          <div>
-            <div className={styles.modalSubtitle}>Message</div>
-            <textarea
-              className={styles.input_long}
-              required
-              maxLength={400}
-              id="message"
-              value={message}
-              onChange={(e) => setMessage(e.currentTarget.value)}
-              placeholder="Example message"
-            />
-            <Form.ButtonSubmit value="SEND" disabled={disabled} onClick={handleSubmit} />
-          </div>
-        </div></>}
-
-      {step === 1 && <><div className={styles.modalOverlay} onClick={closeModal} />
-        <div className={styles.modalContainer}>
-          <div className={styles.modalTitle}><span></span><IconX gray onClick={closeModal} /></div>
-          <div className={styles.modalSucces}>
-            <img className={styles.modalImage} alt='Welcome to Decentraland Studios!' src="/images/done_circle.webp" />
-            <div className={styles.modalSubtitle}>Message sent!</div>
-            You will receive an email notification to <b>{email}</b> when {partnerData.name} reply.
-          </div>
-        </div></>}
-    </>
-  }
-
   const profileHeader = partnerData.profile_header ? {
     backgroundImage: `url(${DATA_URL}/assets/${partnerData.profile_header})`
   } : {
@@ -161,7 +183,7 @@ function PartnerProfile({ partner }: Props) {
         <BackButton />
       </div>
       <div className={styles.container__content}>
-        {showContactModal && <ContactModal />}
+        {showContactModal && <ContactModal partnerName={partnerData.name} partnerSlug={partnerData.slug} user={user || undefined} onClose={() => setShowContactModal(false)} />}
 
         <div className={styles.header_panel}>
 

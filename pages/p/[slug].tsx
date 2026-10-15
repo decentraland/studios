@@ -5,7 +5,12 @@ import { Landing } from "../../interfaces/Landing";
 import { useRouter } from "next/router";
 import Head from "next/head";
 import Script from "next/script";
+import Turnstile, { isTurnstileRejection, useTurnstile } from "../../components/Turnstile/Turnstile";
+import Form from "../../components/Form/Form";
 import { fbq, googleAdsTrack, linkedinTrackLead, openIntercom, plausibleTrackEvent, safeUrl, updateIntercom } from "../../components/utils";
+
+const CAPTCHA_ERROR = "Security check failed, please try again."
+const SUBMIT_ERROR = "Something went wrong, please try again."
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
 
@@ -43,6 +48,9 @@ function MetaverseGuide({ landing }: Props) {
     const [email, setEmail] = useState('')
     const [landingData, setLandingData] = useState(landing)
     const [customFields, setCustomFields] = useState(landing.form_custom_fields)
+    const [submitError, setSubmitError] = useState<string>()
+    const [isSubmitting, setIsSubmitting] = useState(false)
+    const turnstile = useTurnstile("landing")
 
     useEffect(() => {
 		fetch(`/api/get/landing`,
@@ -75,6 +83,10 @@ function MetaverseGuide({ landing }: Props) {
 
     const onFormSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
+        if (isSubmitting) return
+        const turnstileToken = turnstile.take()
+        if (!turnstileToken) return
+        setSubmitError(undefined)
 
         let newFields
         if (customFields?.length){
@@ -91,13 +103,21 @@ function MetaverseGuide({ landing }: Props) {
             mobile: !!globalThis?.navigator.userAgent.match(/Mobi/),
             user_agent: globalThis?.navigator.userAgent,
             list_ids: landingData.list_ids,
-            custom_fields: {... landingData.custom_fields, ...newFields}
+            custom_fields: {... landingData.custom_fields, ...newFields},
+            turnstileToken
         }
 
-        fetch('/api/landing/submit', {
+        setIsSubmitting(true)
+        const res = await fetch('/api/landing/submit', {
             method: 'POST',
             body: JSON.stringify(body)
-        })
+        }).catch(() => undefined)
+
+        if (!res?.ok) {
+            setSubmitError(res && await isTurnstileRejection(res) ? CAPTCHA_ERROR : SUBMIT_ERROR)
+            setIsSubmitting(false)
+            return
+        }
 
         globalThis.localStorage.setItem('leadName', name);
         globalThis.localStorage.setItem('leadEmail', email);
@@ -123,6 +143,7 @@ function MetaverseGuide({ landing }: Props) {
     const ctaSendAgain = () => {
         setName('')
         setEmail('')
+        setIsSubmitting(false)
         const ctaContainer = document.getElementById('cta__slider');
         ctaContainer && ctaContainer.classList.remove('container--success');
       }
@@ -368,7 +389,9 @@ function MetaverseGuide({ landing }: Props) {
                                     <input type="text" id="name" placeholder={landingData.form_name} required value={name} onChange={(newVal) => setName(newVal.target.value)} />
                                     <input type="email" id="email" placeholder={landingData.form_email} required value={email} onChange={(newVal) => setEmail(newVal.target.value)} />
                                     
-                                    <button className="cta" type="submit">{landingData.form_button}</button>
+                                    <Turnstile ref={turnstile.ref} action={turnstile.action} onToken={turnstile.onToken} />
+                                    <button className="cta" type="submit" disabled={!turnstile.token || isSubmitting}>{landingData.form_button}</button>
+                                    {submitError && <Form.FieldMessage icon="info" red message={submitError} />}
                                 </form>
                             </div>
                         </div>

@@ -1,0 +1,46 @@
+.container {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+/* Matches Form.FieldMessage (red) */
+.error {
+    margin-top: 8px;
+    color: #B71C1C;
+    display: flex;
+    gap: 4px;
+    align-items: center;
+}
+
+/* Matches Form.FieldMessage (gray) */
+.notice {
+    margin-top: 8px;
+    color: #736E7D;
+    display: flex;
+    gap: 4px;
+    align-items: center;
+}
+
+@media (max-width: 768px) {
+    .error,
+    .notice {
+        font-size: 13px;
+    }
+}
+
+/* Inline link-style button, like Form's .link */
+.retry {
+    margin-left: 4px;
+    padding: 0;
+    border: none;
+    background: none;
+    font: inherit;
+    color: #ff2d55;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.retry:hover {
+    text-decoration: underline;
+}

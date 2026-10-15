@@ -3,6 +3,8 @@ import { VerifiedPartner } from '../../interfaces/VerifiedPartner'
 
 import styles from './ReviewSubmitForm.module.css'
 import { FormattedMessage } from 'react-intl'
+import Turnstile, { isTurnstileRejection, useTurnstile } from '../Turnstile/Turnstile'
+import Form from '../Form/Form'
 
 interface Props {
   partner: VerifiedPartner
@@ -10,6 +12,8 @@ interface Props {
 
 const DATA_URL = process.env.NEXT_PUBLIC_PARTNERS_DATA_URL
 const REVIEW_MAX_LENGTH = 400
+const CAPTCHA_ERROR = 'Security check failed, please try again.'
+const SUBMIT_ERROR = "We couldn't submit your review, please try again."
 
 function ReviewSubmitForm({ partner }: Props) {
   const initData = {
@@ -22,33 +26,49 @@ function ReviewSubmitForm({ partner }: Props) {
 
   const [formData, setFormData] = useState(initData)
   const [verifyMail, setVerifyMail] = useState('')
+  const [submitError, setSubmitError] = useState<string>()
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const turnstile = useTurnstile('review')
 
   const remainCharsText = `${formData.review.length}/${REVIEW_MAX_LENGTH}`
 
   const emptyFields = !Object.values(formData).every((val) => val)
+  const disableSubmit = emptyFields || !turnstile.token || isSubmitting
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    if (isSubmitting) return
+    const turnstileToken = turnstile.take()
+    if (!turnstileToken) return
 
-    const verification = await fetch(`/api/reviews/submit`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        review: {
-          ...formData,
-          user_agent: globalThis?.navigator.userAgent
-        }
-      }),
-    })
+    setSubmitError(undefined)
+    setIsSubmitting(true)
 
-    if (verification.ok) {
-      const respData = await verification.json()
-      setVerifyMail(respData.email)
+    try {
+      const verification = await fetch(`/api/reviews/submit`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          review: {
+            ...formData,
+            user_agent: globalThis?.navigator.userAgent
+          },
+          turnstileToken
+        }),
+      })
 
-    } else {
-      console.log(verification)
+      if (verification.ok) {
+        const respData = await verification.json()
+        setVerifyMail(respData.email)
+      } else {
+        setSubmitError(await isTurnstileRejection(verification) ? CAPTCHA_ERROR : SUBMIT_ERROR)
+        setIsSubmitting(false)
+      }
+    } catch {
+      setSubmitError(SUBMIT_ERROR)
+      setIsSubmitting(false)
     }
   }
 
@@ -139,12 +159,14 @@ function ReviewSubmitForm({ partner }: Props) {
         placeholder="Your comments go here"
       />
       <div className={styles.text_secondary}>{remainCharsText}</div>
+      <Turnstile ref={turnstile.ref} action={turnstile.action} onToken={turnstile.onToken} />
       <input
-        className={`${styles.submit_btn} ${emptyFields ? styles.submit_btn_disabled : ''}`}
-        disabled={emptyFields}
+        className={`${styles.submit_btn} ${disableSubmit ? styles.submit_btn_disabled : ''}`}
+        disabled={disableSubmit}
         type="submit"
         value="SUBMIT REVIEW"
       />
+      {submitError && <Form.FieldMessage icon="info" red message={submitError} />}
     </form>
   </div>
 

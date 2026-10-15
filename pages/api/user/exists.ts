@@ -1,5 +1,6 @@
 import type { NextRequest } from 'next/server'
 import { isEmail, readJson } from '../../../lib/security'
+import { getClientIp, turnstileRejected, verifyTurnstile } from '../../../lib/turnstile'
 
 export const config = {
     runtime: 'experimental-edge',
@@ -11,7 +12,9 @@ const DB_URL = process.env.NEXT_PUBLIC_PARTNERS_DATA_URL
 export default async function (req: NextRequest) {
     if (req.method !== 'POST') return new Response(null, { status: 400 })
 
-    const { email } = await readJson(req)
+    const { email, turnstileToken } = await readJson(req)
+
+    if (!await verifyTurnstile(turnstileToken, getClientIp(req), 'user-exists')) return turnstileRejected()
 
     if (!isEmail(email)) return new Response(null, { status: 400 })
 

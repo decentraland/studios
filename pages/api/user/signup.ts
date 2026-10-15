@@ -1,5 +1,7 @@
 import type { NextRequest } from 'next/server'
-import { createVerificationToken, isBoundedString, isEmail, isVerificationTokenConfigured, pick, readJson } from '../../../lib/security'
+import { isBoundedString, isEmail, isVerificationTokenConfigured, pick, readJson } from '../../../lib/security'
+import { getClientIp, turnstileRejected, verifyTurnstile } from '../../../lib/turnstile'
+import { sendUserVerificationEmail } from '../../../lib/userVerification'
 
 export const config = {
   runtime: 'experimental-edge',
@@ -7,8 +9,6 @@ export const config = {
 
 const API_TOKEN = process.env.API_ACCESS_TOKEN
 const DB_URL = process.env.NEXT_PUBLIC_PARTNERS_DATA_URL
-const SENDRGRID_URL = process.env.NEXT_PUBLIC_API_SENDGRID
-const SENDGRID_ACCESS_TOKEN = process.env.SENDGRID_ACCESS_TOKEN
 const CLIENT_ROLE = '525f6b3a-0379-4636-ad16-4c719283c2b5'
 
 const SIGNUP_FIELDS = ['email', 'password', 'first_name', 'last_name', 'company', 'user_agent'] as const
@@ -17,6 +17,9 @@ export default async function (req: NextRequest) {
   if (req.method !== 'POST') return new Response(null, { status: 400 })
 
   const reqBody = await readJson(req)
+
+  if (!await verifyTurnstile(reqBody.turnstileToken, getClientIp(req), 'signup')) return turnstileRejected()
+
   const userData = pick(reqBody, SIGNUP_FIELDS)
 
   if (!isEmail(userData.email) || typeof userData.password !== 'string' || !userData.password) {
@@ -56,34 +59,12 @@ export default async function (req: NextRequest) {
 
   if (!reqBody.email_verification) return new Response(JSON.stringify(createdUser))
 
-  const token = await createVerificationToken('user', createUser.data.id)
-
-  const sendMailVerifications = await fetch(`${SENDRGRID_URL}/mail/send`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${SENDGRID_ACCESS_TOKEN}`
-    },
-    body: JSON.stringify({
-      from: {
-        email: "studios@decentraland.org", name: "Decentraland Studios"
-      },
-      personalizations: [{
-        to: [
-          { email: createdUser.email, name: createdUser.first_name }
-        ],
-        dynamic_template_data: {
-          ...createdUser,
-          verify_url: `https://studios.decentraland.org/user/verify?id=${createUser.data.id}#token=${token}`,
-        }
-      }],
-      template_id: "d-6e4af1c34f6d432bb18b09bf778cae3e"
-    })
+  const emailSent = await sendUserVerificationEmail({ id: createUser.data.id, ...createdUser }).catch((error) => {
+    console.error('Failed to send the verification email', error)
+    return false
   })
-  await sendMailVerifications.body?.cancel()
 
-  if (sendMailVerifications.ok) return new Response(JSON.stringify(createdUser))
-
-  return new Response(null, { status: 400 })
+  // The user exists either way: report the unsent email so the form can offer to resend it instead of a signup error
+  return new Response(JSON.stringify({ ...createdUser, emailSent }))
 
 }

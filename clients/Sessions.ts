@@ -69,11 +69,19 @@ const post = (url: string, body?: object) => fetch(url, {
 
 const fetcher = async (url: string, body?: object) => post(url, body).then(parseAuthResponse)
 
+// Without Web Locks a tab can't tell whether another one is refreshing, so a rejected refresh
+// waits this long for a concurrent refresh to store its session before logging out
+const REJECTED_REFRESH_GRACE_MS = 1500
+
+const wait = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
+
+const hasFreshSession = () => Number(Cookies.get("auth_expires")) > Date.now()
+
 /**
  * Directus rotates refresh tokens, so when two tabs refresh at once one of them is rejected.
  * A rejected refresh only logs out when no other tab stored a newer session meanwhile.
  */
-const refreshLogin = async () => {
+const requestRefresh = async (waitForOtherTabs: boolean) => {
     const previousExpiresAt = Cookies.get("auth_expires")
     const res = await post('/api/user/refresh').catch(() => undefined)
 
@@ -84,16 +92,38 @@ const refreshLogin = async () => {
         await res?.body?.cancel()
     }
 
-    const currentExpiresAt = Cookies.get("auth_expires")
-    if (currentExpiresAt !== previousExpiresAt && Number(currentExpiresAt) > Date.now()) {
-        return true
-    }
-
     // Only a rejected refresh token ends the session, outages keep it so the refresh is retried later
-    if (res?.status === 401 && currentExpiresAt === previousExpiresAt) {
-        Cookies.remove("auth_expires")
-    }
+    if (res?.status !== 401) return Cookies.get("auth_expires") !== previousExpiresAt && hasFreshSession()
+
+    if (waitForOtherTabs) await wait(REJECTED_REFRESH_GRACE_MS)
+
+    if (Cookies.get("auth_expires") !== previousExpiresAt) return hasFreshSession()
+
+    Cookies.remove("auth_expires")
     return false
+}
+
+/**
+ * Refreshes are serialized across tabs with the Web Locks API: a tab that waited for the lock
+ * finds the session another tab just refreshed and doesn't spend the rotated refresh token.
+ */
+const refreshAcrossTabs = (): Promise<boolean> => {
+    if (typeof navigator !== 'undefined' && navigator.locks) {
+        return navigator.locks.request('auth-refresh', async () => hasFreshSession() || requestRefresh(false))
+    }
+    return requestRefresh(true)
+}
+
+// Concurrent callers in the same tab share one refresh
+let refreshInFlight: Promise<boolean> | undefined
+
+const refreshLogin = () => {
+    if (!refreshInFlight) {
+        refreshInFlight = refreshAcrossTabs().finally(() => {
+            refreshInFlight = undefined
+        })
+    }
+    return refreshInFlight
 }
 
 export const login = async (email: string, password: string, otp?: string) => {

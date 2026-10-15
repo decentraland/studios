@@ -107,7 +107,7 @@ This project is optimized for running on a Cloudflare Pages instance by using [@
 Cloudflare build settings:
 ```
 Framework preset: none
-Build command: npx @cloudflare/next-on-pages@pre-v1 --experimental-minify
+Build command: npm run pages:build
 Build output directory: .vercel/output/static
 ```
 Environment variables in addition to the listed before:

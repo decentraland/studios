@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "pages:build": "npx @cloudflare/next-on-pages@pre-v1 --experimental-minify"
   },
   "dependencies": {
     "@next/font": "13.1.1",

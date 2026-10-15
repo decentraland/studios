@@ -107,11 +107,11 @@ This project runs on Cloudflare Pages through [@cloudflare/next-on-pages](https:
 Cloudflare build settings:
 ```
 Framework preset: None
-Build command: npm_config_legacy_peer_deps=true npx @cloudflare/next-on-pages@1.13.16
+Build command: npm run pages:build
 Build output directory: .vercel/output/static
 ```
 
-next-on-pages is deprecated and archived, and its last release declares `next <=15.5.2` and `vercel <=47.0.4` as peers. The project uses a newer, patched Next.js 15.5 release, so the build command skips the peer check (`npm_config_legacy_peer_deps=true`; without it `npx` also fails to resolve the latest `wrangler` peer). `vercel` is pinned to `47.0.4` in `devDependencies` because next-on-pages runs `vercel build` from the project's own dependencies.
+next-on-pages is deprecated and archived, and its last release declares `next <=15.5.2` and `vercel <=47.0.4` as peers. The project uses a newer, patched Next.js 15.5 release, so the `pages:build` script skips the peer check (`npm_config_legacy_peer_deps=true`; without it `npx` also fails to resolve the latest `wrangler` peer). `vercel` is pinned to `47.0.4` in `devDependencies` because next-on-pages runs `vercel build` from the project's own dependencies.
 
 Environment variables in addition to the listed before:
 
@@ -134,6 +134,6 @@ Functions Compatibility flags (Production and Preview):
 To check the build locally (with the same environment variables in place):
 
 ```bash
-npm_config_legacy_peer_deps=true npx @cloudflare/next-on-pages@1.13.16
+npm run pages:build
 npx wrangler pages dev .vercel/output/static --compatibility-flag=nodejs_compat --compatibility-date=2024-09-23
 ```

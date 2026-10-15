@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "pages:build": "npm_config_legacy_peer_deps=true npx @cloudflare/next-on-pages@1.13.16"
   },
   "dependencies": {
     "decentraland-ui": "^3.71.0",

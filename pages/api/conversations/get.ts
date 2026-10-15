@@ -36,6 +36,8 @@ export default async function (req: NextRequest) {
             },
             body: JSON.stringify({
                 "query": {
+                    // Without an explicit limit Directus returns at most 100 rows
+                    "limit": -1,
                     "filter": {
                         "_or": [
                             {
@@ -106,6 +108,7 @@ export default async function (req: NextRequest) {
                 },
                 body: JSON.stringify({
                     query: {
+                        limit: -1,
                         filter: {
                             "_and":
                                 [

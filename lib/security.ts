@@ -5,6 +5,10 @@ const VERIFICATION_TOKEN_SECRET = process.env.VERIFICATION_TOKEN_SECRET
 const EMAIL_REGEX = /^[^\s@<>()[\]\\,;:"]+@[^\s@<>()[\]\\,;:"]+\.[^\s@<>()[\]\\,;:"]+$/
 
 export const VERIFICATION_TOKEN_TTL = 7 * 24 * 60 * 60 * 1000
+// A guest job is published right after signing up from the job form, so its token only needs to outlive that form
+export const GUEST_JOB_TOKEN_TTL = 30 * 60 * 1000
+
+export type VerificationTokenPurpose = 'user' | 'job' | 'review' | 'guest-job'
 
 export function isEmail(value: unknown): value is string {
   return typeof value === 'string' && value.length <= 254 && EMAIL_REGEX.test(value)
@@ -133,15 +137,34 @@ async function hmac(message: string) {
 /**
  * Creates an expiring token that proves the holder received a link sent to them by email.
  * `purpose` scopes the token so a user verification token can't be replayed against a job or review.
+ * A `guest-job` token isn't emailed: it's handed to whoever just created the draft user, so they can attach one job to it.
  */
-export async function createVerificationToken(purpose: 'user' | 'job' | 'review', id: string, ttl = VERIFICATION_TOKEN_TTL) {
+export async function createVerificationToken(purpose: VerificationTokenPurpose, id: string, ttl = VERIFICATION_TOKEN_TTL) {
   const expiresAt = Date.now() + ttl
   return `${expiresAt}.${await hmac(`${purpose}:${id}:${expiresAt}`)}`
 }
 
-export async function isValidVerificationToken(purpose: 'user' | 'job' | 'review', id: string, token: unknown) {
-  if (typeof token !== 'string') return false
+/**
+ * Checks a token made by `createVerificationToken`. `expired` is only reported for a token that was really issued for
+ * this purpose and id, so links that were never valid aren't told apart from each other.
+ */
+export async function checkVerificationToken(purpose: VerificationTokenPurpose, id: string, token: unknown): Promise<'valid' | 'expired' | 'invalid'> {
+  if (typeof token !== 'string') return 'invalid'
   const [expiresAt, signature] = token.split('.')
-  if (!expiresAt || !signature || !/^\d+$/.test(expiresAt) || Number(expiresAt) < Date.now()) return false
-  return timingSafeEqual(signature, await hmac(`${purpose}:${id}:${expiresAt}`))
+  if (!expiresAt || !signature || !/^\d+$/.test(expiresAt)) return 'invalid'
+  if (!timingSafeEqual(signature, await hmac(`${purpose}:${id}:${expiresAt}`))) return 'invalid'
+  return Number(expiresAt) < Date.now() ? 'expired' : 'valid'
+}
+
+export async function isValidVerificationToken(purpose: VerificationTokenPurpose, id: string, token: unknown) {
+  return (await checkVerificationToken(purpose, id, token)) === 'valid'
+}
+
+/**
+ * Directus `_eq` is case-sensitive on Postgres and accounts created before emails were stored lowercased can have
+ * mixed-case addresses: this matches both the address as typed and its normalized form. Safe to join with commas, as
+ * `isEmail` rejects them.
+ */
+export function emailInFilter(email: string) {
+  return Array.from(new Set([email, normalizeEmail(email)])).map(encodeURIComponent).join(',')
 }

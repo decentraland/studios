@@ -1,5 +1,5 @@
 import type { NextRequest } from 'next/server'
-import { isEmail, readJson } from '../../../lib/security'
+import { emailInFilter, isEmail, readJson } from '../../../lib/security'
 import { getClientIp, turnstileRejected, verifyTurnstile } from '../../../lib/turnstile'
 
 export const config = {
@@ -18,7 +18,7 @@ export default async function (req: NextRequest) {
 
     if (!isEmail(email)) return new Response(null, { status: 400 })
 
-    let getUser = await fetch(`${DB_URL}/users?filter[email][_eq]=${encodeURIComponent(email)}`, {
+    let getUser = await fetch(`${DB_URL}/users?filter[email][_in]=${emailInFilter(email)}&fields=id&limit=1`, {
         headers: {
             'Authorization': `Bearer ${API_TOKEN}`,
         }

@@ -13,7 +13,7 @@ const ALLOWED_HOSTNAMES = (process.env.TURNSTILE_ALLOWED_HOSTNAMES || '')
 // or hostname, so those checks only apply to real keys.
 const IS_TEST_SECRET = /^[123]x0{31}AA$/.test(TURNSTILE_SECRET_KEY || '')
 
-export type TurnstileAction = 'login' | 'user-exists' | 'signup' | 'resend' | 'contact' | 'review' | 'landing'
+export type TurnstileAction = 'login' | 'user-exists' | 'signup' | 'resend' | 'contact' | 'review' | 'landing' | 'job'
 
 // Distinguishable from other 400s, so forms can report a failed security check instead of a generic error
 export function turnstileRejected() {

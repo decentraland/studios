@@ -1,13 +1,12 @@
 import type { NextRequest } from 'next/server'
 import { User } from '../../../interfaces/User'
-import { getAccessToken, isBoundedString, isSameOrigin, pick, readJson, readJsonResponse, discardResponse } from '../../../lib/security'
+import { parseJobInput } from '../../../lib/jobs'
+import { getAccessToken, isSameOrigin, readJson, readJsonResponse, discardResponse } from '../../../lib/security'
 
 export const config = {
   runtime: 'experimental-edge',
 }
 
-
-const JOB_FIELDS = ['title', 'budget', 'short_description', 'long_description', 'deadline_date', 'landing_url'] as const
 
 export default async function (req: NextRequest) {
 
@@ -22,18 +21,9 @@ export default async function (req: NextRequest) {
   if (req.method !== 'POST' || !isSameOrigin(req)) return new Response(null, { status: 400 })
 
   const { job: rawJob } = await readJson(req)
-  const job = pick(rawJob || {}, JOB_FIELDS)
+  const job = parseJobInput(rawJob)
 
-  if (
-    !isBoundedString(job.title, 256) || !job.title ||
-    !isBoundedString(job.budget, 64) || !job.budget ||
-    !isBoundedString(job.long_description, 10000) || !job.long_description ||
-    !Array.isArray(job.short_description) || job.short_description.length > 10 || !job.short_description.every(item => isBoundedString(item, 256)) ||
-    (job.deadline_date !== undefined && job.deadline_date !== null && job.deadline_date !== '' && !isBoundedString(job.deadline_date, 64)) ||
-    (job.landing_url !== undefined && job.landing_url !== null && !isBoundedString(job.landing_url, 2048))
-  ) {
-    return new Response(null, { status: 400 })
-  }
+  if (!job) return new Response(null, { status: 400 })
 
   try {
     

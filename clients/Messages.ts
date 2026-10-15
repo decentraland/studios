@@ -6,7 +6,7 @@ import { discardResponse, isSameEmail, normalizeEmail, readJsonResponse } from '
 import { getUsersBy } from '../lib/users'
 
 export const config = {
-    runtime: 'experimental-edge',
+    runtime: 'edge',
     unstable_allowDynamic: [
         '/node_modules/lodash/_root.js',
         '/node_modules/lodash/_cloneBuffer.js',

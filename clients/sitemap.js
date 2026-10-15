@@ -45,18 +45,23 @@ async function writeSitemap() {
     const fs = require("fs")
 
     const DB_URL = `${process.env.NEXT_PUBLIC_PARTNERS_DATA_URL}`
+    // A stalled CMS must not hang the build: the sitemap step already tolerates failures
+    const SITEMAP_FETCH_TIMEOUT_MS = 15000
 
-    const partnersPaths = (await (await fetch(`${DB_URL}/items/profile?fields=slug,date_updated,date_created&limit=-1&sort=-date_created,-date_updated`)).json()).data.map((item) => [`profile/${item.slug}`, item.date_updated, item.date_created])
+    const partnersPaths = (await (await fetch(`${DB_URL}/items/profile?fields=slug,date_updated,date_created&limit=-1&sort=-date_created,-date_updated`, { signal: AbortSignal.timeout(SITEMAP_FETCH_TIMEOUT_MS) })).json()).data.map((item) => [`profile/${item.slug}`, item.date_updated, item.date_created])
 
-    const projectsPaths = (await (await fetch(`${DB_URL}/items/projects?fields=id,date_updated,date_created&limit=-1&sort=-date_created,-date_updated`)).json()).data.map((item) => [`project/${item.id}`, item.date_updated, item.date_created])
+    const projectsPaths = (await (await fetch(`${DB_URL}/items/projects?fields=id,date_updated,date_created&limit=-1&sort=-date_created,-date_updated`, { signal: AbortSignal.timeout(SITEMAP_FETCH_TIMEOUT_MS) })).json()).data.map((item) => [`project/${item.id}`, item.date_updated, item.date_created])
     
-    const guidesPaths = (await (await fetch(`${DB_URL}/items/landings?fields=slug,date_updated,date_created&limit=-1&sort=-date_created,-date_updated`)).json()).data.map((item) => [`p/${item.slug}`, item.date_updated, item.date_created])
+    const guidesPaths = (await (await fetch(`${DB_URL}/items/landings?fields=slug,date_updated,date_created&limit=-1&sort=-date_created,-date_updated`, { signal: AbortSignal.timeout(SITEMAP_FETCH_TIMEOUT_MS) })).json()).data.map((item) => [`p/${item.slug}`, item.date_updated, item.date_created])
     
-    const resourcesPaths = (await (await fetch(`${DB_URL}/items/resources?fields=id,date_updated,date_created&limit=1&sort=-date_created,-date_updated`)).json()).data.map((item) => [item.id, item.date_updated, item.date_created])
+    const resourcesPaths = (await (await fetch(`${DB_URL}/items/resources?fields=id,date_updated,date_created&limit=1&sort=-date_created,-date_updated`, { signal: AbortSignal.timeout(SITEMAP_FETCH_TIMEOUT_MS) })).json()).data.map((item) => [item.id, item.date_updated, item.date_created])
     
     const sitemap = generateSiteMap(partnersPaths, projectsPaths, guidesPaths, resourcesPaths);
 
     fs.writeFileSync('public/sitemap.xml', sitemap)
 }
 
-writeSitemap()
+writeSitemap().catch((error) => {
+    // An unhandled rejection here aborts `next build` before compilation starts
+    console.warn('Could not generate public/sitemap.xml:', error.message)
+})

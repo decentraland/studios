@@ -4,7 +4,7 @@ import { sessionResponse } from '../../../lib/session'
 import { getClientIp, turnstileRejected, verifyTurnstile } from '../../../lib/turnstile'
 
 export const config = {
-  runtime: 'experimental-edge',
+  runtime: 'edge',
 }
 
 const DB_URL = process.env.NEXT_PUBLIC_PARTNERS_DATA_URL

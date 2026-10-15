@@ -2,7 +2,7 @@ import type { NextRequest } from 'next/server'
 import Resources from '../../../clients/Resources'
 
 export const config = {
-  runtime: 'experimental-edge',
+  runtime: 'edge',
 }
 
 export default async function (req: NextRequest) {

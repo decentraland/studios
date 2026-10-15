@@ -3,7 +3,7 @@ import { emailInFilter, isEmail, readJson } from '../../../lib/security'
 import { getClientIp, turnstileRejected, verifyTurnstile } from '../../../lib/turnstile'
 
 export const config = {
-    runtime: 'experimental-edge',
+    runtime: 'edge',
 }
 
 const API_TOKEN = process.env.API_ACCESS_TOKEN

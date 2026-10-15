@@ -1,10 +1,11 @@
 import type { NextRequest } from 'next/server'
+import { getRequestGeo } from '../../../lib/request'
 import { createVerificationToken, GUEST_JOB_TOKEN_TTL, isBoundedString, isEmail, isVerificationTokenConfigured, normalizeEmail, pick, readJson } from '../../../lib/security'
 import { getClientIp, turnstileRejected, verifyTurnstile } from '../../../lib/turnstile'
 import { sendUserVerificationEmail } from '../../../lib/userVerification'
 
 export const config = {
-  runtime: 'experimental-edge',
+  runtime: 'edge',
 }
 
 const API_TOKEN = process.env.API_ACCESS_TOKEN
@@ -47,7 +48,7 @@ export default async function (req: NextRequest) {
       ...userData,
       status: 'draft',
       role: CLIENT_ROLE,
-      geo: req.geo
+      geo: getRequestGeo(req)
     })
   })
     .then(res => res.json())

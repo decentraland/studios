@@ -5,11 +5,13 @@ import { Container } from 'decentraland-ui/dist/components/Container/Container'
 import React from 'react'
 import ProjectProfile from '../../components/ProjectProfile/ProjectProfile'
 import Projects from '../../clients/Projects'
+import { EMPTY_PATH_PLACEHOLDER, withPlaceholderIfEmpty } from '../../lib/staticPaths'
 import { PartnerProject } from '../../interfaces/PartnerProject'
 
 const DATA_URL = process.env.NEXT_PUBLIC_PARTNERS_DATA_URL
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
+  if (params?.id === EMPTY_PATH_PLACEHOLDER) return { notFound: true }
   if (params && params.id) {
     const project = await Projects.getProject(parseInt(params.id as string))
 
@@ -29,7 +31,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
   const paths = await Projects.getAllIds()
 
   return {
-    paths,
+    paths: withPlaceholderIfEmpty(paths, 'id'),
     fallback: false,
   }
 }

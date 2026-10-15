@@ -1,10 +1,11 @@
 import type { NextRequest } from 'next/server'
 import { User } from '../../../interfaces/User'
 import { parseJobInput } from '../../../lib/jobs'
+import { getRequestGeo } from '../../../lib/request'
 import { getAccessToken, isSameOrigin, readJson, readJsonResponse, discardResponse } from '../../../lib/security'
 
 export const config = {
-  runtime: 'experimental-edge',
+  runtime: 'edge',
 }
 
 
@@ -52,7 +53,7 @@ export default async function (req: NextRequest) {
         short_description: (job.short_description as string[]).join('\n'),
         deadline_date: job.deadline_date || null,
         verified_email: true,
-        geo: req.geo
+        geo: getRequestGeo(req)
       })
     })
       .then(readJsonResponse)

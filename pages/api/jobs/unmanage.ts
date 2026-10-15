@@ -4,7 +4,7 @@ import { User } from '../../../interfaces/User'
 import { isUUID } from '../../../components/utils'
 
 export const config = {
-    runtime: 'experimental-edge',
+    runtime: 'edge',
 }
 
 

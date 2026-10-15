@@ -4,7 +4,7 @@ import { discardResponse, isBoundedString, isEmail, readJson } from '../../lib/s
 import { getClientIp, turnstileRejected, verifyTurnstile } from '../../lib/turnstile'
 
 export const config = {
-  runtime: 'experimental-edge',
+  runtime: 'edge',
 }
 
 const MESSAGE_MAX_LENGTH = 5000

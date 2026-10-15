@@ -1,10 +1,11 @@
 import { type NextRequest } from 'next/server'
 import Landings from '../../../clients/Landings'
+import { getRequestGeo, getRequestIp } from '../../../lib/request'
 import { discardResponse, isBoundedString, isEmail, pick, readJson } from '../../../lib/security'
 import { getClientIp, turnstileRejected, verifyTurnstile } from '../../../lib/turnstile'
 
 export const config = {
-  runtime: 'experimental-edge',
+  runtime: 'edge',
 }
 
 const DB_URL = process.env.NEXT_PUBLIC_PARTNERS_DATA_URL
@@ -60,8 +61,8 @@ export default async function (req: NextRequest) {
         ...lead,
         list_ids: landing.list_ids,
         custom_fields: customFields,
-        ip: req.ip,
-        geo: req.geo
+        ip: getRequestIp(req),
+        geo: getRequestGeo(req)
       })
     }).then(discardResponse)
 

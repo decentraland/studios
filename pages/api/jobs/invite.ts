@@ -4,7 +4,7 @@ import { budgetToRanges, isUUID } from '../../../components/utils'
 import { getUsersBy } from '../../../lib/users'
 
 export const config = {
-  runtime: 'experimental-edge',
+  runtime: 'edge',
 }
 
 

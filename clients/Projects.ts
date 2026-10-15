@@ -1,4 +1,5 @@
 import { PartnerProject } from '../interfaces/PartnerProject'
+import { fetchItemsWithRetry } from '../lib/cms'
 import { readJsonResponse } from '../lib/security'
 
 const PROJECTS_URL = `${process.env.NEXT_PUBLIC_PARTNERS_DATA_URL}/items/projects`
@@ -15,8 +16,7 @@ export default class Projects {
     let projects: PartnerProject[] = []
     while (!isFinished) {
       try {
-        const response = await fetch(`${PROJECTS_URL}?offset=${offset}${queryFields}`)
-        const data = (await readJsonResponse(response)).data as PartnerProject[]
+        const data = await fetchItemsWithRetry<PartnerProject>(`${PROJECTS_URL}?offset=${offset}${queryFields}`)
         if (data.length === 0) {
           isFinished = true
         } else {
@@ -25,6 +25,8 @@ export default class Projects {
         projects.push(...data)
       } catch (error) {
         console.log('error', error)
+        // Retrying the same offset would loop forever while the CMS is unreachable
+        throw error
       }
     }
 

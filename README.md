@@ -102,21 +102,38 @@ To enforce the policy once no legitimate violations are reported, change the `Co
 
 ## Deploy on Cloudflare Pages
 
-This project is optimized for running on a Cloudflare Pages instance by using [@cloudflare/next-on-pages](https://github.com/cloudflare/next-on-pages) library.
+This project runs on Cloudflare Pages through [@cloudflare/next-on-pages](https://github.com/cloudflare/next-on-pages) v1. Every API route uses the Edge Runtime (`export const config = { runtime: 'edge' }`) and every page is statically generated; next-on-pages rejects any route that would need the Node.js runtime.
 
 Cloudflare build settings:
 ```
-Framework preset: none
-Build command: npx @cloudflare/next-on-pages@pre-v1 --experimental-minify
+Framework preset: None
+Build command: npm_config_legacy_peer_deps=true npx @cloudflare/next-on-pages@1.13.16
 Build output directory: .vercel/output/static
 ```
+
+next-on-pages is deprecated and archived, and its last release declares `next <=15.5.2` and `vercel <=47.0.4` as peers. The project uses a newer, patched Next.js 15.5 release, so the build command skips the peer check (`npm_config_legacy_peer_deps=true`; without it `npx` also fails to resolve the latest `wrangler` peer). `vercel` is pinned to `47.0.4` in `devDependencies` because next-on-pages runs `vercel build` from the project's own dependencies.
+
 Environment variables in addition to the listed before:
 
-`NODE_VERSION= 16`
+`NODE_VERSION=22`
 
-Functions Compatibility date:
+Node.js 20 is end of life; use Node.js 22 (LTS).
 
-`2022-11-30`
+Do not set `NODE_ENV=production` as a build variable: `npm` would then skip the `devDependencies`, and `typescript`, `eslint` and `vercel` are needed by the build.
 
-Functions Compatibility flags:
+Set the Functions compatibility date and flags for both the Production and the Preview environments. They are configured per environment, and a deployment without the `nodejs_compat` flag fails at runtime.
+
+Functions Compatibility date (Production and Preview):
+
+`2024-09-23`
+
+Functions Compatibility flags (Production and Preview):
+
 `nodejs_compat`
+
+To check the build locally (with the same environment variables in place):
+
+```bash
+npm_config_legacy_peer_deps=true npx @cloudflare/next-on-pages@1.13.16
+npx wrangler pages dev .vercel/output/static --compatibility-flag=nodejs_compat --compatibility-date=2024-09-23
+```

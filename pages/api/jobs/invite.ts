@@ -1,6 +1,7 @@
 import type { NextRequest } from 'next/server'
 import { discardResponse, getAccessToken, isEmail, isSameEmail, isSameOrigin, normalizeEmail, readJson, readJsonResponse } from '../../../lib/security'
 import { budgetToRanges, isUUID } from '../../../components/utils'
+import { getUsersBy } from '../../../lib/users'
 
 export const config = {
   runtime: 'experimental-edge',
@@ -58,17 +59,9 @@ export default async function (req: NextRequest) {
 
     const managers = JSON.parse(jobData.managers || "[]")
 
-    for (const manager of managers) {
-      const userMail = await fetch(`${DB_URL}/users/${manager.id}?fields=email`, {
-        headers: {
-          'Authorization': `Bearer ${API_TOKEN}`
-        }
-      })
-        .then(readJsonResponse)
-        .then(res => res?.data?.email)
-      // Deleted managers are skipped
-      if (userMail) allowedEmails.push(userMail)
-    }
+    // Deleted managers are skipped
+    const managersData = await getUsersBy('id', managers.map((manager: any) => manager?.id), 'email', API_TOKEN)
+    allowedEmails.push(...managersData.map(manager => manager.email).filter(Boolean))
 
     if (!allowedEmails.some(allowedEmail => isSameEmail(allowedEmail, currentUser.email))) {
       return new Response(null, { status: 403 })

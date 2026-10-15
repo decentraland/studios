@@ -3,6 +3,7 @@ import replyParser from 'node-email-reply-parser'
 import Files from './Files'
 import { isUUID } from '../components/utils'
 import { discardResponse, isSameEmail, normalizeEmail, readJsonResponse } from '../lib/security'
+import { getUsersBy } from '../lib/users'
 
 export const config = {
     runtime: 'experimental-edge',
@@ -118,17 +119,9 @@ export default class Messages {
 
         const managers = JSON.parse(conversation.related_job?.managers || "[]")
 
-        for (const manager of managers) {
-            const userMail = await fetch(`${DB_URL}/users/${manager.id}?fields=email`, {
-                headers: {
-                    'Authorization': `Bearer ${API_TOKEN}`
-                }
-            })
-                .then(readJsonResponse)
-                .then(res => res?.data?.email)
-            // Deleted managers are skipped
-            if (userMail) participants.push(userMail)
-        }
+        // Deleted managers are skipped
+        const managersData = await getUsersBy('id', managers.map((manager: any) => manager?.id), 'email', API_TOKEN)
+        participants.push(...managersData.map(manager => manager.email))
 
         const knownParticipants = uniqueEmails(participants)
         const authorEmail = knownParticipants.find(address => isSameEmail(address, fromEmail))

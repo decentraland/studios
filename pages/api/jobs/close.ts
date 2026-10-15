@@ -2,6 +2,7 @@ import type { NextRequest } from 'next/server'
 import { discardResponse, getAccessToken, isBoundedString, isSameEmail, isSameOrigin, readJson, readJsonResponse } from '../../../lib/security'
 import { budgetToRanges, isUUID } from '../../../components/utils'
 import { User } from '../../../interfaces/User'
+import { getUsersBy } from '../../../lib/users'
 
 export const config = {
   runtime: 'experimental-edge',
@@ -46,17 +47,9 @@ export default async function (req: NextRequest) {
 
     jobData.managers = JSON.parse((jobData.managers as any) || "[]")
 
-    const managers = [] as string[]
-
-    for (const manager of jobData.managers as User[]) {
-      const managerEmail = await fetch(`${DB_URL}/users/${manager.id}?fields=email`, {
-        headers: {
-          'Authorization': `Bearer ${API_TOKEN}`
-        }
-      }).then(readJsonResponse).then(body => body?.data?.email)
-      // Deleted managers are skipped
-      if (managerEmail) managers.push(managerEmail)
-    }
+    // Deleted managers are skipped
+    const managersData = await getUsersBy('id', (jobData.managers as User[]).map(manager => manager?.id), 'email', API_TOKEN)
+    const managers = managersData.map(manager => manager.email).filter(Boolean) as string[]
 
     const jobManagersEmails = [...managers, jobData.email]
 

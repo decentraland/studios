@@ -3,7 +3,7 @@ import { getAccessToken, isSameOrigin, normalizeEmail, readJson, readJsonRespons
 import { budgetToRanges, isUUID } from '../../../components/utils'
 
 export const config = {
-    runtime: 'experimental-edge',
+    runtime: 'edge',
 }
 
 

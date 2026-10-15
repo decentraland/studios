@@ -3,7 +3,7 @@ import React from 'react'
 import styles from './JobDetails.module.css'
 
 import MarkdownDescription from '../MarkdownDescription/MarkdownDescription'
-import { Job as JobDetails } from '../../interfaces/Job'
+import type { Job as JobDetails } from '../../interfaces/Job'
 import IconFile from '../Icons/IconFile'
 import { budgetToRanges } from '../utils'
 

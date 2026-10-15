@@ -3,11 +3,13 @@ import React from 'react'
 import { GetStaticPaths, GetStaticProps } from 'next'
 import Head from 'next/head'
 import Partners from '../../../clients/Partners'
+import { EMPTY_PATH_PLACEHOLDER, withPlaceholderIfEmpty } from '../../../lib/staticPaths'
 import { VerifiedPartner } from '../../../interfaces/VerifiedPartner'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
 import ReviewSubmitForm from '../../../components/ReviewSubmitForm/ReviewSubmitForm'
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
+  if (params?.slug === EMPTY_PATH_PLACEHOLDER) return { notFound: true }
   if (params && params.slug) {
     const partner = await Partners.getPartnerData({ slug: params.slug })
 
@@ -27,7 +29,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
   const paths = await Partners.getAllSlugs()
 
   return {
-    paths,
+    paths: withPlaceholderIfEmpty(paths, 'slug'),
     fallback: false,
   }
 }

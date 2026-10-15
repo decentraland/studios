@@ -4,7 +4,7 @@ import { isUUID } from '../../../components/utils'
 import { discardResponse, isValidVerificationToken, readJson, readJsonResponse } from '../../../lib/security'
 
 export const config = {
-  runtime: 'experimental-edge',
+  runtime: 'edge',
 }
 
 const API_TOKEN = process.env.API_ACCESS_TOKEN

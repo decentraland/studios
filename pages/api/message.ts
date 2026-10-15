@@ -3,7 +3,7 @@ import Messages from '../../clients/Messages'
 import { getAccessToken, isSameOrigin, readJsonResponse, timingSafeEqual } from '../../lib/security'
 
 export const config = {
-    runtime: 'experimental-edge',
+    runtime: 'edge',
     unstable_allowDynamic: [
         '/node_modules/lodash/_root.js',
         '/node_modules/lodash/_cloneBuffer.js',

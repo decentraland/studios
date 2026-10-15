@@ -5,7 +5,7 @@ import { isValidPassword } from '../../../lib/password'
 import { checkVerificationToken, readJson } from '../../../lib/security'
 
 export const config = {
-  runtime: 'experimental-edge',
+  runtime: 'edge',
 }
 
 function jsonResponse(body: unknown, status = 200) {

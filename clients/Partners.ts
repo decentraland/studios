@@ -1,4 +1,5 @@
 import { VerifiedPartner } from '../interfaces/VerifiedPartner'
+import { fetchItemsWithRetry } from '../lib/cms'
 import { readJsonResponse } from '../lib/security'
 import { chunk, uniqueStrings } from '../lib/users'
 
@@ -16,8 +17,7 @@ export default class Partners {
 
     while (!isFinished) {
       try {
-        const response = await fetch(`${VERIFIED_PARTNERS_URL}?offset=${offset}${queryFields}`)
-        const data = (await readJsonResponse(response)).data as VerifiedPartner[]
+        const data = await fetchItemsWithRetry<VerifiedPartner>(`${VERIFIED_PARTNERS_URL}?offset=${offset}${queryFields}`)
         if (data.length === 0) {
           isFinished = true
         } else {
@@ -26,6 +26,8 @@ export default class Partners {
         partners.push(...data)
       } catch (error) {
         console.log('error', error)
+        // Retrying the same offset would loop forever while the CMS is unreachable
+        throw error
       }
     }
     

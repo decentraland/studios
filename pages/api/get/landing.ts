@@ -4,7 +4,7 @@ import { readJson } from '../../../lib/security';
 import { sanitizeHtml } from '../../../lib/sanitizeHtml';
 
 export const config = {
-  runtime: 'experimental-edge',
+  runtime: 'edge',
 }
 
 export default async function (req: NextRequest) {

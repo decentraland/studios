@@ -2,11 +2,12 @@ import type { NextRequest } from 'next/server'
 import { PartnerProject } from '../../interfaces/PartnerProject'
 import { Resource } from '../../interfaces/Resource'
 import { VerifiedPartner } from '../../interfaces/VerifiedPartner'
+import { getRequestGeo, getRequestIp } from '../../lib/request'
 import { discardResponse, readJson, readJsonResponse } from '../../lib/security'
 import { escapeRegExp } from '../../components/utils'
 
 export const config = {
-  runtime: 'experimental-edge',
+  runtime: 'edge',
 }
 
 const DB_URL = process.env.NEXT_PUBLIC_PARTNERS_DATA_URL
@@ -59,8 +60,8 @@ export default async function (req: NextRequest) {
       },
       body: JSON.stringify({
         query,
-        geo: req.geo, 
-        ip: req.ip
+        geo: getRequestGeo(req), 
+        ip: getRequestIp(req)
       })
     }).then(discardResponse)
 

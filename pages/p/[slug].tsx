@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react"
 import { GetStaticPaths, GetStaticProps } from "next";
 import Landings from "../../clients/Landings";
+import { EMPTY_PATH_PLACEHOLDER, withPlaceholderIfEmpty } from "../../lib/staticPaths";
 import { Landing } from "../../interfaces/Landing";
 import { useRouter } from "next/router";
 import Head from "next/head";
@@ -15,6 +16,7 @@ const CAPTCHA_ERROR = "Security check failed, please try again."
 const SUBMIT_ERROR = "Something went wrong, please try again."
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
+    if (params?.slug === EMPTY_PATH_PLACEHOLDER) return { notFound: true }
 
     if (params && params.slug) {
       const landing = await Landings.getLandingData(`${params.slug}`)
@@ -35,7 +37,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
     const paths = await Landings.getAllSlugs()
   
     return {
-      paths,
+      paths: withPlaceholderIfEmpty(paths, 'slug'),
       fallback: false,
     }
 }

@@ -5,7 +5,7 @@ import { getClientIp, turnstileRejected, verifyTurnstile } from '../../../lib/tu
 import { sendUserVerificationEmail } from '../../../lib/userVerification'
 
 export const config = {
-  runtime: 'experimental-edge',
+  runtime: 'edge',
 }
 
 const API_TOKEN = process.env.API_ACCESS_TOKEN

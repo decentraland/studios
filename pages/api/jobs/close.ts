@@ -5,7 +5,7 @@ import { User } from '../../../interfaces/User'
 import { getUsersBy } from '../../../lib/users'
 
 export const config = {
-  runtime: 'experimental-edge',
+  runtime: 'edge',
 }
 
 

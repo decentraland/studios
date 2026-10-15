@@ -3,7 +3,7 @@ import Partners from '../../../clients/Partners';
 import { readJson } from '../../../lib/security';
 
 export const config = {
-  runtime: 'experimental-edge',
+  runtime: 'edge',
 }
 
 export default async function (req: NextRequest) {

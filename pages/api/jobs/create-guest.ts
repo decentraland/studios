@@ -1,11 +1,12 @@
 import type { NextRequest } from 'next/server'
 import { isUUID } from '../../../components/utils'
 import { parseJobInput, sendJobVerificationEmail } from '../../../lib/jobs'
+import { getRequestGeo } from '../../../lib/request'
 import { discardResponse, isValidVerificationToken, isVerificationTokenConfigured, readJson, readJsonResponse } from '../../../lib/security'
 import { getClientIp, turnstileRejected, verifyTurnstile } from '../../../lib/turnstile'
 
 export const config = {
-  runtime: 'experimental-edge',
+  runtime: 'edge',
 }
 
 const DB_URL = process.env.NEXT_PUBLIC_PARTNERS_DATA_URL
@@ -81,7 +82,7 @@ export default async function createGuest(req: NextRequest) {
         short_description: (job.short_description as string[]).join('\n'),
         deadline_date: job.deadline_date || null,
         verified_email: false,
-        geo: req.geo
+        geo: getRequestGeo(req)
       })
     })
       .then(readJsonResponse)

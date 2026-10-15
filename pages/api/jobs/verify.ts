@@ -5,7 +5,7 @@ import { activateDraftUser, deleteUser, getUserStatus, restoreSuspendedDraftUser
 import { checkVerificationToken, discardResponse, pick, readJson, readJsonResponse } from '../../../lib/security'
 
 export const config = {
-  runtime: 'experimental-edge',
+  runtime: 'edge',
 }
 
 const DB_URL = process.env.NEXT_PUBLIC_PARTNERS_DATA_URL

@@ -1,5 +1,5 @@
 import { Resource } from "../interfaces/Resource"
-import { readJsonResponse } from "../lib/security"
+import { fetchItemsWithRetry } from "../lib/cms"
 
 const RESOURCES_URL = `${process.env.NEXT_PUBLIC_PARTNERS_DATA_URL}/items/resources`
 
@@ -12,8 +12,7 @@ export default class Resources {
     const resources: Resource[] = []
     while (!isFinished) {
       try {
-        const response = await fetch(`${RESOURCES_URL}?offset=${offset}&sort[]=-date_created`)
-        const data = (await readJsonResponse(response)).data as Resource[]
+        const data = await fetchItemsWithRetry<Resource>(`${RESOURCES_URL}?offset=${offset}&sort[]=-date_created`)
         if (data.length === 0) {
           isFinished = true
         } else {
@@ -22,6 +21,8 @@ export default class Resources {
         resources.push(...data)
       } catch (error) {
         console.log('error', error)
+        // Retrying the same offset would loop forever while the CMS is unreachable
+        throw error
       }
     }
 

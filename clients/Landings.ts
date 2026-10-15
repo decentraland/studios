@@ -1,4 +1,5 @@
 import { Landing } from "../interfaces/Landing"
+import { fetchItemsWithRetry } from "../lib/cms"
 import { readJsonResponse } from "../lib/security"
 
 const LANDINGS_URL = `${process.env.NEXT_PUBLIC_PARTNERS_DATA_URL}/items/landings`
@@ -12,8 +13,7 @@ export default class Landings {
     const landings: Landing[] = []
     while (!isFinished) {
       try {
-        const response = await fetch(`${LANDINGS_URL}?offset=${offset}`)
-        const data = (await readJsonResponse(response)).data as Landing[]
+        const data = await fetchItemsWithRetry<Landing>(`${LANDINGS_URL}?offset=${offset}`)
         if (data.length === 0) {
           isFinished = true
         } else {
@@ -22,6 +22,8 @@ export default class Landings {
         landings.push(...data)
       } catch (error) {
         console.log('error', error)
+        // Retrying the same offset would loop forever while the CMS is unreachable
+        throw error
       }
     }
     return landings

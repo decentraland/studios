@@ -1,6 +1,7 @@
 import type { NextRequest } from 'next/server'
 import Partners from '../../clients/Partners'
 import { discardResponse, isBoundedString, isEmail, readJson } from '../../lib/security'
+import { getClientIp, turnstileRejected, verifyTurnstile } from '../../lib/turnstile'
 
 export const config = {
   runtime: 'experimental-edge',
@@ -15,7 +16,9 @@ export default async function (req: NextRequest) {
 
   if (req.method !== 'POST') return new Response(null, { status: 400 })
 
-  const { slug, senderEmail, message } = await readJson(req)
+  const { slug, senderEmail, message, turnstileToken } = await readJson(req)
+
+  if (!await verifyTurnstile(turnstileToken, getClientIp(req), 'contact')) return turnstileRejected()
 
   if (!isBoundedString(slug, 256) || !slug || !isEmail(senderEmail) || !isBoundedString(message, MESSAGE_MAX_LENGTH) || !message.trim()) {
     return new Response(null, { status: 400 })

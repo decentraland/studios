@@ -1,11 +1,12 @@
 import React, { useState } from 'react'
 
 import styles from './Login.module.css'
-import { login } from '../../clients/Sessions'
+import { AuthData, login } from '../../clients/Sessions'
 import { useRouter } from 'next/router'
 import { mutate } from 'swr'
 import Link from 'next/link'
 import Form from '../Form/Form'
+import Turnstile, { useTurnstile } from '../Turnstile/Turnstile'
 
 export default function Login() {
 
@@ -15,6 +16,8 @@ export default function Login() {
     const [credentialsError, setCredentialsError] = useState<string>()
     const [invalidInput, setInvalidInput] = useState(false)
     const [otpScreen, setOtpScreen] = useState(false)
+    const [isSubmitting, setIsSubmitting] = useState(false)
+    const turnstile = useTurnstile('login')
 
     const router = useRouter()
 
@@ -41,8 +44,14 @@ export default function Login() {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
+        if (isSubmitting) return
+        const turnstileToken = turnstile.take()
+        if (!turnstileToken) return
         setInvalidInput(false)
-        const res = await login(email, password, otp)
+        setIsSubmitting(true)
+        const res = await login(email, password, otp, turnstileToken)
+            .catch(() => ({ error: "We couldn't reach the server, please check your connection and try again." } as AuthData))
+        // isSubmitting stays set on success, so the button stays disabled while navigating away
         if (res.expires_at) {
             await mutate(`/api/user/me`)
             await mutate(`/api/messages/get`)
@@ -55,8 +64,10 @@ export default function Login() {
         } else if (res.error && res.error === 'missing otp') {
             setCredentialsError(undefined)
             setOtpScreen(true)
+            setIsSubmitting(false)
         } else if (res.error) {
             setCredentialsError(res.error)
+            setIsSubmitting(false)
         } else {
             goToPrevPage()
         }
@@ -83,8 +94,9 @@ export default function Login() {
                     <Form.InputText key="otp" required type='text' onChange={(e) => setOtp(e.currentTarget.value)} value={otp} placeholder="" />
                     <Form.FieldMessage icon="info" red={!!credentialsError} message={credentialsError || "This is the 2FA code you use to access the back office."} />
                 </>}
+            <Turnstile ref={turnstile.ref} action={turnstile.action} onToken={turnstile.onToken} />
             <Form.ButtonSubmit
-                disabled={emptyFields}
+                disabled={emptyFields || !turnstile.token || isSubmitting}
                 value="LOG IN"
             />
             {!otpScreen && <div className={styles.text}>Don’t have an account yet? <Link href="/signup">Register</Link></div>}

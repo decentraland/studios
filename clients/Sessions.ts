@@ -52,6 +52,10 @@ const parseAuthResponse = (res: Response) => res.json().catch(() => ({}))
             return { error: "missing otp" } as AuthData
         }
 
+        if (body.errors && body.errors[0]?.message === "captcha") {
+            return { error: "Security check failed, please try again." } as AuthData
+        }
+
         if (body.errors && body.errors[0]?.message === "\"otp\" is invalid") {
             return { error: "The one-time password provided is invalid, please try again." } as AuthData
         }
@@ -126,11 +130,12 @@ const refreshLogin = () => {
     return refreshInFlight
 }
 
-export const login = async (email: string, password: string, otp?: string) => {
+export const login = async (email: string, password: string, otp?: string, turnstileToken?: string) => {
     return fetcher('/api/user/login', {
         email: email,
         password: password,
-        otp: otp
+        otp: otp,
+        turnstileToken: turnstileToken
     })
 }
 

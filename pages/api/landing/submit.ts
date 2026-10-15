@@ -1,6 +1,7 @@
 import { type NextRequest } from 'next/server'
 import Landings from '../../../clients/Landings'
 import { discardResponse, isBoundedString, isEmail, pick, readJson } from '../../../lib/security'
+import { getClientIp, turnstileRejected, verifyTurnstile } from '../../../lib/turnstile'
 
 export const config = {
   runtime: 'experimental-edge',
@@ -21,6 +22,9 @@ export default async function (req: NextRequest) {
   if (req.method !== 'POST') return new Response(null, { status: 400 })
 
   const body = await readJson(req)
+
+  if (!await verifyTurnstile(body.turnstileToken, getClientIp(req), 'landing')) return turnstileRejected()
+
   const lead = pick(body, LEAD_FIELDS)
 
   if (!isEmail(lead.email) || !isBoundedString(lead.slug, 256) || !lead.slug) return new Response(null, { status: 400 })

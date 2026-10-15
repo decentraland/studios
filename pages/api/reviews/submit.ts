@@ -1,5 +1,6 @@
 import type { NextRequest } from 'next/server'
 import { createVerificationToken, discardResponse, isBoundedString, isEmail, pick, readJson, readJsonResponse } from '../../../lib/security'
+import { getClientIp, turnstileRejected, verifyTurnstile } from '../../../lib/turnstile'
 
 export const config = {
   runtime: 'experimental-edge',
@@ -17,7 +18,10 @@ export default async function (req: NextRequest) {
 
   if (req.method !== 'POST') return new Response(null, { status: 400 })
 
-  const { review: rawReview } = await readJson(req)
+  const { review: rawReview, turnstileToken } = await readJson(req)
+
+  if (!await verifyTurnstile(turnstileToken, getClientIp(req), 'review')) return turnstileRejected()
+
   const review = pick(rawReview || {}, REVIEW_FIELDS)
   const profileSlug = rawReview?.profile
 

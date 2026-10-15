@@ -6,8 +6,12 @@ import Form from '../Form/Form'
 import Link from 'next/link'
 import { User } from '../../interfaces/User'
 import ErrorScreen from '../ErrorScreen/ErrorScreen'
+import Turnstile, { isTurnstileRejection, useTurnstile } from '../Turnstile/Turnstile'
 
 const JOIN_REGISTRY_URL = process.env.NEXT_PUBLIC_JOIN_REGISTRY_URL
+const CAPTCHA_ERROR = 'Security check failed, please try again.'
+const SIGNUP_ERROR = "We couldn't create your account, please try again."
+const EMAIL_CHECK_ERROR = "We couldn't check your email, please try again."
 
 interface Props {
     customStepOffset?: number
@@ -26,15 +30,21 @@ export default function Signup({ customStepOffset = 0, customStepCount, customNa
     const [currentStep, setCurrentStep] = useState(customStepStart)
     const [email, setEmail] = useState('')
     const [userExists, setUserExists] = useState(false)
+    const [emailCheckError, setEmailCheckError] = useState<string>()
     const [password, setPassword] = useState('')
     const [passwordConfirm, setPasswordConfirm] = useState('')
     const [firstName, setFirstName] = useState('')
     const [lastName, setlastName] = useState('')
     const [company, setCompany] = useState('')
+    const [signupError, setSignupError] = useState<string>()
+    const [isSubmitting, setIsSubmitting] = useState(false)
+    const [resendResult, setResendResult] = useState<'sent' | 'captcha' | 'failed'>()
+    const [verificationEmailFailed, setVerificationEmailFailed] = useState(false)
+    const turnstile = useTurnstile(currentStep === 1 ? 'user-exists' : currentStep === 3 ? 'resend' : 'signup')
 
     const passwordInvalid = !!password && (password.length <= 7)
     const passwordConfirmError = !!password && !!passwordConfirm && (password !== passwordConfirm)
-    const disableSubmit = !email || !password || !passwordConfirm || passwordInvalid || passwordConfirmError
+    const disableSubmit = !email || !password || !passwordConfirm || passwordInvalid || passwordConfirmError || !turnstile.token || isSubmitting
 
     const IconCLients = React.memo(() => {
         return <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
@@ -77,41 +87,60 @@ export default function Signup({ customStepOffset = 0, customStepCount, customNa
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
-        fetch('/api/user/signup', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                email,
-                password,
-                first_name: firstName,
-                last_name: lastName,
-                company,
-                user_agent: globalThis?.navigator.userAgent,
-                email_verification: email_verification
+        if (isSubmitting) return
+        const turnstileToken = turnstile.take()
+        if (!turnstileToken) return
+
+        setSignupError(undefined)
+        setIsSubmitting(true)
+
+        try {
+            const res = await fetch('/api/user/signup', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    email,
+                    password,
+                    first_name: firstName,
+                    last_name: lastName,
+                    company,
+                    user_agent: globalThis?.navigator.userAgent,
+                    email_verification: email_verification,
+                    turnstileToken
+                })
             })
-        })
-            .then((res) => {
-                if (res.ok) {
-                    return res.json()
-                } else {
-                    // goToStep(4)
-                    console.log(res)
-                }
-            })
-            .then((user) => {
-                if (!user) return
-                if (onSuccess) {
-                    onSuccess(user)
-                } else {
-                    goToStep(3)
-                }
-            })
+
+            if (!res.ok) {
+                setSignupError(await isTurnstileRejection(res) ? CAPTCHA_ERROR : SIGNUP_ERROR)
+                return
+            }
+
+            const user = await res.json()
+            if (onSuccess) {
+                onSuccess(user)
+            } else {
+                setResendResult(undefined)
+                // The account was created even if the verification email wasn't sent: step 3 lets the user resend it
+                setVerificationEmailFailed(user.emailSent === false)
+                goToStep(3)
+            }
+        } catch {
+            setSignupError(SIGNUP_ERROR)
+        } finally {
+            setIsSubmitting(false)
+        }
     }
 
     const handleSubmitStep1 = async (e: React.FormEvent) => {
         e.preventDefault()
+        if (isSubmitting) return
+        const turnstileToken = turnstile.take()
+        if (!turnstileToken) return
+
+        setEmailCheckError(undefined)
+        setIsSubmitting(true)
         fetch('/api/user/exists', {
             method: 'POST',
             headers: {
@@ -119,15 +148,50 @@ export default function Signup({ customStepOffset = 0, customStepCount, customNa
             },
             body: JSON.stringify({
                 email,
+                turnstileToken
             })
         })
-            .then((res) => {
-                if (res.ok) {
+            .then(async (res) => {
+                // 204: the email is taken, 404: no account yet. Anything else (e.g. a rejected security check) is an error.
+                if (res.status === 204) {
                     setUserExists(true)
-                } else {
+                } else if (res.status === 404) {
+                    setUserExists(false)
                     goToStep(2)
+                } else {
+                    setEmailCheckError(await isTurnstileRejection(res) ? CAPTCHA_ERROR : EMAIL_CHECK_ERROR)
                 }
             })
+            .catch(() => setEmailCheckError(EMAIL_CHECK_ERROR))
+            .finally(() => setIsSubmitting(false))
+    }
+
+    const handleResend = async () => {
+        if (isSubmitting) return
+        const turnstileToken = turnstile.take()
+        if (!turnstileToken) return
+
+        setResendResult(undefined)
+        setIsSubmitting(true)
+
+        try {
+            const res = await fetch('/api/user/resend', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    email,
+                    turnstileToken
+                })
+            })
+            setResendResult(res.ok ? 'sent' : await isTurnstileRejection(res) ? 'captcha' : 'failed')
+            if (res.ok) setVerificationEmailFailed(false)
+        } catch {
+            setResendResult('failed')
+        } finally {
+            setIsSubmitting(false)
+        }
     }
 
     const goToStep = (step: number, e?: React.FormEvent) => {
@@ -160,8 +224,8 @@ export default function Signup({ customStepOffset = 0, customStepCount, customNa
                     value={email}
                     placeholder="studioname@studio.com"
                     onChange={(e) => setEmail(e.currentTarget.value)} />
-                <Form.FieldMessage message={userExists ? `Email already used` : ""}
-                    icon={userExists ? "info" : ""}
+                <Form.FieldMessage message={userExists ? `Email already used` : emailCheckError || ""}
+                    icon={userExists || emailCheckError ? "info" : ""}
                     red />
 
                 <Form.Label>Create a password</Form.Label>
@@ -184,6 +248,7 @@ export default function Signup({ customStepOffset = 0, customStepCount, customNa
                     icon={passwordConfirmError ? "info" : ""}
                     red />
 
+                <Turnstile ref={turnstile.ref} action={turnstile.action} onToken={turnstile.onToken} />
                 <Form.ButtonSubmit disabled={disableSubmit}
                     value="CONTINUE" />
 
@@ -220,13 +285,17 @@ export default function Signup({ customStepOffset = 0, customStepCount, customNa
                     placeholder="Example company"
                     onChange={(e) => setCompany(e.currentTarget.value)} />
 
+                <Turnstile ref={turnstile.ref} action={turnstile.action} onToken={turnstile.onToken} />
                 <Form.ButtonSubmit disabled={disableSubmit}
                     value="CONTINUE" />
+                {signupError && <Form.FieldMessage icon="info" red message={signupError} />}
             </Form>
         </div>
     }
 
     if (currentStep === 3) {
+        const canResend = !!turnstile.token && !isSubmitting
+
         return <div className={styles.container}>
             <Form onBack={() => goToPrevPage()}
                 logo={logo}
@@ -237,8 +306,14 @@ export default function Signup({ customStepOffset = 0, customStepCount, customNa
                 stepTitle='Verify your email' >
                 <img alt='Check your email' src="/images/form_envelope.webp" />
                 <Form.Label>
-                    Please confirm your account by clicking on a link we sent you via email to <b>{email}</b>. If you haven&apos;t received an email in 5 minutes, check your spam, <a className='text-red underline' onClick={handleSubmit}>resend</a>, or <a className='text-red underline' onClick={() => goToStep(1)}>try a different email</a>.
+                    Please confirm your account by clicking on a link we sent you via email to <b>{email}</b>. If you haven&apos;t received an email in 5 minutes, check your spam, <a className={`text-red underline ${canResend ? '' : styles.linkDisabled}`} aria-disabled={!canResend} onClick={canResend ? handleResend : undefined}>resend</a>, or <a className='text-red underline' onClick={() => goToStep(1)}>try a different email</a>.
                 </Form.Label>
+                {verificationEmailFailed && <Form.FieldMessage icon="info" red
+                    message="We created your account but couldn't send the verification email. Use the resend link above to get a new one." />}
+                <Turnstile ref={turnstile.ref} action={turnstile.action} onToken={turnstile.onToken} />
+                {resendResult && <Form.FieldMessage icon="info"
+                    red={resendResult !== 'sent'}
+                    message={resendResult === 'sent' ? 'We sent you a new email.' : resendResult === 'captcha' ? CAPTCHA_ERROR : "We couldn't resend the email, please try again."} />}
             </Form>
         </div>
     }

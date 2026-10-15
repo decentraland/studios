@@ -73,6 +73,33 @@ Example thresholds, counted per IP:
 
 Each row is a separate rule matching its own paths. On plans that allow a single rate limiting rule, use the expression above with the strictest values.
 
+## Content Security Policy
+
+`headers.js` sends two policies:
+
+- `Content-Security-Policy`: a baseline that is enforced (`object-src`, `base-uri` and `frame-ancestors`).
+- `Content-Security-Policy-Report-Only`: the strict policy built by `lib/csp.js`. Browsers don't block anything it disallows, they only report it.
+
+Inline scripts are allowed by their `sha256` hash. Every inline `<Script>` must render a snippet from `lib/inlineScripts.js`, and `lib/csp.js` must hash it with the same arguments. The hashes are computed when the build starts, using the `NEXT_PUBLIC_*` values that the snippets include. The isbot script from jsDelivr is loaded with a Subresource Integrity hash, so update `ISBOT_INTEGRITY` whenever its version changes. To print the policy for the current environment, run:
+
+```bash
+node -e "console.log(require('./lib/csp').buildContentSecurityPolicy())"
+```
+
+To check for violations, open the site with the browser dev tools open and browse every kind of page: home, search, profiles, projects, a `/p/` landing, the dashboard, sign up and the Intercom chat. Each blocked resource is logged in the console as `[Report Only] Refused to load ...` or `[Report Only] Refused to execute inline script ...`, naming the directive that would block it. Add the legitimate origins to `lib/csp.js`.
+
+Browsers also send every violation of the report-only policy to `/api/csp-report` (through the `report-uri` directive, and `report-to` with the `Reporting-Endpoints` header for browsers that support the Reporting API). Each violation is logged as a single `CSP violation:` line with the directive, the blocked URL, the page (without its query string), the source file and line, so the violations from real visitors show up in the Cloudflare Pages function logs (real-time logs). Review them before switching to enforcing.
+
+To enforce the policy once no legitimate violations are reported, change the `Content-Security-Policy-Report-Only` key in `headers.js` to `Content-Security-Policy` and remove the baseline entry, since the strict policy already includes its directives.
+
+## SendGrid Inbound Parse
+
+`/api/message` receives the email replies that SendGrid's Inbound Parse forwards, authenticated with `SENDGRID_INBOUND_TOKEN`. The token was previously sent in the `?access_token=` query string, which ends up in logs. To migrate:
+
+1. In SendGrid, change the Inbound Parse destination URL to `https://sendgrid:<SENDGRID_INBOUND_TOKEN>@studios.decentraland.org/api/message`. SendGrid sends those credentials as HTTP Basic auth, and any user name is accepted.
+2. Check that incoming emails no longer log `authenticated with the deprecated access_token query param`.
+3. Remove the `access_token` query param support from `pages/api/message.ts` in the first release after the Inbound Parse URL has been switched to basic auth.
+
 ## Deploy on Cloudflare Pages
 
 This project is optimized for running on a Cloudflare Pages instance by using [@cloudflare/next-on-pages](https://github.com/cloudflare/next-on-pages) library.

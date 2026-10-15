@@ -8,6 +8,8 @@ import Script from "next/script";
 import Turnstile, { isTurnstileRejection, useTurnstile } from "../../components/Turnstile/Turnstile";
 import Form from "../../components/Form/Form";
 import { fbq, googleAdsTrack, linkedinTrackLead, openIntercom, plausibleTrackEvent, safeUrl, updateIntercom } from "../../components/utils";
+import { linkedinPartnerId, linkedinTracking as linkedinTrackingScript } from "../../lib/inlineScripts";
+import { sanitizeHtml } from "../../lib/sanitizeHtml";
 
 const CAPTCHA_ERROR = "Security check failed, please try again."
 const SUBMIT_ERROR = "Something went wrong, please try again."
@@ -16,6 +18,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 
     if (params && params.slug) {
       const landing = await Landings.getLandingData(`${params.slug}`)
+      if (landing) landing.content1_description = sanitizeHtml(landing.content1_description)
       return {
         props: {
             landing,
@@ -78,6 +81,27 @@ function MetaverseGuide({ landing }: Props) {
             (globalThis as any).fbq && (globalThis as any).fbq('trackSingle', landingData.fb_pixel, 'PageView');
         }
     }, [(globalThis as any).fbq])
+
+    // Ids and names in the CMS content are prefixed by sanitizeHtml, so links from outside the page such as
+    // /p/<slug>#section no longer match them. Scroll to the prefixed element when nothing has the unprefixed id.
+    useEffect(() => {
+        const scrollToContentAnchor = () => {
+            const fragment = globalThis.location.hash.slice(1)
+            if (!fragment) return
+            let id = fragment
+            try {
+                id = decodeURIComponent(fragment)
+            } catch {}
+            if (document.getElementById(fragment) || document.getElementById(id)) return
+            const prefixedId = `user-content-${id}`
+            const target = document.getElementById(prefixedId) || document.getElementsByName(prefixedId)[0]
+            target?.scrollIntoView()
+        }
+
+        scrollToContentAnchor()
+        globalThis.addEventListener('hashchange', scrollToContentAnchor)
+        return () => globalThis.removeEventListener('hashchange', scrollToContentAnchor)
+    }, [])
 
     
 
@@ -176,23 +200,14 @@ function MetaverseGuide({ landing }: Props) {
 
     let linkedinTracking = null
 
-    // The partner id is interpolated into an inline script, so only plain numeric ids are accepted
+    // The partner id ends up in a script attribute and the tracking pixel URL, so only plain numeric ids are accepted
     if (/^\d+$/.test(`${landingData.track_linkedin?.partner_id || ''}`)) {
         linkedinTracking = <footer>
-            <Script id="linkedin-partner_id" strategy="afterInteractive">
-                {`_linkedin_partner_id = "${landingData.track_linkedin.partner_id}";
-                window._linkedin_data_partner_ids = window._linkedin_data_partner_ids || [];
-                window._linkedin_data_partner_ids.push(_linkedin_partner_id);`}
+            <Script id={`linkedin-partner_id-${landingData.track_linkedin.partner_id}`} strategy="afterInteractive" data-partner-id={`${landingData.track_linkedin.partner_id}`}>
+                {linkedinPartnerId()}
             </Script>
             <Script id="linkedin-tracking" strategy="afterInteractive">
-                {`(function(l) {
-                if (!l){window.lintrk = function(a,b){window.lintrk.q.push([a,b])};
-                window.lintrk.q=[]}
-                var s = document.getElementsByTagName("script")[0];
-                var b = document.createElement("script");
-                b.type = "text/javascript";b.async = true;
-                b.src = "https://snap.licdn.com/li.lms-analytics/insight.min.js";
-                s.parentNode.insertBefore(b, s);})(window.lintrk);`} 
+                {linkedinTrackingScript()}
             </Script>
             <noscript>
                 <img height="1" width="1" style={{display:"none"}} alt="" src={`https://px.ads.linkedin.com/collect/?pid=${landingData.track_linkedin.partner_id}&fmt=gif`} />

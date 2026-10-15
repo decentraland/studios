@@ -18,7 +18,8 @@ import { IntlProvider } from 'react-intl'
 
 import English from '../locales/en.json'
 import NavTabs from '../components/NavTabs/NavTabs'
-import { fbq } from '../components/utils'
+import { fbq, updateIntercom } from '../components/utils'
+import { ISBOT_INTEGRITY, ISBOT_SRC, fbPixelInit, googleTagInit, intercomInit, plausibleInit, segmentInit } from '../lib/inlineScripts'
 import FooterStudios from '../components/FooterStudios/FooterStudios'
 import Cookies from 'js-cookie'
 import { User } from '../interfaces/User'
@@ -80,6 +81,13 @@ function App({ Component, pageProps }: AppProps) {
   }, [router.events])
 
   const isCustomLanding = router.asPath.includes('/p/')
+
+  // The Intercom snippet only runs on the first page load (next/script dedupes it by id), so the launcher visibility
+  // is updated when client-side navigation enters or leaves a custom landing
+  useEffect(() => {
+    updateIntercom({ hide_default_launcher: isCustomLanding })
+  }, [isCustomLanding])
+
   const showTabs = !['/p/', '/project/', '/profile/', '/signup', '/jobs/verify'].includes(router.route)
   const showFooter = !['/signup', '/jobs/verify'].includes(router.route)
 
@@ -127,31 +135,17 @@ function App({ Component, pageProps }: AppProps) {
         src="https://www.googletagmanager.com/gtag/js?id=G-B0CSXD2KZL">
       </Script>
       <Script id="google-tag-init">
-        {`window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-
-        gtag('config', "G-B0CSXD2KZL");
-        gtag('config', "AW-11226587097", { "groups": "default" });`}
+        {googleTagInit()}
       </Script>
 
-      <Script id="isbot"
-        src="https://cdn.jsdelivr.net/npm/isbot@5.1.23/index.iife.min.js">
+      <Script id="isbot-lib"
+        src={ISBOT_SRC}
+        integrity={ISBOT_INTEGRITY}
+        crossOrigin="anonymous">
       </Script>
 
       <Script id="metabase" >
-        {`(function checkAndLoadAnalytics() {
-          if (typeof(window.isbot) === 'function'){
-            if (!window.isbot(navigator.userAgent)) {
-              !function(){var analytics=window.analytics=window.analytics||[];if(!analytics.initialize)if(analytics.invoked)window.console&&console.error&&console.error("Segment snippet included twice.");else{analytics.invoked=!0;analytics.methods=["trackSubmit","trackClick","trackLink","trackForm","pageview","identify","reset","group","track","ready","alias","debug","page","once","off","on","addSourceMiddleware","addIntegrationMiddleware","setAnonymousId","addDestinationMiddleware"];analytics.factory=function(e){return function(){var t=Array.prototype.slice.call(arguments);t.unshift(e);analytics.push(t);return analytics}};for(var e=0;e<analytics.methods.length;e++){var key=analytics.methods[e];analytics[key]=analytics.factory(key)}analytics.load=function(key,e){var t=document.createElement("script");t.type="text/javascript";t.async=!0;t.src="https://cdn.segment.com/analytics.js/v1/" + key + "/analytics.min.js";var n=document.getElementsByTagName("script")[0];n.parentNode.insertBefore(t,n);analytics._loadOptions=e};analytics._writeKey="${METABASE_KEY}";;analytics.SNIPPET_VERSION="4.15.3";
-              analytics.load("${METABASE_KEY}");
-              analytics.page();
-              }}();
-            }
-          } else if (typeof(window.isbot) === 'undefined') {
-            setTimeout(checkAndLoadAnalytics, 100);
-          }
-        })();`}
+        {segmentInit(METABASE_KEY)}
       </Script>
 
       <Script id="plausible"
@@ -159,63 +153,15 @@ function App({ Component, pageProps }: AppProps) {
         src="https://plausible.io/js/script.outbound-links.tagged-events.js">
       </Script>
       <Script id='plausible-init' strategy="beforeInteractive">
-        {`window.plausible = window.plausible || function() { (window.plausible.q = window.plausible.q || []).push(arguments) }`}
+        {plausibleInit()}
       </Script>
 
       <Script id='intercom'>
-        {`window.intercomSettings = {
-            api_base: "https://api-iam.intercom.io",
-            app_id: "${INTERCOM_APP_ID}",
-            hide_default_launcher: ${isCustomLanding}
-        };`}
-
-        {`(function () {
-          var w = window;
-          var ic = w.Intercom;
-          if (typeof ic === "function") {
-            ic('reattach_activator');
-            ic('update', w.intercomSettings);
-          } else {
-            var d = document;
-            var i = function () {
-              i.c(arguments);
-            };
-            i.q = [];
-            i.c = function (args) {
-              i.q.push(args);
-            };
-            w.Intercom = i;
-            var l = function () {
-              setTimeout(function () {
-                var s = d.createElement('script');
-                s.type = 'text/javascript';
-                s.async = true;
-                s.src = 'https://widget.intercom.io/widget/${INTERCOM_APP_ID}';
-                var x = d.getElementsByTagName('script')[0];
-                x.parentNode.insertBefore(s, x);
-              }, 5000);
-            };
-
-            if (w.attachEvent) {
-              w.attachEvent('onload', l);
-            } else {
-              w.addEventListener('load', l, false);
-            }
-          }
-        })();`}
+        {intercomInit(INTERCOM_APP_ID, isCustomLanding)}
       </Script>
 
       <Script id="fb-pixel">
-        {`!function(f,b,e,v,n,t,s)
-        {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-        n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-        if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-        n.queue=[];t=b.createElement(e);t.async=!0;
-        t.src=v;s=b.getElementsByTagName(e)[0];
-        s.parentNode.insertBefore(t,s)}(window, document,'script',
-        'https://connect.facebook.net/en_US/fbevents.js');
-        fbq('init', '486890793629175');
-        fbq('track', 'PageView');`}
+        {fbPixelInit()}
       </Script>
     </>
   )

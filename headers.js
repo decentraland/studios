@@ -1,3 +1,4 @@
+const { buildContentSecurityPolicy } = require('./lib/csp');
 
 const headers = [
     {
@@ -37,6 +38,16 @@ const headers = [
       // but plugins, <base> hijacking and framing by other sites are blocked.
       key: 'Content-Security-Policy',
       value: "object-src 'none'; base-uri 'self'; frame-ancestors 'self'",
+    },
+    {
+      // Strict policy, only reported until it's verified that no legitimate resource is blocked (see README)
+      key: 'Content-Security-Policy-Report-Only',
+      value: buildContentSecurityPolicy({ dev: process.env.NODE_ENV !== 'production' }),
+    },
+    {
+      // Endpoint used by the report-to directive of the report-only policy
+      key: 'Reporting-Endpoints',
+      value: 'csp-endpoint="/api/csp-report"',
     },
   ];
   

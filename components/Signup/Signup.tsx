@@ -31,8 +31,6 @@ export default function Signup({ customStepOffset = 0, customStepCount, customNa
     const [email, setEmail] = useState('')
     const [userExists, setUserExists] = useState(false)
     const [emailCheckError, setEmailCheckError] = useState<string>()
-    const [password, setPassword] = useState('')
-    const [passwordConfirm, setPasswordConfirm] = useState('')
     const [firstName, setFirstName] = useState('')
     const [lastName, setlastName] = useState('')
     const [company, setCompany] = useState('')
@@ -41,10 +39,10 @@ export default function Signup({ customStepOffset = 0, customStepCount, customNa
     const [resendResult, setResendResult] = useState<'sent' | 'captcha' | 'failed'>()
     const [verificationEmailFailed, setVerificationEmailFailed] = useState(false)
     const turnstile = useTurnstile(currentStep === 1 ? 'user-exists' : currentStep === 3 ? 'resend' : 'signup')
+    // Step 1 checks the email with the widget above, so the resend link shown for a taken email has its own
+    const resendTurnstile = useTurnstile('resend')
 
-    const passwordInvalid = !!password && (password.length <= 7)
-    const passwordConfirmError = !!password && !!passwordConfirm && (password !== passwordConfirm)
-    const disableSubmit = !email || !password || !passwordConfirm || passwordInvalid || passwordConfirmError || !turnstile.token || isSubmitting
+    const disableSubmit = !email || !turnstile.token || isSubmitting
 
     const IconCLients = React.memo(() => {
         return <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
@@ -102,7 +100,6 @@ export default function Signup({ customStepOffset = 0, customStepCount, customNa
                 },
                 body: JSON.stringify({
                     email,
-                    password,
                     first_name: firstName,
                     last_name: lastName,
                     company,
@@ -154,6 +151,7 @@ export default function Signup({ customStepOffset = 0, customStepCount, customNa
             .then(async (res) => {
                 // 204: the email is taken, 404: no account yet. Anything else (e.g. a rejected security check) is an error.
                 if (res.status === 204) {
+                    setResendResult(undefined)
                     setUserExists(true)
                 } else if (res.status === 404) {
                     setUserExists(false)
@@ -166,9 +164,9 @@ export default function Signup({ customStepOffset = 0, customStepCount, customNa
             .finally(() => setIsSubmitting(false))
     }
 
-    const handleResend = async () => {
+    const handleResend = async (resendWith = turnstile) => {
         if (isSubmitting) return
-        const turnstileToken = turnstile.take()
+        const turnstileToken = resendWith.take()
         if (!turnstileToken) return
 
         setResendResult(undefined)
@@ -209,6 +207,8 @@ export default function Signup({ customStepOffset = 0, customStepCount, customNa
     }
 
     if (currentStep === 1) {
+        const canResend = !!resendTurnstile.token && !isSubmitting
+
         return <div className={styles.container}>
             <Form onBack={() => goToStep(0)}
                 logo={logo}
@@ -223,30 +223,25 @@ export default function Signup({ customStepOffset = 0, customStepCount, customNa
                     type='email'
                     value={email}
                     placeholder="studioname@studio.com"
-                    onChange={(e) => setEmail(e.currentTarget.value)} />
+                    onChange={(e) => {
+                        setEmail(e.currentTarget.value)
+                        // The resend link below is for the email that was checked
+                        setUserExists(false)
+                        setResendResult(undefined)
+                    }} />
                 <Form.FieldMessage message={userExists ? `Email already used` : emailCheckError || ""}
                     icon={userExists || emailCheckError ? "info" : ""}
                     red />
-
-                <Form.Label>Create a password</Form.Label>
-                <Form.InputText required
-                    type='password'
-                    value={password}
-                    placeholder="*******"
-                    onChange={(e) => setPassword(e.currentTarget.value)} />
-                <Form.FieldMessage message='8 Characters minimum'
-                    icon="info"
-                    red={passwordInvalid} />
-
-                <Form.Label>Confirm your password</Form.Label>
-                <Form.InputText required
-                    type='password'
-                    value={passwordConfirm}
-                    placeholder="*******"
-                    onChange={(e) => setPasswordConfirm(e.currentTarget.value)} />
-                <Form.FieldMessage message={passwordConfirmError ? "Please verify password and confirmation" : ""}
-                    icon={passwordConfirmError ? "info" : ""}
-                    red />
+                {/* Shown for any taken email: resend answers the same either way, so it tells nothing `exists` didn't */}
+                {userExists && <>
+                    <div className={styles.text}>
+                        Signed up but never got to set your password? <a className={`text-red underline ${canResend ? '' : styles.linkDisabled}`} aria-disabled={!canResend} onClick={canResend ? () => handleResend(resendTurnstile) : undefined}>Resend verification email</a>
+                    </div>
+                    <Turnstile ref={resendTurnstile.ref} action={resendTurnstile.action} onToken={resendTurnstile.onToken} />
+                    {resendResult && <Form.FieldMessage icon="info"
+                        red={resendResult !== 'sent'}
+                        message={resendResult === 'sent' ? "If this account still needs to be verified, we sent it a new email." : resendResult === 'captcha' ? CAPTCHA_ERROR : "We couldn't resend the email, please try again."} />}
+                </>}
 
                 <Turnstile ref={turnstile.ref} action={turnstile.action} onToken={turnstile.onToken} />
                 <Form.ButtonSubmit disabled={disableSubmit}
@@ -306,7 +301,7 @@ export default function Signup({ customStepOffset = 0, customStepCount, customNa
                 stepTitle='Verify your email' >
                 <img alt='Check your email' src="/images/form_envelope.webp" />
                 <Form.Label>
-                    Please confirm your account by clicking on a link we sent you via email to <b>{email}</b>. If you haven&apos;t received an email in 5 minutes, check your spam, <a className={`text-red underline ${canResend ? '' : styles.linkDisabled}`} aria-disabled={!canResend} onClick={canResend ? handleResend : undefined}>resend</a>, or <a className='text-red underline' onClick={() => goToStep(1)}>try a different email</a>.
+                    Check your email: we sent a link to <b>{email}</b> to set your password and activate your account. If you haven&apos;t received an email in 5 minutes, check your spam, <a className={`text-red underline ${canResend ? '' : styles.linkDisabled}`} aria-disabled={!canResend} onClick={canResend ? () => handleResend() : undefined}>resend</a>, or <a className='text-red underline' onClick={() => goToStep(1)}>try a different email</a>.
                 </Form.Label>
                 {verificationEmailFailed && <Form.FieldMessage icon="info" red
                     message="We created your account but couldn't send the verification email. Use the resend link above to get a new one." />}

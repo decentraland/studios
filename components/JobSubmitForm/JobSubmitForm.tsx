@@ -17,10 +17,15 @@ import Form from '../Form/Form'
 import JobDetails from '../JobDetails/JobDetails'
 import Signup from '../Signup/Signup'
 import { User } from '../../interfaces/User'
+import Turnstile, { isTurnstileRejection, useTurnstile } from '../Turnstile/Turnstile'
 
 
 const DESCRIPTION_MAX_LENGTH = 4000
 const DESCRIPTION_MIN_LENGTH = 120
+const CAPTCHA_ERROR = 'Security check failed, please try again.'
+const PUBLISH_ERROR = "We couldn't publish your project, please try again."
+const GUEST_PENDING_ERROR = 'You already have a project waiting for confirmation. Check your email to confirm it.'
+const GUEST_EXPIRED_ERROR = 'This page expired. Check your inbox for the confirmation email, or go to sign up, enter your email again and use "Resend verification email".'
 
 const descriptionOptions = [
     'Branded environment such as a store, arena, gallery, or headquarters',
@@ -68,6 +73,12 @@ function JobSubmitForm() {
     const pendingJob = globalThis.localStorage?.pendingJob && JSON.parse(globalThis.localStorage.pendingJob)
     const [createdJob, setCreatedJob] = useState<Job>(initData)
     const [showPendingModal, setShowPendingModal] = useState(false)
+    const [guestEmail, setGuestEmail] = useState('')
+    const [guestUser, setGuestUser] = useState<{ id: string, guestToken: string }>()
+    const [guestEmailSent, setGuestEmailSent] = useState(true)
+    const [guestError, setGuestError] = useState<string>()
+    const [isPublishing, setIsPublishing] = useState(false)
+    const turnstile = useTurnstile('job')
 
     const remainCharsText = `${formData.long_description.length}/${DESCRIPTION_MAX_LENGTH}`
 
@@ -185,34 +196,72 @@ function JobSubmitForm() {
         setSelectedFile(undefined)
     }
 
-    const handleCreatedUser = (userData: User) => {
-        // console.log(userData)
-        // setFormData({
-        //     ...formData,
-        //     author_name: `${userData.first_name} ${userData.last_name}`,
-        //     company: userData.company,
-        //     email: userData.email
-        // })
-        createJob({
+    const handleCreatedUser = (userData: User & { guestToken?: string }) => {
+        setFormData({
             ...formData,
             author_name: `${userData.first_name} ${userData.last_name}`,
             company: userData.company,
             email: userData.email
-        }, false)
+        })
+        setGuestEmail(userData.email)
+        setGuestUser(userData.guestToken ? { id: userData.id, guestToken: userData.guestToken } : undefined)
+        setGuestError(undefined)
+        setCurrentStep('guestPublish')
     }
 
-    const createJob = async (formData: Job, verified_email = true) => {
+    // The visitor just signed up and isn't logged in: the job is published once they confirm it from their email
+    const createGuestJob = async (e: React.FormEvent) => {
+        e.preventDefault()
+        if (isPublishing) return
+        const turnstileToken = turnstile.take()
+        if (!turnstileToken) return
+
+        setGuestError(undefined)
+        setIsPublishing(true)
+
+        try {
+            const res = await fetch(`/api/jobs/create-guest`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ job: formData, userId: guestUser?.id, guestToken: guestUser?.guestToken, turnstileToken })
+            })
+
+            if (!res.ok) {
+                if (res.status === 409 || res.status === 401) {
+                    await res.body?.cancel()
+                    setGuestError(res.status === 409 ? GUEST_PENDING_ERROR : GUEST_EXPIRED_ERROR)
+                    return
+                }
+                setGuestError(await isTurnstileRejection(res) ? CAPTCHA_ERROR : PUBLISH_ERROR)
+                return
+            }
+            const body = await res.json().catch(() => undefined)
+            setGuestEmailSent(body?.emailSent !== false)
+
+            plausibleTrackEvent('JobsSubmitForm: Step3', { slug: globalThis.sessionStorage.getItem('leadSlug') || 'jobs' })
+            globalThis.localStorage.removeItem('pendingJob')
+            setCurrentStep('userCreated')
+        } catch {
+            setGuestError(PUBLISH_ERROR)
+        } finally {
+            setIsPublishing(false)
+        }
+    }
+
+    const createJob = async (formData: Job) => {
 
         const postJob = await fetch(`/api/jobs/create`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ job: formData, verified_email })
+            body: JSON.stringify({ job: formData })
         })
-            .then(res => res.ok && res.json())
+            .then(res => res.ok ? res.json() : res.body?.cancel())
 
-        if (postJob.id) {
+        if (postJob?.id) {
             // const lead = {
             //     name: formData.author_name,
             //     email: formData.email,
@@ -235,11 +284,7 @@ function JobSubmitForm() {
             setCreatedJob(postJob)
             await mutate('/api/conversations/get')
 
-            if (!verified_email) {
-                setCurrentStep('userCreated')
-            } else {
-                setCurrentStep('projectCreated')
-            }
+            setCurrentStep('projectCreated')
 
             setLoading(false)
         } else {
@@ -431,17 +476,34 @@ function JobSubmitForm() {
             onSuccess={(user) => handleCreatedUser(user)} />
     }
 
+    if (currentStep === 'guestPublish') {
+        return <div className={styles.container}>
+            <Form stepNumber='4' stepsCount='4'
+                onSubmit={createGuestJob}
+                name='START A PROJECT'
+                stepTitle='Review your project'
+                stepDescription='Take a final look at your project. Once you publish it, we will email you a link to confirm it and set your password.' >
+                <div className={styles['container--card']}>
+                    <JobDetails jobData={formData} />
+                </div>
+                <Turnstile ref={turnstile.ref} action={turnstile.action} onToken={turnstile.onToken} />
+                <Form.ButtonSubmit disabled={!turnstile.token || isPublishing}
+                    value="PUBLISH PROJECT" />
+                {guestError && <Form.FieldMessage icon="info" red message={guestError} />}
+            </Form>
+        </div>
+    }
+
     if (currentStep === 'userCreated') {
         return <div className={styles.container}>
-            <Form onBack={() => setCurrentStep('startYourProject')}
-                stepNumber={4}
-                stepsCount={4}
-                name='START A PROJECT'
+            <Form name='START A PROJECT'
                 stepTitle='Verify your email' >
                 <img alt='Check your email' src="/images/form_envelope.webp" />
                 <Form.Label>
-                    Please confirm your publication by clicking on a link we sent you via email to <b>{createdJob.email}</b>
+                    Check your email: we sent a link to <b>{guestEmail}</b> to confirm your project and set your password. Your project will be published once you confirm it.
                 </Form.Label>
+                {!guestEmailSent && <Form.FieldMessage icon="info" red
+                    message="We saved your project but couldn't send the confirmation email. Check your email in a few minutes, or try again later." />}
             </Form>
         </div>
     }

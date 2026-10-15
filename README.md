@@ -46,7 +46,7 @@ The build fails if any of the server secrets above or `NEXT_PUBLIC_TURNSTILE_SIT
 
 ### Turnstile
 
-The login, signup, contact, review and landing forms are protected by [Cloudflare Turnstile](https://developers.cloudflare.com/turnstile/). The forms send the widget token as `turnstileToken` and the API routes reject the request with a 400 when it doesn't validate. Each form renders the widget with its own action (`login`, `user-exists`, `signup`, `resend`, `contact`, `review`, `landing`) and its route rejects tokens issued for another action or, when `TURNSTILE_ALLOWED_HOSTNAMES` is set, for another hostname. Tokens are single-use, so forms reset the widget and drop the token as soon as they send it.
+The login, signup, contact, review, landing and guest job forms are protected by [Cloudflare Turnstile](https://developers.cloudflare.com/turnstile/). The forms send the widget token as `turnstileToken` and the API routes reject the request with a 400 when it doesn't validate. Each form renders the widget with its own action (`login`, `user-exists`, `signup`, `resend`, `contact`, `review`, `landing`, `job`) and its route rejects tokens issued for another action or, when `TURNSTILE_ALLOWED_HOSTNAMES` is set, for another hostname. Tokens are single-use, so forms reset the widget and drop the token as soon as they send it.
 
 For local development use Cloudflare's [test keys](https://developers.cloudflare.com/turnstile/troubleshooting/testing/), which always pass:
 
@@ -60,7 +60,7 @@ TURNSTILE_SECRET_KEY=1x0000000000000000000000000000000AA
 Turnstile stops scripted submissions but not a human or a solver farm hammering an endpoint. Add a Cloudflare WAF rate limiting rule (Security > WAF > Rate limiting rules) for the unauthenticated endpoints:
 
 ```
-(http.request.method eq "POST" and http.request.uri.path in {"/api/user/login" "/api/user/signup" "/api/user/resend" "/api/user/exists" "/api/contact" "/api/reviews/submit" "/api/landing/submit"})
+(http.request.method eq "POST" and http.request.uri.path in {"/api/user/login" "/api/user/signup" "/api/user/resend" "/api/user/exists" "/api/jobs/create-guest" "/api/contact" "/api/reviews/submit" "/api/landing/submit"})
 ```
 
 Example thresholds, counted per IP:
@@ -68,7 +68,7 @@ Example thresholds, counted per IP:
 | Path | Requests | Period | Action |
 | --- | --- | --- | --- |
 | `/api/user/login` | 10 | 1 minute | Block for 10 minutes |
-| `/api/user/exists`, `/api/user/signup` | 10 | 10 minutes | Block for 1 hour |
+| `/api/user/exists`, `/api/user/signup`, `/api/jobs/create-guest` | 10 | 10 minutes | Block for 1 hour |
 | `/api/contact`, `/api/reviews/submit`, `/api/landing/submit` | 5 | 10 minutes | Block for 1 hour |
 
 Each row is a separate rule matching its own paths. On plans that allow a single rate limiting rule, use the expression above with the strictest values.

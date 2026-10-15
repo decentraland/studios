@@ -1,7 +1,6 @@
 import type { NextRequest } from 'next/server'
-import { budgetToRanges } from '../../../components/utils'
 import { User } from '../../../interfaces/User'
-import { createVerificationToken, getAccessToken, isBoundedString, isSameOrigin, pick, readJson, readJsonResponse, discardResponse } from '../../../lib/security'
+import { getAccessToken, isBoundedString, isSameOrigin, pick, readJson, readJsonResponse, discardResponse } from '../../../lib/security'
 
 export const config = {
   runtime: 'experimental-edge',
@@ -14,9 +13,6 @@ export default async function (req: NextRequest) {
 
   const DB_URL = process.env.NEXT_PUBLIC_PARTNERS_DATA_URL
   const API_TOKEN = process.env.API_ACCESS_TOKEN
-
-  const SENDRGRID_URL = process.env.NEXT_PUBLIC_API_SENDGRID
-  const SENDGRID_ACCESS_TOKEN = process.env.SENDGRID_ACCESS_TOKEN
 
   const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN
   const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID
@@ -49,8 +45,8 @@ export default async function (req: NextRequest) {
 
     if (!currentUser || currentUser.role.name !== "Client") return new Response(null, { status: 401 })
 
-    // Only an account that already proved ownership of its email can publish without the verification step
-    const verified_email = currentUser.status === 'active'
+    // Directus only issues tokens to active users, which already proved ownership of their email
+    if (currentUser.status !== 'active') return new Response(null, { status: 403 })
 
     const createJob = await fetch(`${DB_URL}/items/jobs?fields=*,brief_file.id,brief_file.filename_download`, {
       method: 'POST',
@@ -65,7 +61,7 @@ export default async function (req: NextRequest) {
         company: currentUser.company,
         short_description: (job.short_description as string[]).join('\n'),
         deadline_date: job.deadline_date || null,
-        verified_email: verified_email,
+        verified_email: true,
         geo: req.geo
       })
     })
@@ -74,17 +70,15 @@ export default async function (req: NextRequest) {
 
     if (!createJob) return new Response(null, { status: 400 })
 
-    if (verified_email) {
-
-      // Best-effort: the job already exists, so a failed notification must not change the response
-      await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          chat_id: TELEGRAM_CHAT_ID,
-          text: `👷 New Job created!
+    // Best-effort: the job already exists, so a failed notification must not change the response
+    await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        chat_id: TELEGRAM_CHAT_ID,
+        text: `👷 New Job created!
         \nAuthor name: ${createJob.author_name}
         \nemail: ${createJob.email}
         \nCompany: ${createJob.company}
@@ -94,46 +88,11 @@ export default async function (req: NextRequest) {
         \nBudget: ${createJob.budget}
         ${createJob.brief_file ? `\nBrief file: [${createJob.brief_file.filename_download}](https://admin.dclstudios.org/assets/${createJob.brief_file.id})` : ''}
         ${createJob.deadline_date ? `\nDeadline date: ${createJob.deadline_date}` : ''}`
-        })
       })
-        .then(discardResponse)
-        .then(res => !res.ok && console.log('API Job Create: Telegram notification failed, status ', res.status))
-        .catch(error => console.log('API Job Create: Telegram notification failed ', error))
-
-      return new Response(JSON.stringify(createJob))
-    }
-
-    // Best-effort: building the verification link or sending the email can fail after the job exists,
-    // and answering with an error would make a client retry create a duplicate job
-    try {
-      const sendMail = await fetch(`${SENDRGRID_URL}/mail/send`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${SENDGRID_ACCESS_TOKEN}`
-        },
-        body: JSON.stringify({
-          from: {
-            email: "studios@decentraland.org", name: "Decentraland Studios"
-          },
-          personalizations: [{
-            to: [
-              { email: createJob.email, name: createJob.author_name }
-            ],
-            dynamic_template_data: {
-              ...createJob,
-              budget: budgetToRanges(createJob.budget),
-              verify_url: `https://studios.decentraland.org/jobs/verify?id=${createJob.id}#token=${await createVerificationToken('job', createJob.id)}`,
-            }
-          }],
-          template_id: "d-0dd32315fc5241c89e78783713c66934"
-        })
-      }).then(discardResponse)
-
-      if (!sendMail.ok) console.log('API Job Create: verification email failed, status ', sendMail.status)
-    } catch (error) {
-      console.log('API Job Create: verification email failed ', error)
-    }
+    })
+      .then(discardResponse)
+      .then(res => !res.ok && console.log('API Job Create: Telegram notification failed, status ', res.status))
+      .catch(error => console.log('API Job Create: Telegram notification failed ', error))
 
     return new Response(JSON.stringify(createJob))
 

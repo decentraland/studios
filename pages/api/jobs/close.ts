@@ -1,6 +1,8 @@
 import type { NextRequest } from 'next/server'
+import { discardResponse, getAccessToken, isBoundedString, isSameEmail, isSameOrigin, readJson, readJsonResponse } from '../../../lib/security'
 import { budgetToRanges, isUUID } from '../../../components/utils'
 import { User } from '../../../interfaces/User'
+import { getUsersBy } from '../../../lib/users'
 
 export const config = {
   runtime: 'experimental-edge',
@@ -12,14 +14,15 @@ export default async function (req: NextRequest) {
   const DB_URL = process.env.NEXT_PUBLIC_PARTNERS_DATA_URL
   const API_TOKEN = process.env.API_ACCESS_TOKEN
 
-  const user = req.cookies.get("auth")?.value
-  if (!user) return new Response(null, { status: 401 })
+  const authorization = getAccessToken(req)
+  if (!authorization) return new Response(null, { status: 401 })
+  if (req.method !== 'POST' || !isSameOrigin(req)) return new Response(null, { status: 400 })
 
-  const authorization = JSON.parse(user).access_token
+  const { closed_poll, job_id } = await readJson(req)
 
-  const { closed_poll, job_id } = await req.json()
+  const isValidPoll = closed_poll === undefined || closed_poll === null || isBoundedString(closed_poll, 10000)
 
-  if (!isUUID(job_id)) {
+  if (!isUUID(job_id) || !isValidPoll) {
     return new Response(null, { status: 400 })
   }
 
@@ -29,34 +32,28 @@ export default async function (req: NextRequest) {
       headers: {
         'Authorization': `Bearer ${authorization}`
       }
-    }).then(res => res.ok && res.json()).then(res => res.data && res.data)
+    }).then(readJsonResponse).then(res => res?.data)
 
     const jobData = currentUser && await fetch(`${DB_URL}/items/jobs/${job_id}`, {
       headers: {
         'Authorization': `Bearer ${API_TOKEN}`
       }
     })
-      .then(res => res.ok && res.json())
-      .then(body => body.data)
+      .then(readJsonResponse)
+      .then(body => body?.data)
 
     if (!jobData) return new Response(null, { status: 400 })
 
 
     jobData.managers = JSON.parse((jobData.managers as any) || "[]")
 
-    const managers = [] as User[]
-
-    for (const manager of jobData.managers) {
-      managers.push(await fetch(`${DB_URL}/users/${manager.id}?fields=email`, {
-        headers: {
-          'Authorization': `Bearer ${API_TOKEN}`
-        }
-      }).then(res => res.ok && res.json()).then(body => body.data.email))
-    }
+    // Deleted managers are skipped
+    const managersData = await getUsersBy('id', (jobData.managers as User[]).map(manager => manager?.id), 'email', API_TOKEN)
+    const managers = managersData.map(manager => manager.email).filter(Boolean) as string[]
 
     const jobManagersEmails = [...managers, jobData.email]
 
-    if (!jobManagersEmails.includes(currentUser.email)) {
+    if (!jobManagersEmails.some(email => isSameEmail(email, currentUser.email))) {
       return new Response(null, { status: 400 })
     }
 
@@ -70,7 +67,7 @@ export default async function (req: NextRequest) {
         closed_poll: closed_poll,
         status: 'archived'
       })
-    })
+    }).then(discardResponse)
 
     if (jobUpdate.ok) return new Response(null, { status: 204 })
 

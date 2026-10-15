@@ -2,6 +2,8 @@ import type { NextRequest } from 'next/server'
 import Partners from '../../../clients/Partners'
 import { User } from '../../../interfaces/User'
 import { Job } from '../../../interfaces/Job'
+import { getAccessToken, normalizeEmail, readJsonResponse } from '../../../lib/security'
+import { getUsersBy } from '../../../lib/users'
 
 export const config = {
     runtime: 'experimental-edge',
@@ -11,11 +13,9 @@ const DB_URL = process.env.NEXT_PUBLIC_PARTNERS_DATA_URL
 const API_TOKEN = process.env.API_ACCESS_TOKEN
 
 export default async function (req: NextRequest) {
-    const user = req.cookies.get("auth")?.value
+    const authorization = getAccessToken(req)
 
-    if (!user) return new Response(null, { status: 401 })
-
-    const authorization = JSON.parse(user).access_token
+    if (!authorization) return new Response(null, { status: 401 })
 
 
     if (req.method === 'GET') {
@@ -24,7 +24,7 @@ export default async function (req: NextRequest) {
             headers: {
                 'Authorization': `Bearer ${authorization}`
             }
-        }).then(res => res.ok && res.json()).then(res => res.data && res.data)
+        }).then(readJsonResponse).then(res => res?.data)
 
         if (!currentUser || currentUser.status !== 'active') return new Response(null, { status: 401 })
 
@@ -36,6 +36,8 @@ export default async function (req: NextRequest) {
             },
             body: JSON.stringify({
                 "query": {
+                    // Without an explicit limit Directus returns at most 100 rows
+                    "limit": -1,
                     "filter": {
                         "_or": [
                             {
@@ -62,35 +64,40 @@ export default async function (req: NextRequest) {
             }
             )
         })
-            .then(res => res.ok && res.json())
-            .then((res) => res.data as Job[])
+            .then(readJsonResponse)
+            .then((res) => (res?.data || []) as Job[])
 
             let conversations = []
 
         if (jobs.length) {
 
             for (const job of jobs) {
-                const jobAuthorId = await fetch(`${DB_URL}/users?filter[email]=${encodeURIComponent(job.email)}&fields=id`, {
-                    headers: {
-                        'Authorization': `Bearer ${API_TOKEN}`
-                    }
-                }).then(res => res.ok && res.json()).then(body => body.data[0].id)
-                
-                job.author_id = jobAuthorId
-
                 job.managers = JSON.parse((job.managers as any) || "[]")
+            }
 
-                const managers = [] as User[]
-                for (const manager of job.managers){
-                    managers.push(await fetch(`${DB_URL}/users/${manager.id}?fields=id,email,first_name,last_name`, {
-                        headers: {
-                            'Authorization': `Bearer ${API_TOKEN}`
-                        }
-                    }).then(res => res.ok && res.json()).then(body => body.data))
-                }
-                
-                job.managers = managers
+            // One lookup per batch of users instead of one per job and per manager, to stay under the subrequest limit.
+            // Directus filters are case-sensitive, so the normalized job email is looked up next to the stored one.
+            const jobEmails = jobs.map(job => job.email).filter(email => typeof email === 'string')
+            const [authors, managersData] = await Promise.all([
+                getUsersBy('email', [...jobEmails, ...jobEmails.map(normalizeEmail)], 'id,email', API_TOKEN),
+                getUsersBy('id', jobs.flatMap(job => (job.managers as unknown[]).map((manager: any) => manager?.id)), 'id,email,first_name,last_name', API_TOKEN)
+            ])
 
+            const authorIdsByEmail = new Map<string, string>()
+            const authorIdsByNormalizedEmail = new Map<string, string>()
+            for (const author of authors) {
+                if (!authorIdsByEmail.has(author.email)) authorIdsByEmail.set(author.email, author.id)
+                if (!authorIdsByNormalizedEmail.has(normalizeEmail(author.email))) authorIdsByNormalizedEmail.set(normalizeEmail(author.email), author.id)
+            }
+            const managersById = new Map(managersData.map(manager => [manager.id, manager as User]))
+
+            for (const job of jobs) {
+                job.author_id = authorIdsByEmail.get(job.email) || (normalizeEmail(job.email) ? authorIdsByNormalizedEmail.get(normalizeEmail(job.email)) : undefined)
+
+                // Deleted managers are skipped
+                job.managers = job.managers
+                    .map((manager: any) => managersById.get(manager?.id))
+                    .filter((manager): manager is User => !!manager)
             }
 
             conversations = await fetch(`${DB_URL}/items/conversations`, {
@@ -101,6 +108,7 @@ export default async function (req: NextRequest) {
                 },
                 body: JSON.stringify({
                     query: {
+                        limit: -1,
                         filter: {
                             "_and":
                                 [
@@ -143,13 +151,14 @@ export default async function (req: NextRequest) {
 
                 )
             })
-                .then(res => res.ok && res.json())
-                .then(body => body.data)
-            for (const conversation of conversations) {
-                const query = { user: conversation.user_created }
-                conversation.studio_data = await Partners.getPartnerData(query, 'name,logo,user,slug')
+                .then(readJsonResponse)
+                .then(body => body?.data || [])
+            const studios = await Partners.getPartnersByUsers(conversations.map((conversation: any) => conversation.user_created), 'name,logo,user,slug')
 
-                if (conversation.conversations_users.length) {
+            for (const conversation of conversations) {
+                conversation.studio_data = studios.get(conversation.user_created)
+
+                if (conversation.conversations_users?.length) {
                     conversation.last_read_message = conversation.conversations_users.find((item: any) => item.directus_users_id === currentUser.id)?.last_read_message
                 }
             }
@@ -157,4 +166,6 @@ export default async function (req: NextRequest) {
 
         return new Response(JSON.stringify({ jobs, conversations }))
     }
+
+    return new Response(null, { status: 400 })
 }

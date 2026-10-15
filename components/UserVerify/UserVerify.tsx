@@ -15,12 +15,13 @@ function UserVerify() {
   useEffect(() => {
     if (id) {
       setLoading(true)
+      const token = new URLSearchParams(window.location.hash.slice(1)).get('token')
       fetch(`/api/user/verify`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ id: id })
+        body: JSON.stringify({ id: id, token })
       })
         .then((res) => {
           setVerifyOk(res.ok)

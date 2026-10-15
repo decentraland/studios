@@ -1,6 +1,7 @@
 import type { NextRequest } from 'next/server'
 import Messages from '../../../clients/Messages'
 import { isUUID } from '../../../components/utils'
+import { discardResponse, getAccessToken, isSameOrigin, readJsonResponse } from '../../../lib/security'
 
 export const config = {
     runtime: 'experimental-edge',
@@ -24,9 +25,10 @@ const SENDGRID_ACCESS_TOKEN = process.env.SENDGRID_ACCESS_TOKEN
 export default async function (req: NextRequest) {
 
     const jobId = req.nextUrl.searchParams.get('id')
-    const user = req.cookies.get("auth")?.value || ''
+    const authorization = getAccessToken(req)
 
-    if (req.method !== 'POST' || !user || !jobId) return new Response(null, { status: 400 })
+    if (!authorization) return new Response(null, { status: 401 })
+    if (req.method !== 'POST' || !isSameOrigin(req) || !jobId) return new Response(null, { status: 400 })
 
     if (!isUUID(jobId)) {
         return new Response(null, { status: 400 })
@@ -34,22 +36,22 @@ export default async function (req: NextRequest) {
 
     const formData = await req.formData()
 
-    const authorization = JSON.parse(user).access_token
-
     const currentJob = await fetch(`${DB_URL}/items/jobs?filter[id]=${jobId}`, {
         headers: {
             'Authorization': `Bearer ${API_TOKEN}`
         }
-    }).then(res => res.ok && res.json()).then(res => res.data.length && res.data[0])
+    }).then(readJsonResponse).then(res => res?.data?.[0])
 
 
     const currentUser = await fetch(`${DB_URL}/users/me?fields=id,email,role.name`, {
         headers: {
             'Authorization': `Bearer ${authorization}`
         }
-    }).then(res => res.ok && res.json()).then(res => res.data && res.data)
+    }).then(readJsonResponse).then(res => res?.data)
 
-    if (currentUser.role.name !== 'Studio') return new Response(null, { status: 400 })
+    if (!currentUser || currentUser.role?.name !== 'Studio') return new Response(null, { status: 400 })
+
+    if (!currentJob || !currentJob.verified_email || currentJob.status === 'archived') return new Response(null, { status: 400 })
 
     const createConversation = await fetch(`${DB_URL}/items/conversations?fields=id`, {
         method: 'POST',
@@ -61,18 +63,21 @@ export default async function (req: NextRequest) {
             title: currentJob.title,
             related_job: currentJob.id
         })
-    }).then(res => res.ok && res.json()).then(body => body.data)
+    }).then(readJsonResponse).then(body => body?.data)
 
-    formData.append('envelope', JSON.stringify({ to: [`${createConversation.id}@reply.studios.decentraland.org`] }))
-    formData.append('from', `<${currentUser.email}>`)
+    if (!createConversation?.id) return new Response(null, { status: 400 })
 
-    const postMessage = await Messages.processIncommingMessage(formData)
+    // Sender and conversation are set here from the session, overriding anything the client sent
+    formData.set('envelope', JSON.stringify({ to: [`${createConversation.id}@reply.studios.decentraland.org`] }))
+    formData.set('from', `<${currentUser.email}>`)
+
+    const postMessage = (await Messages.processIncommingMessage(formData)).ok
 
     const currentStudio = currentUser && await fetch(`${DB_URL}/items/profile?filter[user]=${currentUser.id}`, {
         headers: {
             'Authorization': `Bearer ${authorization}`
         }
-    }).then(res => res.ok && res.json()).then(res => res.data.length && res.data[0])
+    }).then(readJsonResponse).then(res => res?.data?.[0])
 
     // const mailToAuthor = currentStudio && await fetch(`${SENDRGRID_URL}/mail/send`, {
     //     method: 'POST',
@@ -108,7 +113,7 @@ export default async function (req: NextRequest) {
     // })
 
     //send mail to studio, keep
-    const mailToStudio = postMessage && await fetch(`${SENDRGRID_URL}/mail/send`, {
+    const mailToStudio = postMessage && currentStudio && await fetch(`${SENDRGRID_URL}/mail/send`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -132,7 +137,7 @@ export default async function (req: NextRequest) {
             }],
             template_id: "d-0f855e4fdc154093bd51fea886cdb2d2"
         })
-    })
+    }).then(discardResponse)
 
 
     // const createMessage = mailToAuthor && await fetch(`${DB_URL}/items/messages?fields=*,brief_file.id,brief_file.filename_download`, {

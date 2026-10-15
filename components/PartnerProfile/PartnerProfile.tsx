@@ -103,7 +103,7 @@ function PartnerProfile({ partner }: Props) {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          partnerEmail: partnerData.email,
+          slug: partnerData.slug,
           senderEmail,
           message: message
         })

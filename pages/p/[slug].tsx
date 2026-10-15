@@ -5,7 +5,7 @@ import { Landing } from "../../interfaces/Landing";
 import { useRouter } from "next/router";
 import Head from "next/head";
 import Script from "next/script";
-import { fbq, googleAdsTrack, linkedinTrackLead, openIntercom, plausibleTrackEvent, updateIntercom } from "../../components/utils";
+import { fbq, googleAdsTrack, linkedinTrackLead, openIntercom, plausibleTrackEvent, safeUrl, updateIntercom } from "../../components/utils";
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
 
@@ -61,6 +61,7 @@ function MetaverseGuide({ landing }: Props) {
         }, [])
 
     const router = useRouter()
+    const successOpenUrl = safeUrl(landingData.form_success_open_url)
     const { utm_source, utm_medium, utm_campaign } = router.query || {}
 
     useEffect(() => {
@@ -108,7 +109,7 @@ function MetaverseGuide({ landing }: Props) {
         
         fbq('track', 'Lead')
         linkedinTrackLead(landingData.track_linkedin?.conversion_id)
-        plausibleTrackEvent('LandingSubmit' , { slug: landingData.slug, email: email })
+        plausibleTrackEvent('LandingSubmit' , { slug: landingData.slug })
         googleAdsTrack()
         updateIntercom({"name": name, "email": email})
         ctaSuccess()
@@ -154,7 +155,8 @@ function MetaverseGuide({ landing }: Props) {
 
     let linkedinTracking = null
 
-    if (landingData.track_linkedin?.partner_id) {
+    // The partner id is interpolated into an inline script, so only plain numeric ids are accepted
+    if (/^\d+$/.test(`${landingData.track_linkedin?.partner_id || ''}`)) {
         linkedinTracking = <footer>
             <Script id="linkedin-partner_id" strategy="afterInteractive">
                 {`_linkedin_partner_id = "${landingData.track_linkedin.partner_id}";
@@ -378,12 +380,12 @@ function MetaverseGuide({ landing }: Props) {
                                 <div className="cta__form--success__buttons">
                                     {landingData.form_success_open_intercom ? 
                                     <>
-                                        <a href={landingData.form_success_open_url} { ...landingData.form_success_open_url.includes('://') ? { target:"_blank" } : {} } rel="noreferrer" className="cta">{landingData.form_success_open}</a>
+                                        <a href={successOpenUrl} { ...successOpenUrl?.includes('://') ? { target:"_blank" } : {} } rel="noreferrer" className="cta">{landingData.form_success_open}</a>
                                         <a onClick={openIntercom} className="cta cta-inverted">{landingData.form_success_open_intercom}</a>
                                     </>
                                     :
                                     <>
-                                        <a href={landingData.form_success_open_url} target="_blank" rel="noreferrer" className="cta">{landingData.form_success_open}</a>
+                                        <a href={successOpenUrl} target="_blank" rel="noreferrer" className="cta">{landingData.form_success_open}</a>
                                         {landingData.form_success_send_again && <a onClick={ctaSendAgain} className="inline-link">{landingData.form_success_send_again}</a>}
                                     </>
                                 }

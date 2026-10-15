@@ -1,4 +1,6 @@
 import { VerifiedPartner } from '../interfaces/VerifiedPartner'
+import { readJsonResponse } from '../lib/security'
+import { chunk, uniqueStrings } from '../lib/users'
 
 const VERIFIED_PARTNERS_URL = `${process.env.NEXT_PUBLIC_PARTNERS_DATA_URL}/items/profile`
 
@@ -15,7 +17,7 @@ export default class Partners {
     while (!isFinished) {
       try {
         const response = await fetch(`${VERIFIED_PARTNERS_URL}?offset=${offset}${queryFields}`)
-        const data = (await response.json()).data as VerifiedPartner[]
+        const data = (await readJsonResponse(response)).data as VerifiedPartner[]
         if (data.length === 0) {
           isFinished = true
         } else {
@@ -32,8 +34,14 @@ export default class Partners {
     return partners
   }
 
-  static async getPartnerData(partnerData: any, fields?: string) {
-    const query = Object.entries(partnerData).map(entry => `filter[${entry[0]}]=${entry[1]}`).join('&')
+  static async getPartnerData(partnerData: { slug?: unknown, user?: unknown }, fields?: string) {
+    const filters = (['slug', 'user'] as const)
+      .filter(key => typeof partnerData?.[key] === 'string' && partnerData[key])
+      .map(key => `filter[${key}][_eq]=${encodeURIComponent(partnerData[key] as string)}`)
+
+    if (!filters.length) return undefined
+
+    const query = filters.join('&')
     
     const basicFields = 'services,projects,reviews,email,name,profile_header,logo,website,marketplace,discord,opensea,twitter,instagram,linkedin,youtube,description,region,country,team_size,languages,payment_methods,slug' 
     const extraFields  = 'reviews.name,reviews.company,reviews.review,projects.image_1,projects.id,projects.title,projects.profile.name,projects.profile.slug,projects.profile.logo,projects.date_created'
@@ -43,9 +51,9 @@ export default class Partners {
 
     let partner
     try {
-      const data = await fetch(`${VERIFIED_PARTNERS_URL}?${query}&fields=${fieldsFilter}`).then(res => res.ok && res.json()).then(body => body.data)
+      const data = await fetch(`${VERIFIED_PARTNERS_URL}?${query}&fields=${fieldsFilter}`).then(readJsonResponse).then(body => body?.data)
 
-      partner = data[0] as VerifiedPartner
+      partner = data?.[0] as VerifiedPartner
     } catch (error) {
       console.log('error getting partners', error)
     }
@@ -54,6 +62,33 @@ export default class Partners {
     }
 
     return partner
+  }
+
+  /**
+   * Returns the studio profile of each user, keyed by user id, with one request per chunk of users
+   * instead of one per user. Like `getPartnerData`, the first profile of a user wins.
+   * `fields` must include `user`.
+   */
+  static async getPartnersByUsers(users: unknown[], fields: string) {
+    const partners = new Map<string, VerifiedPartner>()
+
+    const results = await Promise.all(chunk(uniqueStrings(users)).map(async group => {
+      const filter = encodeURIComponent(JSON.stringify({ user: { _in: group } }))
+      try {
+        const data = await fetch(`${VERIFIED_PARTNERS_URL}?filter=${filter}&fields=${fields}&limit=-1`).then(readJsonResponse).then(body => body?.data)
+        return (Array.isArray(data) ? data : []) as VerifiedPartner[]
+      } catch (error) {
+        console.log('error getting partners', error)
+        return []
+      }
+    }))
+
+    for (const partner of results.flat()) {
+      const user = (partner as VerifiedPartner & { user?: unknown }).user
+      if (typeof user === 'string' && !partners.has(user)) partners.set(user, partner)
+    }
+
+    return partners
   }
 
   static async getAllSlugs() {

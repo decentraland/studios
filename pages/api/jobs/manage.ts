@@ -1,4 +1,5 @@
 import type { NextRequest } from 'next/server'
+import { getAccessToken, isSameOrigin, normalizeEmail, readJson, readJsonResponse } from '../../../lib/security'
 import { budgetToRanges, isUUID } from '../../../components/utils'
 
 export const config = {
@@ -11,12 +12,11 @@ export default async function (req: NextRequest) {
     const DB_URL = process.env.NEXT_PUBLIC_PARTNERS_DATA_URL
     const API_TOKEN = process.env.API_ACCESS_TOKEN
 
-    const user = req.cookies.get("auth")?.value
-    if (!user) return new Response(null, { status: 401 })
+    const authorization = getAccessToken(req)
+    if (!authorization) return new Response(null, { status: 401 })
+    if (req.method !== 'POST' || !isSameOrigin(req)) return new Response(null, { status: 400 })
 
-    const authorization = JSON.parse(user).access_token
-
-    const { job_id } = await req.json()
+    const { job_id } = await readJson(req)
 
     if (!isUUID(job_id)) {
         return new Response(null, { status: 400 })
@@ -28,26 +28,28 @@ export default async function (req: NextRequest) {
             headers: {
                 'Authorization': `Bearer ${authorization}`
             }
-        }).then(res => res.ok && res.json()).then(res => res.data && res.data)
+        }).then(readJsonResponse).then(res => res?.data)
 
         const jobData = currentUser && await fetch(`${DB_URL}/items/jobs/${job_id}`, {
             headers: {
                 'Authorization': `Bearer ${API_TOKEN}`
             }
         })
-            .then(res => res.ok && res.json())
-            .then(body => body.data)
+            .then(readJsonResponse)
+            .then(body => body?.data)
 
         if (!currentUser || !jobData) return new Response(null, { status: 400 })
 
-        let managers_invites = JSON.parse(jobData.managers_invites || '[]')
+        let managers_invites: string[] = JSON.parse(jobData.managers_invites || '[]')
         let managers = JSON.parse(jobData.managers || '[]')
 
-        if (!managers_invites.includes(currentUser.email)) {
+        const currentUserEmail = normalizeEmail(currentUser.email)
+
+        if (!currentUserEmail || !managers_invites.some(email => normalizeEmail(email) === currentUserEmail)) {
             return new Response(null, { status: 403 })
         }
 
-        managers_invites = managers_invites.filter((email: string) => email != currentUser.email)
+        managers_invites = managers_invites.filter(email => normalizeEmail(email) !== currentUserEmail)
         managers.push({ id: currentUser.id })
 
         const jobUpdate = jobData && await fetch(`${DB_URL}/items/jobs/${job_id}`, {
@@ -60,7 +62,7 @@ export default async function (req: NextRequest) {
                 managers_invites,
                 managers
             })
-        }).then(res => res.ok && res.json()).then(body => body.data)
+        }).then(readJsonResponse).then(body => body?.data)
         if (jobUpdate) return new Response(null, { status: 204 })
 
         return new Response(null, { status: 400 })

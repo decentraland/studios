@@ -1,5 +1,6 @@
 import type { NextRequest } from 'next/server'
 import { isUUID } from '../../../components/utils'
+import { readJson, readJsonResponse } from '../../../lib/security'
 
 export const config = {
   runtime: 'experimental-edge',
@@ -10,9 +11,9 @@ const API_TOKEN = process.env.API_ACCESS_TOKEN
 
 export default async function (req: NextRequest) {
 
-  const { id } = await req.json()
+  const { id } = await readJson(req)
 
-  if (!isUUID(id)) {
+  if (typeof id !== 'string' || !isUUID(id)) {
     return new Response(null, { status: 400 })
   }
 
@@ -21,9 +22,9 @@ export default async function (req: NextRequest) {
     headers: {
     'Authorization': `Bearer ${API_TOKEN}`
     }
-  }).then(res => res.ok && res.json()).then(res => res.data && res.data)
+  }).then(readJsonResponse).then(res => res?.data)
 
-  if (currentJob.verified_email){
+  if (currentJob?.verified_email){
     return new Response(JSON.stringify(currentJob))
   }
 

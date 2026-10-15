@@ -3,7 +3,7 @@ import React from 'react'
 import styles from './ResourceCard.module.css'
 import { Resource } from '../../interfaces/Resource'
 import Image from 'next/image'
-import { plausibleTrackEvent, trackLink } from '../utils'
+import { plausibleTrackEvent, safeUrl, trackLink } from '../utils'
 
 interface Props {
   resource: Resource
@@ -49,8 +49,8 @@ function ResourceCard({ resource }: Props) {
           <div className={styles.description}>{resource.description}</div>
           <div className={styles.tags}>{(resource.tags || []).map((tag, i) => <div key={i} className={styles.tag}>{tag}</div> )}</div>
           <div className={styles.buttons}>
-            {resource.play_link && <a className='button_primary--inverted' href={resource.play_link} target='_blank' rel="noreferrer" onClick={() => trackExternalLink('TRY IT NOW', resource.play_link)}>TRY IT NOW</a>}
-            {resource.github_link && <a className='button_basic' href={resource.github_link} target='_blank' rel="noreferrer" onClick={() => trackExternalLink('VIEW CODE', resource.github_link)}>VIEW CODE</a>}
+            {resource.play_link && <a className='button_primary--inverted' href={safeUrl(resource.play_link)} target='_blank' rel="noreferrer" onClick={() => trackExternalLink('TRY IT NOW', resource.play_link)}>TRY IT NOW</a>}
+            {resource.github_link && <a className='button_basic' href={safeUrl(resource.github_link)} target='_blank' rel="noreferrer" onClick={() => trackExternalLink('VIEW CODE', resource.github_link)}>VIEW CODE</a>}
           </div>
         </div>
     </div>

@@ -1,4 +1,5 @@
 import type { NextRequest } from 'next/server'
+import { getAccessToken, isSameOrigin, isSameEmail, readJson, readJsonResponse } from '../../../lib/security'
 import { User } from '../../../interfaces/User'
 import { isUUID } from '../../../components/utils'
 
@@ -12,12 +13,11 @@ export default async function (req: NextRequest) {
     const DB_URL = process.env.NEXT_PUBLIC_PARTNERS_DATA_URL
     const API_TOKEN = process.env.API_ACCESS_TOKEN
 
-    const user = req.cookies.get("auth")?.value
-    if (!user) return new Response(null, { status: 401 })
+    const authorization = getAccessToken(req)
+    if (!authorization) return new Response(null, { status: 401 })
+    if (req.method !== 'POST' || !isSameOrigin(req)) return new Response(null, { status: 400 })
 
-    const authorization = JSON.parse(user).access_token
-
-    const { job_id, manager_id } = await req.json()
+    const { job_id, manager_id } = await readJson(req)
 
     if (!isUUID(job_id)) {
         return new Response(null, { status: 400 })
@@ -29,29 +29,26 @@ export default async function (req: NextRequest) {
             headers: {
                 'Authorization': `Bearer ${authorization}`
             }
-        }).then(res => res.ok && res.json()).then(res => res.data && res.data)
+        }).then(readJsonResponse).then(res => res?.data)
 
         const jobData = currentUser && await fetch(`${DB_URL}/items/jobs/${job_id}`, {
             headers: {
                 'Authorization': `Bearer ${API_TOKEN}`
             }
         })
-            .then(res => res.ok && res.json())
-            .then(body => body.data)
+            .then(readJsonResponse)
+            .then(body => body?.data)
 
         if (!currentUser || !jobData) return new Response(null, { status: 400 })
 
         let managers = JSON.parse(jobData.managers || '[]')
 
-        const currentUserIsOwner = currentUser.email === jobData.email
+        const currentUserIsOwner = isSameEmail(currentUser.email, jobData.email)
         const currentUserIsManager = managers.filter((manager: User) => manager.id === currentUser.id).length !== 0
 
-        if (!(currentUserIsOwner || currentUserIsManager)) return new Response(null, { status: 400 })
+        if (!(currentUserIsOwner || currentUserIsManager)) return new Response(null, { status: 403 })
 
-        if (managers.filter((manager: User) => manager.id === currentUser.id).length === 0) return new Response(null, { status: 400 })
-
-
-        if (!managers.filter((manager: User) => manager.id === manager_id)) return new Response(null, { status: 400 })
+        if (!managers.some((manager: User) => manager.id === manager_id)) return new Response(null, { status: 400 })
 
         managers = managers.filter((manager: User) => manager.id !== manager_id)
 
@@ -64,7 +61,7 @@ export default async function (req: NextRequest) {
             body: JSON.stringify({
                 managers
             })
-        }).then(res => res.ok && res.json()).then(body => body.data)
+        }).then(readJsonResponse).then(body => body?.data)
 
         if (jobUpdate) return new Response(null, { status: 204 })
 

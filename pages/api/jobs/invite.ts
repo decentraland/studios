@@ -1,10 +1,20 @@
 import type { NextRequest } from 'next/server'
+import { discardResponse, getAccessToken, isEmail, isSameEmail, isSameOrigin, normalizeEmail, readJson, readJsonResponse } from '../../../lib/security'
 import { budgetToRanges, isUUID } from '../../../components/utils'
+import { getUsersBy } from '../../../lib/users'
 
 export const config = {
   runtime: 'experimental-edge',
 }
 
+
+const MAX_PENDING_INVITES = 20
+
+// When the cap is reached the oldest pending invite is dropped, so unanswered invites can't block a job
+const addPendingInvite = (invites: string[], email: string) => {
+  const pending = invites.filter(invite => normalizeEmail(invite) !== email)
+  return pending.slice(Math.max(0, pending.length - MAX_PENDING_INVITES + 1)).concat(email)
+}
 
 export default async function (req: NextRequest) {
 
@@ -14,16 +24,17 @@ export default async function (req: NextRequest) {
   const SENDRGRID_URL = process.env.NEXT_PUBLIC_API_SENDGRID
   const SENDGRID_ACCESS_TOKEN = process.env.SENDGRID_ACCESS_TOKEN
 
-  const user = req.cookies.get("auth")?.value
-  if (!user) return new Response(null, { status: 401 })
+  const authorization = getAccessToken(req)
+  if (!authorization) return new Response(null, { status: 401 })
+  if (req.method !== 'POST' || !isSameOrigin(req)) return new Response(null, { status: 400 })
 
-  const authorization = JSON.parse(user).access_token
+  const { email: rawEmail, job_id } = await readJson(req)
 
-  const { email, job_id } = await req.json()
-
-  if (!isUUID(job_id)) {
+  if (!isUUID(job_id) || !isEmail(rawEmail)) {
     return new Response(null, { status: 400 })
   }
+
+  const email = normalizeEmail(rawEmail)
 
   try {
 
@@ -31,15 +42,15 @@ export default async function (req: NextRequest) {
       headers: {
         'Authorization': `Bearer ${authorization}`
       }
-    }).then(res => res.ok && res.json()).then(res => res.data && res.data)
+    }).then(readJsonResponse).then(res => res?.data)
 
     const jobData = currentUser && await fetch(`${DB_URL}/items/jobs/${job_id}`, {
       headers: {
         'Authorization': `Bearer ${API_TOKEN}`
       }
     })
-      .then(res => res.ok && res.json())
-      .then(body => body.data)
+      .then(readJsonResponse)
+      .then(body => body?.data)
 
 
     if (!currentUser || !jobData) return new Response(null, { status: 400 })
@@ -48,20 +59,17 @@ export default async function (req: NextRequest) {
 
     const managers = JSON.parse(jobData.managers || "[]")
 
-    for (const manager of managers) {
-      const userMail = await fetch(`${DB_URL}/users/${manager.id}?fields=email`, {
-        headers: {
-          'Authorization': `Bearer ${API_TOKEN}`
-        }
-      })
-        .then(res => res.ok && res.json())
-        .then(res => res.data.email)
-      allowedEmails.push(userMail)
-    }
+    // Deleted managers are skipped
+    const managersData = await getUsersBy('id', managers.map((manager: any) => manager?.id), 'email', API_TOKEN)
+    allowedEmails.push(...managersData.map(manager => manager.email).filter(Boolean))
 
-    if (!allowedEmails.includes(currentUser.email)) {
+    if (!allowedEmails.some(allowedEmail => isSameEmail(allowedEmail, currentUser.email))) {
       return new Response(null, { status: 403 })
     }
+
+    const managersInvites: string[] = JSON.parse(jobData.managers_invites || '[]')
+
+    if (managersInvites.some(invite => normalizeEmail(invite) === email)) return new Response(null, { status: 400 })
 
     const jobUpdate = jobData && await fetch(`${DB_URL}/items/jobs/${job_id}`, {
       method: 'PATCH',
@@ -70,9 +78,9 @@ export default async function (req: NextRequest) {
         'Authorization': `Bearer ${API_TOKEN}`
       },
       body: JSON.stringify({
-        managers_invites: JSON.parse(jobData.managers_invites || '[]').concat(email)
+        managers_invites: addPendingInvite(managersInvites, email)
       })
-    }).then(res => res.ok && res.json()).then(body => body.data)
+    }).then(readJsonResponse).then(body => body?.data)
 
     const sendMail = jobUpdate && await fetch(`${SENDRGRID_URL}/mail/send`, {
       method: 'POST',
@@ -96,9 +104,9 @@ export default async function (req: NextRequest) {
         }],
         template_id: "d-230079c83bf64f6187debd8f3126de3f"
       })
-    })
+    }).then(discardResponse)
 
-    if (sendMail.ok) return new Response(JSON.stringify(email))
+    if (sendMail && sendMail.ok) return new Response(JSON.stringify(email))
 
     return new Response(null, { status: 400 })
 

@@ -2,6 +2,8 @@ import type { NextRequest } from 'next/server'
 import { PartnerProject } from '../../interfaces/PartnerProject'
 import { Resource } from '../../interfaces/Resource'
 import { VerifiedPartner } from '../../interfaces/VerifiedPartner'
+import { discardResponse, readJson, readJsonResponse } from '../../lib/security'
+import { escapeRegExp } from '../../components/utils'
 
 export const config = {
   runtime: 'experimental-edge',
@@ -23,8 +25,11 @@ const sliceAroundQuery = (query: string, description: string) => {
     return `${slicedStart ? '...' : ''}${(description || '').substring(sliceRange[0], sliceRange[1]).trim()}...`
 }
 
+const QUERY_MAX_LENGTH = 100
+const QUERY_MAX_TOKENS = 8
+
 const getSearchScore = (text: string, query: string) => {
-  return (text || '').match(new RegExp(query, 'gi'))?.length || 0
+  return (text || '').match(new RegExp(escapeRegExp(query), 'gi'))?.length || 0
 }
 
 const sortResult = (item1: any, item2: any, query: string) => {
@@ -35,8 +40,16 @@ const sortResult = (item1: any, item2: any, query: string) => {
 }
 
 export default async function (req: NextRequest) {
-    const body = await req.json()
-    const { query } = body;
+    if (req.method !== 'POST') return new Response(null, { status: 400 })
+
+    const { query: rawQuery } = await readJson(req)
+
+    if (typeof rawQuery !== 'string') return new Response(null, { status: 400 })
+
+    const query = rawQuery.trim().slice(0, QUERY_MAX_LENGTH)
+    const tokens = query.split(' ').filter(Boolean).slice(0, QUERY_MAX_TOKENS)
+
+    if (!tokens.length) return new Response(JSON.stringify({ results: [] }))
 
     await fetch(`${DB_URL}/items/search_queries`, {
       method: 'POST',
@@ -49,9 +62,9 @@ export default async function (req: NextRequest) {
         geo: req.geo, 
         ip: req.ip
       })
-    })
+    }).then(discardResponse)
 
-    let filterQuery = query.split(' ').map((token: string) => ({
+    let filterQuery = tokens.map((token: string) => ({
       "_or": [
         { title: {
           "_icontains": token
@@ -61,7 +74,7 @@ export default async function (req: NextRequest) {
         }}
       ]}))
 
-      let studiosQuery = query.split(' ').map((token: string) => ({
+      let studiosQuery = tokens.map((token: string) => ({
       "_or": [
         { name: {
           "_icontains": token
@@ -84,7 +97,7 @@ export default async function (req: NextRequest) {
           fields: ["id", "video_1", "image_1", "title", "description", "github_link", "play_link"]
         }
       })
-    }).then((res) => res.json())).data
+    }).then(readJsonResponse))?.data || []
 
     const resStudios = (await fetch(`${DB_URL}/items/profile`, {
       method: 'SEARCH',
@@ -99,7 +112,7 @@ export default async function (req: NextRequest) {
           fields: ["id", "name", "description", "logo", "slug"]
         }
       })
-    }).then((res) => res.json())).data
+    }).then(readJsonResponse))?.data || []
 
     const resProjects = (await fetch(`${DB_URL}/items/projects`, {
       method: 'SEARCH',
@@ -114,7 +127,7 @@ export default async function (req: NextRequest) {
           fields: ["id","image_1", "title", "description", "profile.name", "profile.logo"]
         }
       })
-    }).then((res) => res.json())).data
+    }).then(readJsonResponse))?.data || []
 
     const resource = resResources.sort((a: any , b: any ) => sortResult(a, b, query)).map((resource: Resource) => ({ ...resource, description: sliceAroundQuery(query, resource.description), type: 'resource'}))
     const studio = resStudios.sort((a: any , b: any ) => sortResult(a, b, query)).map((profile: VerifiedPartner) => ( { ...profile, title:profile.name, description: sliceAroundQuery(query, profile.description) , type: 'studio'} ))

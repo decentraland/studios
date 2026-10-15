@@ -17,14 +17,15 @@ function ReviewVerify() {
   useEffect(() => {
     if (uuid){
       setLoading(true)
+      const token = new URLSearchParams(window.location.hash.slice(1)).get('token')
       fetch(`/api/reviews/verify`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({uuid: uuid})
+        body: JSON.stringify({uuid: uuid, token})
         })
-        .then((res) => res.json())
+        .then((res) => res.ok ? res.json() : undefined)
         .then((data) => {
           setReview(data)
           setLoading(false)

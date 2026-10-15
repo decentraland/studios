@@ -43,7 +43,7 @@ export default function Login() {
         e.preventDefault()
         setInvalidInput(false)
         const res = await login(email, password, otp)
-        if (res.access_token) {
+        if (res.expires_at) {
             await mutate(`/api/user/me`)
             await mutate(`/api/messages/get`)
             {

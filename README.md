@@ -25,9 +25,15 @@ NEXT_PUBLIC_INTERCOM_APP_ID=
 API_ACCESS_TOKEN=
 
 SENDGRID_ACCESS_TOKEN=
+SENDGRID_INBOUND_TOKEN=
 TELEGRAM_BOT_TOKEN=
 TELEGRAM_CHAT_ID=
+
+# Random secret (e.g. `openssl rand -base64 32`) used to sign email verification links
+VERIFICATION_TOKEN_SECRET=
 ```
+
+The tracked `.env` file is public: only add `NEXT_PUBLIC_*` values there and keep every secret in `.env.local`.
 
 ## Deploy on Cloudflare Pages
 

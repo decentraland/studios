@@ -229,7 +229,7 @@ function JobSubmitForm() {
 
             // fbq('track', 'Lead')
             // linkedinTrackLead(globalThis.sessionStorage.getItem('leadConversionId') || '13935513') //web3 campaign conversion_id
-            plausibleTrackEvent('JobsSubmitForm: Step3', { slug: globalThis.sessionStorage.getItem('leadSlug') || 'jobs', email: formData.email })
+            plausibleTrackEvent('JobsSubmitForm: Step3', { slug: globalThis.sessionStorage.getItem('leadSlug') || 'jobs' })
             globalThis.localStorage.removeItem('pendingJob')
 
             setCreatedJob(postJob)
